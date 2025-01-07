@@ -1,5 +1,7 @@
 package frc.robot.subsystems.gyro;
 
+import com.ctre.phoenix6.StatusSignal;
+
 public class Gyro {
     private GyroIO io;
 
@@ -21,6 +23,10 @@ public class Gyro {
 
     public void updateInputs(GyroIOInputs inputs) {
         io.updateInputs(inputs);
+    }
+
+    public StatusSignal<edu.wpi.first.units.measure.AngularVelocity> getAngularVelocity() {
+        return io.getAngularVelocity();
     }
 
 }

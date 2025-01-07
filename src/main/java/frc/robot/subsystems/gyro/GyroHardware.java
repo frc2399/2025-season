@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems.gyro;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.util.Units;
@@ -34,6 +35,9 @@ public class GyroHardware implements GyroIO {
 
     public void updateInputs(GyroIOInputs inputs) {
         inputs.yawPositionRad = pigeon.getYaw().getValueAsDouble();
+    }
 
+    public StatusSignal<edu.wpi.first.units.measure.AngularVelocity> getAngularVelocity() {
+        return pigeon.getAngularVelocityZDevice();
     }
 }
