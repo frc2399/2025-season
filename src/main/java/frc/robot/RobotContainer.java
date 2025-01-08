@@ -5,12 +5,14 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
+import frc.robot.vision.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -26,6 +28,7 @@ public class RobotContainer {
   private DriveSubsystem drive;
   private Gyro gyro;
   private SubsystemFactory subsystemFactory;
+  private VisionPoseEstimator visionPoseEstimator;
 
   private boolean useDriveHardware = true;
   private boolean useGyroHardware = true;
@@ -41,6 +44,9 @@ public class RobotContainer {
     subsystemFactory = new SubsystemFactory();
     gyro = subsystemFactory.buildGyro(useGyroHardware);
     drive = subsystemFactory.buildDriveSubsystem(useDriveHardware, gyro);
+    visionPoseEstimator = new VisionPoseEstimator(drive);
+    Commands.run(visionPoseEstimator::periodic).withName("VisionPoseEstimator::periodic");
+
 
     configureDefaultCommands();
     // Configure the trigger bindings

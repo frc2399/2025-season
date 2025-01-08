@@ -32,17 +32,12 @@ import frc.robot.Constants;
 import frc.robot.Constants.SpeedConstants;
 import frc.robot.Robot;
 import frc.robot.subsystems.gyro.Gyro;
-import frc.robot.vision.VisionPoseEstimator;
-import frc.robot.vision.VisionPoseEstimator.Chassis;
+import frc.robot.vision.VisionPoseEstimator.DriveBase;
 
-public class DriveSubsystem extends SubsystemBase implements Chassis {
+public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
-        private double MAX_VISION_UPDATE_SPEED_MPS = 0.5 * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS;
         private double velocityXMPS;
         private double velocityYMPS;
-        private double velocityMPS;
-        private Pose2d robotPose;
-        private VisionPoseEstimator visionPoseEstimator;
 
         // correction PID
         private double DRIVE_P = 1.1;
@@ -107,7 +102,6 @@ public class DriveSubsystem extends SubsystemBase implements Chassis {
         /** Creates a new DriveSubsystem. */
         public DriveSubsystem(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule rearLeft,
                         SwerveModule rearRight, Gyro gyro) {
-                visionPoseEstimator = new VisionPoseEstimator(this);
                 this.gyro = gyro;
                 this.frontLeft = frontLeft;
                 this.frontRight = frontRight;
@@ -147,14 +141,6 @@ public class DriveSubsystem extends SubsystemBase implements Chassis {
                                 });
 
                 Pose2d pose = getPose();
-
-                velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
-                velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
-                velocityMPS = Math.sqrt((Math.pow(velocityXMPS, 2) + Math.pow(velocityYMPS, 2)));
-
-                robotPose = poseEstimator.getEstimatedPosition();
-
-                visionPoseEstimator.periodic();
 
                 SmartDashboard.putNumber("robot pose theta", pose.getRotation().getDegrees());
                 field2d.setRobotPose(pose);
@@ -341,9 +327,15 @@ public class DriveSubsystem extends SubsystemBase implements Chassis {
         }
 
         @Override
+        public double getLinearSpeed() {
+                velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
+                velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
+                return Math.sqrt((Math.pow(velocityXMPS, 2) + Math.pow(velocityYMPS, 2)));
+        }
+
+        @Override
         public void addVisionMeasurement(Pose2d pose, double timestampSeconds,
                         Matrix<N3, N1> visionMeasurementStdDevs) {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'addVisionMeasurement'");
+                poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
         }
 }
