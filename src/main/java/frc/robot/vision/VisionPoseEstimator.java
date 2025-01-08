@@ -16,11 +16,11 @@ import edu.wpi.first.networktables.StructPublisher;
 import frc.robot.Constants.SpeedConstants;
 
 public final class VisionPoseEstimator {
-
-    private static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(24.62);
-    public static final double X_OFFSET_TO_ROBOT_M = Units.inchesToMeters(-11.94);
-    public static final double Y_OFFSET_TO_ROBOT_M = Units.inchesToMeters(-7.54);
-    public static final double Z_OFFSET_TO_ROBOT_M = Units.inchesToMeters(4.937);
+    private static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(45);
+    public static final double X_OFFSET_TO_ROBOT_M = -0.063;
+    public static final double Y_OFFSET_TO_ROBOT_M = -0.252;
+    public static final double Z_OFFSET_TO_ROBOT_M = 0.278;
+    private static final double CAMERA_YAW_RADIANS = Units.degreesToRadians(180);
 
     /**
      * Provides the methods needed to do first-class pose estimation
@@ -47,7 +47,7 @@ public final class VisionPoseEstimator {
     // meters, radians. Robot origin to camera lens origin
     private static final Transform3d ROBOT_TO_CAMERA = new Transform3d(
             X_OFFSET_TO_ROBOT_M, Y_OFFSET_TO_ROBOT_M, Z_OFFSET_TO_ROBOT_M,
-            new Rotation3d(0, CAMERA_PITCH_RADIANS, 0));
+            new Rotation3d(0, CAMERA_PITCH_RADIANS, CAMERA_YAW_RADIANS));
 
     // reject new poses if spinning too fast
     private static final double MAX_ROTATIONS_PER_SECOND = 2;
