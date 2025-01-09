@@ -18,7 +18,7 @@ public class RobotContainer {
   private Gyro gyro = subsystemFactory.buildGyro();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
 
-  private final CommandXboxController driverController = new CommandXboxController(
+  private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
 
   public RobotContainer() {
