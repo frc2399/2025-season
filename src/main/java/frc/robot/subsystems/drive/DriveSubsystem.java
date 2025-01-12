@@ -118,7 +118,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 frontRight.getPosition(),
                                                 rearLeft.getPosition(),
                                                 rearRight.getPosition() },
-                                new Pose2d(0, 0, new Rotation2d(0, 0))); // TODO: make these constants in the constants
+                                new Pose2d(0, 0, new Rotation2d(0))); // TODO: make these constants in the constants
                                                                          // file rather than
                                                                          // free-floating numbers
 
@@ -141,6 +141,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 });
 
                 Pose2d pose = getPose();
+                SmartDashboard.putNumber("Swerve/vision/x", pose.getX());
+                SmartDashboard.putNumber("Swerve/vision/y", pose.getY());
 
                 SmartDashboard.putNumber("robot pose theta", pose.getRotation().getDegrees());
                 field2d.setRobotPose(pose);
@@ -336,6 +338,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         @Override
         public void addVisionMeasurement(Pose2d pose, double timestampSeconds,
                         Matrix<N3, N1> visionMeasurementStdDevs) {
+                System.out.println("ADDING VISION MEASUREMENT IN DRIVE!");
                 poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
         }
 }

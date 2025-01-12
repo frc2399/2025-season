@@ -13,14 +13,26 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SpeedConstants;
 
-public final class VisionPoseEstimator {
-    private static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(45);
-    public static final double X_OFFSET_TO_ROBOT_M = -0.063;
-    public static final double Y_OFFSET_TO_ROBOT_M = -0.252;
-    public static final double Z_OFFSET_TO_ROBOT_M = 0.278;
+public final class VisionPoseEstimator extends SubsystemBase {
+    //alphabot values
+    // private static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(45);
+    // public static final double X_OFFSET_TO_ROBOT_M = -0.063;
+    // public static final double Y_OFFSET_TO_ROBOT_M = -0.252;
+    //public static final double Z_OFFSET_TO_ROBOT_M = 0.278;
+    private static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(24.62);
+    private static final double X_OFFSET_TO_ROBOT_M = Units.inchesToMeters(-11.94);
+    private static final double Y_OFFSET_TO_ROBOT_M = Units.inchesToMeters(-7.54);
+    private static final double Z_OFFSET_TO_ROBOT_M = Units.inchesToMeters(4.937);
     private static final double CAMERA_YAW_RADIANS = Units.degreesToRadians(180);
+    // //0 for testing
+    // private static final double CAMERA_PITCH_RADIANS = 0;
+    // private static final double X_OFFSET_TO_ROBOT_M = 0;
+    // private static final double Y_OFFSET_TO_ROBOT_M = 0;
+    // private static final double Z_OFFSET_TO_ROBOT_M = 0;
+    // private static final double CAMERA_YAW_RADIANS = 0;
 
     /**
      * Provides the methods needed to do first-class pose estimation
@@ -65,7 +77,7 @@ public final class VisionPoseEstimator {
      *                      have more than one Limelight on a robot
      */
     public VisionPoseEstimator(DriveBase driveBase, String limelightName) {
-
+        System.out.println("initialized");
         this.driveBase = driveBase;
         this.limelightName = limelightName;
         this.limelightHostname = "limelight" + (limelightName != "" ? "-" + limelightName : "");
@@ -96,12 +108,14 @@ public final class VisionPoseEstimator {
      *         Optional.empty if it is unavailable or untrustworthy
      */
     public Optional<LimelightHelpers.PoseEstimate> getPoseEstimate() {
-        if (Math.abs(driveBase.getYawPerSecond().getRotations()) > MAX_ROTATIONS_PER_SECOND) {
-            return Optional.empty();
-        } else if (driveBase.getLinearSpeed() > MAX_VISION_UPDATE_SPEED_MPS) {
-            return Optional.empty();
-        }
+        System.out.println("GETPOSEESTIMATE HAPPENING IN VPE");
+        // if (Math.abs(driveBase.getYawPerSecond().getRotations()) > MAX_ROTATIONS_PER_SECOND) {
+        //     return Optional.empty();
+        // } else if (driveBase.getLinearSpeed() > MAX_VISION_UPDATE_SPEED_MPS) {
+        //     return Optional.empty();
+        // }
         var est = Optional.ofNullable(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName));
+        System.out.println(est);
         return est.filter((pe) -> pe.tagCount > 0);
     }
 
@@ -109,9 +123,10 @@ public final class VisionPoseEstimator {
      * Update the limelight's robot orientation
      */
     public void periodic() {
+        System.out.println("VISIONPOSEESTIMATOR PERIODIC!!!");
         LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().getDegrees(), 0, 0, 0, 0, 0);
-
         getPoseEstimate().ifPresent((pe) -> {
+            System.out.println("hi we have a pose");
             mt2Publisher.set(pe.pose);
             // LimelightHelpers doesn't expose a helper method for these, layout is:
             // [MT1x, MT1y, MT1z, MT1roll, MT1pitch, MT1Yaw, MT2x, MT2y, MT2z, MT2roll,

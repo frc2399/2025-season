@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -28,7 +29,7 @@ public class RobotContainer {
   private DriveSubsystem drive;
   private Gyro gyro;
   private SubsystemFactory subsystemFactory;
-  private VisionPoseEstimator visionPoseEstimator;
+  public VisionPoseEstimator visionPoseEstimator;
 
   private boolean useDriveHardware = true;
   private boolean useGyroHardware = true;
@@ -44,9 +45,7 @@ public class RobotContainer {
     subsystemFactory = new SubsystemFactory();
     gyro = subsystemFactory.buildGyro(useGyroHardware);
     drive = subsystemFactory.buildDriveSubsystem(useDriveHardware, gyro);
-    visionPoseEstimator = new VisionPoseEstimator(drive);
-    Commands.run(visionPoseEstimator::periodic).withName("VisionPoseEstimator::periodic");
-
+    visionPoseEstimator = new VisionPoseEstimator(drive, "limelight");
 
     configureDefaultCommands();
     // Configure the trigger bindings
@@ -77,6 +76,8 @@ public class RobotContainer {
     driverController.x().whileTrue((new RunCommand(
       () -> drive.setX(),
       drive).withName("setx")));
+    
+    driverController.b().onTrue(gyro.setYaw(0.0));
   }
 
   /**
