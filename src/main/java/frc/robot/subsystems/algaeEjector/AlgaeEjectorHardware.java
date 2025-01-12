@@ -10,6 +10,7 @@ public class AlgaeEjectorHardware implements AlgaeEjectorIO {
 
     @Override
     public void setSpeed(double speed) {
+
     }
 
     private static final SparkMaxConfig SPARK_MAX_CONFIG_TURNING = new SparkMaxConfig();

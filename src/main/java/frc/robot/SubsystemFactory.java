@@ -62,9 +62,9 @@ public class SubsystemFactory {
 
     public AlgaeEjector buildAlgaeEjector() {
         if (!isSim) {
-            return new AlgaeEjector(new AlgaeEjectorPlacebo());
+            return new AlgaeEjector(new AlgaeEjectorHardware());
         } else {
-            return new AlgaeEjector(new AlgaeEjectorPlacebo());
+            return new AlgaeEjector(new AlgaeEjectorHardware());
         }
     }
 
