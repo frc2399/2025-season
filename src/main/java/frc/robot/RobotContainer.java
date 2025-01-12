@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveControlConstants;
+import frc.robot.subsystems.algaeEjector.AlgaeEjector;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
 
@@ -33,6 +34,8 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
+  private final CommandXboxController operatorController = new CommandXboxController(
+      DriveControlConstants.OPERATOR_CONTROLLER_PORT);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -45,6 +48,7 @@ public class RobotContainer {
     configureDefaultCommands();
     // Configure the trigger bindings
     configureButtonBindingsDriver();
+    configureButtonBindingsOperator();
   }
 
   public void configureDefaultCommands() {
@@ -73,6 +77,9 @@ public class RobotContainer {
       drive).withName("setx")));
   }
 
+  private void configureButtonBindingsOperator() {
+    //operatorController.rightTrigger().whileTrue(AlgaeEjector.setSpeed(Constants.ALGAE_EJECTOR_MPS));
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

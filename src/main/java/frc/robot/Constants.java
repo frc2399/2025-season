@@ -35,7 +35,7 @@ public final class Constants {
 
   public static class SpeedConstants {
     public static final double MAIN_LOOP_FREQUENCY_HZ = 50;
-
+    public static final int ALGAE_EJECTOR_MPS = 0;
     public static final double DRIVETRAIN_MAX_SPEED_MPS = 4.8;
     public static final double DRIVETRAIN_MAX_ANGULAR_SPEED_RPS = 2 * Math.PI;
   }
@@ -50,5 +50,7 @@ public final class Constants {
     public static final double DRIVE_DEADBAND = 0.05;
     public static final boolean FIELD_ORIENTED_DRIVE = true;
   }
+
+  public static final double ALGAE_EJECTOR_MPS = 0;
 
 }

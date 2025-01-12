@@ -15,5 +15,4 @@ public class AlgaeEjector extends SubsystemBase{
     public Command setSpeed(double speed) {
        return this.run( () -> Commands.run(()->io.setSpeed(speed)));
     }
-
 }
