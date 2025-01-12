@@ -18,6 +18,7 @@ public class RobotContainer {
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
   private Gyro gyro = subsystemFactory.buildGyro();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
+  private AlgaeEjector algaeEjector = subsystemFactory.buildAlgaeEjector();
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
@@ -54,8 +55,9 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsOperator() {
-    //operatorController.rightTrigger().whileTrue(AlgaeEjector.setSpeed(Constants.ALGAE_EJECTOR_MPS));
+    operatorController.rightTrigger().whileTrue(algaeEjector.setSpeed(Constants.ALGAE_EJECTOR_MPS));
   }
+  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
