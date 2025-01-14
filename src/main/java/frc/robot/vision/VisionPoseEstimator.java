@@ -77,7 +77,6 @@ public final class VisionPoseEstimator extends SubsystemBase {
      *                      have more than one Limelight on a robot
      */
     public VisionPoseEstimator(DriveBase driveBase, String limelightName) {
-        System.out.println("initialized");
         this.driveBase = driveBase;
         this.limelightName = limelightName;
         this.limelightHostname = "limelight" + (limelightName != "" ? "-" + limelightName : "");
@@ -108,14 +107,12 @@ public final class VisionPoseEstimator extends SubsystemBase {
      *         Optional.empty if it is unavailable or untrustworthy
      */
     public Optional<LimelightHelpers.PoseEstimate> getPoseEstimate() {
-        System.out.println("GETPOSEESTIMATE HAPPENING IN VPE");
         // if (Math.abs(driveBase.getYawPerSecond().getRotations()) > MAX_ROTATIONS_PER_SECOND) {
         //     return Optional.empty();
         // } else if (driveBase.getLinearSpeed() > MAX_VISION_UPDATE_SPEED_MPS) {
         //     return Optional.empty();
         // }
         var est = Optional.ofNullable(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName));
-        System.out.println(est);
         return est.filter((pe) -> pe.tagCount > 0);
     }
 
@@ -123,10 +120,8 @@ public final class VisionPoseEstimator extends SubsystemBase {
      * Update the limelight's robot orientation
      */
     public void periodic() {
-        System.out.println("VISIONPOSEESTIMATOR PERIODIC!!!");
         LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().getDegrees(), 0, 0, 0, 0, 0);
         getPoseEstimate().ifPresent((pe) -> {
-            System.out.println("hi we have a pose");
             mt2Publisher.set(pe.pose);
             // LimelightHelpers doesn't expose a helper method for these, layout is:
             // [MT1x, MT1y, MT1z, MT1roll, MT1pitch, MT1Yaw, MT2x, MT2y, MT2z, MT2roll,

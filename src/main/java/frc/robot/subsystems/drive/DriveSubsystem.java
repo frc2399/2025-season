@@ -338,7 +338,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         @Override
         public void addVisionMeasurement(Pose2d pose, double timestampSeconds,
                         Matrix<N3, N1> visionMeasurementStdDevs) {
-                System.out.println("ADDING VISION MEASUREMENT IN DRIVE!");
+                System.out.println("hi i have a pose now");
                 poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
         }
 }

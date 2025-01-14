@@ -24,7 +24,6 @@ public class SubsystemFactory {
         SwerveModule frontRight;
         SwerveModule rearRight;
         if (useDriveHardware) {
-            System.out.println("1");
             frontRight = new SwerveModule(new SwerveModuleHardware(
                     MotorIdConstants.FRONT_RIGHT_DRIVING_CAN_ID,
                     MotorIdConstants.FRONT_RIGHT_TURNING_CAN_ID,

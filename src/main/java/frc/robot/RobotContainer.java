@@ -45,7 +45,7 @@ public class RobotContainer {
     subsystemFactory = new SubsystemFactory();
     gyro = subsystemFactory.buildGyro(useGyroHardware);
     drive = subsystemFactory.buildDriveSubsystem(useDriveHardware, gyro);
-    visionPoseEstimator = new VisionPoseEstimator(drive, "limelight");
+    visionPoseEstimator = new VisionPoseEstimator(drive);
 
     configureDefaultCommands();
     // Configure the trigger bindings
