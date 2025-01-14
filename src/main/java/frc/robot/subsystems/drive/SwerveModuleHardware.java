@@ -100,7 +100,7 @@ public class SwerveModuleHardware implements SwerveModuleIO {
                 .voltageCompensation(VOLTAGE_COMPENSATION);
         SPARK_MAX_CONFIG_TURNING.encoder.positionConversionFactor(TURNING_ENCODER_POSITION_FACTOR)
                 .velocityConversionFactor(TURNING_ENCODER_VELOCITY_FACTOR);
-        SPARK_MAX_CONFIG_TURNING.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        SPARK_MAX_CONFIG_TURNING.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                 .pidf(TURNING_P, TURNING_I, TURNING_D, TURNING_FF)
                 .outputRange(TURNING_MIN_OUTPUT, TURNING_MAX_OUTPUT)
                 .positionWrappingEnabled(TURNING_ENCODER_POSITION_WRAPPING)
