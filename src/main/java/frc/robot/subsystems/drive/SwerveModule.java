@@ -11,6 +11,7 @@ public class SwerveModule {
     private SwerveModuleIO io;
 
     public SwerveModule(SwerveModuleIO io) {
+        this.io = io;
         io.setDriveEncoderPosition(0);
         desiredState.angle = new Rotation2d(getTurnEncoderPosition());
     }
