@@ -27,6 +27,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SpeedConstants;
@@ -118,7 +120,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 frontRight.getPosition(),
                                                 rearLeft.getPosition(),
                                                 rearRight.getPosition() },
-                                new Pose2d(0, 0, new Rotation2d(0))); // TODO: make these constants in the constants
+                                new Pose2d(0, 0, new Rotation2d(0, 0))); // TODO: make these constants in the constants
                                                                          // file rather than
                                                                          // free-floating numbers
 
@@ -262,11 +264,12 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         /**
          * Sets the wheels into an X formation to prevent movement.
          */
-        public void setX() {
-                frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-                frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-                rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-                rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+        public Command setX() {
+                return this.run( () -> Commands.parallel( 
+                        Commands.run (() -> frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)))),
+                        Commands.run (() -> frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)))),
+                        Commands.run (() -> rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)))),
+                        Commands.run (() -> rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45))))));
         }
 
         public ChassisSpeeds getRobotRelativeSpeeds() {
@@ -338,7 +341,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         @Override
         public void addVisionMeasurement(Pose2d pose, double timestampSeconds,
                         Matrix<N3, N1> visionMeasurementStdDevs) {
-                System.out.println("hi i have a pose now");
                 poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
         }
 }

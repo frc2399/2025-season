@@ -28,8 +28,8 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     private double chassisAngularOffset;
     private String name;
 
-    private SparkMaxConfig SPARK_MAX_CONFIG_DRIVING;
-    private SparkMaxConfig SPARK_MAX_CONFIG_TURNING;
+    private static final SparkMaxConfig SPARK_MAX_CONFIG_DRIVING = new SparkMaxConfig();
+    private static final SparkMaxConfig SPARK_MAX_CONFIG_TURNING = new SparkMaxConfig();
 
     // drivings are NEOs, turnings are NEO 550s
     // THIS IS 13 ON COMP BOT
@@ -85,17 +85,9 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     public SwerveModuleHardware(int drivingCanId, int turningCanId, double chassisAngularOffset, String name) {
         this.chassisAngularOffset = chassisAngularOffset;
         this.name = name;
-        SPARK_MAX_CONFIG_DRIVING = new SparkMaxConfig();
-        SPARK_MAX_CONFIG_TURNING = new SparkMaxConfig();
 
         drivingSparkMax = new SparkMax(drivingCanId, MotorType.kBrushless);
         turningSparkMax = new SparkMax(turningCanId, MotorType.kBrushless);
-
-        drivingRelativeEncoder = drivingSparkMax.getEncoder();
-        turningAbsoluteEncoder = turningSparkMax.getAbsoluteEncoder();
-
-        drivingPidController = drivingSparkMax.getClosedLoopController();
-        turningPidController = turningSparkMax.getClosedLoopController();
 
         SPARK_MAX_CONFIG_DRIVING.inverted(DRIVING_ENCODER_INVERTED).idleMode(DRIVING_MOTOR_IDLE_MODE)
                 .smartCurrentLimit(MotorConstants.NEO_CURRENT_LIMIT)
@@ -119,10 +111,20 @@ public class SwerveModuleHardware implements SwerveModuleIO {
                         TURNING_ENCODER_POSITION_PID_MIN_INPUT,
                         TURNING_ENCODER_POSITION_PID_MAX_INPUT);
 
+        drivingSparkMax = new SparkMax(drivingCanId, MotorType.kBrushless);
+        turningSparkMax = new SparkMax(turningCanId, MotorType.kBrushless);
+
         drivingSparkMax.configure(SPARK_MAX_CONFIG_DRIVING, ResetMode.kResetSafeParameters,
                 PersistMode.kNoPersistParameters);
         turningSparkMax.configure(SPARK_MAX_CONFIG_TURNING, ResetMode.kResetSafeParameters,
                 PersistMode.kNoPersistParameters);
+
+        drivingRelativeEncoder = drivingSparkMax.getEncoder();
+        turningAbsoluteEncoder = turningSparkMax.getAbsoluteEncoder();
+
+        drivingPidController = drivingSparkMax.getClosedLoopController();
+        turningPidController = turningSparkMax.getClosedLoopController();
+
     }
 
     public void setDriveEncoderPosition(double position) {

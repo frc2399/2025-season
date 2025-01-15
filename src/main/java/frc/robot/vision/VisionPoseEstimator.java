@@ -107,11 +107,11 @@ public final class VisionPoseEstimator extends SubsystemBase {
      *         Optional.empty if it is unavailable or untrustworthy
      */
     public Optional<LimelightHelpers.PoseEstimate> getPoseEstimate() {
-        // if (Math.abs(driveBase.getYawPerSecond().getRotations()) > MAX_ROTATIONS_PER_SECOND) {
-        //     return Optional.empty();
-        // } else if (driveBase.getLinearSpeed() > MAX_VISION_UPDATE_SPEED_MPS) {
-        //     return Optional.empty();
-        // }
+        if (Math.abs(driveBase.getYawPerSecond().getRotations()) > MAX_ROTATIONS_PER_SECOND) {
+            return Optional.empty();
+        } else if (driveBase.getLinearSpeed() > MAX_VISION_UPDATE_SPEED_MPS) {
+            return Optional.empty();
+        }
         var est = Optional.ofNullable(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName));
         return est.filter((pe) -> pe.tagCount > 0);
     }
