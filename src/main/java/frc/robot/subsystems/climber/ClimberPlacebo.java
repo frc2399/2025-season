@@ -20,4 +20,6 @@ public class ClimberPlacebo implements ClimberIO{
         return false; 
     }
 
+    public void set(double speed){}
+
 }

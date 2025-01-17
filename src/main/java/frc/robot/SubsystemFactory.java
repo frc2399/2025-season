@@ -1,5 +1,8 @@
 package frc.robot;
 import frc.robot.Constants.MotorIdConstants;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberHardware;
+import frc.robot.subsystems.climber.ClimberPlacebo;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.SwerveModule;
 import frc.robot.subsystems.drive.SwerveModuleHardware;
@@ -53,6 +56,15 @@ public class SubsystemFactory {
             return new Gyro(new GyroHardware());
         } else {
             return new Gyro(new GyroPlacebo());
+        }
+    }
+
+    public Climber buildClimber(boolean useClimberHardware)
+    {
+        if (useClimberHardware){
+            return new Climber(new ClimberHardware());
+        } else {
+            return new Climber(new ClimberPlacebo()); 
         }
     }
 }

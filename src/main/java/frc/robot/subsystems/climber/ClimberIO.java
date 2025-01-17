@@ -13,4 +13,6 @@ public interface ClimberIO {
     public boolean isExtended();
 
     public boolean isRetracted();
+
+    public void set(double speed);
 }

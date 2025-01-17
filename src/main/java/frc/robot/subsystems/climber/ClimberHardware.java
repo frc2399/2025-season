@@ -31,10 +31,7 @@ public class ClimberHardware implements ClimberIO {
 
     //returns height in unit of rotations
     public double getHeight(){
-        return climber.getRotorPosition().getValueAsDouble(); 
-        //return climber.getPosition().getValueAsDouble();
-        //TODO: what's the difference between position and rotor position??
-
+        return climber.getPosition().getValueAsDouble(); 
     }
 
     public void setHeight(double height){
@@ -63,6 +60,11 @@ public class ClimberHardware implements ClimberIO {
     public boolean isRetracted()
     {
         return (climber.getPosition().getValueAsDouble() <= MIN_POSITION); 
+    }
+
+    public void set(double speed)
+    {
+        climber.set(speed);
     }
 }
 

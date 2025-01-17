@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveControlConstants;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
 
@@ -26,9 +27,11 @@ public class RobotContainer {
   private DriveSubsystem drive;
   private Gyro gyro;
   private SubsystemFactory subsystemFactory;
+  private Climber climber; 
 
   private boolean useDriveHardware = true;
   private boolean useGyroHardware = true;
+  private boolean useClimberHardware = true; 
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController = new CommandXboxController(
@@ -41,6 +44,7 @@ public class RobotContainer {
     subsystemFactory = new SubsystemFactory();
     gyro = subsystemFactory.buildGyro(useGyroHardware);
     drive = subsystemFactory.buildDriveSubsystem(useDriveHardware, gyro);
+    climber = subsystemFactory.buildClimber(useClimberHardware);
 
     configureDefaultCommands();
     // Configure the trigger bindings
@@ -64,6 +68,8 @@ public class RobotContainer {
                     DriveControlConstants.DRIVE_DEADBAND)),
                 DriveControlConstants.FIELD_ORIENTED_DRIVE),
             drive).withName("drive default"));
+
+      climber.setDefaultCommand(climber.set(0));
   }
 
  
@@ -71,6 +77,8 @@ public class RobotContainer {
     driverController.x().whileTrue((new RunCommand(
       () -> drive.setX(),
       drive).withName("setx")));
+
+    driverController.y().onTrue(new RunCommand( () -> climber.extend()));
   }
 
   /**
