@@ -124,7 +124,6 @@ public class SwerveModuleHardware implements SwerveModuleIO {
 
         drivingPidController = drivingSparkMax.getClosedLoopController();
         turningPidController = turningSparkMax.getClosedLoopController();
-
     }
 
     public void setDriveEncoderPosition(double position) {

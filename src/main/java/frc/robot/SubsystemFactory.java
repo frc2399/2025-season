@@ -15,7 +15,7 @@ public class SubsystemFactory {
     private static final double REAR_LEFT_CHASSIS_ANGULAR_OFFSET = Math.PI;
     private static final double REAR_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.PI / 2;
     
-    private static final boolean isSim = Robot.isSimulation();
+    private static final boolean isSim = true;
 
     public DriveSubsystem buildDriveSubsystem(Gyro gyro) {
         SwerveModule frontLeft;

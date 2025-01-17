@@ -1,5 +1,13 @@
 package frc.robot.vision;
 
+import static edu.wpi.first.units.Units.Degree;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import java.util.Optional;
 
 import edu.wpi.first.math.Matrix;
@@ -13,26 +21,41 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SpeedConstants;
 
 public final class VisionPoseEstimator extends SubsystemBase {
-    //alphabot values
-    // private static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(45);
-    // public static final double X_OFFSET_TO_ROBOT_M = -0.063;
-    // public static final double Y_OFFSET_TO_ROBOT_M = -0.252;
-    //public static final double Z_OFFSET_TO_ROBOT_M = 0.278;
-    private static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(24.62);
-    private static final double X_OFFSET_TO_ROBOT_M = Units.inchesToMeters(-11.94);
-    private static final double Y_OFFSET_TO_ROBOT_M = Units.inchesToMeters(-7.54);
-    private static final double Z_OFFSET_TO_ROBOT_M = Units.inchesToMeters(4.937);
-    private static final double CAMERA_YAW_RADIANS = Units.degreesToRadians(180);
-    // //0 for testing
-    // private static final double CAMERA_PITCH_RADIANS = 0;
-    // private static final double X_OFFSET_TO_ROBOT_M = 0;
-    // private static final double Y_OFFSET_TO_ROBOT_M = 0;
-    // private static final double Z_OFFSET_TO_ROBOT_M = 0;
-    // private static final double CAMERA_YAW_RADIANS = 0;
+    // alphabot values
+    // private static final Angle CAMERA_PITCH  =
+    // Degrees.of(45);
+    // public static final Distance X_OFFSET_TO_ROBOT = Inches.of(-0.063);
+    // public static final Distance Y_OFFSET_TO_ROBOT = Inches.of(-0.252);
+    // public static final Distance Z_OFFSET_TO_ROBOT = Inches.of(0.278);
+    // mozart values
+    // private static final Angle CAMERA_PITCH =
+    // Degrees.of(24.62);
+    // private static final Distance X_ROBOT_TO_CAMERA_OFFSET =
+    // Inches.of(-11.94);
+    // this is positive instead of negative despite robot coordinate system due to
+    // the 180* yaw rotation!
+    // private static final Distance Y_ROBOT_TO_CAMERA_OFFSET =
+    // Inches.of(7.54);
+    // private static final Distance Z_ROBOT_TO_CAMERA_OFFSET =
+    // Inches.of(4.937);
+    // private static final Angle CAMERA_YAW = Degrees.of(180);
+
+    // for measurement to corner for validation purposes!
+    // x and y are both negative of what they are for the robot itself bc of
+    // differing origins
+    private static final Angle CAMERA_PITCH = Degrees.of(24.62);
+    private static final Distance X_ROBOT_TO_CAMERA_OFFSET = Inches.of(1.25);
+    private static final Distance Y_ROBOT_TO_CAMERA_OFFSET = Inches.of(6);
+    private static final Distance Z_ROBOT_TO_CAMERA_OFFSET = Inches.of(4.937);
+    private static final Angle CAMERA_YAW = Degrees.of(180);
 
     /**
      * Provides the methods needed to do first-class pose estimation
@@ -58,12 +81,14 @@ public final class VisionPoseEstimator extends SubsystemBase {
 
     // meters, radians. Robot origin to camera lens origin
     private static final Transform3d ROBOT_TO_CAMERA = new Transform3d(
-            X_OFFSET_TO_ROBOT_M, Y_OFFSET_TO_ROBOT_M, Z_OFFSET_TO_ROBOT_M,
-            new Rotation3d(0, CAMERA_PITCH_RADIANS, CAMERA_YAW_RADIANS));
+            X_ROBOT_TO_CAMERA_OFFSET.in(Meters), Y_ROBOT_TO_CAMERA_OFFSET.in(Meters),
+            Z_ROBOT_TO_CAMERA_OFFSET.in(Meters),
+            new Rotation3d(0, CAMERA_PITCH.in(Radians), CAMERA_YAW.in(Radians)));
 
     // reject new poses if spinning too fast
-    private static final double MAX_ROTATIONS_PER_SECOND = 2;
-    private static final double MAX_VISION_UPDATE_SPEED_MPS = 0.5 * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS;
+    private static final AngularVelocity MAX_ROTATIONS_PER_SECOND = RotationsPerSecond.of(2);
+    private static final LinearVelocity MAX_DRIVETRAIN_SPEED_FOR_VISION_UPDATE = MetersPerSecond
+            .of(0.5 * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
 
     private final StructPublisher<Pose2d> mt2Publisher;
     private final DriveBase driveBase;
@@ -107,9 +132,9 @@ public final class VisionPoseEstimator extends SubsystemBase {
      *         Optional.empty if it is unavailable or untrustworthy
      */
     public Optional<LimelightHelpers.PoseEstimate> getPoseEstimate() {
-        if (Math.abs(driveBase.getYawPerSecond().getRotations()) > MAX_ROTATIONS_PER_SECOND) {
+        if (Math.abs(driveBase.getYawPerSecond().getRotations()) > MAX_ROTATIONS_PER_SECOND.in(RotationsPerSecond)) {
             return Optional.empty();
-        } else if (driveBase.getLinearSpeed() > MAX_VISION_UPDATE_SPEED_MPS) {
+        } else if (driveBase.getLinearSpeed() > MAX_DRIVETRAIN_SPEED_FOR_VISION_UPDATE.in(MetersPerSecond)) {
             return Optional.empty();
         }
         var est = Optional.ofNullable(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName));
