@@ -70,7 +70,7 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     private static final double DRIVING_MIN_OUTPUT = -1;
     private static final double DRIVING_MAX_OUTPUT = 1;
 
-    private static final double TURNING_P = 0.1;
+    private static final double TURNING_P = 1.0;
     private static final double TURNING_I = 0;
     private static final double TURNING_D = 0.001;
     private static final double TURNING_FF = 0;
