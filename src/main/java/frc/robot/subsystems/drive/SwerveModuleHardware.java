@@ -44,6 +44,7 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     // direction of the steering motor in the MAXSwerve Module.
     private static final boolean TURNING_ENCODER_INVERTED = true;
     private static final boolean DRIVING_ENCODER_INVERTED = false;
+    private static final boolean TURNING_MOTOR_INVERTED = false;
 
     // Calculations required for driving motor conversion factors and feed forward
     private static final Distance WHEEL_DIAMETER = Inches.of(3);
@@ -92,6 +93,8 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     private static final double TURNING_MIN_OUTPUT = -1;
     private static final double TURNING_MAX_OUTPUT = 1;
 
+    private static final double VOLTAGE_COMPENSATION = 12;
+
     private static final SparkBaseConfig.IdleMode DRIVING_MOTOR_IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
     private static final SparkBaseConfig.IdleMode TURNING_MOTOR_IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
 
@@ -99,17 +102,22 @@ public class SwerveModuleHardware implements SwerveModuleIO {
         this.chassisAngularOffset = chassisAngularOffset;
         this.name = name;
 
-        SPARK_MAX_CONFIG_DRIVING.inverted(DRIVING_ENCODER_INVERTED).idleMode(DRIVING_MOTOR_IDLE_MODE);
+        SPARK_MAX_CONFIG_DRIVING.inverted(DRIVING_ENCODER_INVERTED).idleMode(DRIVING_MOTOR_IDLE_MODE)
+                .smartCurrentLimit(MotorConstants.NEO_CURRENT_LIMIT)
+                .voltageCompensation(VOLTAGE_COMPENSATION);
         SPARK_MAX_CONFIG_DRIVING.encoder.positionConversionFactor(DRIVING_ENCODER_POSITION_FACTOR)
                 .velocityConversionFactor(DRIVING_ENCODER_VELOCITY_FACTOR);
         SPARK_MAX_CONFIG_DRIVING.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .pidf(DRIVING_P, DRIVING_I, DRIVING_D, DRIVING_FF)
                 .outputRange(DRIVING_MIN_OUTPUT, DRIVING_MAX_OUTPUT);
 
-        SPARK_MAX_CONFIG_TURNING.inverted(TURNING_ENCODER_INVERTED).idleMode(TURNING_MOTOR_IDLE_MODE);
-        SPARK_MAX_CONFIG_TURNING.encoder.positionConversionFactor(TURNING_ENCODER_POSITION_FACTOR)
+        SPARK_MAX_CONFIG_TURNING.inverted(TURNING_MOTOR_INVERTED).idleMode(TURNING_MOTOR_IDLE_MODE)
+                .smartCurrentLimit(MotorConstants.NEO550_CURRENT_LIMIT)
+                .voltageCompensation(VOLTAGE_COMPENSATION);
+        SPARK_MAX_CONFIG_TURNING.absoluteEncoder.positionConversionFactor(TURNING_ENCODER_POSITION_FACTOR)
                 .velocityConversionFactor(TURNING_ENCODER_VELOCITY_FACTOR);
-        SPARK_MAX_CONFIG_TURNING.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        SPARK_MAX_CONFIG_TURNING.absoluteEncoder.inverted(TURNING_ENCODER_INVERTED);
+        SPARK_MAX_CONFIG_TURNING.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                 .pidf(TURNING_P, TURNING_I, TURNING_D, TURNING_FF)
                 .outputRange(TURNING_MIN_OUTPUT, TURNING_MAX_OUTPUT)
                 .positionWrappingEnabled(TURNING_ENCODER_POSITION_WRAPPING)
