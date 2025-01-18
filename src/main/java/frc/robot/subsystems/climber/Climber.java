@@ -1,12 +1,14 @@
 package frc.robot.subsystems.climber;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Climber {
+public class Climber extends SubsystemBase {
     
     private ClimberIO io;
     
-        public Climber(ClimberIO io)
-        {
+    public Climber(ClimberIO io)
+    {
             this.io = io; 
     }
 
@@ -15,19 +17,19 @@ public class Climber {
         return io.getHeight(); 
     }
 
-    public void setHeight(double height)
+    public Command setHeight(double height)
     {
-        io.setHeight(height);
+        return this.run(() -> io.setHeight(height));
     }
 
-    public void extend()
+    public Command extend()
     {
-        io.extend();
+        return this.run(() -> io.extend());
     }
 
-    public void retract()
+    public Command retract()
     {
-        io.retract();
+        return this.run(() -> io.retract());
     } 
 
     public boolean isExtended()
@@ -40,8 +42,9 @@ public class Climber {
         return io.isRetracted();
     }
 
-    public void set(double speed)
+    //TO DO: return cmd 
+    public Command set(double speed)
     {
-        io.set(speed);
+        return this.run(() -> io.set(speed));
     }
 }
