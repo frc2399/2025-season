@@ -17,6 +17,7 @@ public class RobotContainer {
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
   private Gyro gyro = subsystemFactory.buildGyro();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
+  //this is public because we need to run the visionPoseEstimator periodic from Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
 
   private static final CommandXboxController driverController = new CommandXboxController(
