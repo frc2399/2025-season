@@ -18,6 +18,8 @@ public final class Constants {
     public static final int REAR_RIGHT_TURNING_CAN_ID = 42;
 
     public static final int GYRO_CAN_ID = 3;
+
+    public static final int CLIMBER_CAN_ID = 0;
   }
   
   public static class SensorIdConstants {

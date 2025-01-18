@@ -17,14 +17,15 @@ public class SubsystemFactory {
     private static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = 0;
     private static final double REAR_LEFT_CHASSIS_ANGULAR_OFFSET = Math.PI;
     private static final double REAR_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.PI / 2;
-    public SubsystemFactory() {}
+    
+    private static final boolean isSim = Robot.isSimulation();
 
-    public DriveSubsystem buildDriveSubsystem(boolean useDriveHardware, Gyro gyro) {
+    public DriveSubsystem buildDriveSubsystem(Gyro gyro) {
         SwerveModule frontLeft;
         SwerveModule rearLeft;
         SwerveModule frontRight;
         SwerveModule rearRight;
-        if (useDriveHardware) {
+        if (!isSim) {
             frontLeft = new SwerveModule(new SwerveModuleHardware(
                 MotorIdConstants.FRONT_LEFT_DRIVING_CAN_ID,
                 MotorIdConstants.FRONT_LEFT_TURNING_CAN_ID, 
@@ -51,17 +52,17 @@ public class SubsystemFactory {
         }
     }
 
-    public Gyro buildGyro(boolean useGyroHardware) {
-        if (useGyroHardware) {
+    public Gyro buildGyro() {
+        if (!isSim) {
             return new Gyro(new GyroHardware());
         } else {
             return new Gyro(new GyroPlacebo());
         }
     }
 
-    public Climber buildClimber(boolean useClimberHardware)
+    public Climber buildClimber()
     {
-        if (useClimberHardware){
+        if (!isSim){
             return new Climber(new ClimberHardware());
         } else {
             return new Climber(new ClimberPlacebo()); 
