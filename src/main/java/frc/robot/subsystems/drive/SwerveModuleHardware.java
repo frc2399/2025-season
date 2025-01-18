@@ -101,7 +101,7 @@ public class SwerveModuleHardware implements SwerveModuleIO {
         SPARK_MAX_CONFIG_TURNING.inverted(TURNING_ENCODER_INVERTED).idleMode(TURNING_MOTOR_IDLE_MODE)
                 .smartCurrentLimit(MotorConstants.NEO550_CURRENT_LIMIT)
                 .voltageCompensation(VOLTAGE_COMPENSATION);
-        SPARK_MAX_CONFIG_TURNING.encoder.positionConversionFactor(TURNING_ENCODER_POSITION_FACTOR)
+        SPARK_MAX_CONFIG_TURNING.absoluteEncoder.positionConversionFactor(TURNING_ENCODER_POSITION_FACTOR)
                 .velocityConversionFactor(TURNING_ENCODER_VELOCITY_FACTOR);
         SPARK_MAX_CONFIG_TURNING.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                 .pidf(TURNING_P, TURNING_I, TURNING_D, TURNING_FF)
