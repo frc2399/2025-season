@@ -1,8 +1,5 @@
 package frc.robot.subsystems.drive;
 
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -12,9 +9,14 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Dimensionless;
+import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants.MotorConstants;
 
 public class SwerveModuleHardware implements SwerveModuleIO {
@@ -44,20 +46,30 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     private static final boolean DRIVING_ENCODER_INVERTED = false;
 
     // Calculations required for driving motor conversion factors and feed forward
-    private static final double WHEEL_DIAMETER_METERS = (3.0 * 0.0254);
-    private static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
+    private static final Distance WHEEL_DIAMETER = Inches.of(3);
+    private static final Distance WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER.times(Math.PI);
+   
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
     // teeth on the bevel pinion
     // This is also the gear ratio (14T)
+
+
+
+
+    
     private static final double DRIVING_MOTOR_REDUCTION = (45.0 * 22) / (DRIVING_MOTOR_PINION_TEETH * 15);
+
+
     private static final double DRIVE_WHEEL_FREE_SPEED_RPS = ((MotorConstants.NEO_FREE_SPEED_RPS
-            * WHEEL_CIRCUMFERENCE_METERS)
+            * WHEEL_CIRCUMFERENCE.in(Meters))
             / DRIVING_MOTOR_REDUCTION);
 
-    private static final double DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_DIAMETER_METERS * Math.PI)
+    private static final double DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_DIAMETER.in(Meters) * Math.PI)
             / DRIVING_MOTOR_REDUCTION / (260.0 / 254); // meters
+
     private static final double DRIVING_ENCODER_VELOCITY_FACTOR = DRIVING_ENCODER_POSITION_FACTOR / 60; // meters per
                                                                                                         // second
+
 
     private static final double TURNING_ENCODER_POSITION_FACTOR = (2 * Math.PI); // radians
     private static final double TURNING_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 60.0; // radians per second

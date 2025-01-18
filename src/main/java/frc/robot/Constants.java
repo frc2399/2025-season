@@ -3,6 +3,9 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+import static edu.wpi.first.units.Units.*;
+
+import edu.wpi.first.units.measure.AngularVelocity;
 
 public final class Constants {
 
@@ -28,6 +31,7 @@ public final class Constants {
     public static final int NEO550_CURRENT_LIMIT = 20;
     public static final int NEO_CURRENT_LIMIT = 50;
     public static final int NEO_FREE_SPEED_RPM = 5676;
+    public static final AngularVelocity NEO_FREE_SPEED = RPM.of(5676);
     public static final double NEO_FREE_SPEED_RPS = NEO_FREE_SPEED_RPM / 60;
     // MPS = (GearRatio * 2πr * RPM) / 60
     public static final int NEO550_FREE_SPEED_RPM = 11000;

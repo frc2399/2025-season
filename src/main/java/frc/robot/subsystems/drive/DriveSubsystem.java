@@ -10,6 +10,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,6 +23,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -59,13 +63,15 @@ public class DriveSubsystem extends SubsystemBase {
     private SwerveModule rearLeft;
     private SwerveModule rearRight;
 
-    private static final double TRACK_WIDTH_M = Units.inchesToMeters(26 - 2 * 1.75);
-    // Distance between front and back wheels on robot
-    private static final double WHEEL_BASE_M = Units.inchesToMeters(26 - 2 * 1.75);
-    private static final Translation2d FRONT_LEFT_OFFSET = new Translation2d(WHEEL_BASE_M / 2, TRACK_WIDTH_M / 2);
-    private static final Translation2d REAR_LEFT_OFFSET = new Translation2d(-WHEEL_BASE_M / 2, TRACK_WIDTH_M / 2);
-    private static final Translation2d FRONT_RIGHT_OFFSET = new Translation2d(WHEEL_BASE_M / 2, -TRACK_WIDTH_M / 2);
-    private static final Translation2d REAR_RIGHT_OFFSET = new Translation2d(-WHEEL_BASE_M / 2, -TRACK_WIDTH_M / 2);
+    private static final Distance TRACK_WIDTH_M = Inches.of(26 - (2 * 1.75)); 
+    private static final Distance WHEEL_BASE= Inches.of(26 - (2 * 1.75));
+
+
+    
+    private static final Translation2d FRONT_LEFT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters)/ 2, TRACK_WIDTH_M.in(Meters) / 2);
+    private static final Translation2d REAR_LEFT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2, TRACK_WIDTH_M.in(Meters) / 2);
+    private static final Translation2d FRONT_RIGHT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2, -TRACK_WIDTH_M.in(Meters) / 2);
+    private static final Translation2d REAR_RIGHT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2, -TRACK_WIDTH_M.in(Meters) / 2);
 
     private static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
             FRONT_LEFT_OFFSET,
@@ -140,6 +146,9 @@ public class DriveSubsystem extends SubsystemBase {
 
         velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
         velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
+
+
+        
         velocityMPS = Math.sqrt((Math.pow(velocityXMPS, 2) + Math.pow(velocityYMPS, 2)));
 
         robotPose = poseEstimator.getEstimatedPosition();
@@ -216,9 +225,19 @@ public class DriveSubsystem extends SubsystemBase {
     public void drive(double xSpeed, double ySpeed, double rotRate, boolean fieldRelative) {
 
         double newRotRate = 0;
-        double currentAngle = (gyro.getYaw());
+        double currentAngle = gyro.getYaw();
+        //finish up to 
+
+
+
+
+
+
+
         double r = Math.pow(Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2)), 3);
         double polarAngle = Math.atan2(ySpeed, xSpeed);
+
+       
         double polarXSpeed = r * Math.cos(polarAngle);
         double polarYSpeed = r * Math.sin(polarAngle);
 
