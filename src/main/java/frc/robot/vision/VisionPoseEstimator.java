@@ -29,12 +29,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SpeedConstants;
 
 public final class VisionPoseEstimator extends SubsystemBase {
-    // alphabot values
-    // private static final Angle CAMERA_PITCH  =
-    // Degrees.of(45);
-    // public static final Distance X_OFFSET_TO_ROBOT = Inches.of(-0.063);
-    // public static final Distance Y_OFFSET_TO_ROBOT = Inches.of(-0.252);
-    // public static final Distance Z_OFFSET_TO_ROBOT = Inches.of(0.278);
     // mozart values
     // private static final Angle CAMERA_PITCH =
     // Degrees.of(24.62);
@@ -47,16 +41,13 @@ public final class VisionPoseEstimator extends SubsystemBase {
     // private static final Distance Z_ROBOT_TO_CAMERA_OFFSET =
     // Inches.of(4.937);
     // private static final Angle CAMERA_YAW = Degrees.of(180);
-
-    // for measurement to corner for validation purposes!
-    // x and y are both negative of what they are for the robot itself bc of
-    // differing origins
-    private static final Angle CAMERA_PITCH = Degrees.of(24.62);
-    private static final Distance X_ROBOT_TO_CAMERA_OFFSET = Inches.of(1.25);
-    private static final Distance Y_ROBOT_TO_CAMERA_OFFSET = Inches.of(6);
-    private static final Distance Z_ROBOT_TO_CAMERA_OFFSET = Inches.of(4.937);
-    private static final Angle CAMERA_YAW = Degrees.of(180);
-
+ 
+    //TODO: change these when we get actual values for a robot!
+    private static final Angle CAMERA_PITCH = Degrees.of(0);
+    private static final Distance X_ROBOT_TO_CAMERA_OFFSET = Inches.of(0);
+    private static final Distance Y_ROBOT_TO_CAMERA_OFFSET = Inches.of(0);
+    private static final Distance Z_ROBOT_TO_CAMERA_OFFSET = Inches.of(0);
+    private static final Angle CAMERA_YAW = Degrees.of(0);
     /**
      * Provides the methods needed to do first-class pose estimation
      */
