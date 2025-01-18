@@ -268,12 +268,14 @@ public class DriveSubsystem extends SubsystemBase {
          * Sets the wheels into an X formation to prevent movement.
          */
         public Command setX() {
-                return this.run( () -> Commands.parallel( 
-                        Commands.run (() -> frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)))),
-                        Commands.run (() -> frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)))),
-                        Commands.run (() -> rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)))),
-                        Commands.run (() -> rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45))))));
-        }
+                return this.run(() -> {
+                        frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+                        frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+                        rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+                        rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+              });
+      }
+
 
         public ChassisSpeeds getRobotRelativeSpeeds() {
                 return DRIVE_KINEMATICS.toChassisSpeeds(frontLeft.getState(), frontRight.getState(),
