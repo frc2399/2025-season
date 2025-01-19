@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems.gyro;
 
+import com.ctre.phoenix6.StatusSignal;
+
 import frc.robot.subsystems.gyro.Gyro.GyroIOInputs;
 
 public interface GyroIO {
@@ -15,6 +17,9 @@ public interface GyroIO {
 
     public void setYaw(double yaw);
 
-    public default void updateInputs(GyroIOInputs inputs) {
-    }
+    public default void updateInputs(GyroIOInputs inputs) {};
+
+    public StatusSignal<edu.wpi.first.units.measure.AngularVelocity> getAngularVelocity();
+
+
 }
