@@ -270,8 +270,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
          */
         public Command setX() {
                 return this.run(() -> {
-                        frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-                        frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+                        frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+                        frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
                         rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
                         rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
               });
