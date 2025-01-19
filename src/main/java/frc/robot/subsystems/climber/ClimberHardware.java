@@ -1,5 +1,6 @@
 package frc.robot.subsystems.climber;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
@@ -10,9 +11,10 @@ import frc.robot.Constants.MotorIdConstants;
 
 public class ClimberHardware implements ClimberIO {
     final TalonFX climber;
-    final TalonFXConfigurator climberConfigurator; 
-    final TalonFXConfiguration climberConfiguration;
-    final MotorOutputConfigs climberMotorConfigs;  
+    final TalonFXConfigurator configurator; 
+    final TalonFXConfiguration configuration;
+    final MotorOutputConfigs motorConfigs;  
+    final CurrentLimitsConfigs limitConfigs; 
 
     //TODO: tune min and max positions 
     private static final double MAX_POSITION = 0; 
@@ -25,22 +27,27 @@ public class ClimberHardware implements ClimberIO {
         climber = new TalonFX(MotorIdConstants.CLIMBER_CAN_ID);
 
         //creates a configuration for the climber that is set to the factory defaults 
-        climberConfiguration = new TalonFXConfiguration();
-        climberConfigurator = new TalonFXConfigurator(null);
-        climberMotorConfigs = new MotorOutputConfigs(); 
+        configuration = new TalonFXConfiguration();
+        configurator = climber.getConfigurator(); 
+        motorConfigs = new MotorOutputConfigs(); 
+        limitConfigs = new CurrentLimitsConfigs(); 
 
         //TODO: tune PID 
-        climberConfiguration.Slot0.kP = 0;
-        climberConfiguration.Slot0.kI = 0;
-        climberConfiguration.Slot0.kD = 0;
-        climberConfiguration.Slot0.kV = 0;
+        configuration.Slot0.kP = 0;
+        configuration.Slot0.kI = 0;
+        configuration.Slot0.kD = 0;
+        configuration.Slot0.kV = 0;
         //TODO: add current limits: climberConfiguration.withCurrentLimits(new limit here);
 
-        climberMotorConfigs.Inverted = InvertedValue.Clockwise_Positive; 
+        motorConfigs.Inverted = InvertedValue.Clockwise_Positive; 
 
-        climberConfigurator.apply(climberMotorConfigs);
+        limitConfigs.StatorCurrentLimit = 120;
+        limitConfigs.StatorCurrentLimitEnable = true;
+
+        configurator.apply(limitConfigs);
+        configurator.apply(motorConfigs);
         //applies the configuration to the climber 
-        climber.getConfigurator().apply(climberConfiguration);
+        configurator.apply(configuration); 
 
     }
 
