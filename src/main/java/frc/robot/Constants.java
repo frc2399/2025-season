@@ -3,13 +3,14 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+
 import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 
 public final class Constants {
 
-  public static class MotorIdConstants{
+  public static class MotorIdConstants {
     public static final int FRONT_LEFT_DRIVING_CAN_ID = 11;
     public static final int REAR_LEFT_DRIVING_CAN_ID = 21;
     public static final int FRONT_RIGHT_DRIVING_CAN_ID = 31;
@@ -22,7 +23,7 @@ public final class Constants {
 
     public static final int GYRO_CAN_ID = 3;
   }
-  
+
   public static class SensorIdConstants {
 
   }

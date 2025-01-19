@@ -66,15 +66,19 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private SwerveModule rearLeft;
         private SwerveModule rearRight;
 
-        private static final Distance TRACK_WIDTH = Inches.of(26 - (2 * 1.75)); 
-        private static final Distance WHEEL_BASE= Inches.of(26 - (2 * 1.75));
+        private static final Distance TRACK_WIDTH = Inches.of(26 - (2 * 1.75));
+        private static final Distance WHEEL_BASE = Inches.of(26 - (2 * 1.75));
 
         // Distance between front and back wheels on robot
-       
-        private static final Translation2d FRONT_LEFT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2, TRACK_WIDTH.in(Meters) / 2);
-        private static final Translation2d REAR_LEFT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters)/ 2, TRACK_WIDTH.in(Meters) / 2);
-        private static final Translation2d FRONT_RIGHT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2, -TRACK_WIDTH.in(Meters) / 2);
-        private static final Translation2d REAR_RIGHT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2, -TRACK_WIDTH.in(Meters) / 2);
+
+        private static final Translation2d FRONT_LEFT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
+                        TRACK_WIDTH.in(Meters) / 2);
+        private static final Translation2d REAR_LEFT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2,
+                        TRACK_WIDTH.in(Meters) / 2);
+        private static final Translation2d FRONT_RIGHT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
+                        -TRACK_WIDTH.in(Meters) / 2);
+        private static final Translation2d REAR_RIGHT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2,
+                        -TRACK_WIDTH.in(Meters) / 2);
 
         private static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
                         FRONT_LEFT_OFFSET,
@@ -274,9 +278,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
                         rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
                         rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-              });
-      }
-
+                });
+        }
 
         public ChassisSpeeds getRobotRelativeSpeeds() {
                 return DRIVE_KINEMATICS.toChassisSpeeds(frontLeft.getState(), frontRight.getState(),
