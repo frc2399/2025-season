@@ -11,10 +11,14 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Dimensionless;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants.MotorConstants;
@@ -55,25 +59,16 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     // This is also the gear ratio (14T)
 
 
-
-
-    
     private static final double DRIVING_MOTOR_REDUCTION = (45.0 * 22) / (DRIVING_MOTOR_PINION_TEETH * 15);
 
+    private static final AngularVelocity DRIVE_WHEEL_FREE_SPEED_RPS = ((MotorConstants.NEO_FREE_SPEED_RPS.times(
+            WHEEL_CIRCUMFERENCE.in(Meters))).divide(DRIVING_MOTOR_REDUCTION));
 
-    private static final double DRIVE_WHEEL_FREE_SPEED_RPS = ((MotorConstants.NEO_FREE_SPEED_RPS
-            * WHEEL_CIRCUMFERENCE.in(Meters))
-            / DRIVING_MOTOR_REDUCTION);
-
-    private static final double DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_DIAMETER.in(Meters) * Math.PI)
-            / DRIVING_MOTOR_REDUCTION / (260.0 / 254); // meters
-
-    private static final double DRIVING_ENCODER_VELOCITY_FACTOR = DRIVING_ENCODER_POSITION_FACTOR / 60; // meters per
-                                                                                                        // second
-
-
-    private static final double TURNING_ENCODER_POSITION_FACTOR = (2 * Math.PI); // radians
-    private static final double TURNING_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 60.0; // radians per second
+    private static final Distance DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_DIAMETER.times(Math.PI)).divide(DRIVING_MOTOR_REDUCTION).divide((260.0/254)); // meters
+    private static final Distance DRIVING_ENCODER_VELOCITY_FACTOR = DRIVING_ENCODER_POSITION_FACTOR.divide(60); // meters per second
+   
+    private static final double TURNING_ENCODER_POSITION_FACTOR = Units.rotationsToRadians(1); 
+    private static final double TURNING_ENCODER_VELOCITY_FACTOR = Units.rotationsToRadians(1) / 60.0;
 
     private static final boolean TURNING_ENCODER_POSITION_WRAPPING = true;
     private static final double TURNING_ENCODER_POSITION_PID_MIN_INPUT = 0; // radians
@@ -82,7 +77,7 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     private static final double DRIVING_P = 0.2;
     private static final double DRIVING_I = 0;
     private static final double DRIVING_D = 0;
-    private static final double DRIVING_FF = 1 / DRIVE_WHEEL_FREE_SPEED_RPS;
+    private static final double DRIVING_FF = 1 / DRIVE_WHEEL_FREE_SPEED_RPS.in(RotationsPerSecond);
     private static final double DRIVING_MIN_OUTPUT = -1;
     private static final double DRIVING_MAX_OUTPUT = 1;
 
@@ -105,8 +100,8 @@ public class SwerveModuleHardware implements SwerveModuleIO {
         SPARK_MAX_CONFIG_DRIVING.inverted(DRIVING_ENCODER_INVERTED).idleMode(DRIVING_MOTOR_IDLE_MODE)
                 .smartCurrentLimit(MotorConstants.NEO_CURRENT_LIMIT)
                 .voltageCompensation(VOLTAGE_COMPENSATION);
-        SPARK_MAX_CONFIG_DRIVING.encoder.positionConversionFactor(DRIVING_ENCODER_POSITION_FACTOR)
-                .velocityConversionFactor(DRIVING_ENCODER_VELOCITY_FACTOR);
+        SPARK_MAX_CONFIG_DRIVING.encoder.positionConversionFactor(DRIVING_ENCODER_POSITION_FACTOR.in(Meters))
+                .velocityConversionFactor(DRIVING_ENCODER_VELOCITY_FACTOR.in(Meters));
         SPARK_MAX_CONFIG_DRIVING.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .pidf(DRIVING_P, DRIVING_I, DRIVING_D, DRIVING_FF)
                 .outputRange(DRIVING_MIN_OUTPUT, DRIVING_MAX_OUTPUT);

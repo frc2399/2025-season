@@ -30,9 +30,8 @@ public final class Constants {
   public static class MotorConstants {
     public static final int NEO550_CURRENT_LIMIT = 20;
     public static final int NEO_CURRENT_LIMIT = 50;
-    public static final int NEO_FREE_SPEED_RPM = 5676;
     public static final AngularVelocity NEO_FREE_SPEED = RPM.of(5676);
-    public static final double NEO_FREE_SPEED_RPS = NEO_FREE_SPEED_RPM / 60;
+    public static final AngularVelocity NEO_FREE_SPEED_RPS = NEO_FREE_SPEED.divide(60);
     // MPS = (GearRatio * 2πr * RPM) / 60
     public static final int NEO550_FREE_SPEED_RPM = 11000;
   }

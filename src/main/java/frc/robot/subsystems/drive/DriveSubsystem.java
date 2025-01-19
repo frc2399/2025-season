@@ -65,12 +65,9 @@ public class DriveSubsystem extends SubsystemBase {
         private SwerveModule rearLeft;
         private SwerveModule rearRight;
 
-
         private static final Distance TRACK_WIDTH = Inches.of(26 - (2 * 1.75)); 
         private static final Distance WHEEL_BASE= Inches.of(26 - (2 * 1.75));
 
-
-        
         // Distance between front and back wheels on robot
        
         private static final Translation2d FRONT_LEFT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2, TRACK_WIDTH.in(Meters) / 2);
@@ -86,9 +83,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         // Slew rate filter variables for controlling lateral acceleration
         private double currentRotationRate = 0.0;
-
         private double desiredAngle = 0;
-
         private Gyro gyro;
 
         private final Field2d field2d = new Field2d();
