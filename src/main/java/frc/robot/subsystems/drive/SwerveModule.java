@@ -1,14 +1,20 @@
 package frc.robot.subsystems.drive;
 
+import com.revrobotics.spark.SparkBase.ControlType;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.robot.subsystems.drive.SwerveModuleIO.SwerveModuleIOStates;
 
 public class SwerveModule {
 
     private SwerveModuleState desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
     private SwerveModuleIO io;
+
+    private SwerveModuleIOStates states;
+
 
     public SwerveModule(SwerveModuleIO io) {
         this.io = io;
@@ -36,6 +42,7 @@ public class SwerveModule {
         io.setDriveEncoderPosition(0);
     }
 
+     
     public double getDriveBusVoltage() {
         return io.getDriveBusVoltage();
     }
@@ -47,6 +54,17 @@ public class SwerveModule {
     public double getTurnBusVoltage() {
         return io.getTurnBusVoltage();
     }
+
+
+    public double getTurnOutputCurrent(){
+        return io.getTurnCurrent();
+    }
+
+    public double getDriveOutputCurrent(){
+        return io.getDriveCurrent();
+    }
+
+    
 
     /**
      * Returns the current state of the module.
@@ -90,5 +108,17 @@ public class SwerveModule {
         io.setDesiredDriveSpeedMPS(correctedDesiredState.speedMetersPerSecond);
         io.setDesiredTurnAngle(correctedDesiredState.angle.getRadians());
         desiredState = newDesiredState; // TODO: this seems weird
+    }
+
+    
+    public void updateStates(SwerveModuleIOStates states){
+        states.driveVoltage = io.getDriveBusVoltage()* io.getDriveOutput();
+        states.turnVoltage = io.getTurnBusVoltage()* io.getTurnOutput();
+        states.driveCurrent = io.getDriveCurrent();
+        states.turnCurrent = io.getTurnCurrent();
+        states.drivingVelocity = io.getDriveEncoderSpeedMPS();
+        states.desiredDrivingVelocity = desiredState.speedMetersPerSecond;
+        
+
     }
 }

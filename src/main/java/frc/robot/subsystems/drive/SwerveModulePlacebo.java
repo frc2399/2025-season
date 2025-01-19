@@ -43,4 +43,22 @@ public class SwerveModulePlacebo implements SwerveModuleIO {
     public String getName() {
         return "";
     }
+
+    public void updateStates(){
+        
+    }
+
+    public double getDriveCurrent(){
+        return 0.0;
+
+    }
+
+    public double getTurnCurrent(){
+        return 0.0;
+    }
+
+    
+    public void updateStates(SwerveModuleIOStates states) {
+        
+    }
 }

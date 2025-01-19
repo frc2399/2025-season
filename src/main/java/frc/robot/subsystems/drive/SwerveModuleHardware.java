@@ -37,6 +37,8 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     private double chassisAngularOffset;
     private String name;
 
+    
+
     private static final SparkMaxConfig SPARK_MAX_CONFIG_DRIVING = new SparkMaxConfig();
     private static final SparkMaxConfig SPARK_MAX_CONFIG_TURNING = new SparkMaxConfig();
 
@@ -99,6 +101,8 @@ public class SwerveModuleHardware implements SwerveModuleIO {
 
         drivingSparkMax = new SparkMax(drivingCanId, MotorType.kBrushless);
         turningSparkMax = new SparkMax(turningCanId, MotorType.kBrushless);
+        
+
 
         SPARK_MAX_CONFIG_DRIVING.inverted(DRIVING_ENCODER_INVERTED).idleMode(DRIVING_MOTOR_IDLE_MODE)
                 .smartCurrentLimit(MotorConstants.NEO_CURRENT_LIMIT)
@@ -143,9 +147,9 @@ public class SwerveModuleHardware implements SwerveModuleIO {
         return drivingRelativeEncoder.getPosition();
     };
 
-    public void setDesiredDriveSpeedMPS(double speed) {
+   public void setDesiredDriveSpeedMPS(double speed){
         drivingPidController.setReference(speed, ControlType.kVelocity);
-    };
+   };
 
     public double getDriveEncoderSpeedMPS() {
         return drivingRelativeEncoder.getVelocity();
@@ -154,6 +158,8 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     public double getTurnEncoderPosition() {
         return turningAbsoluteEncoder.getPosition();
     };
+
+    
 
     public void setDesiredTurnAngle(double angle) {
         turningPidController.setReference(angle, ControlType.kPosition);
@@ -182,4 +188,17 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     public double getChassisAngularOffset() {
         return chassisAngularOffset;
     }
+
+    public double getDriveCurrent(){
+        return drivingSparkMax.getOutputCurrent();
+
+    }
+
+    public double getTurnCurrent(){
+        return turningSparkMax.getOutputCurrent();
+    }
+
+
+
+    
 }

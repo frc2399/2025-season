@@ -37,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SpeedConstants;
 import frc.robot.Robot;
+import frc.robot.subsystems.drive.SwerveModuleIO.SwerveModuleIOStates;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.vision.VisionPoseEstimator.DriveBase;
 
@@ -44,6 +45,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         private double velocityXMPS;
         private double velocityYMPS;
+        private final SwerveModuleIOStates inputs = new SwerveModuleIOStates();
 
         // correction PID
         private double DRIVE_P = 1.1;
@@ -157,6 +159,12 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 SmartDashboard.putNumber("robot pose theta", pose.getRotation().getDegrees());
                 field2d.setRobotPose(pose);
 
+                
+                frontLeft.updateStates();
+                frontRight.updateStates();
+                rearLeft.updateStates();
+                rearRight.updateStates();
+
                 frontLeftField2dModule.setPose(pose.transformBy(new Transform2d(
                                 FRONT_LEFT_OFFSET,
                                 new Rotation2d(frontLeft.getTurnEncoderPosition()))));
@@ -188,6 +196,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         lastAngle = lastAngle.plus(Rotation2d.fromRadians(angleChange));
                         gyro.setYaw(lastAngle.getRadians());
                 }
+
+                
         }
 
         /** Returns the currently-estimated pose of the robot. */
