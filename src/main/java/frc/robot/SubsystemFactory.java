@@ -1,7 +1,7 @@
 package frc.robot;
 
 import frc.robot.Constants.MotorIdConstants;
-import frc.robot.subsystems.algaeEjector.AlgaeEjector;
+import frc.robot.subsystems.algaeEjector.AlgaeEjectorSubsystem;
 import frc.robot.subsystems.algaeEjector.AlgaeEjectorHardware;
 import frc.robot.subsystems.algaeEjector.AlgaeEjectorPlacebo;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -60,11 +60,12 @@ public class SubsystemFactory {
         }
     }
 
-    public AlgaeEjector buildAlgaeEjector() {
+    public AlgaeEjectorSubsystem buildAlgaeEjector() {
         if (!isSim) {
-            return new AlgaeEjector(new AlgaeEjectorHardware());
+            return new AlgaeEjectorSubsystem(new AlgaeEjectorHardware(MotorIdConstants.ALGAE_EJECTOR_LEFT_CAN_ID,
+                    MotorIdConstants.ALGAE_EJECTOR_RIGHT_CAN_ID));
         } else {
-            return new AlgaeEjector(new AlgaeEjectorHardware());
+            return new AlgaeEjectorSubsystem(new AlgaeEjectorPlacebo());
         }
     }
 

@@ -7,4 +7,17 @@ public class AlgaeEjectorPlacebo implements AlgaeEjectorIO {
         speed = 0;
     }
 
+    @Override
+    public void updateStates(AlgaeEjectorIOStates states) {
+    }
+
+    @Override
+    public double getVelocity() {
+        return 0.0;
+    }
+
+    @Override
+    public double getCurrent() {
+        return 0.0;
+    }
 }

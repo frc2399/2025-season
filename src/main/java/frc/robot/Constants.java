@@ -4,9 +4,13 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
+import edu.wpi.first.units.measure.LinearVelocity;
+
 public final class Constants {
 
-  public static class MotorIdConstants{
+  public static class MotorIdConstants {
     public static final int FRONT_LEFT_DRIVING_CAN_ID = 11;
     public static final int REAR_LEFT_DRIVING_CAN_ID = 21;
     public static final int FRONT_RIGHT_DRIVING_CAN_ID = 31;
@@ -18,10 +22,12 @@ public final class Constants {
     public static final int REAR_RIGHT_TURNING_CAN_ID = 42;
 
     public static final int GYRO_CAN_ID = 3;
-  }
-  
-  public static class SensorIdConstants {
 
+    public static final int ALGAE_EJECTOR_LEFT_CAN_ID = 0;
+    public static final int ALGAE_EJECTOR_RIGHT_CAN_ID = 1;
+  }
+
+  public static class SensorIdConstants {
   }
 
   public static class MotorConstants {
@@ -35,13 +41,12 @@ public final class Constants {
 
   public static class SpeedConstants {
     public static final double MAIN_LOOP_FREQUENCY_HZ = 50;
-    public static final int ALGAE_EJECTOR_MPS = 0;
+    public static final LinearVelocity ALGAE_EJECTOR_MAX_SPEED_MPS = MetersPerSecond.of(0);
     public static final double DRIVETRAIN_MAX_SPEED_MPS = 4.8;
     public static final double DRIVETRAIN_MAX_ANGULAR_SPEED_RPS = 2 * Math.PI;
   }
 
   public static class SetpointConstants {
-
   }
 
   public static class DriveControlConstants {
@@ -50,7 +55,5 @@ public final class Constants {
     public static final double DRIVE_DEADBAND = 0.05;
     public static final boolean FIELD_ORIENTED_DRIVE = true;
   }
-
-  public static final double ALGAE_EJECTOR_MPS = 0;
 
 }
