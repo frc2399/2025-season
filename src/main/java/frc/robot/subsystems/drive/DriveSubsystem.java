@@ -8,6 +8,7 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -55,6 +56,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         // Odometry
         private SwerveDrivePoseEstimator poseEstimator;
+        private Pose2d robotPose;
 
         // swerve modules
         private SwerveModule frontLeft;
@@ -142,26 +144,26 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 rearRight.getPosition()
                                 });
 
-                Pose2d pose = getPose();
-                SmartDashboard.putNumber("Swerve/vision/x", pose.getX());
-                SmartDashboard.putNumber("Swerve/vision/y", pose.getY());
+                robotPose = getPose();
+                SmartDashboard.putNumber("Swerve/vision/x", robotPose.getX());
+                SmartDashboard.putNumber("Swerve/vision/y", robotPose.getY());
 
-                SmartDashboard.putNumber("robot pose theta", pose.getRotation().getDegrees());
-                field2d.setRobotPose(pose);
+                SmartDashboard.putNumber("robot pose theta", robotPose.getRotation().getDegrees());
+                field2d.setRobotPose(robotPose);
 
-                frontLeftField2dModule.setPose(pose.transformBy(new Transform2d(
+                frontLeftField2dModule.setPose(robotPose.transformBy(new Transform2d(
                                 FRONT_LEFT_OFFSET,
                                 new Rotation2d(frontLeft.getTurnEncoderPosition()))));
 
-                rearLeftField2dModule.setPose(pose.transformBy(new Transform2d(
+                rearLeftField2dModule.setPose(robotPose.transformBy(new Transform2d(
                                 REAR_LEFT_OFFSET,
                                 new Rotation2d(rearLeft.getTurnEncoderPosition()))));
 
-                frontRightField2dModule.setPose(pose.transformBy(new Transform2d(
+                frontRightField2dModule.setPose(robotPose.transformBy(new Transform2d(
                                 FRONT_RIGHT_OFFSET,
                                 new Rotation2d(frontRight.getTurnEncoderPosition()))));
 
-                rearRightField2dModule.setPose(pose.transformBy(new Transform2d(
+                rearRightField2dModule.setPose(robotPose.transformBy(new Transform2d(
                                 REAR_RIGHT_OFFSET,
                                 new Rotation2d(rearRight.getTurnEncoderPosition()))));
 
@@ -270,9 +272,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
                         rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
                         rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-              });
-      }
-
+                });
+        }
 
         public ChassisSpeeds getRobotRelativeSpeeds() {
                 return DRIVE_KINEMATICS.toChassisSpeeds(frontLeft.getState(), frontRight.getState(),
