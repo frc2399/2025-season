@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.units.measure.Distance;
+import static edu.wpi.first.units.Units.Centimeters;
+
+
 public final class Constants {
 
   public static class MotorIdConstants{
@@ -41,7 +45,7 @@ public final class Constants {
   }
 
   public static class SetpointConstants {
-
+    public static Distance L_ONE_HEIGHT = Centimeters.of(11); //46cm is height of L1
   }
 
   public static class DriveControlConstants {
