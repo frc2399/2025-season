@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveControlConstants;
@@ -17,7 +19,8 @@ public class RobotContainer {
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
   private Gyro gyro = subsystemFactory.buildGyro();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
-  //this is public because we need to run the visionPoseEstimator periodic from Robot
+  // this is public because we need to run the visionPoseEstimator periodic from
+  // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
 
   private static final CommandXboxController driverController = new CommandXboxController(
@@ -26,6 +29,12 @@ public class RobotContainer {
   public RobotContainer() {
     configureDefaultCommands();
     configureButtonBindingsDriver();
+  }
+
+  public enum AlignType {
+    REEF_LEFT,
+    REEF_RIGHT,
+    CORAL_STATION;
   }
 
   public void configureDefaultCommands() {
@@ -46,9 +55,16 @@ public class RobotContainer {
                 DriveControlConstants.FIELD_ORIENTED_DRIVE),
             drive).withName("drive default"));
   }
- 
+
   private void configureButtonBindingsDriver() {
     driverController.b().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
+
+    driverController.rightTrigger()
+        .onTrue(drive.driveToPoseCommand(AlignType.REEF_RIGHT, DriverStation.getAlliance())
+            .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    driverController.leftTrigger()
+        .onTrue(drive.driveToPoseCommand(AlignType.REEF_LEFT, DriverStation.getAlliance())
+            .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
   }
 }

@@ -4,11 +4,13 @@
 
 package frc.robot.subsystems.drive;
 
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -25,14 +27,15 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SpeedConstants;
+import frc.robot.RobotContainer.AlignType;
 import frc.robot.Robot;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.vision.VisionPoseEstimator.DriveBase;
@@ -345,5 +348,48 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         public void addVisionMeasurement(Pose2d pose, double timestampSeconds,
                         Matrix<N3, N1> visionMeasurementStdDevs) {
                 poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
+        }
+
+        public Command driveToPoseCommand(AlignType alignType, Optional<Alliance> ally) {
+                // TODO: not sure we want to be checking this each time, but also not sure we
+                // want to put it into robotContainer
+                
+                // defaults to blue alliance
+                boolean isBlueAlliance = true;
+                if (ally.isPresent() && (ally.get() == Alliance.Red)) {
+                        isBlueAlliance = false;
+                }
+
+                // TODO: there is definitely a better way to do this than an atomic boolean
+
+                // basically, bad things can happen if we try to update a normal boolean within
+                // a lambda and access it outside that lambda, but atomic booleans prevent these
+                // risks
+                AtomicBoolean atGoal = new AtomicBoolean(false);
+
+                Pose2d goalPose = ReefscapeVisionUtil.getGoalPose(alignType, robotPose, isBlueAlliance);
+
+                return this.run(() -> {
+                        Transform2d velocities = DriveToPoseUtil.getDriveToPoseVelocities(
+                                        robotPose, goalPose);
+                        ChassisSpeeds alignmentSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                                        velocities.getX(), velocities.getY(), velocities.getRotation().getRadians(),
+                                        new Rotation2d(gyro.getYaw()));
+
+                        // tolerances were accounted for in getDriveToPoseVelocities
+                        atGoal.set((velocities.getX() == 0 && velocities.getY() == 0
+                                        && velocities.getRotation().getRadians() == 0));
+
+                        var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(alignmentSpeeds);
+                        SwerveDriveKinematics.desaturateWheelSpeeds(
+                                        swerveModuleStates, SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
+
+                        frontLeft.setDesiredState(swerveModuleStates[0]);
+                        frontRight.setDesiredState(swerveModuleStates[1]);
+                        rearLeft.setDesiredState(swerveModuleStates[2]);
+                        rearRight.setDesiredState(swerveModuleStates[3]);
+
+                        swerveModuleDesiredStatePublisher.set(swerveModuleStates);
+                }).until(() -> atGoal.get());
         }
 }
