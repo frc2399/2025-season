@@ -17,6 +17,7 @@ public class RobotContainer {
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
   private Gyro gyro = subsystemFactory.buildGyro();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
+  private AutoChooser autoChooser = new AutoChooser();
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
