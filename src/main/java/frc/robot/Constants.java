@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.units.measure.Distance;
 import static edu.wpi.first.units.Units.Centimeters;
 
-
 public final class Constants {
 
   public static class MotorIdConstants{
@@ -35,6 +34,7 @@ public final class Constants {
     public static final double NEO_FREE_SPEED_RPS = NEO_FREE_SPEED_RPM / 60;
     // MPS = (GearRatio * 2πr * RPM) / 60
     public static final int NEO550_FREE_SPEED_RPM = 11000;
+    public static final int NEO_CURRENT_LIMIT_ELEVATOR = 80;
   }
 
   public static class SpeedConstants {

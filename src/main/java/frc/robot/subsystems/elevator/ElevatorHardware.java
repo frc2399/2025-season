@@ -21,6 +21,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
+import frc.robot.Constants.MotorConstants;
 
 public class ElevatorHardware implements ElevatorIO {
 
@@ -87,11 +88,12 @@ public class ElevatorHardware implements ElevatorIO {
             .apply(globalMotorConfig)
             .inverted(false)
             .idleMode(IdleMode.kBrake)
-            .smartCurrentLimit(80);
+            .smartCurrentLimit(MotorConstants.NEO_CURRENT_LIMIT_ELEVATOR);
 
         rightMotorConfigFollower
             .follow(ElevatorHardwareConstants.LEFT_ELEVATOR_MOTOR_ID, true)
-            .apply(globalMotorConfig);
+            .apply(globalMotorConfig)
+            .smartCurrentLimit(MotorConstants.NEO_CURRENT_LIMIT_ELEVATOR);
 
         elevatorLeftMotorLeader.configure(leftMotorConfigLeader, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         elevatorRightMotorFollower.configure(rightMotorConfigFollower, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

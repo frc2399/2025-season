@@ -33,6 +33,7 @@ public class RobotContainer {
     elevator.setPosition(0);
     configureDefaultCommands();
     configureButtonBindingsDriver();
+    configureButtonBindingsOperator();
   }
 
   public void configureDefaultCommands() {
@@ -59,7 +60,9 @@ public class RobotContainer {
   private void configureButtonBindingsDriver() {
     driverController.b().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
+  }
 
+  private void configureButtonBindingsOperator() {
     operatorController.y().whileTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
     operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
   }
