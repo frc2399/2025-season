@@ -113,8 +113,7 @@ public class SwerveModuleHardware implements SwerveModuleIO {
                         TURNING_ENCODER_POSITION_PID_MIN_INPUT,
                         TURNING_ENCODER_POSITION_PID_MAX_INPUT);
 
-        drivingSparkMax = new SparkMax(drivingCanId, MotorType.kBrushless);
-        turningSparkMax = new SparkMax(turningCanId, MotorType.kBrushless);
+
 
         drivingSparkMax.configure(SPARK_MAX_CONFIG_DRIVING, ResetMode.kResetSafeParameters,
                 PersistMode.kNoPersistParameters);

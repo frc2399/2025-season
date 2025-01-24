@@ -6,11 +6,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 public class Gyro {
+    
     private GyroIO io;
-
-    public static class GyroIOInputs {
-        public double yawPositionRad = 0.0;
-    }
 
     public Gyro(GyroIO io) {
         this.io = io;
@@ -24,10 +21,7 @@ public class Gyro {
         return Commands.runOnce(() -> io.setYaw(yaw));
     }
 
-    public void updateInputs(GyroIOInputs inputs) {
-        io.updateInputs(inputs);
-    }
-
+    
     public StatusSignal<edu.wpi.first.units.measure.AngularVelocity> getAngularVelocity() {
         return io.getAngularVelocity();
     }
