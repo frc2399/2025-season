@@ -16,7 +16,9 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
-
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
@@ -48,6 +50,9 @@ public class ElevatorHardware implements ElevatorIO {
     private SparkClosedLoopController leftClosedLoopController;
     private RelativeEncoder rightEncoder, leftEncoder;
     private double position;
+    private TrapezoidProfile elevatorMotionProfile;
+    private State currentState = new State();
+    private State goalState = new State();
     
     public ElevatorHardware() {
 
@@ -62,6 +67,8 @@ public class ElevatorHardware implements ElevatorIO {
 
         //rightEncoder = elevatorRightMotorFollower.getEncoder();
         leftEncoder = elevatorLeftMotorLeader.getEncoder();
+
+        elevatorMotionProfile = new TrapezoidProfile(new Constraints(ElevatorHardwareConstants.MAX_ACCEL.in(MetersPerSecondPerSecond), ElevatorHardwareConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)));
 
         globalMotorConfig.encoder
             .positionConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION)
@@ -88,12 +95,12 @@ public class ElevatorHardware implements ElevatorIO {
             .apply(globalMotorConfig)
             .inverted(false)
             .idleMode(IdleMode.kBrake)
-            .smartCurrentLimit(MotorConstants.NEO_CURRENT_LIMIT_ELEVATOR);
+            .smartCurrentLimit(MotorConstants.NEO_VORTEX_CURRENT_LIMIT);
 
         rightMotorConfigFollower
             .follow(ElevatorHardwareConstants.LEFT_ELEVATOR_MOTOR_ID, true)
             .apply(globalMotorConfig)
-            .smartCurrentLimit(MotorConstants.NEO_CURRENT_LIMIT_ELEVATOR);
+            .smartCurrentLimit(MotorConstants.NEO_VORTEX_CURRENT_LIMIT);
 
         elevatorLeftMotorLeader.configure(leftMotorConfigLeader, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         elevatorRightMotorFollower.configure(rightMotorConfigFollower, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -107,6 +114,7 @@ public class ElevatorHardware implements ElevatorIO {
 
     @Override
     public void setPosition(double position) {
+        goalState.position = position;
         leftClosedLoopController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         //leftClosedLoopController.setReference(position, SparkBase.ControlType.kMAXMotionPositionControl);
         
