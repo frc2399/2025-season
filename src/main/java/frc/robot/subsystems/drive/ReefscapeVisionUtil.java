@@ -1,37 +1,65 @@
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.util.Arrays;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.RobotContainer.AlignType;
 
 public class ReefscapeVisionUtil {
-    private static final Pose2d RED_REEF_A = new Pose2d();
-    private static final Pose2d RED_REEF_B = new Pose2d();
-    private static final Pose2d RED_REEF_C = new Pose2d();
-    private static final Pose2d RED_REEF_D = new Pose2d();
-    private static final Pose2d RED_REEF_E = new Pose2d();
-    private static final Pose2d RED_REEF_F = new Pose2d();
-    private static final Pose2d RED_REEF_G = new Pose2d();
-    private static final Pose2d RED_REEF_H = new Pose2d();
-    private static final Pose2d RED_REEF_I = new Pose2d();
-    private static final Pose2d RED_REEF_J = new Pose2d();
-    private static final Pose2d RED_REEF_K = new Pose2d();
-    private static final Pose2d RED_REEF_L = new Pose2d();
+    private static final Pose2d RED_REEF_A = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(180)));
+    private static final Pose2d RED_REEF_B = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(180)));
+    private static final Pose2d RED_REEF_C = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(240)));
+    private static final Pose2d RED_REEF_D = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(240)));
+    private static final Pose2d RED_REEF_E = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(300)));
+    private static final Pose2d RED_REEF_F = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(300)));
+    private static final Pose2d RED_REEF_G = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(0)));
+    private static final Pose2d RED_REEF_H = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(0)));
+    private static final Pose2d RED_REEF_I = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(60)));
+    private static final Pose2d RED_REEF_J = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(60)));
+    private static final Pose2d RED_REEF_K = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(120)));
+    private static final Pose2d RED_REEF_L = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(120)));
 
-    private static final Pose2d BLUE_REEF_A = new Pose2d();
-    private static final Pose2d BLUE_REEF_B = new Pose2d();
-    private static final Pose2d BLUE_REEF_C = new Pose2d();
-    private static final Pose2d BLUE_REEF_D = new Pose2d();
-    private static final Pose2d BLUE_REEF_E = new Pose2d();
-    private static final Pose2d BLUE_REEF_F = new Pose2d();
-    private static final Pose2d BLUE_REEF_G = new Pose2d();
-    private static final Pose2d BLUE_REEF_H = new Pose2d();
-    private static final Pose2d BLUE_REEF_I = new Pose2d();
-    private static final Pose2d BLUE_REEF_J = new Pose2d();
-    private static final Pose2d BLUE_REEF_K = new Pose2d();
-    private static final Pose2d BLUE_REEF_L = new Pose2d();
+    private static final Pose2d BLUE_REEF_A = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(0)));
+    private static final Pose2d BLUE_REEF_B = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(0)));
+    private static final Pose2d BLUE_REEF_C = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(60)));
+    private static final Pose2d BLUE_REEF_D = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(60)));
+    private static final Pose2d BLUE_REEF_E = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(120)));
+    private static final Pose2d BLUE_REEF_F = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(120)));
+    private static final Pose2d BLUE_REEF_G = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(180)));
+    private static final Pose2d BLUE_REEF_H = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(180)));
+    private static final Pose2d BLUE_REEF_I = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(240)));
+    private static final Pose2d BLUE_REEF_J = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(240)));
+    private static final Pose2d BLUE_REEF_K = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(300)));
+    private static final Pose2d BLUE_REEF_L = new Pose2d(new Translation2d(),
+            new Rotation2d(Degrees.of(300)));
 
     private static final Pose2d RED_CORAL_STATION = new Pose2d();
     private static final Pose2d BLUE_CORAL_STATION = new Pose2d();

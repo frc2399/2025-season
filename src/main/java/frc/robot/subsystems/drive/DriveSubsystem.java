@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -26,6 +30,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -353,7 +358,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         public Command driveToPoseCommand(AlignType alignType, Optional<Alliance> ally) {
                 // TODO: not sure we want to be checking this each time, but also not sure we
                 // want to put it into robotContainer
-                
+
                 // defaults to blue alliance
                 boolean isBlueAlliance = true;
                 if (ally.isPresent() && (ally.get() == Alliance.Red)) {
@@ -379,6 +384,37 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         // tolerances were accounted for in getDriveToPoseVelocities
                         atGoal.set((velocities.getX() == 0 && velocities.getY() == 0
                                         && velocities.getRotation().getRadians() == 0));
+
+                        var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(alignmentSpeeds);
+                        SwerveDriveKinematics.desaturateWheelSpeeds(
+                                        swerveModuleStates, SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
+
+                        frontLeft.setDesiredState(swerveModuleStates[0]);
+                        frontRight.setDesiredState(swerveModuleStates[1]);
+                        rearLeft.setDesiredState(swerveModuleStates[2]);
+                        rearRight.setDesiredState(swerveModuleStates[3]);
+
+                        swerveModuleDesiredStatePublisher.set(swerveModuleStates);
+                }).until(() -> atGoal.get());
+        }
+
+        public Command rotateToPoseCommand(AlignType alignType, Optional<Alliance> ally) {
+                boolean isBlueAlliance = true;
+                if (ally.isPresent() && ally.get() == Alliance.Red) {
+                        isBlueAlliance = false;
+                }
+
+                Pose2d goalPose = ReefscapeVisionUtil.getGoalPose(alignType, robotPose, isBlueAlliance);
+                AtomicBoolean atGoal = new AtomicBoolean(false);
+                return this.run(() -> {
+                        AngularVelocity thetaVelocity = DriveToPoseUtil.getAlignmentRotRate(
+                                        robotPose, goalPose);
+                        ChassisSpeeds alignmentSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                                        0, 0, thetaVelocity.in(RadiansPerSecond),
+                                        new Rotation2d(gyro.getYaw()));
+
+                        // tolerances were accounted for in getDriveToPoseVelocities
+                        atGoal.set(thetaVelocity.in(RotationsPerSecond) == 0);
 
                         var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(alignmentSpeeds);
                         SwerveDriveKinematics.desaturateWheelSpeeds(

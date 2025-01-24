@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -60,5 +61,15 @@ public class DriveToPoseUtil {
                 return new Transform2d(xDesired.in(MetersPerSecond),
                                 yDesired.in(MetersPerSecond),
                                 new Rotation2d(thetaDesired.in(RadiansPerSecond)));
+        }
+
+        public static AngularVelocity getAlignmentRotRate(Pose2d robotPose, Pose2d goalPose) {
+                Rotation2d rotationToGoal = robotPose.minus(goalPose).getRotation();
+                AngularVelocity thetaDesired = RotationsPerSecond.of(
+                                DRIVE_TO_POSE_THETA_PID.calculate(rotationToGoal.getRotations(), 0));
+                if (rotationToGoal.getDegrees() < THETA_ALIGN_TOLERANCE.in(Degrees)) {
+                        thetaDesired = RotationsPerSecond.of(0);
+                }
+                return thetaDesired;
         }
 }
