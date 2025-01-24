@@ -17,7 +17,6 @@ import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
-
 /** IO implementation for Pigeon2 */
 public class GyroHardware implements GyroIO {
     private final Pigeon2 pigeon;
@@ -26,22 +25,16 @@ public class GyroHardware implements GyroIO {
 
         pigeon = new Pigeon2(Constants.MotorIdConstants.GYRO_CAN_ID, "rio");
         Optional<Alliance> ally = DriverStation.getAlliance();
-    
+
         if (ally.get() == Alliance.Red) {
-            this.setYaw(Math.toRadians(0)); 
-            System.out.println("set red +");
+            this.setYaw(Math.toRadians(0));
         } else if (ally.get() == Alliance.Blue) {
-            this.setYaw(180.0); 
-            System.out.println("set blue");
+            this.setYaw(180.0);
         } else {
-            this.setYaw(0.0); 
+            this.setYaw(0.0);
         }
-        
 
     }
-    
-        
-    
 
     public double getYaw() {
         return Units.degreesToRadians(pigeon.getYaw().getValueAsDouble());

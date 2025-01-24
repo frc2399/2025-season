@@ -270,9 +270,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
                         rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
                         rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-              });
-      }
-
+                });
+        }
 
         public ChassisSpeeds getRobotRelativeSpeeds() {
                 return DRIVE_KINEMATICS.toChassisSpeeds(frontLeft.getState(), frontRight.getState(),
