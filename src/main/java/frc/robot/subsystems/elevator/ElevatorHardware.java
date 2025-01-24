@@ -43,6 +43,7 @@ public class ElevatorHardware implements ElevatorIO {
         private static final double P_VALUE_VELOCITY = 0.0001;
         private static final double I_VALUE_VELOCITY = 0;
         private static final double D_VALUE_VELOCITY = 0;
+        private static final double kDt = 0.02;
     }
 
     private SparkFlex elevatorRightMotorFollower, elevatorLeftMotorLeader;
@@ -115,6 +116,7 @@ public class ElevatorHardware implements ElevatorIO {
     @Override
     public void setPosition(double position) {
         goalState.position = position;
+        currentState = elevatorMotionProfile.calculate(ElevatorHardwareConstants.kDt, currentState, goalState);
         leftClosedLoopController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         //leftClosedLoopController.setReference(position, SparkBase.ControlType.kMAXMotionPositionControl);
         
