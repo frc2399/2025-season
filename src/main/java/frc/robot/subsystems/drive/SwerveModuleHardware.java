@@ -53,21 +53,21 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     // Calculations required for driving motor conversion factors and feed forward
     private static final Distance WHEEL_DIAMETER = Inches.of(3);
     private static final Distance WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER.times(Math.PI);
-   
+
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
     // teeth on the bevel pinion
     // This is also the gear ratio (14T)
-
 
     private static final double DRIVING_MOTOR_REDUCTION = (45.0 * 22) / (DRIVING_MOTOR_PINION_TEETH * 15);
 
     private static final AngularVelocity DRIVE_WHEEL_FREE_SPEED_RPS = ((MotorConstants.NEO_FREE_SPEED_RPS.times(
             WHEEL_CIRCUMFERENCE.in(Meters))).divide(DRIVING_MOTOR_REDUCTION));
 
-    private static final Distance DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_DIAMETER.times(Math.PI)).divide(DRIVING_MOTOR_REDUCTION).divide((260.0/254)); // meters
+    private static final Distance DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_DIAMETER.times(Math.PI))
+            .divide(DRIVING_MOTOR_REDUCTION).divide((260.0 / 254)); // meters
     private static final Distance DRIVING_ENCODER_VELOCITY_FACTOR = DRIVING_ENCODER_POSITION_FACTOR.divide(60); // meters per second
-   
-    private static final double TURNING_ENCODER_POSITION_FACTOR = Units.rotationsToRadians(1); 
+                                                                                                            
+    private static final double TURNING_ENCODER_POSITION_FACTOR = Units.rotationsToRadians(1);
     private static final double TURNING_ENCODER_VELOCITY_FACTOR = Units.rotationsToRadians(1) / 60.0;
 
     private static final boolean TURNING_ENCODER_POSITION_WRAPPING = true;
