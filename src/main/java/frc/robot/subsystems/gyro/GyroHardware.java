@@ -24,15 +24,6 @@ public class GyroHardware implements GyroIO {
     public GyroHardware() {
 
         pigeon = new Pigeon2(Constants.MotorIdConstants.GYRO_CAN_ID, "rio");
-        Optional<Alliance> ally = DriverStation.getAlliance();
-
-        if (ally.get() == Alliance.Red) {
-            this.setYaw(Math.toRadians(0));
-        } else if (ally.get() == Alliance.Blue) {
-            this.setYaw(180.0);
-        } else {
-            this.setYaw(0.0);
-        }
 
     }
 

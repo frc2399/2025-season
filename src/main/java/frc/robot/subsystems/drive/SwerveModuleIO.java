@@ -1,9 +1,7 @@
 package frc.robot.subsystems.drive;
 
 public interface SwerveModuleIO {
-   
-
-
+    
     public void setDriveEncoderPosition(double position);
 
     public double getDriveEncoderPosition();
