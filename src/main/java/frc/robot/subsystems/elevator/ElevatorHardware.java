@@ -56,7 +56,7 @@ public class ElevatorHardware implements ElevatorIO {
 
         elevatorRightMotorFollower = new SparkFlex(ElevatorHardwareConstants.RIGHT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
         elevatorLeftMotorLeader = new SparkFlex(ElevatorHardwareConstants.LEFT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
-        
+
         leftClosedLoopController = elevatorLeftMotorLeader.getClosedLoopController();
 
         //rightEncoder = elevatorRightMotorFollower.getEncoder();
@@ -87,7 +87,7 @@ public class ElevatorHardware implements ElevatorIO {
             .apply(globalMotorConfig)
             .inverted(false)
             .idleMode(IdleMode.kBrake)
-            .smartCurrentLimit(50);
+            .smartCurrentLimit(80);
 
         rightMotorConfigFollower
             .follow(ElevatorHardwareConstants.LEFT_ELEVATOR_MOTOR_ID, true)
