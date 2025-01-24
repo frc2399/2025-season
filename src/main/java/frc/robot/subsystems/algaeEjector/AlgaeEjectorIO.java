@@ -6,8 +6,10 @@ public interface AlgaeEjectorIO {
         public double velocity = 0.0;
         public double leftCurrent = 0.0;
         public double rightCurrent = 0.0;
+        public double wristCurrent = 0.0;
         public double leftAppliedVoltage = 0.0;
         public double rightAppliedVoltage = 0.0;
+        public double wristAppliedVoltage = 0.0;
     }
 
     public void setSpeed(double speed);

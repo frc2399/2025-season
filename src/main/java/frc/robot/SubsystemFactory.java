@@ -63,7 +63,7 @@ public class SubsystemFactory {
     public AlgaeEjectorSubsystem buildAlgaeEjector() {
         if (!isSim) {
             return new AlgaeEjectorSubsystem(new AlgaeEjectorHardware(MotorIdConstants.ALGAE_EJECTOR_LEFT_CAN_ID,
-                    MotorIdConstants.ALGAE_EJECTOR_RIGHT_CAN_ID));
+                    MotorIdConstants.ALGAE_EJECTOR_RIGHT_CAN_ID, MotorIdConstants.ALGAE_WRIST_CAN_ID));
         } else {
             return new AlgaeEjectorSubsystem(new AlgaeEjectorPlacebo());
         }

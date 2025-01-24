@@ -25,6 +25,7 @@ public final class Constants {
 
     public static final int ALGAE_EJECTOR_LEFT_CAN_ID = 0;
     public static final int ALGAE_EJECTOR_RIGHT_CAN_ID = 1;
+    public static final int ALGAE_WRIST_CAN_ID = 2;
   }
 
   public static class SensorIdConstants {

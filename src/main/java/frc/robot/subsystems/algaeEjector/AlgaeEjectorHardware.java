@@ -1,5 +1,6 @@
 package frc.robot.subsystems.algaeEjector;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -24,15 +25,19 @@ public class AlgaeEjectorHardware implements AlgaeEjectorIO {
 
         private final SparkMax algaeEjectorLeftSparkMax;
         private final SparkMax algaeEjectorRightSparkMax;
+        private final SparkMax algaeWristSparkMax;
 
         private final SparkClosedLoopController algaeEjectorLeftClosedLoopController;
         private final SparkClosedLoopController algaeEjectorRightClosedLoopController;
+        private final SparkClosedLoopController algaeWristClosedLoopController;
 
         private final RelativeEncoder algaeEjectorLeftEncoder;
         private final RelativeEncoder algaeEjectorRightEncoder;
+        private final AbsoluteEncoder algaeWristAbsoluteEncoder;
 
-        private static final SparkMaxConfig LEFT_SPARK_MAX_CONFIG = new SparkMaxConfig();
-        private static final SparkMaxConfig RIGHT_SPARK_MAX_CONFIG = new SparkMaxConfig();
+        private static final SparkMaxConfig leftSparkMaxConfig = new SparkMaxConfig();
+        private static final SparkMaxConfig rightSparkMaxConfig = new SparkMaxConfig();
+        private static final SparkMaxConfig wristSparkMaxConfig = new SparkMaxConfig();
         private static final boolean ENCODER_INVERTED = true;
         private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
         private static final double ENCODER_POSITION_FACTOR = (2 * Math.PI); // radians
@@ -45,40 +50,54 @@ public class AlgaeEjectorHardware implements AlgaeEjectorIO {
         private static final double MIN_OUTPUT = -1;
         private static final double MAX_OUTPUT = 1;
 
-        public static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(0.1);
+        private static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(0.1);
 
-        public AlgaeEjectorHardware(int ALGAE_EJECTOR_LEFT_CAN_ID, int ALGAE_EJECTOR_RIGHT_CAN_ID) {
+        public AlgaeEjectorHardware(int ALGAE_EJECTOR_LEFT_CAN_ID, int ALGAE_EJECTOR_RIGHT_CAN_ID,
+                        int ALGAE_WRIST_CAN_ID) {
 
-                LEFT_SPARK_MAX_CONFIG.inverted(ENCODER_INVERTED).idleMode(IDLE_MODE)
+                leftSparkMaxConfig.inverted(ENCODER_INVERTED).idleMode(IDLE_MODE)
                                 .smartCurrentLimit(MotorConstants.NEO550_CURRENT_LIMIT);
-                LEFT_SPARK_MAX_CONFIG.encoder.positionConversionFactor(ENCODER_POSITION_FACTOR)
+                leftSparkMaxConfig.encoder.positionConversionFactor(ENCODER_POSITION_FACTOR)
                                 .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
-                LEFT_SPARK_MAX_CONFIG.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                leftSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                                 .pidf(P, I, D, FF)
                                 .outputRange(MIN_OUTPUT, MAX_OUTPUT);
 
-                RIGHT_SPARK_MAX_CONFIG.inverted(ENCODER_INVERTED).idleMode(IDLE_MODE)
+                rightSparkMaxConfig.inverted(ENCODER_INVERTED).idleMode(IDLE_MODE)
                                 .smartCurrentLimit(MotorConstants.NEO550_CURRENT_LIMIT);
-                LEFT_SPARK_MAX_CONFIG.encoder.positionConversionFactor(ENCODER_POSITION_FACTOR)
+                rightSparkMaxConfig.encoder.positionConversionFactor(ENCODER_POSITION_FACTOR)
                                 .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
-                LEFT_SPARK_MAX_CONFIG.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                rightSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                                 .pidf(P, I, D, FF)
+                                .outputRange(MIN_OUTPUT, MAX_OUTPUT);
+
+                wristSparkMaxConfig.inverted(ENCODER_INVERTED).idleMode(IDLE_MODE)
+                                .smartCurrentLimit(MotorConstants.NEO550_CURRENT_LIMIT);
+                wristSparkMaxConfig.encoder.positionConversionFactor(ENCODER_POSITION_FACTOR)
+                                .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
+                wristSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder).pidf(P, I, D, FF)
                                 .outputRange(MIN_OUTPUT, MAX_OUTPUT);
 
                 algaeEjectorLeftSparkMax = new SparkMax(ALGAE_EJECTOR_LEFT_CAN_ID, MotorType.kBrushless);
                 algaeEjectorRightSparkMax = new SparkMax(ALGAE_EJECTOR_RIGHT_CAN_ID, MotorType.kBrushless);
+                algaeWristSparkMax = new SparkMax(ALGAE_WRIST_CAN_ID, MotorType.kBrushless);
 
                 algaeEjectorLeftEncoder = algaeEjectorLeftSparkMax.getEncoder();
                 algaeEjectorRightEncoder = algaeEjectorRightSparkMax.getEncoder();
+                algaeWristAbsoluteEncoder = algaeWristSparkMax.getAbsoluteEncoder();
 
-                algaeEjectorLeftSparkMax.configure(LEFT_SPARK_MAX_CONFIG, ResetMode.kResetSafeParameters,
+                algaeEjectorLeftSparkMax.configure(leftSparkMaxConfig, ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);
 
-                algaeEjectorRightSparkMax.configure(RIGHT_SPARK_MAX_CONFIG, ResetMode.kResetSafeParameters,
+                algaeEjectorRightSparkMax.configure(rightSparkMaxConfig, ResetMode.kResetSafeParameters,
+                                PersistMode.kPersistParameters);
+
+                algaeWristSparkMax.configure(wristSparkMaxConfig, ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);
 
                 algaeEjectorLeftClosedLoopController = algaeEjectorLeftSparkMax.getClosedLoopController();
                 algaeEjectorRightClosedLoopController = algaeEjectorRightSparkMax.getClosedLoopController();
+                algaeWristClosedLoopController = algaeWristSparkMax.getClosedLoopController();
 
         }
 
@@ -88,6 +107,9 @@ public class AlgaeEjectorHardware implements AlgaeEjectorIO {
                                 speed * SpeedConstants.ALGAE_EJECTOR_MAX_SPEED_MPS.in(MetersPerSecond),
                                 ControlType.kVelocity);
                 algaeEjectorRightClosedLoopController.setReference(
+                                speed * SpeedConstants.ALGAE_EJECTOR_MAX_SPEED_MPS.in(MetersPerSecond),
+                                ControlType.kVelocity);
+                algaeWristClosedLoopController.setReference(
                                 speed * SpeedConstants.ALGAE_EJECTOR_MAX_SPEED_MPS.in(MetersPerSecond),
                                 ControlType.kVelocity);
         }
@@ -109,9 +131,11 @@ public class AlgaeEjectorHardware implements AlgaeEjectorIO {
                                 * algaeEjectorLeftSparkMax.getBusVoltage();
                 states.rightAppliedVoltage = algaeEjectorRightSparkMax.getAppliedOutput()
                                 * algaeEjectorRightSparkMax.getBusVoltage();
+                states.wristAppliedVoltage = algaeWristSparkMax.getAppliedOutput() * algaeWristSparkMax.getBusVoltage();
 
                 states.leftCurrent = algaeEjectorLeftSparkMax.getOutputCurrent();
                 states.rightCurrent = algaeEjectorRightSparkMax.getOutputCurrent();
+                states.wristCurrent = algaeWristSparkMax.getOutputCurrent();
         }
 
 }

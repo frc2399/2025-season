@@ -25,7 +25,10 @@ public class AlgaeEjectorSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("AlgaeEjector/velocity", states.velocity);
         SmartDashboard.putNumber("AlgaeEjector/leftCurrent", states.leftCurrent);
         SmartDashboard.putNumber("AlgaeEjector/rightCurrent", states.rightCurrent);
+        SmartDashboard.putNumber("AlgaeEjector.wristCurrent", states.wristCurrent);
         SmartDashboard.putNumber("AlgaeEjector/leftAppliedVoltage", states.leftAppliedVoltage);
         SmartDashboard.putNumber("AlgaeEjector/rightAppliedVoltage", states.rightAppliedVoltage);
+        SmartDashboard.putNumber("algaeEjector/wristAppliedVoltage", states.wristAppliedVoltage);
     }
+
 }
