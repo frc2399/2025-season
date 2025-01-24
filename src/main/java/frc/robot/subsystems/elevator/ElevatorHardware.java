@@ -88,12 +88,12 @@ public class ElevatorHardware implements ElevatorIO {
             .apply(globalMotorConfig)
             .inverted(false)
             .idleMode(IdleMode.kBrake)
-            .smartCurrentLimit(MotorConstants.NEO_CURRENT_LIMIT_ELEVATOR);
+            .smartCurrentLimit(MotorConstants.NEO_VORTEX_CURRENT_LIMIT);
 
         rightMotorConfigFollower
             .follow(ElevatorHardwareConstants.LEFT_ELEVATOR_MOTOR_ID, true)
             .apply(globalMotorConfig)
-            .smartCurrentLimit(MotorConstants.NEO_CURRENT_LIMIT_ELEVATOR);
+            .smartCurrentLimit(MotorConstants.NEO_VORTEX_CURRENT_LIMIT);
 
         elevatorLeftMotorLeader.configure(leftMotorConfigLeader, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         elevatorRightMotorFollower.configure(rightMotorConfigFollower, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
