@@ -28,10 +28,10 @@ public class GyroHardware implements GyroIO {
         Optional<Alliance> ally = DriverStation.getAlliance();
     
         if (ally.get() == Alliance.Red) {
-            this.setYaw(Math.toRadians(180.0)); 
+            this.setYaw(Math.toRadians(0)); 
             System.out.println("set red +");
         } else if (ally.get() == Alliance.Blue) {
-            this.setYaw(0.0); 
+            this.setYaw(180.0); 
             System.out.println("set blue");
         } else {
             this.setYaw(0.0); 
