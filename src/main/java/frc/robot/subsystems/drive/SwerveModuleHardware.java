@@ -16,8 +16,8 @@ import frc.robot.Constants.MotorConstants;
 
 public class SwerveModuleHardware implements SwerveModuleIO {
 
-    private final SparkMax drivingSparkMax;
-    private final SparkMax turningSparkMax;
+    private SparkMax drivingSparkMax;
+    private SparkMax turningSparkMax;
 
     private final RelativeEncoder drivingRelativeEncoder;
     private final SparkAbsoluteEncoder turningAbsoluteEncoder;
@@ -87,6 +87,9 @@ public class SwerveModuleHardware implements SwerveModuleIO {
         this.chassisAngularOffset = chassisAngularOffset;
         this.name = name;
 
+        drivingSparkMax = new SparkMax(drivingCanId, MotorType.kBrushless);
+        turningSparkMax = new SparkMax(turningCanId, MotorType.kBrushless);
+
         SPARK_MAX_CONFIG_DRIVING.inverted(DRIVING_ENCODER_INVERTED).idleMode(DRIVING_MOTOR_IDLE_MODE)
                 .smartCurrentLimit(MotorConstants.NEO_CURRENT_LIMIT)
                 .voltageCompensation(VOLTAGE_COMPENSATION);
@@ -114,16 +117,15 @@ public class SwerveModuleHardware implements SwerveModuleIO {
         turningSparkMax = new SparkMax(turningCanId, MotorType.kBrushless);
 
         drivingSparkMax.configure(SPARK_MAX_CONFIG_DRIVING, ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+                PersistMode.kNoPersistParameters);
         turningSparkMax.configure(SPARK_MAX_CONFIG_TURNING, ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+                PersistMode.kNoPersistParameters);
 
         drivingRelativeEncoder = drivingSparkMax.getEncoder();
         turningAbsoluteEncoder = turningSparkMax.getAbsoluteEncoder();
 
         drivingPidController = drivingSparkMax.getClosedLoopController();
         turningPidController = turningSparkMax.getClosedLoopController();
-
     }
 
     public void setDriveEncoderPosition(double position) {

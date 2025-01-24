@@ -6,6 +6,7 @@ package frc.robot.subsystems.drive;
 
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.Debouncer;
@@ -17,6 +18,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
@@ -31,14 +34,12 @@ import frc.robot.Constants;
 import frc.robot.Constants.SpeedConstants;
 import frc.robot.Robot;
 import frc.robot.subsystems.gyro.Gyro;
+import frc.robot.vision.VisionPoseEstimator.DriveBase;
 
-public class DriveSubsystem extends SubsystemBase {
+public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
-        private double MAX_VISION_UPDATE_SPEED_MPS = 0.5 * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS;
         private double velocityXMPS;
         private double velocityYMPS;
-        private double velocityMPS;
-        public Pose2d robotPose;
 
         // correction PID
         private double DRIVE_P = 1.1;
@@ -142,12 +143,8 @@ public class DriveSubsystem extends SubsystemBase {
                                 });
 
                 Pose2d pose = getPose();
-
-                velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
-                velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
-                velocityMPS = Math.sqrt((Math.pow(velocityXMPS, 2) + Math.pow(velocityYMPS, 2)));
-
-                robotPose = poseEstimator.getEstimatedPosition();
+                SmartDashboard.putNumber("Swerve/vision/x", pose.getX());
+                SmartDashboard.putNumber("Swerve/vision/y", pose.getY());
 
                 SmartDashboard.putNumber("robot pose theta", pose.getRotation().getDegrees());
                 field2d.setRobotPose(pose);
@@ -268,12 +265,14 @@ public class DriveSubsystem extends SubsystemBase {
          * Sets the wheels into an X formation to prevent movement.
          */
         public Command setX() {
-                return this.run( () -> Commands.parallel( 
-                        Commands.run (() -> frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)))),
-                        Commands.run (() -> frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)))),
-                        Commands.run (() -> rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)))),
-                        Commands.run (() -> rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45))))));
-        }
+                return this.run(() -> {
+                        frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+                        frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+                        rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+                        rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+              });
+      }
+
 
         public ChassisSpeeds getRobotRelativeSpeeds() {
                 return DRIVE_KINEMATICS.toChassisSpeeds(frontLeft.getState(), frontRight.getState(),
@@ -322,5 +321,28 @@ public class DriveSubsystem extends SubsystemBase {
                         desiredAngle = currentAngle;
                 }
                 return newRotRate;
+        }
+
+        @Override
+        public Rotation2d getYaw() {
+                return new Rotation2d(gyro.getYaw());
+        }
+
+        @Override
+        public Rotation2d getYawPerSecond() {
+                return new Rotation2d(gyro.getAngularVelocity().getValueAsDouble());
+        }
+
+        @Override
+        public double getLinearSpeed() {
+                velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
+                velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
+                return Math.sqrt((Math.pow(velocityXMPS, 2) + Math.pow(velocityYMPS, 2)));
+        }
+
+        @Override
+        public void addVisionMeasurement(Pose2d pose, double timestampSeconds,
+                        Matrix<N3, N1> visionMeasurementStdDevs) {
+                poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
         }
 }
