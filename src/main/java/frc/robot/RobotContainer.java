@@ -30,7 +30,6 @@ public class RobotContainer {
       DriveControlConstants.OPERATOR_CONTROLLER_PORT);
 
   public RobotContainer() {
-    elevator.setPosition(0);
     configureDefaultCommands();
     configureButtonBindingsDriver();
     configureButtonBindingsOperator();

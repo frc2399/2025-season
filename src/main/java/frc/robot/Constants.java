@@ -45,7 +45,10 @@ public final class Constants {
   }
 
   public static class SetpointConstants {
-    public static Distance L_ONE_HEIGHT = Centimeters.of(11); //46cm is height of L1
+    public static Distance L_ONE_HEIGHT = Centimeters.of(46); 
+    public static Distance L_TWO_HEIGHT = Centimeters.of(81);
+    public static Distance L_THREE_HEIGHT = Centimeters.of(121);
+    public static Distance L_FOUR_HEIGHT = Centimeters.of(183);
   }
 
   public static class DriveControlConstants {
