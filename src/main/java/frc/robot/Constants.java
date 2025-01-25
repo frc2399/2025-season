@@ -18,6 +18,10 @@ public final class Constants {
     public static final int REAR_RIGHT_TURNING_CAN_ID = 42;
 
     public static final int GYRO_CAN_ID = 3;
+
+    public static final int CORAL_INTAKE_LEFT_CAN_ID = 3; 
+    public static final int CORAL_INTAKE_RIGHT_CAN_ID = 4; 
+    public static final int CORAL_INTAKE_WRIST_CAN_ID = 5; 
   }
   
   public static class SensorIdConstants {
@@ -31,11 +35,12 @@ public final class Constants {
     public static final double NEO_FREE_SPEED_RPS = NEO_FREE_SPEED_RPM / 60;
     // MPS = (GearRatio * 2πr * RPM) / 60
     public static final int NEO550_FREE_SPEED_RPM = 11000;
+
+    public static final int VORTEX_CURRENT_LIMIT = 80; 
   }
 
   public static class SpeedConstants {
     public static final double MAIN_LOOP_FREQUENCY_HZ = 50;
-
     public static final double DRIVETRAIN_MAX_SPEED_MPS = 4.8;
     public static final double DRIVETRAIN_MAX_ANGULAR_SPEED_RPS = 2 * Math.PI;
   }
