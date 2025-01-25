@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+
+import edu.wpi.first.units.measure.Angle;
+
 public final class Constants {
 
   public static class MotorIdConstants{
@@ -46,7 +50,8 @@ public final class Constants {
   }
 
   public static class SetpointConstants {
-
+    public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(45);
+    public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-45);
   }
 
   public static class DriveControlConstants {

@@ -1,6 +1,9 @@
 package frc.robot;
 
 import frc.robot.Constants.MotorIdConstants;
+import frc.robot.subsystems.coralIntake.CoralIntakeHardware;
+import frc.robot.subsystems.coralIntake.CoralIntakePlacebo;
+import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.SwerveModule;
 import frc.robot.subsystems.drive.SwerveModuleHardware;
@@ -54,6 +57,14 @@ public class SubsystemFactory {
             return new Gyro(new GyroHardware());
         } else {
             return new Gyro(new GyroPlacebo());
+        }
+    }
+
+    public CoralIntakeSubsystem buildCoralIntake() {
+        if (!isSim) {
+            return new CoralIntakeSubsystem(new CoralIntakeHardware());
+        } else {
+            return new CoralIntakeSubsystem(new CoralIntakePlacebo());
         }
     }
 }

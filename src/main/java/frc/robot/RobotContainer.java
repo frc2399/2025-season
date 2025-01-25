@@ -8,6 +8,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveControlConstants;
+import frc.robot.Constants.SetpointConstants;
+import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.vision.*;
@@ -17,15 +19,20 @@ public class RobotContainer {
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
   private Gyro gyro = subsystemFactory.buildGyro();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
-  //this is public because we need to run the visionPoseEstimator periodic from Robot
+  private final CoralIntakeSubsystem coralIntake = subsystemFactory.buildCoralIntake();
+  // this is public because we need to run the visionPoseEstimator periodic from
+  // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
+  private static final CommandXboxController operatorController = new CommandXboxController(
+      DriveControlConstants.OPERATOR_CONTROLLER_PORT);
 
   public RobotContainer() {
     configureDefaultCommands();
     configureButtonBindingsDriver();
+    configureButtonBindingsOperator();
   }
 
   public void configureDefaultCommands() {
@@ -45,10 +52,16 @@ public class RobotContainer {
                     DriveControlConstants.DRIVE_DEADBAND)),
                 DriveControlConstants.FIELD_ORIENTED_DRIVE),
             drive).withName("drive default"));
+    coralIntake.setDefaultCommand(coralIntake.setGravityCompensation());
   }
- 
+
   private void configureButtonBindingsDriver() {
     driverController.b().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
+  }
+
+  private void configureButtonBindingsOperator() {
+    operatorController.y().onTrue(coralIntake.goToSetpoint(SetpointConstants.CORAL_INTAKE_ANGLE));
+    operatorController.a().onTrue(coralIntake.goToSetpoint(SetpointConstants.CORAL_OUTTAKE_ANGLE));
   }
 }
