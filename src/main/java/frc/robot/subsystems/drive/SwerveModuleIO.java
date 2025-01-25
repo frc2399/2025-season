@@ -1,8 +1,10 @@
 package frc.robot.subsystems.drive;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public interface SwerveModuleIO {
-   
-    public static class SwerveModuleIOStates{
+
+    public static class SwerveModuleIOStates {
 
         public double driveVoltage = 0.0;
         public double turnVoltage = 0.0;
@@ -13,12 +15,14 @@ public interface SwerveModuleIO {
         public double speed = 0.0;
         public double driveCurrent = 0.0;
         public double turnCurrent = 0.0;
+        public Rotation2d yaw = new Rotation2d();
+        public Rotation2d yawPerSec = new Rotation2d();
+        public double encoderPos = 0.0;
 
         
-
+        
 
     }
-
 
     public void setDriveEncoderPosition(double position);
 
@@ -39,14 +43,17 @@ public interface SwerveModuleIO {
     public double getTurnBusVoltage();
 
     public double getTurnOutput();
+
     public double getDriveCurrent();
+
     public double getTurnCurrent();
 
+     public double getYaw();
+
+    public static void updateStates(SwerveModuleIOStates states) {
+        
+    }
+
     public double getChassisAngularOffset();
-
-    
-
-
-
 
 }

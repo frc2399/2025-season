@@ -111,14 +111,12 @@ public class SwerveModule {
     }
 
     
-    public void updateStates(SwerveModuleIOStates states){
-        states.driveVoltage = io.getDriveBusVoltage()* io.getDriveOutput();
-        states.turnVoltage = io.getTurnBusVoltage()* io.getTurnOutput();
-        states.driveCurrent = io.getDriveCurrent();
-        states.turnCurrent = io.getTurnCurrent();
-        states.drivingVelocity = io.getDriveEncoderSpeedMPS();
-        states.desiredDrivingVelocity = desiredState.speedMetersPerSecond;
-        
-
+    public void updateStates(SwerveModuleIOStates moduleStates){
+        moduleStates.driveVoltage = io.getDriveBusVoltage()* io.getDriveOutput();
+        moduleStates.turnVoltage = io.getTurnBusVoltage()* io.getTurnOutput();
+        moduleStates.driveCurrent = io.getDriveCurrent();
+        moduleStates.turnCurrent = io.getTurnCurrent();
+        moduleStates.drivingVelocity = io.getDriveEncoderSpeedMPS();
+        moduleStates.desiredDrivingVelocity = desiredState.speedMetersPerSecond;
     }
 }
