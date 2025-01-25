@@ -10,8 +10,12 @@ public interface ElevatorIO {
         public double positionSetPoint = 0.0;
     }
 
+    public void disableElevator();
     public void setSpeed(double speed);
-    public void setPosition(double position);
+    public void setPositionPID(double position);
+    public void setPositionMotionProfiling(double position);
+    public void calculateNextSetpoint();
+    public void setSetpointState(double state);
     public void setEncoderPosition(double position);
     public double getVelocity();
     public double getPosition();

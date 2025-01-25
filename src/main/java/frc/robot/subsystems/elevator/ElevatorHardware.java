@@ -24,6 +24,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.Constants.MotorConstants;
+import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorConstants;
 
 public class ElevatorHardware implements ElevatorIO {
 
@@ -50,9 +51,9 @@ public class ElevatorHardware implements ElevatorIO {
     private SparkFlexConfig globalMotorConfig, rightMotorConfigFollower, leftMotorConfigLeader;
     private SparkClosedLoopController leftClosedLoopController;
     private RelativeEncoder rightEncoder, leftEncoder;
-    private double position;
     private TrapezoidProfile elevatorMotionProfile;
-    private State currentState = new State();
+    private double position;
+    public State setpointState = new State();
     private State goalState = new State();
     
     public ElevatorHardware() {
@@ -108,19 +109,40 @@ public class ElevatorHardware implements ElevatorIO {
     }
 
     @Override
+    public void disableElevator() {
+        elevatorLeftMotorLeader.set(0);
+    }
+
+    @Override
     public void setSpeed(double speed) {
         leftClosedLoopController.setReference(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot1);
         //leftClosedLoopController.setReference(speed, SparkBase.ControlType.kMAXMotionVelocityControl);
     }
 
     @Override
-    public void setPosition(double position) {
-        goalState.position = position;
-        currentState = elevatorMotionProfile.calculate(ElevatorHardwareConstants.kDt, currentState, goalState);
+    public void setPositionPID(double position) {
         leftClosedLoopController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         //leftClosedLoopController.setReference(position, SparkBase.ControlType.kMAXMotionPositionControl);
         
         this.position = position;
+    }
+
+    @Override
+    public void setPositionMotionProfiling(double position) {
+        
+    }
+
+    @Override
+    public void setSetpointState(double state) {
+        setpointState.position = state;
+        setpointState.velocity = state;
+    }
+
+    @Override
+    public void calculateNextSetpoint() {
+        goalState.position = position;
+        setpointState = elevatorMotionProfile.calculate(ElevatorHardwareConstants.kDt, setpointState, goalState);
+        leftClosedLoopController.setReference(setpointState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
 
     @Override

@@ -16,21 +16,20 @@ import frc.robot.vision.*;
 import static edu.wpi.first.units.Units.*;
 
 public class RobotContainer {
-  private CommandFactory commandFactory = new CommandFactory();
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
   private Gyro gyro = subsystemFactory.buildGyro();
   private final ElevatorSubsystem elevator = subsystemFactory.buildElevator();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
   //this is public because we need to run the visionPoseEstimator periodic from Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
+  private CommandFactory commandFactory = new CommandFactory(elevator);
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
-  private final CommandXboxController operatorController = new CommandXboxController(
+  private static final CommandXboxController operatorController = new CommandXboxController(
       DriveControlConstants.OPERATOR_CONTROLLER_PORT);
 
   public RobotContainer() {
-    elevator.setPosition(0);
     configureDefaultCommands();
     configureButtonBindingsDriver();
     configureButtonBindingsOperator();
@@ -63,7 +62,9 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsOperator() {
-    operatorController.y().whileTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
+    operatorController.y().whileTrue(elevator.goToSetPointCommandPID(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
+    operatorController.a().whileTrue(elevator.goToSetPointCommandMotionProfling(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
+
     operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
   }
 }
