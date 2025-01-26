@@ -17,12 +17,16 @@ public class ElevatorSubsystem extends SubsystemBase{
         elevatorIO.setEncoderPosition(0);
     }
 
-    public void setPosition(double position) {
-        elevatorIO.setEncoderPosition(position);
+    public Command disableElevator() {
+        return this.run(() ->elevatorIO.disableElevator());
+    }
+
+    public Command setPosition(double position) {
+        return this.run(() -> elevatorIO.setEncoderPosition(position));
     }
 
     public Command goToSetPointCommand(double position) {
-        return this.startEnd(() -> elevatorIO.setPosition(position), () -> elevatorIO.setPosition(0));
+        return this.startEnd(() -> elevatorIO.setCurrentPosition(position), () -> elevatorIO.setCurrentPosition(0));
     }
 
     public Command setSpeedCommand(double speed) {
@@ -41,6 +45,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Elevator/appliedVoltageRight", inputs.appliedVoltageRight);
         SmartDashboard.putNumber("Elevator/appliedVoltageLeft", inputs.appliedVoltageLeft);
         SmartDashboard.putNumber("Elevator/positionSetPoint", inputs.positionSetPoint);
+        SmartDashboard.putNumber("Elevator/output current", inputs.current);
     }
 
 }

@@ -19,7 +19,7 @@ public class RobotContainer {
   private CommandFactory commandFactory = new CommandFactory();
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
   private Gyro gyro = subsystemFactory.buildGyro();
-  private final ElevatorSubsystem elevator = subsystemFactory.buildElevator();
+  public final ElevatorSubsystem elevator = subsystemFactory.buildElevator();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
   //this is public because we need to run the visionPoseEstimator periodic from Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
@@ -62,7 +62,9 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsOperator() {
-    operatorController.y().whileTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
+    operatorController.y().onTrue(elevator.goToSetPointCommand(SetpointConstants.MIDDLE.in(Meters)));
     operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
+    operatorController.a().whileTrue(elevator.setPercentOutputCommand(-0.1));
+    operatorController.x().onTrue(elevator.setPosition(0.01));
   }
 }

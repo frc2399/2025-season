@@ -8,13 +8,15 @@ public interface ElevatorIO {
         public double appliedVoltageRight = 0.0;
         public double appliedVoltageLeft = 0.0;
         public double positionSetPoint = 0.0;
+        public double current = 0.0;
     }
 
+    public void disableElevator();
     public void setSpeed(double speed);
-    public void setPosition(double position);
+    public void setCurrentPosition(double position);
     public void setEncoderPosition(double position);
     public double getVelocity();
-    public double getPosition();
+    public double getCurrentPosition();
     public void setPercentOutput(double percentOutput);
     public void updateStates(ElevatorIOInputs inputs);
 }

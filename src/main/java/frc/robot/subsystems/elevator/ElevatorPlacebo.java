@@ -3,10 +3,13 @@ package frc.robot.subsystems.elevator;
 public class ElevatorPlacebo implements ElevatorIO {
     
     @Override
+    public void disableElevator() {}
+
+    @Override
     public void setSpeed(double speed) {}
 
     @Override
-    public void setPosition(double position) {}
+    public void setCurrentPosition(double position) {}
 
     @Override
     public void setEncoderPosition(double position) {}
@@ -17,7 +20,7 @@ public class ElevatorPlacebo implements ElevatorIO {
     }
 
     @Override
-    public double getPosition() {
+    public double getCurrentPosition() {
         return 0.0;
     }
 

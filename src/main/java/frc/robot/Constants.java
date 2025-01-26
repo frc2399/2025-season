@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.units.measure.Distance;
 import static edu.wpi.first.units.Units.Centimeters;
+import static edu.wpi.first.units.Units.Inches;
 
 public final class Constants {
 
@@ -21,6 +22,9 @@ public final class Constants {
     public static final int REAR_RIGHT_TURNING_CAN_ID = 42;
 
     public static final int GYRO_CAN_ID = 3;
+
+    public static final int LEFT_ELEVATOR_MOTOR_ID = 17;
+    public static final int RIGHT_ELEVATOR_MOTOR_ID = 15;
   }
   
   public static class SensorIdConstants {
@@ -49,6 +53,7 @@ public final class Constants {
     public static Distance L_TWO_HEIGHT = Centimeters.of(81);
     public static Distance L_THREE_HEIGHT = Centimeters.of(121);
     public static Distance L_FOUR_HEIGHT = Centimeters.of(183);
+    public static Distance MIDDLE = Inches.of(16.0); 
   }
 
   public static class DriveControlConstants {
