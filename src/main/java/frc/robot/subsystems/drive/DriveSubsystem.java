@@ -313,41 +313,96 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         }
 
         public static class DriveSubsystemStates {
-                public SwerveModuleIOStates frontleftStates = new SwerveModuleIOStates();
+                public SwerveModuleIOStates frontLeftStates = new SwerveModuleIOStates();
                 public SwerveModuleIOStates rearLeftStates = new SwerveModuleIOStates();
                 public SwerveModuleIOStates frontRightStates = new SwerveModuleIOStates();
                 public SwerveModuleIOStates rearRightStates = new SwerveModuleIOStates();
                 public ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
-                public Rotation2d lastAngle = new Rotation2d();
                 public Pose2d pose = new Pose2d();
                 public double poseY;
                 public double poseX;
                 public double poseTheta;
                 public double linearSpeed;
+                public double velocityXMPS;
+                public double velocityYMPS;
+
                 public double swerveVelocity;
 
+            }
 
+            private DriveSubsystemStates states = new DriveSubsystemStates();
 
+            private void logSwerveModuleStates(String moduleName, SwerveModuleIOStates moduleStates) {
+                SmartDashboard.putNumber(moduleName + "desired angle", moduleStates.desiredAngle);
+                SmartDashboard.putNumber(moduleName + "desired drive velocity", moduleStates.desiredDrivingVelocity);
+                SmartDashboard.putNumber(moduleName + "drive current", moduleStates.driveCurrent);
+                SmartDashboard.putNumber(moduleName + "drive voltage", moduleStates.driveVoltage);
+                SmartDashboard.putNumber(moduleName + "drive velocity", moduleStates.drivingVelocity);
+                SmartDashboard.putNumber(moduleName + "encoder position", moduleStates.encoderPos);
+                SmartDashboard.putNumber(moduleName + "speed", moduleStates.speed);
+                SmartDashboard.putNumber(moduleName + "turn current", moduleStates.turnCurrent);
+                SmartDashboard.putNumber(moduleName + "turn voltage", moduleStates.turnVoltage);
+                SmartDashboard.putNumber(moduleName + "turn position", moduleStates.turningPosition);
+                
             }
         
-
+            private void logAndUpdateRobotStates() {
+                states.velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
+                states.velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
+                double velocityXMPS;
+                double velocityYMPS;
+                states.linearSpeed =  Math.sqrt((Math.pow(velocityXMPS, 2) + Math.pow(velocityYMPS, 2)));
+                states.swerveVelocity = 
+                states.poseX = 
+                states.pose
         
-        public doub getLoggingStates{
 
-                SmartDashboard.putNumber("Swerve/vision/x", pose.getX());
-                SmartDashboard.putNumber("Swerve/vision/y", pose.getY());
-                SmartDashboard.putNumber("Drive/driveVoltage", states.driveVoltage);
-                SmartDashboard.putNumber("Drive/turnVoltage", states.turnVoltage);
-                SmartDashboard.putNumber("Drive/driveVelocity", states.drivingVelocity);
-                SmartDashboard.putNumber("Drive/desiredDriveVelocity", states.desiredDrivingVelocity);
-                SmartDashboard.putNumber("Drive/turningPosition", states.turningPosition);
-                SmartDashboard.putNumber("Drive/desiredAngle", states.desiredAngle);
-                SmartDashboard.putNumber("Drive/speed", states.speed);
-                SmartDashboard.putNumber("Drive/driveCurrent", states.driveCurrent);
-                SmartDashboard.putNumber("Drive/turnCurrent", states.turnCurrent);
-                SwerveModuleIO.updateStates(states);
+                SmartDashboard.putNumber("Linear Speed", states.linearSpeed);
+                SmartDashboard.putNumber("Swerve Velocity", states.swerveVelocity);
+                SmartDashboard.putNumber("Pose X", states.pose.getX());
+                SmartDashboard.putNumber("Pose Y", states.pose.getY());
+                SmartDashboard.putNumber("Pose Theta(radians)", states.pose.getRotation().getRadians());
+                SmartDashboard.putNumber("Robot Linear Velocity X", states.relativeRobotSpeeds.vxMetersPerSecond);
+                SmartDashboard.putNumber("Robot Linear Velocity Y", states.relativeRobotSpeeds.vyMetersPerSecond);
+                SmartDashboard.putNumber("Robot Angular Velocity", states.relativeRobotSpeeds.omegaRadiansPerSecond);
+                SmartDashboard.putNumber("Gyro Angle(degrees)", Math.toDegrees(gyro.getYaw()));
+            }
+
+            private void logAllSwerveModuleStates(){
+        
+                logSwerveModuleStates("Front Left", states.frontLeftStates);
+                logSwerveModuleStates("Rear Left", states.rearLeftStates);
+                logSwerveModuleStates("Front Right", states.frontRightStates);
+                logSwerveModuleStates("Rear Right", states.rearRightStates);
+
+            }
+
+
+
+        // SmartDashboard.putNumber("Swerve/vision/x", pose.getX());
+        //         SmartDashboard.putNumber("Swerve/vision/y", pose.getY());
+        //         SmartDashboard.putNumber("Drive/driveVoltage", states.driveVoltage);
+        //         SmartDashboard.putNumber("Drive/turnVoltage", states.turnVoltage);
+        //         SmartDashboard.putNumber("Drive/driveVelocity", states.drivingVelocity);
+        //         SmartDashboard.putNumber("Drive/desiredDriveVelocity", states.desiredDrivingVelocity);
+        //         SmartDashboard.putNumber("Drive/turningPosition", states.turningPosition);
+        //         SmartDashboard.putNumber("Drive/desiredAngle", states.desiredAngle);
+        //         SmartDashboard.putNumber("Drive/speed", states.speed);
+        //         SmartDashboard.putNumber("Drive/driveCurrent", states.driveCurrent);
+        //         SmartDashboard.putNumber("Drive/turnCurrent", states.turnCurrent);
+        //         SwerveModuleIO.updateStates(states);t
+        //         SmartDashboard.putNumber("pose for each swerve module" + frontLeft
                 
 
         }
         
-}
+
+
+        
+        
+        poseX = pose.getX();
+        poseY=pose.getY();
+        poseTheta = pose.getRotation().getDegrees();
+        linearSpeed =  Math.sqrt((Math.pow(velocityXMPS, 2) + Math.pow(velocityYMPS, 2)));
+        swerveVelocy =
+
