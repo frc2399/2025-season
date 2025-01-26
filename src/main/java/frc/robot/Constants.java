@@ -23,9 +23,9 @@ public final class Constants {
 
     public static final int GYRO_CAN_ID = 3;
 
-    public static final int CORAL_INTAKE_TOP_CAN_ID = 3; 
-    public static final int CORAL_INTAKE_BOTTOM_CAN_ID = 4; 
-    public static final int CORAL_INTAKE_WRIST_CAN_ID = 5; 
+    public static final int CORAL_INTAKE_TOP_CAN_ID = 7; 
+    public static final int CORAL_INTAKE_BOTTOM_CAN_ID = 5; 
+    public static final int CORAL_INTAKE_WRIST_CAN_ID = 13; 
   }
   
   public static class SensorIdConstants {
@@ -47,8 +47,9 @@ public final class Constants {
     public static final double MAIN_LOOP_FREQUENCY_HZ = 50;
     public static final double DRIVETRAIN_MAX_SPEED_MPS = 4.8;
     public static final double DRIVETRAIN_MAX_ANGULAR_SPEED_RPS = 2 * Math.PI;
-    public static final double CORAL_INTAKE_SPEED = 0.01;
-    public static final double CORAL_OUTTAKE_SPEED = -0.01;
+    public static final double CORAL_INTAKE_SPEED = 0.75;
+    public static final double CORAL_OUTTAKE_SPEED = -0.25;
+    public static final double WRIST_MAX_SPEED = 0.05;
   }
 
   public static class SetpointConstants {

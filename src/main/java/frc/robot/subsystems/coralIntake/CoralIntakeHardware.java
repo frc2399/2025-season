@@ -50,25 +50,28 @@ public class CoralIntakeHardware implements CoralIntakeIO {
         private static final SparkFlexConfig wristSparkFlexConfig = new SparkFlexConfig();
 
         private static final boolean TOP_MOTOR_INVERTED = false;
-        private static final boolean BOTTOM_MOTOR_INVERTED = false;
-        private static final boolean WRIST_MOTOR_INVERTED = false;
+        private static final boolean BOTTOM_MOTOR_INVERTED = true;
+        private static final boolean WRIST_MOTOR_INVERTED = true;
         private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
-        private static final double ENCODER_POSITION_FACTOR = (2 * Math.PI); // radians
+        private static final double ENCODER_ROLLER_POSITION_FACTOR = (2 * Math.PI); // radians
+        private static final double ENCODER_WRIST_POSITION_FACTOR = 60 * (2 * Math.PI); //radians
         private static final double ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 60.0; // radians per second
 
-        private static final double SIDE_MOTOR_P = 1.0;
+        private static final double SIDE_MOTOR_P = 0.5;
         private static final double SIDE_MOTOR_I = 0.0;
-        private static final double SIDE_MOTOR_D = 0.001;
-        private static final double SIDE_MOTOR_FF = 0.0;
+        private static final double SIDE_MOTOR_D = 0.0;
+        private static final double SIDE_MOTOR_FF = 0.1;
         private static final double SIDE_MOTOR_MIN_OUTPUT = -1.0;
         private static final double SIDE_MOTOR_MAX_OUTPUT = 1.0;
 
-        private static final double WRIST_MOTOR_P = 1.0;
+        private static final double WRIST_MOTOR_P = 0.0;
         private static final double WRIST_MOTOR_I = 0.0;
-        private static final double WRIST_MOTOR_D = 0.001;
+        private static final double WRIST_MOTOR_D = 0.0;
         private static final double WRIST_MOTOR_FF = 0.0;
         private static final double WRIST_MOTOR_MIN_OUTPUT = -1.0;
         private static final double WRIST_MOTOR_MAX_OUTPUT = 1.0;
+
+        private static final boolean POSITION_WRAPPING_ENABLED_SIDE_MOTORS = true;
 
         private static final double GRAIVTY_COMPENSATION = 0.01;
 
@@ -78,16 +81,16 @@ public class CoralIntakeHardware implements CoralIntakeIO {
         public CoralIntakeHardware() {
                 topSparkMaxConfig.inverted(TOP_MOTOR_INVERTED).idleMode(IDLE_MODE)
                                 .smartCurrentLimit(MotorConstants.NEO550_CURRENT_LIMIT);
-                topSparkMaxConfig.encoder.positionConversionFactor(ENCODER_POSITION_FACTOR)
-                                .velocityConversionFactor(ENCODER_POSITION_FACTOR);
+                topSparkMaxConfig.encoder.positionConversionFactor(ENCODER_ROLLER_POSITION_FACTOR)
+                                .velocityConversionFactor(ENCODER_ROLLER_POSITION_FACTOR);
                 topSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                                 .pidf(SIDE_MOTOR_P, SIDE_MOTOR_I, SIDE_MOTOR_D, SIDE_MOTOR_FF)
-                                .outputRange(SIDE_MOTOR_MIN_OUTPUT, SIDE_MOTOR_MAX_OUTPUT);
+                                .outputRange(SIDE_MOTOR_MIN_OUTPUT, SIDE_MOTOR_MAX_OUTPUT)
+                                .positionWrappingEnabled(POSITION_WRAPPING_ENABLED_SIDE_MOTORS);
 
                 bottomSparkMaxConfig.inverted(BOTTOM_MOTOR_INVERTED).idleMode(IDLE_MODE)
-                                .smartCurrentLimit(MotorConstants.NEO550_CURRENT_LIMIT)
-                                .follow(MotorIdConstants.CORAL_INTAKE_TOP_CAN_ID);
-                bottomSparkMaxConfig.encoder.positionConversionFactor(ENCODER_POSITION_FACTOR)
+                                .smartCurrentLimit(MotorConstants.NEO550_CURRENT_LIMIT);
+                bottomSparkMaxConfig.encoder.positionConversionFactor(ENCODER_ROLLER_POSITION_FACTOR)
                                 .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
                 bottomSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                                 .pidf(SIDE_MOTOR_P, SIDE_MOTOR_I, SIDE_MOTOR_D, SIDE_MOTOR_FF)
@@ -95,7 +98,7 @@ public class CoralIntakeHardware implements CoralIntakeIO {
 
                 wristSparkFlexConfig.inverted(WRIST_MOTOR_INVERTED).idleMode(IDLE_MODE)
                                 .smartCurrentLimit(MotorConstants.VORTEX_CURRENT_LIMIT);
-                wristSparkFlexConfig.encoder.positionConversionFactor(ENCODER_POSITION_FACTOR)
+                wristSparkFlexConfig.encoder.positionConversionFactor(ENCODER_WRIST_POSITION_FACTOR)
                                 .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
                 wristSparkFlexConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                                 .pidf(WRIST_MOTOR_P, WRIST_MOTOR_I, WRIST_MOTOR_D, WRIST_MOTOR_FF)
@@ -123,16 +126,18 @@ public class CoralIntakeHardware implements CoralIntakeIO {
                 coralIntakeWristClosedLoopController = coralIntakeWristSparkFlex.getClosedLoopController();
         }
 
-        public void setSpeed(double speed) {
-                coralIntakeTopClosedLoopController.setReference(
-                                speed * CORAL_INTAKE_MAX_VELOCITY.in(MetersPerSecond), ControlType.kVelocity);
-                coralIntakeBottomClosedLoopController.setReference(
-                                speed * CORAL_INTAKE_MAX_VELOCITY.in(MetersPerSecond), ControlType.kVelocity);
+        public void setRollerSpeed(double speed) {
+                coralIntakeBottomSparkMax.set(speed);
+                coralIntakeTopSparkMax.set(speed);
         }
 
         public void goToSetpoint(Angle angle) {
                 coralIntakeWristClosedLoopController.setReference(angle.in(Radians), ControlType.kPosition, 
                 ClosedLoopSlot.kSlot0, coralWristFeedFoward.calculate(angle.in(Radians), ENCODER_VELOCITY_FACTOR));
+        }
+
+        public void setWristSpeed(double speed) {
+                coralIntakeWristSparkFlex.set(speed);
         }
 
         public void setGravityCompensation() {

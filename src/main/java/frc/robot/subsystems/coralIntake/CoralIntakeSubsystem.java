@@ -15,16 +15,23 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         this.io = io;
     }
 
-    public Command setSpeed(double speed) {
-        return this.run(() -> io.setSpeed(speed));
+    public Command setRollerSpeed(double speed) {
+        return this.run(() -> io.setRollerSpeed(speed));
     }
 
     public Command goToSetpoint(Angle angle) {
-        return this.run(() -> io.goToSetpoint(angle));
+        return this.run(() -> {io.goToSetpoint(angle); 
+            io.setRollerSpeed(0);});
     }
 
-    public Command setGravityCompensation() {
-        return this.run(() -> io.setGravityCompensation());
+    public Command setWristSpeed(double speed) {
+        return this.run(() -> {io.setWristSpeed(speed); 
+            io.setRollerSpeed(0);});
+    }
+
+    public Command setSpeeds() {
+        return this.run(() -> {io.setWristSpeed(0);
+                io.setRollerSpeed(0);});
     }
 
     @Override

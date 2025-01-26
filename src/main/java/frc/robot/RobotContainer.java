@@ -53,7 +53,7 @@ public class RobotContainer {
                     DriveControlConstants.DRIVE_DEADBAND)),
                 DriveControlConstants.FIELD_ORIENTED_DRIVE),
             drive).withName("drive default"));
-    coralIntake.setDefaultCommand(coralIntake.setGravityCompensation());
+    coralIntake.setDefaultCommand(coralIntake.setSpeeds());
   }
 
   private void configureButtonBindingsDriver() {
@@ -62,9 +62,9 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsOperator() {
-    operatorController.y().onTrue(coralIntake.goToSetpoint(SetpointConstants.CORAL_INTAKE_ANGLE));
-    operatorController.a().onTrue(coralIntake.goToSetpoint(SetpointConstants.CORAL_OUTTAKE_ANGLE));
-    operatorController.x().onTrue(coralIntake.setSpeed(SpeedConstants.CORAL_INTAKE_SPEED));
-    operatorController.b().onTrue(coralIntake.setSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED));
+    operatorController.y().whileTrue(coralIntake.setWristSpeed(SpeedConstants.WRIST_MAX_SPEED));
+    operatorController.a().whileTrue(coralIntake.setWristSpeed(-SpeedConstants.WRIST_MAX_SPEED));
+    operatorController.x().whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_INTAKE_SPEED));
+    operatorController.b().whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED));
   }
 }

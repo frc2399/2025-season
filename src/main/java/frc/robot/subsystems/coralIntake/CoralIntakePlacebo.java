@@ -3,9 +3,11 @@ package frc.robot.subsystems.coralIntake;
 import edu.wpi.first.units.measure.Angle;
 
 public class CoralIntakePlacebo implements CoralIntakeIO {
-   public void setSpeed(double speed) {
+   public void setRollerSpeed(double speed) {
        speed = 0;
    }
+
+   public void setWristSpeed(double speed) {}
 
    public void setGravityCompensation() {}
 

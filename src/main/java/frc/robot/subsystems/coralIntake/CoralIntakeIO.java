@@ -15,10 +15,11 @@ public interface CoralIntakeIO
        public double wristAppliedVoltage = 0.0;
    }
    
-   public void setSpeed(double speed);
+   public void setRollerSpeed(double speed);
    public void goToSetpoint(Angle angle);
    public double getVelocity();
    public double getCurrent();
    public void updateStates(CoralIntakeIOStates states);
    public void setGravityCompensation();
+   public void setWristSpeed(double speed);
 }
