@@ -65,8 +65,10 @@ public class SwerveModuleHardware implements SwerveModuleIO {
 
     private static final Distance DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_DIAMETER.times(Math.PI))
             .divide(DRIVING_MOTOR_REDUCTION).divide((260.0 / 254)); // meters
-    private static final Distance DRIVING_ENCODER_VELOCITY_FACTOR = DRIVING_ENCODER_POSITION_FACTOR.divide(60); // meters per second
-                                                                                                            
+    private static final Distance DRIVING_ENCODER_VELOCITY_FACTOR = DRIVING_ENCODER_POSITION_FACTOR.divide(60); // meters
+                                                                                                                // per
+                                                                                                                // second
+
     private static final double TURNING_ENCODER_POSITION_FACTOR = Units.rotationsToRadians(1);
     private static final double TURNING_ENCODER_VELOCITY_FACTOR = Units.rotationsToRadians(1) / 60.0;
 
@@ -105,7 +107,7 @@ public class SwerveModuleHardware implements SwerveModuleIO {
                 .voltageCompensation(VOLTAGE_COMPENSATION);
         sparkMaxConfigDriving.encoder.positionConversionFactor(DRIVING_ENCODER_POSITION_FACTOR.in(Meters))
                 .velocityConversionFactor(DRIVING_ENCODER_VELOCITY_FACTOR.in(Meters));
-                sparkMaxConfigDriving.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        sparkMaxConfigDriving.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .pidf(DRIVING_P, DRIVING_I, DRIVING_D, DRIVING_FF)
                 .outputRange(DRIVING_MIN_OUTPUT, DRIVING_MAX_OUTPUT);
 
