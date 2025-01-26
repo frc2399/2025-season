@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SetpointConstants;
+import frc.robot.Constants.SpeedConstants;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
@@ -63,5 +64,7 @@ public class RobotContainer {
   private void configureButtonBindingsOperator() {
     operatorController.y().onTrue(coralIntake.goToSetpoint(SetpointConstants.CORAL_INTAKE_ANGLE));
     operatorController.a().onTrue(coralIntake.goToSetpoint(SetpointConstants.CORAL_OUTTAKE_ANGLE));
+    operatorController.x().onTrue(coralIntake.setSpeed(SpeedConstants.CORAL_INTAKE_SPEED));
+    operatorController.b().onTrue(coralIntake.setSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED));
   }
 }

@@ -31,11 +31,11 @@ public class CoralIntakeSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateStates(states);
         SmartDashboard.putNumber("coralIntake/velocity", states.velocity);
-        SmartDashboard.putNumber("coralIntake/leftCurrent", states.leftCurrent);
-        SmartDashboard.putNumber("coralIntake/rightCurrent", states.rightCurrent);
+        SmartDashboard.putNumber("coralIntake/leftCurrent", states.topCurrent);
+        SmartDashboard.putNumber("coralIntake/rightCurrent", states.bottomCurrent);
         SmartDashboard.putNumber("coralIntake/wristCurrent", states.wristCurrent);
-        SmartDashboard.putNumber("coralIntake/leftAppliedVoltage", states.leftAppliedVoltage);
-        SmartDashboard.putNumber("coralIntake/rightAppliedVoltage", states.rightAppliedVoltage);
+        SmartDashboard.putNumber("coralIntake/leftAppliedVoltage", states.topAppliedVoltage);
+        SmartDashboard.putNumber("coralIntake/rightAppliedVoltage", states.bottomAppliedVoltage);
         SmartDashboard.putNumber("coralIntake/wristAppliedVoltage", states.wristAppliedVoltage);
     }
 }
