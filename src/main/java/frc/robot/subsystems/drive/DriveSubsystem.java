@@ -11,6 +11,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -23,6 +26,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -62,13 +66,19 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private SwerveModule rearLeft;
         private SwerveModule rearRight;
 
-        private static final double TRACK_WIDTH_M = Units.inchesToMeters(26 - 2 * 1.75);
+        private static final Distance TRACK_WIDTH = Inches.of(26 - (2 * 1.75));
+        private static final Distance WHEEL_BASE = Inches.of(26 - (2 * 1.75));
+
         // Distance between front and back wheels on robot
-        private static final double WHEEL_BASE_M = Units.inchesToMeters(26 - 2 * 1.75);
-        private static final Translation2d FRONT_LEFT_OFFSET = new Translation2d(WHEEL_BASE_M / 2, TRACK_WIDTH_M / 2);
-        private static final Translation2d REAR_LEFT_OFFSET = new Translation2d(-WHEEL_BASE_M / 2, TRACK_WIDTH_M / 2);
-        private static final Translation2d FRONT_RIGHT_OFFSET = new Translation2d(WHEEL_BASE_M / 2, -TRACK_WIDTH_M / 2);
-        private static final Translation2d REAR_RIGHT_OFFSET = new Translation2d(-WHEEL_BASE_M / 2, -TRACK_WIDTH_M / 2);
+
+        private static final Translation2d FRONT_LEFT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
+                        TRACK_WIDTH.in(Meters) / 2);
+        private static final Translation2d REAR_LEFT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2,
+                        TRACK_WIDTH.in(Meters) / 2);
+        private static final Translation2d FRONT_RIGHT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
+                        -TRACK_WIDTH.in(Meters) / 2);
+        private static final Translation2d REAR_RIGHT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2,
+                        -TRACK_WIDTH.in(Meters) / 2);
 
         private static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
                         FRONT_LEFT_OFFSET,
@@ -78,9 +88,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         // Slew rate filter variables for controlling lateral acceleration
         private double currentRotationRate = 0.0;
-
         private double desiredAngle = 0;
-
         private Gyro gyro;
 
         private final Field2d field2d = new Field2d();
@@ -266,13 +274,12 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
          */
         public Command setX() {
                 return this.run(() -> {
-                        frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-                        frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+                        frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+                        frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
                         rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
                         rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-              });
-      }
-
+                });
+        }
 
         public ChassisSpeeds getRobotRelativeSpeeds() {
                 return DRIVE_KINEMATICS.toChassisSpeeds(frontLeft.getState(), frontRight.getState(),
