@@ -1,0 +1,97 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PZ-D1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral on L1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "D1-PCS"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PCS-C1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral on L1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C1-PCS"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PCS-D1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral on L1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "D1-PCS"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PCS-C1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral on L1"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": true
+}

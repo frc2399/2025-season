@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Z-K4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral on L4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "K4-CS"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CS-L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral on L4"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": true
+}

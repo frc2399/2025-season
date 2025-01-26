@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PZ-E2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral on L2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "E2-PCS"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PCS-D4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral on L4"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": true
+}

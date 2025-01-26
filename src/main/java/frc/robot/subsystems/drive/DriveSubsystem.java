@@ -5,6 +5,10 @@
 package frc.robot.subsystems.drive;
 
 import com.pathplanner.lib.util.PathPlannerLogging;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -20,6 +24,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -45,6 +50,8 @@ public class DriveSubsystem extends SubsystemBase {
         private double DRIVE_D = 0.05;
 
         private PIDController drivePIDController = new PIDController(DRIVE_P, 0, DRIVE_D);
+
+        private RobotConfig config;
 
         // debouncer for turning
         private double ROTATION_DEBOUNCE_TIME = 0.5;
@@ -122,7 +129,33 @@ public class DriveSubsystem extends SubsystemBase {
                                 new Pose2d(0, 0, new Rotation2d(0, 0))); // TODO: make these constants in the constants
                                                                          // file rather than
                                                                          // free-floating numbers
+                
+                try{
+                        config = RobotConfig.fromGUISettings(); 
 
+                AutoBuilder.configure(
+                        this::getPose, 
+                        this::resetOdometry, 
+                        this::getRobotRelativeSpeeds, 
+                        (speeds, feedforwards) -> setRobotRelativeSpeeds(speeds), 
+                        new PPHolonomicDriveController( 
+                                new PIDConstants(5.0, 0.0, 0.0), 
+                                new PIDConstants(5.0, 0.0, 0.0) 
+                        ),
+                        config, // The robot configuration
+                        () -> {
+
+                                var alliance = DriverStation.getAlliance();
+                                if (alliance.isPresent()) {
+                                        return alliance.get() == DriverStation.Alliance.Red;
+                                }
+                                return false;
+                        },
+                        this 
+                );
+                } catch (Exception e) {
+                        DriverStation.reportError("Failed to load Pathplanner config and configure Autobuilder", e.getStackTrace());
+                }
                 configurePathPlannerLogging();
         }
 
