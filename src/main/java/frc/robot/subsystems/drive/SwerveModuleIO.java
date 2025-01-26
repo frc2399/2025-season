@@ -17,7 +17,8 @@ public interface SwerveModuleIO {
         public double turnCurrent = 0.0;
         public Rotation2d yaw = new Rotation2d();
         public Rotation2d yawPerSec = new Rotation2d();
-        public double encoderPos = 0.0;
+        public double drivingEncoderPos = 0.0;
+        public double turningEncoderPos = 0.0;
 
         
         

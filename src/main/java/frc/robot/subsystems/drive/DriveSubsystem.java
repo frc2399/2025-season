@@ -14,6 +14,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
+import java.lang.FdLibm.Hypot;
+
 import org.ietf.jgss.GSSContext;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -129,8 +131,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // This will get the simulated sensor readings that we set
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
-                SmartDashboard.putNumber("left front distance (meters)", frontLeft.getDriveEncoderPosition());
-                SmartDashboard.putNumber("drive/gyro angle(degrees)", Math.toDegrees(gyro.getYaw()));
+
                 poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromRadians(gyro.getYaw()),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
@@ -140,9 +141,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 });
 
                 Pose2d pose = getPose();
-
-                SmartDashboard.putNumber("robot pose theta", pose.getRotation().getDegrees());
-
 
                 SwerveModuleState[] swerveModuleStates = new SwerveModuleState[] {
                                 frontLeft.getState(),
@@ -223,6 +221,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 } else {
                         relativeRobotSpeeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotRateDelivered);
                 }
+
+                states.relativeRobotSpeeds = relativeRobotSpeeds;
 
                 SmartDashboard.putNumber("Swerve/velocity",
                                 Math.sqrt(
@@ -322,11 +322,12 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 public double poseY;
                 public double poseX;
                 public double poseTheta;
-                public double linearSpeed;
                 public double velocityXMPS;
                 public double velocityYMPS;
-
-                public double swerveVelocity;
+                public double totalVelocity;
+                public double gyroAngleDegrees;
+                public double angularVelocity;
+                
 
             }
 
@@ -338,8 +339,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 SmartDashboard.putNumber(moduleName + "drive current", moduleStates.driveCurrent);
                 SmartDashboard.putNumber(moduleName + "drive voltage", moduleStates.driveVoltage);
                 SmartDashboard.putNumber(moduleName + "drive velocity", moduleStates.drivingVelocity);
-                SmartDashboard.putNumber(moduleName + "encoder position", moduleStates.encoderPos);
-                SmartDashboard.putNumber(moduleName + "speed", moduleStates.speed);
+                SmartDashboard.putNumber(moduleName + "driving encoder position", moduleStates.drivingEncoderPos);
+                SmartDashboard.putNumber(moduleName + "turning encoder position", moduleStates.turningEncoderPos);
                 SmartDashboard.putNumber(moduleName + "turn current", moduleStates.turnCurrent);
                 SmartDashboard.putNumber(moduleName + "turn voltage", moduleStates.turnVoltage);
                 SmartDashboard.putNumber(moduleName + "turn position", moduleStates.turningPosition);
@@ -347,25 +348,24 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
             }
         
             private void logAndUpdateRobotStates() {
+                states.pose = getPose();
+                states.poseX = states.pose.getX();
+                states.poseY =states.pose.getY();
+                states.poseTheta = states.pose.getRotation().getRadians();
                 states.velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
                 states.velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
-                double velocityXMPS;
-                double velocityYMPS;
-                states.linearSpeed =  Math.sqrt((Math.pow(velocityXMPS, 2) + Math.pow(velocityYMPS, 2)));
-                states.swerveVelocity = 
-                states.poseX = 
-                states.pose
-        
-
-                SmartDashboard.putNumber("Linear Speed", states.linearSpeed);
-                SmartDashboard.putNumber("Swerve Velocity", states.swerveVelocity);
-                SmartDashboard.putNumber("Pose X", states.pose.getX());
-                SmartDashboard.putNumber("Pose Y", states.pose.getY());
-                SmartDashboard.putNumber("Pose Theta(radians)", states.pose.getRotation().getRadians());
-                SmartDashboard.putNumber("Robot Linear Velocity X", states.relativeRobotSpeeds.vxMetersPerSecond);
-                SmartDashboard.putNumber("Robot Linear Velocity Y", states.relativeRobotSpeeds.vyMetersPerSecond);
-                SmartDashboard.putNumber("Robot Angular Velocity", states.relativeRobotSpeeds.omegaRadiansPerSecond);
-                SmartDashboard.putNumber("Gyro Angle(degrees)", Math.toDegrees(gyro.getYaw()));
+                states.totalVelocity = Math.hypot(states.velocityXMPS, states.velocityYMPS);
+                states.angularVelocity = relativeRobotSpeeds.omegaRadiansPerSecond;
+                states.gyroAngleDegrees = Math.toDegrees(gyro.getYaw());
+                        
+                SmartDashboard.putNumber("Pose X", states.poseX);
+                SmartDashboard.putNumber("Pose Y", states.poseY);
+                SmartDashboard.putNumber("Pose Theta(radians)", states.poseTheta);
+                SmartDashboard.putNumber("Robot Linear Velocity X", states.velocityXMPS);
+                SmartDashboard.putNumber("Robot Linear Velocity Y", states.velocityYMPS);
+                SmartDashboard.putNumber("Total Velocity",states.totalVelocity);
+                SmartDashboard.putNumber("Robot Angular Velocity", states.angularVelocity);
+                SmartDashboard.putNumber("Gyro Angle(degrees)", states.gyroAngleDegrees);
             }
 
             private void logAllSwerveModuleStates(){
@@ -378,31 +378,11 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
             }
 
 
-
-        // SmartDashboard.putNumber("Swerve/vision/x", pose.getX());
-        //         SmartDashboard.putNumber("Swerve/vision/y", pose.getY());
-        //         SmartDashboard.putNumber("Drive/driveVoltage", states.driveVoltage);
-        //         SmartDashboard.putNumber("Drive/turnVoltage", states.turnVoltage);
-        //         SmartDashboard.putNumber("Drive/driveVelocity", states.drivingVelocity);
-        //         SmartDashboard.putNumber("Drive/desiredDriveVelocity", states.desiredDrivingVelocity);
-        //         SmartDashboard.putNumber("Drive/turningPosition", states.turningPosition);
-        //         SmartDashboard.putNumber("Drive/desiredAngle", states.desiredAngle);
-        //         SmartDashboard.putNumber("Drive/speed", states.speed);
-        //         SmartDashboard.putNumber("Drive/driveCurrent", states.driveCurrent);
-        //         SmartDashboard.putNumber("Drive/turnCurrent", states.turnCurrent);
-        //         SwerveModuleIO.updateStates(states);t
-        //         SmartDashboard.putNumber("pose for each swerve module" + frontLeft
+        
                 
 
         }
         
 
-
         
-        
-        poseX = pose.getX();
-        poseY=pose.getY();
-        poseTheta = pose.getRotation().getDegrees();
-        linearSpeed =  Math.sqrt((Math.pow(velocityXMPS, 2) + Math.pow(velocityYMPS, 2)));
-        swerveVelocy =
 

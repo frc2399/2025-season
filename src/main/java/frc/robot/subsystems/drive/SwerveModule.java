@@ -112,11 +112,14 @@ public class SwerveModule {
 
     
     public void updateStates(SwerveModuleIOStates moduleStates){
+        moduleStates.drivingEncoderPos = io.getDriveEncoderPosition();
+        moduleStates.turningEncoderPos = io.getTurnEncoderPosition();
         moduleStates.driveVoltage = io.getDriveBusVoltage()* io.getDriveOutput();
         moduleStates.turnVoltage = io.getTurnBusVoltage()* io.getTurnOutput();
         moduleStates.driveCurrent = io.getDriveCurrent();
         moduleStates.turnCurrent = io.getTurnCurrent();
         moduleStates.drivingVelocity = io.getDriveEncoderSpeedMPS();
         moduleStates.desiredDrivingVelocity = desiredState.speedMetersPerSecond;
+        moduleStates.desiredAngle = 
     }
 }

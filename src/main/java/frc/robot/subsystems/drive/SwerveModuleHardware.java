@@ -194,15 +194,10 @@ public class SwerveModuleHardware implements SwerveModuleIO {
         return turningSparkMax.getOutputCurrent();
     }
 
-    public void updateStates(SwerveModuleIOStates states) {
-        states.driveVoltage = getDriveBusVoltage() * getDriveOutput();
-        states.turnVoltage = getTurnBusVoltage() * getTurnOutput();
-        states.driveCurrent = getDriveCurrent();
-        states.turnCurrent = getTurnCurrent();
-        states.drivingVelocity = getDriveEncoderSpeedMPS();
-        states.desiredDrivingVelocity = states.desiredDrivingVelocity;
-        states.turningPosition = getTurnEncoderPosition();
-        states.desiredAngle = states.desiredAngle;
+    public double getDesiredTurnAngle(){
+
+        return 
     }
 
+    
 }
