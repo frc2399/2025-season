@@ -31,7 +31,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
 
     public double getPosition() {
-        return elevatorIO.getPosition();
+        return elevatorIO.getCurrentPosition();
     }
 
     //PID command that is seperate from motion profiling
@@ -40,7 +40,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
 
     //motion profile command that is seperate from PID
-    public Command goToSetPointCommandMotionProfling(double position) {
+    public Command goToSetpointCmdMotionProfling(double position) {
         profiledPIDEnabled = true;
         return this.startEnd(() -> elevatorIO.setPositionMotionProfiling(position), () -> elevatorIO.setPositionMotionProfiling(0));
     }

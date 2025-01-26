@@ -29,7 +29,7 @@ public class ElevatorPlacebo implements ElevatorIO {
     }
 
     @Override
-    public double getPosition() {
+    public double getCurrentPosition() {
         return 0.0;
     }
 

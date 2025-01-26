@@ -18,7 +18,7 @@ public interface ElevatorIO {
     public void setSetpointState(double state);
     public void setEncoderPosition(double position);
     public double getVelocity();
-    public double getPosition();
+    public double getCurrentPosition();
     public void setPercentOutput(double percentOutput);
     public void updateStates(ElevatorIOInputs inputs);
 }

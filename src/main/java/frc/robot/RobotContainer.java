@@ -18,7 +18,7 @@ import static edu.wpi.first.units.Units.*;
 public class RobotContainer {
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
   private Gyro gyro = subsystemFactory.buildGyro();
-  private final ElevatorSubsystem elevator = subsystemFactory.buildElevator();
+  public ElevatorSubsystem elevator = subsystemFactory.buildElevator();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
   //this is public because we need to run the visionPoseEstimator periodic from Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
@@ -63,7 +63,7 @@ public class RobotContainer {
 
   private void configureButtonBindingsOperator() {
     operatorController.y().whileTrue(elevator.goToSetPointCommandPID(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
-    operatorController.a().whileTrue(elevator.goToSetPointCommandMotionProfling(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
+    operatorController.a().whileTrue(elevator.goToSetpointCmdMotionProfling(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
 
     operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
   }

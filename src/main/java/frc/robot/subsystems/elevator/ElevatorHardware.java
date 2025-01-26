@@ -52,7 +52,7 @@ public class ElevatorHardware implements ElevatorIO {
     private SparkClosedLoopController leftClosedLoopController;
     private RelativeEncoder rightEncoder, leftEncoder;
     private TrapezoidProfile elevatorMotionProfile;
-    private double position;
+    private double currentPosition;
     public State setpointState = new State();
     private State goalState = new State();
     
@@ -124,12 +124,12 @@ public class ElevatorHardware implements ElevatorIO {
         leftClosedLoopController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         //leftClosedLoopController.setReference(position, SparkBase.ControlType.kMAXMotionPositionControl);
         
-        this.position = position;
+        this.currentPosition = position;
     }
 
     @Override
-    public void setPositionMotionProfiling(double position) {
-        
+    public void setPositionMotionProfiling(double newGoalPosition) {
+        goalState.position = newGoalPosition; 
     }
 
     @Override
@@ -139,8 +139,7 @@ public class ElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public void calculateNextSetpoint() {
-        goalState.position = position;
+    public void calculateNextSetpoint() { 
         setpointState = elevatorMotionProfile.calculate(ElevatorHardwareConstants.kDt, setpointState, goalState);
         leftClosedLoopController.setReference(setpointState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
@@ -156,7 +155,7 @@ public class ElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public double getPosition() {
+    public double getCurrentPosition() {
         return leftEncoder.getPosition();
     }
 
@@ -167,10 +166,10 @@ public class ElevatorHardware implements ElevatorIO {
 
     @Override
     public void updateStates(ElevatorIOInputs inputs) {
-        inputs.position = getPosition();
+        inputs.position = getCurrentPosition();
         inputs.velocity = getVelocity();
         inputs.appliedVoltageRight = elevatorRightMotorFollower.getAppliedOutput() * elevatorRightMotorFollower.getBusVoltage();
         inputs.appliedVoltageLeft = elevatorLeftMotorLeader.getAppliedOutput() * elevatorLeftMotorLeader.getBusVoltage();
-        inputs.positionSetPoint = position;
+        inputs.positionSetPoint = currentPosition;
     }
 }
