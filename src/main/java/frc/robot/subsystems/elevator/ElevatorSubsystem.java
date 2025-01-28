@@ -19,7 +19,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     public ElevatorSubsystem(ElevatorIO elevatorIO) {
         this.elevatorIO = elevatorIO;
         elevatorIO.setEncoderPosition(0);
-        elevatorIO.setSetpointState(0);
+        elevatorIO.setSetpointState(0, 0);
     }
 
     public Command disableElevator() {

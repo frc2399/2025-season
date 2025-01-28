@@ -15,7 +15,7 @@ public interface ElevatorIO {
     public void setPositionPID(double position);
     public void setPositionMotionProfiling(double position);
     public void calculateNextSetpoint();
-    public void setSetpointState(double state);
+    public void setSetpointState(double position, double velocity);
     public void setEncoderPosition(double position);
     public double getVelocity();
     public double getCurrentPosition();

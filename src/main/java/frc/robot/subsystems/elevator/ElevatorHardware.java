@@ -133,9 +133,9 @@ public class ElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public void setSetpointState(double state) {
-        setpointState.position = state;
-        setpointState.velocity = state;
+    public void setSetpointState(double position, double velocity) {
+        setpointState.position = position;
+        setpointState.velocity = velocity;
     }
 
     @Override
