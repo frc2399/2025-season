@@ -20,18 +20,24 @@ public class CoralIntakeSubsystem extends SubsystemBase {
     }
 
     public Command goToSetpoint(Angle angle) {
-        return this.run(() -> {io.goToSetpoint(angle); 
-            io.setRollerSpeed(0);});
+        return this.run(() -> {
+            io.goToSetpoint(angle);
+            io.setRollerSpeed(0);
+        });
     }
 
     public Command setWristSpeed(double speed) {
-        return this.run(() -> {io.setWristSpeed(speed); 
-            io.setRollerSpeed(0);});
+        return this.run(() -> {
+            io.setWristSpeed(speed);
+            io.setRollerSpeed(0);
+        });
     }
 
     public Command setSpeeds() {
-        return this.run(() -> {io.setWristSpeed(0);
-                io.setRollerSpeed(0);});
+        return this.run(() -> {
+            io.setWristSpeed(0);
+            io.setRollerSpeed(0);
+        });
     }
 
     @Override
@@ -44,5 +50,6 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("coralIntake/leftAppliedVoltage", states.topAppliedVoltage);
         SmartDashboard.putNumber("coralIntake/rightAppliedVoltage", states.bottomAppliedVoltage);
         SmartDashboard.putNumber("coralIntake/wristAppliedVoltage", states.wristAppliedVoltage);
+        SmartDashboard.putNumber("coralIntake/wristEncoderAngle", states.wristEncoderAngle);
     }
 }

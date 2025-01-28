@@ -32,7 +32,9 @@ public class CoralIntakeHardware implements CoralIntakeIO {
         private final double GRAVITY_FF_CORAL = 0.43;
         private final double VELOCITY_FF_CORAL = 1.01;
 
-        private final ArmFeedforward coralWristFeedFoward = new ArmFeedforward(STATIC_FF_CORAL, GRAVITY_FF_CORAL, VELOCITY_FF_CORAL);
+        private final ArmFeedforward coralWristFeedFoward = new ArmFeedforward(STATIC_FF_CORAL, GRAVITY_FF_CORAL,
+                        VELOCITY_FF_CORAL);
+
         private final SparkMax coralIntakeTopSparkMax;
         private final SparkMax coralIntakeBottomSparkMax;
         private final SparkFlex coralIntakeWristSparkFlex;
@@ -54,7 +56,7 @@ public class CoralIntakeHardware implements CoralIntakeIO {
         private static final boolean WRIST_MOTOR_INVERTED = true;
         private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
         private static final double ENCODER_ROLLER_POSITION_FACTOR = (2 * Math.PI); // radians
-        private static final double ENCODER_WRIST_POSITION_FACTOR = 60 * (2 * Math.PI); //radians
+        private static final double ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 60.0; // radians
         private static final double ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 60.0; // radians per second
 
         private static final double SIDE_MOTOR_P = 0.5;
@@ -132,18 +134,14 @@ public class CoralIntakeHardware implements CoralIntakeIO {
         }
 
         public void goToSetpoint(Angle angle) {
-                coralIntakeWristClosedLoopController.setReference(angle.in(Radians), ControlType.kPosition, 
-                ClosedLoopSlot.kSlot0, coralWristFeedFoward.calculate(angle.in(Radians), ENCODER_VELOCITY_FACTOR));
+                coralIntakeWristClosedLoopController.setReference(angle.in(Radians), ControlType.kPosition,
+                                ClosedLoopSlot.kSlot0,
+                                coralWristFeedFoward.calculate(angle.in(Radians), ENCODER_VELOCITY_FACTOR));
         }
 
         public void setWristSpeed(double speed) {
-                coralIntakeWristSparkFlex.set(speed);
-        }
-
-        public void setGravityCompensation() {
-                coralIntakeWristClosedLoopController.setReference(
-                                Math.cos(coralIntakeWristRelativeEncoder.getPosition()) * GRAIVTY_COMPENSATION,
-                                ControlType.kVelocity);
+                coralIntakeWristSparkFlex.set(speed
+                                + coralWristFeedFoward.calculate(coralIntakeWristRelativeEncoder.getPosition(), speed));
         }
 
         public double getVelocity() {
@@ -167,5 +165,7 @@ public class CoralIntakeHardware implements CoralIntakeIO {
                 states.topCurrent = coralIntakeTopSparkMax.getOutputCurrent();
                 states.bottomCurrent = coralIntakeBottomSparkMax.getOutputCurrent();
                 states.wristCurrent = coralIntakeWristSparkFlex.getOutputCurrent();
+
+                states.wristEncoderAngle = coralIntakeWristRelativeEncoder.getPosition();
         }
 }
