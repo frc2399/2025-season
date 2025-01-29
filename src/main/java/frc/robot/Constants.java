@@ -4,13 +4,15 @@
 
 package frc.robot;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.*;
 
 public final class Constants {
 
-  public static class MotorIdConstants{
+  public static class MotorIdConstants {
     public static final int FRONT_LEFT_DRIVING_CAN_ID = 11;
     public static final int REAR_LEFT_DRIVING_CAN_ID = 21;
     public static final int FRONT_RIGHT_DRIVING_CAN_ID = 31;
@@ -26,7 +28,7 @@ public final class Constants {
     public static final int LEFT_ELEVATOR_MOTOR_ID = 17;
     public static final int RIGHT_ELEVATOR_MOTOR_ID = 15;
   }
-  
+
   public static class SensorIdConstants {
 
   }
@@ -34,8 +36,8 @@ public final class Constants {
   public static class MotorConstants {
     public static final int NEO550_CURRENT_LIMIT = 20;
     public static final int NEO_CURRENT_LIMIT = 50;
-    public static final int NEO_FREE_SPEED_RPM = 5676;
-    public static final double NEO_FREE_SPEED_RPS = NEO_FREE_SPEED_RPM / 60;
+    public static final AngularVelocity NEO_FREE_SPEED = RPM.of(5676);
+    public static final AngularVelocity NEO_FREE_SPEED_RPS = NEO_FREE_SPEED.divide(60);
     // MPS = (GearRatio * 2πr * RPM) / 60
     public static final int NEO550_FREE_SPEED_RPM = 11000;
     public static final int NEO_VORTEX_CURRENT_LIMIT = 60;
