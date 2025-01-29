@@ -65,6 +65,6 @@ public class RobotContainer {
     operatorController.y().onTrue(elevator.goToSetPointCommand(SetpointConstants.MIDDLE.in(Meters)));
     operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
     operatorController.a().whileTrue(elevator.setPercentOutputCommand(-0.1));
-    operatorController.x().onTrue(elevator.setPosition(0.01));
+    operatorController.x().onTrue(elevator.setEncoderPositionCommand(0.01));
   }
 }

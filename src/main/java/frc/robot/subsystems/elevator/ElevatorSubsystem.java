@@ -21,7 +21,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         return this.run(() ->elevatorIO.disableElevator());
     }
 
-    public Command setPosition(double position) {
+    public Command setEncoderPositionCommand(double position) {
         return this.run(() -> elevatorIO.setEncoderPosition(position));
     }
 

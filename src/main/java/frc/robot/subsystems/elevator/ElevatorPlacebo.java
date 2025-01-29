@@ -15,12 +15,12 @@ public class ElevatorPlacebo implements ElevatorIO {
     public void setEncoderPosition(double position) {}
 
     @Override
-    public double getVelocity() {
+    public double getEncoderVelocity() {
         return 0.0;
     }
 
     @Override
-    public double getCurrentPosition() {
+    public double getEncoderPosition() {
         return 0.0;
     }
 

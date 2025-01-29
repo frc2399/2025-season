@@ -50,7 +50,7 @@ public class ElevatorHardware implements ElevatorIO {
     private SparkFlex elevatorRightMotorFollower, elevatorLeftMotorLeader;
     private SparkFlexConfig globalMotorConfig, rightMotorConfigFollower, leftMotorConfigLeader;
     private SparkClosedLoopController leftClosedLoopController;
-    private RelativeEncoder rightEncoder, leftEncoder;
+    private RelativeEncoder leftEncoder;
     private double goalPosition;
     
     public ElevatorHardware() {
@@ -64,7 +64,6 @@ public class ElevatorHardware implements ElevatorIO {
 
         leftClosedLoopController = elevatorLeftMotorLeader.getClosedLoopController();
 
-        //rightEncoder = elevatorRightMotorFollower.getEncoder();
         leftEncoder = elevatorLeftMotorLeader.getEncoder();
 
         globalMotorConfig.encoder
@@ -131,12 +130,12 @@ public class ElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public double getVelocity() {
+    public double getEncoderVelocity() {
         return leftEncoder.getVelocity();
     }
 
     @Override
-    public double getCurrentPosition() {
+    public double getEncoderPosition() {
         return leftEncoder.getPosition();
     }
 
@@ -148,8 +147,8 @@ public class ElevatorHardware implements ElevatorIO {
 
     @Override
     public void updateStates(ElevatorIOInputs inputs) {
-        inputs.position = getCurrentPosition();
-        inputs.velocity = getVelocity();
+        inputs.position = getEncoderPosition();
+        inputs.velocity = getEncoderVelocity();
         inputs.appliedVoltageRight = elevatorRightMotorFollower.getAppliedOutput() * elevatorRightMotorFollower.getBusVoltage();
         inputs.appliedVoltageLeft = elevatorLeftMotorLeader.getAppliedOutput() * elevatorLeftMotorLeader.getBusVoltage();
         inputs.positionSetPoint = goalPosition; 
