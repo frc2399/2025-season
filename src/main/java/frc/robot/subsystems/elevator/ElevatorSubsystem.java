@@ -1,11 +1,8 @@
 package frc.robot.subsystems.elevator;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.elevator.ElevatorHardware.ElevatorHardwareConstants;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
 
 public class ElevatorSubsystem extends SubsystemBase{
@@ -30,14 +27,15 @@ public class ElevatorSubsystem extends SubsystemBase{
         return this.run(() -> elevatorIO.setEncoderPosition(position));
     }
 
-    public Command goToSetPointCommand(double position) {
+    //pid command that is seperate from motion profiling
+    public Command goToSetPointCommandPID(double position) {
         return this.startEnd(() -> elevatorIO.setGoalPositionPID(position), () -> elevatorIO.setGoalPositionPID(0));
     }
 
     //motion profile command that is seperate from PID
     public Command goToSetpointCmdMotionProfling(double position) {
         profiledPIDEnabled = true;
-        return this.startEnd(() -> elevatorIO.setPositionMotionProfiling(position), () -> elevatorIO.setPositionMotionProfiling(0));
+        return this.runOnce(() -> elevatorIO.setPositionMotionProfiling(position));
     }
 
     public Command setSpeedCommand(double speed) {

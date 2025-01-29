@@ -62,11 +62,14 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsOperator() {
-    operatorController.y().whileTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
-    operatorController.a().whileTrue(elevator.goToSetpointCmdMotionProfling(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
+    //a lot of these have the same button binding so be careful which one you uncomment
+    //operatorController.y().whileTrue(elevator.goToSetPointCommandPID(SetpointConstants.MIDDLE.in(Meters)));
+    operatorController.y().onTrue(elevator.goToSetpointCmdMotionProfling(SetpointConstants.MIDDLE.in(Meters)));
+    operatorController.b().onTrue(elevator.goToSetpointCmdMotionProfling(0));
+    operatorController.a().onTrue(elevator.goToSetpointCmdMotionProfling(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
 
-    operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
-    operatorController.a().whileTrue(elevator.setPercentOutputCommand(-0.1));
-    operatorController.x().onTrue(elevator.setEncoderPositionCommand(0.01));
+    //operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
+    operatorController.x().whileTrue(elevator.setPercentOutputCommand(-0.1));
+    //operatorController.x().onTrue(elevator.setEncoderPositionCommand(0.01));
   }
 }

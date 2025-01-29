@@ -6,8 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
-import static edu.wpi.first.units.Units.Centimeters;
-import static edu.wpi.first.units.Units.Inches;
+
 import static edu.wpi.first.units.Units.*;
 
 public final class Constants {
@@ -50,7 +49,11 @@ public final class Constants {
   }
 
   public static class SetpointConstants {
-    public static Distance L_ONE_HEIGHT = Centimeters.of(11); //46cm is height of L1
+    public static Distance L_ONE_HEIGHT = Inches.of(0); 
+    public static Distance L_TWO_HEIGHT = Inches.of(7.5);
+    public static Distance L_THREE_HEIGHT = Inches.of(23.25);
+    public static Distance L_FOUR_HEIGHT = Inches.of(49.5);
+    public static Distance MIDDLE = Inches.of(16.0); 
   }
 
   public static class DriveControlConstants {
