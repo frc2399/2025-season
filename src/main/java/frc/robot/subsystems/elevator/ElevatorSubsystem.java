@@ -26,17 +26,12 @@ public class ElevatorSubsystem extends SubsystemBase{
         return this.run(() ->elevatorIO.disableElevator());
     }
 
-    public void setEncoderPosition(double position) {
-        elevatorIO.setEncoderPosition(position);
+    public Command setEncoderPositionCommand(double position) {
+        return this.run(() -> elevatorIO.setEncoderPosition(position));
     }
 
-    public double getPosition() {
-        return elevatorIO.getCurrentPosition();
-    }
-
-    //PID command that is seperate from motion profiling
-    public Command goToSetPointCommandPID(double position) {
-        return this.startEnd(() -> elevatorIO.setPositionPID(position), () -> elevatorIO.setPositionPID(0));
+    public Command goToSetPointCommand(double position) {
+        return this.startEnd(() -> elevatorIO.setGoalPositionPID(position), () -> elevatorIO.setGoalPositionPID(0));
     }
 
     //motion profile command that is seperate from PID
@@ -65,6 +60,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Elevator/appliedVoltageRight", inputs.appliedVoltageRight);
         SmartDashboard.putNumber("Elevator/appliedVoltageLeft", inputs.appliedVoltageLeft);
         SmartDashboard.putNumber("Elevator/positionSetPoint", inputs.positionSetPoint);
+        SmartDashboard.putNumber("Elevator/output current", inputs.current);
     }
 
 }

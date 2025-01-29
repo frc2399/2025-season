@@ -4,12 +4,12 @@ public class ElevatorPlacebo implements ElevatorIO {
 
     @Override
     public void disableElevator() {}
-    
+
     @Override
     public void setSpeed(double speed) {}
 
     @Override
-    public void setPositionPID(double position) {}
+    public void setGoalPositionPID(double position) {}
 
     @Override
     public void setPositionMotionProfiling(double position) {}
@@ -24,12 +24,12 @@ public class ElevatorPlacebo implements ElevatorIO {
     public void setSetpointState(double position, double velocity) {}
 
     @Override
-    public double getVelocity() {
+    public double getEncoderVelocity() {
         return 0.0;
     }
 
     @Override
-    public double getCurrentPosition() {
+    public double getEncoderPosition() {
         return 0.0;
     }
 
