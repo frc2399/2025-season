@@ -31,7 +31,7 @@ public class ElevatorHardware implements ElevatorIO {
 
     public static final class ElevatorHardwareConstants {
         private static final double METERS_PER_REVOLUTION = Units.inchesToMeters(27) / 41.951946; //Calculate correct value
-        private static final Distance ALLOWED_SETPOINT_ERROR = Inches.of(1); 
+        private static final Distance ALLOWED_SETPOINT_ERROR = Inches.of(.25); 
         private static final LinearVelocity MAX_VEL = MetersPerSecond.of(0.8);
         private static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(0.4);
         private static final Voltage P_VALUE = Volts.of(2.0);
