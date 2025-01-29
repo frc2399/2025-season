@@ -4,9 +4,10 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-
+import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.LinearVelocity;
+
+import edu.wpi.first.units.measure.AngularVelocity;
 
 public final class Constants {
 
@@ -26,6 +27,7 @@ public final class Constants {
     public static final int ALGAE_EJECTOR_LEFT_CAN_ID = 0;
     public static final int ALGAE_EJECTOR_RIGHT_CAN_ID = 1;
     public static final int ALGAE_WRIST_CAN_ID = 2;
+
   }
 
   public static class SensorIdConstants {
@@ -34,8 +36,8 @@ public final class Constants {
   public static class MotorConstants {
     public static final int NEO550_CURRENT_LIMIT = 20;
     public static final int NEO_CURRENT_LIMIT = 50;
-    public static final int NEO_FREE_SPEED_RPM = 5676;
-    public static final double NEO_FREE_SPEED_RPS = NEO_FREE_SPEED_RPM / 60;
+    public static final AngularVelocity NEO_FREE_SPEED = RPM.of(5676);
+    public static final AngularVelocity NEO_FREE_SPEED_RPS = NEO_FREE_SPEED.divide(60);
     // MPS = (GearRatio * 2πr * RPM) / 60
     public static final int NEO550_FREE_SPEED_RPM = 11000;
   }
