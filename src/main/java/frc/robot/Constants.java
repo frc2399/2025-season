@@ -38,7 +38,7 @@ public final class Constants {
     public static final double NEO_FREE_SPEED_RPS = NEO_FREE_SPEED_RPM / 60;
     // MPS = (GearRatio * 2πr * RPM) / 60
     public static final int NEO550_FREE_SPEED_RPM = 11000;
-    public static final int NEO_VORTEX_CURRENT_LIMIT = 80;
+    public static final int NEO_VORTEX_CURRENT_LIMIT = 60;
   }
 
   public static class SpeedConstants {
@@ -49,10 +49,10 @@ public final class Constants {
   }
 
   public static class SetpointConstants {
-    public static Distance L_ONE_HEIGHT = Centimeters.of(46); 
-    public static Distance L_TWO_HEIGHT = Centimeters.of(81);
-    public static Distance L_THREE_HEIGHT = Centimeters.of(121);
-    public static Distance L_FOUR_HEIGHT = Centimeters.of(183);
+    public static Distance L_ONE_HEIGHT = Inches.of(0); 
+    public static Distance L_TWO_HEIGHT = Inches.of(7.5);
+    public static Distance L_THREE_HEIGHT = Inches.of(23.25);
+    public static Distance L_FOUR_HEIGHT = Inches.of(49.5);
     public static Distance MIDDLE = Inches.of(16.0); 
   }
 

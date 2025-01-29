@@ -26,7 +26,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
 
     public Command goToSetPointCommand(double position) {
-        return this.startEnd(() -> elevatorIO.setCurrentPosition(position), () -> elevatorIO.setCurrentPosition(0));
+        return this.startEnd(() -> elevatorIO.setGoalPosition(position), () -> elevatorIO.setGoalPosition(0));
     }
 
     public Command setSpeedCommand(double speed) {

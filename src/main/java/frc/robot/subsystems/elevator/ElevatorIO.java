@@ -13,7 +13,7 @@ public interface ElevatorIO {
 
     public void disableElevator();
     public void setSpeed(double speed);
-    public void setCurrentPosition(double position);
+    public void setGoalPosition(double position);
     public void setEncoderPosition(double position);
     public double getVelocity();
     public double getCurrentPosition();
