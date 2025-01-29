@@ -4,6 +4,9 @@ import frc.robot.Constants.MotorIdConstants;
 import frc.robot.subsystems.coralIntake.CoralIntakeHardware;
 import frc.robot.subsystems.coralIntake.CoralIntakePlacebo;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
+import frc.robot.subsystems.coralWrist.CoralWristHardware;
+import frc.robot.subsystems.coralWrist.CoralWristPlacebo;
+import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.SwerveModule;
 import frc.robot.subsystems.drive.SwerveModuleHardware;
@@ -17,7 +20,7 @@ public class SubsystemFactory {
     private static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = 0;
     private static final double REAR_LEFT_CHASSIS_ANGULAR_OFFSET = Math.PI;
     private static final double REAR_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.PI / 2;
-    
+
     private static final boolean isSim = Robot.isSimulation();
 
     public DriveSubsystem buildDriveSubsystem(Gyro gyro) {
@@ -27,9 +30,9 @@ public class SubsystemFactory {
         SwerveModule rearRight;
         if (!isSim) {
             frontLeft = new SwerveModule(new SwerveModuleHardware(
-                MotorIdConstants.FRONT_LEFT_DRIVING_CAN_ID,
-                MotorIdConstants.FRONT_LEFT_TURNING_CAN_ID, 
-                FRONT_LEFT_CHASSIS_ANGULAR_OFFSET, "front left"));
+                    MotorIdConstants.FRONT_LEFT_DRIVING_CAN_ID,
+                    MotorIdConstants.FRONT_LEFT_TURNING_CAN_ID,
+                    FRONT_LEFT_CHASSIS_ANGULAR_OFFSET, "front left"));
             frontRight = new SwerveModule(new SwerveModuleHardware(
                     MotorIdConstants.FRONT_RIGHT_DRIVING_CAN_ID,
                     MotorIdConstants.FRONT_RIGHT_TURNING_CAN_ID,
@@ -65,6 +68,14 @@ public class SubsystemFactory {
             return new CoralIntakeSubsystem(new CoralIntakeHardware());
         } else {
             return new CoralIntakeSubsystem(new CoralIntakePlacebo());
+        }
+    }
+
+    public CoralWristSubsystem buildCoralWrist() {
+        if (!isSim) {
+            return new CoralWristSubsystem(new CoralWristHardware());
+        } else {
+            return new CoralWristSubsystem(new CoralWristPlacebo());
         }
     }
 }

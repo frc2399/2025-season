@@ -1,7 +1,5 @@
 package frc.robot.subsystems.coralIntake;
 
-import edu.wpi.first.units.measure.Angle;
-
 public interface CoralIntakeIO {
     static class CoralIntakeIOStates {
         public double velocity = 0.0;
@@ -16,13 +14,9 @@ public interface CoralIntakeIO {
 
     public void setRollerSpeed(double speed);
 
-    public void goToSetpoint(Angle angle);
-
     public double getVelocity();
 
     public double getCurrent();
 
     public void updateStates(CoralIntakeIOStates states);
-
-    public void setWristSpeed(double speed);
 }
