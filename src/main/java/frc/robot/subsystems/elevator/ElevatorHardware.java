@@ -54,9 +54,8 @@ public class ElevatorHardware implements ElevatorIO {
     private SparkFlex elevatorRightMotorFollower, elevatorLeftMotorLeader;
     private SparkFlexConfig globalMotorConfig, rightMotorConfigFollower, leftMotorConfigLeader;
     private SparkClosedLoopController leftClosedLoopController;
-    private RelativeEncoder rightEncoder, leftEncoder;
+    private RelativeEncoder leftEncoder;
     private TrapezoidProfile elevatorMotionProfile;
-    private double currentPosition;
     public State setpointState = new State();
     private State goalState = new State();
     private double goalPosition;
@@ -109,6 +108,7 @@ public class ElevatorHardware implements ElevatorIO {
         rightMotorConfigFollower
             .follow(MotorIdConstants.LEFT_ELEVATOR_MOTOR_ID, true)
             .apply(globalMotorConfig)
+            .inverted(true)
             .idleMode(IdleMode.kBrake)
             .smartCurrentLimit(MotorConstants.NEO_VORTEX_CURRENT_LIMIT);
 
