@@ -1,9 +1,12 @@
 package frc.robot;
 
 import frc.robot.Constants.MotorIdConstants;
-import frc.robot.subsystems.algaeEjector.AlgaeEjectorSubsystem;
-import frc.robot.subsystems.algaeEjector.AlgaeEjectorHardware;
-import frc.robot.subsystems.algaeEjector.AlgaeEjectorPlacebo;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
+import frc.robot.subsystems.algaeWrist.AlgaeWristHardware;
+import frc.robot.subsystems.algaeWrist.AlgaeWristPlacebo;
+import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakeHardware;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakePlacebo;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.SwerveModule;
 import frc.robot.subsystems.drive.SwerveModuleHardware;
@@ -60,12 +63,20 @@ public class SubsystemFactory {
         }
     }
 
-    public AlgaeEjectorSubsystem buildAlgaeEjector() {
+    public AlgaeIntakeSubsystem buildAlgaeIntake() {
         if (!isSim) {
-            return new AlgaeEjectorSubsystem(new AlgaeEjectorHardware(MotorIdConstants.ALGAE_EJECTOR_LEFT_CAN_ID,
-                    MotorIdConstants.ALGAE_EJECTOR_RIGHT_CAN_ID, MotorIdConstants.ALGAE_WRIST_CAN_ID));
+            return new AlgaeIntakeSubsystem(new AlgaeIntakeHardware(MotorIdConstants.ALGAE_INTAKE_LEFT_CAN_ID,
+                    MotorIdConstants.ALGAE_INTAKE_RIGHT_CAN_ID));
         } else {
-            return new AlgaeEjectorSubsystem(new AlgaeEjectorPlacebo());
+            return new AlgaeIntakeSubsystem(new AlgaeIntakePlacebo());
+        }
+    }
+
+    public AlgaeWristSubsystem buildAlgaeWrist() {
+        if (!isSim) {
+            return new AlgaeWristSubsystem(new AlgaeWristHardware(MotorIdConstants.ALGAE_WRIST_CAN_ID));
+        } else {
+            return new AlgaeWristSubsystem(new AlgaeWristPlacebo());
         }
     }
 

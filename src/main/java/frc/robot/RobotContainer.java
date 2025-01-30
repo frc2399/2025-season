@@ -11,7 +11,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SpeedConstants;
-import frc.robot.subsystems.algaeEjector.AlgaeEjectorSubsystem;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
+import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.vision.*;
@@ -21,7 +22,8 @@ public class RobotContainer {
         private SubsystemFactory subsystemFactory = new SubsystemFactory();
         private Gyro gyro = subsystemFactory.buildGyro();
         private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
-        private AlgaeEjectorSubsystem algaeEjector = subsystemFactory.buildAlgaeEjector();
+        private AlgaeIntakeSubsystem algaeIntake = subsystemFactory.buildAlgaeIntake();
+        private AlgaeWristSubsystem algaeWrist = subsystemFactory.buildAlgaeWrist();
         // this is public because we need to run the visionPoseEstimator periodic from
         // Robot
         public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
@@ -63,11 +65,17 @@ public class RobotContainer {
 
         private void configureButtonBindingsOperator() {
                 operatorController.rightTrigger()
-                                .whileTrue(algaeEjector.setSpeed(
-                                                SpeedConstants.ALGAE_EJECTOR_MAX_SPEED_MPS.in(MetersPerSecond)));
+                                .whileTrue(algaeIntake.setSpeed(
+                                                SpeedConstants.ALGAE_INTAKE_MAX_SPEED_MPS.in(MetersPerSecond)));
                 operatorController.leftTrigger()
-                                .whileTrue((algaeEjector.setSpeed(
-                                                -SpeedConstants.ALGAE_EJECTOR_MAX_SPEED_MPS.in(MetersPerSecond))));
+                                .whileTrue((algaeIntake.setSpeed(
+                                                -SpeedConstants.ALGAE_INTAKE_MAX_SPEED_MPS.in(MetersPerSecond))));
+                operatorController.leftBumper()
+                                .whileTrue((algaeWrist.setSpeed(
+                                                SpeedConstants.ALGAE_WRIST_MAX_SPEED_MPS.in(MetersPerSecond))));
+                operatorController.rightBumper()
+                                .whileTrue((algaeWrist.setSpeed(
+                                                -SpeedConstants.ALGAE_WRIST_MAX_SPEED_MPS.in(MetersPerSecond))));
         }
 
         /**

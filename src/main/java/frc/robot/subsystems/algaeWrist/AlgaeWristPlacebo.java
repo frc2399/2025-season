@@ -1,6 +1,6 @@
-package frc.robot.subsystems.algaeEjector;
+package frc.robot.subsystems.algaeWrist;
 
-public class AlgaeEjectorPlacebo implements AlgaeEjectorIO {
+public class AlgaeWristPlacebo implements AlgaeWristIO {
 
     @Override
     public void setSpeed(double speed) {
@@ -8,7 +8,7 @@ public class AlgaeEjectorPlacebo implements AlgaeEjectorIO {
     }
 
     @Override
-    public void updateStates(AlgaeEjectorIOStates states) {
+    public void updateStates(AlgaeWristIOStates states) {
     }
 
     @Override
@@ -20,4 +20,5 @@ public class AlgaeEjectorPlacebo implements AlgaeEjectorIO {
     public double getCurrent() {
         return 0.0;
     }
+
 }

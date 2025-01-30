@@ -24,8 +24,8 @@ public final class Constants {
 
     public static final int GYRO_CAN_ID = 3;
 
-    public static final int ALGAE_EJECTOR_LEFT_CAN_ID = 0;
-    public static final int ALGAE_EJECTOR_RIGHT_CAN_ID = 1;
+    public static final int ALGAE_INTAKE_LEFT_CAN_ID = 0;
+    public static final int ALGAE_INTAKE_RIGHT_CAN_ID = 1;
     public static final int ALGAE_WRIST_CAN_ID = 2;
 
   }
@@ -44,7 +44,8 @@ public final class Constants {
 
   public static class SpeedConstants {
     public static final double MAIN_LOOP_FREQUENCY_HZ = 50;
-    public static final LinearVelocity ALGAE_EJECTOR_MAX_SPEED_MPS = MetersPerSecond.of(0);
+    public static final LinearVelocity ALGAE_INTAKE_MAX_SPEED_MPS = MetersPerSecond.of(0);
+    public static final LinearVelocity ALGAE_WRIST_MAX_SPEED_MPS = MetersPerSecond.of(0);
     public static final double DRIVETRAIN_MAX_SPEED_MPS = 4.8;
     public static final double DRIVETRAIN_MAX_ANGULAR_SPEED_RPS = 2 * Math.PI;
   }
