@@ -20,17 +20,13 @@ public class SwerveModulePlacebo implements SwerveModuleIO {
 
     public void setDesiredTurnAngle(double angle) {}
 
-    public double getDriveBusVoltage() {
-        return 0.0;
-    }
+    
 
     public double getDriveOutput() {
         return 0.0;
     }
 
-    public double getTurnBusVoltage() {
-        return 0.0;
-    }
+    
 
     public double getTurnOutput() {
         return 0.0;
@@ -56,6 +52,10 @@ public class SwerveModulePlacebo implements SwerveModuleIO {
     public double getTurnCurrent(){
         return 0.0;
     }
+    public double getTurnEncoderSpeedMPS(){
+        return 0.0;
+    }
+    
 
     
     public void updateStates(SwerveModuleIOStates states) {

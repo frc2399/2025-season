@@ -22,13 +22,7 @@ public class SwerveModule {
         desiredState.angle = new Rotation2d(getTurnEncoderPosition());
     }
 
-    public void setDriveEncoderPosition(double position) {
-        io.setDriveEncoderPosition(position);
-    }
-
-    public double getDriveEncoderPosition() {
-        return io.getDriveEncoderPosition();
-    }
+    
 
     public double getDriveEncoderSpeedMPS() {
         return io.getDriveEncoderSpeedMPS();
@@ -38,31 +32,31 @@ public class SwerveModule {
         return io.getTurnEncoderPosition();
     }
 
+    public double getDriveEncoderPosition() {
+        return io.getDriveEncoderPosition();
+    }
+
     public void resetEncoders() {
         io.setDriveEncoderPosition(0);
     }
 
      
-    public double getDriveBusVoltage() {
-        return io.getDriveBusVoltage();
-    }
-
+    
     public double getDriveOutput() {
         return io.getDriveOutput();
     }
 
-    public double getTurnBusVoltage() {
-        return io.getTurnBusVoltage();
-    }
-
+   
 
     public double getTurnOutputCurrent(){
         return io.getTurnCurrent();
     }
 
-    public double getDriveOutputCurrent(){
-        return io.getDriveCurrent();
+    public void updateStates(){
+         io.updateStates(states);
     }
+
+    
 
     
 
@@ -111,15 +105,5 @@ public class SwerveModule {
     }
 
     
-    public void updateStates(SwerveModuleIOStates moduleStates){
-        moduleStates.drivingEncoderPos = io.getDriveEncoderPosition();
-        moduleStates.turningEncoderPos = io.getTurnEncoderPosition();
-        moduleStates.driveVoltage = io.getDriveBusVoltage()* io.getDriveOutput();
-        moduleStates.turnVoltage = io.getTurnBusVoltage()* io.getTurnOutput();
-        moduleStates.driveCurrent = io.getDriveCurrent();
-        moduleStates.turnCurrent = io.getTurnCurrent();
-        moduleStates.drivingVelocity = io.getDriveEncoderSpeedMPS();
-        moduleStates.desiredDrivingVelocity = desiredState.speedMetersPerSecond;
-        moduleStates.desiredAngle = 
-    }
+    
 }

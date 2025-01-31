@@ -14,7 +14,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
-import java.lang.FdLibm.Hypot;
+
 
 import org.ietf.jgss.GSSContext;
 
@@ -131,7 +131,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // This will get the simulated sensor readings that we set
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
-
+                
                 poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromRadians(gyro.getYaw()),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
@@ -157,6 +157,11 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         lastAngle = lastAngle.plus(Rotation2d.fromRadians(angleChange));
                         gyro.setYaw(lastAngle.getRadians());
                 }
+
+               
+                logAndUpdateRobotSubsystemStates();
+                
+        frontLeft.updateStates();
 
         }
 
@@ -333,21 +338,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
             private DriveSubsystemStates states = new DriveSubsystemStates();
 
-            private void logSwerveModuleStates(String moduleName, SwerveModuleIOStates moduleStates) {
-                SmartDashboard.putNumber(moduleName + "desired angle", moduleStates.desiredAngle);
-                SmartDashboard.putNumber(moduleName + "desired drive velocity", moduleStates.desiredDrivingVelocity);
-                SmartDashboard.putNumber(moduleName + "drive current", moduleStates.driveCurrent);
-                SmartDashboard.putNumber(moduleName + "drive voltage", moduleStates.driveVoltage);
-                SmartDashboard.putNumber(moduleName + "drive velocity", moduleStates.drivingVelocity);
-                SmartDashboard.putNumber(moduleName + "driving encoder position", moduleStates.drivingEncoderPos);
-                SmartDashboard.putNumber(moduleName + "turning encoder position", moduleStates.turningEncoderPos);
-                SmartDashboard.putNumber(moduleName + "turn current", moduleStates.turnCurrent);
-                SmartDashboard.putNumber(moduleName + "turn voltage", moduleStates.turnVoltage);
-                SmartDashboard.putNumber(moduleName + "turn position", moduleStates.turningPosition);
-                
-            }
+            
         
-            private void logAndUpdateRobotStates() {
+            private void logAndUpdateRobotSubsystemStates() {
                 states.pose = getPose();
                 states.poseX = states.pose.getX();
                 states.poseY =states.pose.getY();
@@ -368,14 +361,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 SmartDashboard.putNumber("Gyro Angle(degrees)", states.gyroAngleDegrees);
             }
 
-            private void logAllSwerveModuleStates(){
-        
-                logSwerveModuleStates("Front Left", states.frontLeftStates);
-                logSwerveModuleStates("Rear Left", states.rearLeftStates);
-                logSwerveModuleStates("Front Right", states.frontRightStates);
-                logSwerveModuleStates("Rear Right", states.rearRightStates);
-
-            }
+           
 
 
         
