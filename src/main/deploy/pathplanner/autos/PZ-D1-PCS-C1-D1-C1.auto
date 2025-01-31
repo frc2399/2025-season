@@ -5,27 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Score coral on L1"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": null
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake coral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": null
+            "pathName": "PZ-D1"
           }
         },
         {
@@ -37,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "D1-PCS"
           }
         },
         {
@@ -49,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "PCS-C1"
           }
         },
         {
@@ -61,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "C1-PCS"
           }
         },
         {
@@ -73,7 +55,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "PCS-D1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral on L1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "D1-PCS"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PCS-C1"
           }
         },
         {
