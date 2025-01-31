@@ -65,8 +65,7 @@ public class SubsystemFactory {
 
     public AlgaeIntakeSubsystem buildAlgaeIntake() {
         if (!isSim) {
-            return new AlgaeIntakeSubsystem(new AlgaeIntakeHardware(MotorIdConstants.ALGAE_INTAKE_LEFT_CAN_ID,
-                    MotorIdConstants.ALGAE_INTAKE_RIGHT_CAN_ID));
+            return new AlgaeIntakeSubsystem(new AlgaeIntakeHardware());
         } else {
             return new AlgaeIntakeSubsystem(new AlgaeIntakePlacebo());
         }
@@ -74,7 +73,7 @@ public class SubsystemFactory {
 
     public AlgaeWristSubsystem buildAlgaeWrist() {
         if (!isSim) {
-            return new AlgaeWristSubsystem(new AlgaeWristHardware(MotorIdConstants.ALGAE_WRIST_CAN_ID));
+            return new AlgaeWristSubsystem(new AlgaeWristHardware());
         } else {
             return new AlgaeWristSubsystem(new AlgaeWristPlacebo());
         }

@@ -15,8 +15,8 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
         this.io = io;
     }
 
-    public Command setSpeed(double speed) {
-        return this.run(() -> Commands.run(() -> io.setSpeed(speed)));
+    public Command setRollerSpeed(double speed) {
+        return this.run(() -> Commands.run(() -> io.setRollerSpeed(speed)));
     }
 
     @Override

@@ -56,6 +56,8 @@ public class RobotContainer {
                                                                                 DriveControlConstants.DRIVE_DEADBAND)),
                                                                 DriveControlConstants.FIELD_ORIENTED_DRIVE),
                                                 drive).withName("drive default"));
+                algaeIntake.setDefaultCommand(algaeIntake.setRollerSpeed(0));
+                algaeWrist.setDefaultCommand(algaeWrist.setWristSpeed(0));
         }
 
         private void configureButtonBindingsDriver() {
@@ -65,16 +67,16 @@ public class RobotContainer {
 
         private void configureButtonBindingsOperator() {
                 operatorController.rightTrigger()
-                                .whileTrue(algaeIntake.setSpeed(
+                                .whileTrue(algaeIntake.setRollerSpeed(
                                                 SpeedConstants.ALGAE_INTAKE_MAX_SPEED_MPS.in(MetersPerSecond)));
                 operatorController.leftTrigger()
-                                .whileTrue((algaeIntake.setSpeed(
+                                .whileTrue((algaeIntake.setRollerSpeed(
                                                 -SpeedConstants.ALGAE_INTAKE_MAX_SPEED_MPS.in(MetersPerSecond))));
                 operatorController.leftBumper()
-                                .whileTrue((algaeWrist.setSpeed(
+                                .whileTrue((algaeWrist.setWristSpeed(
                                                 SpeedConstants.ALGAE_WRIST_MAX_SPEED_MPS.in(MetersPerSecond))));
                 operatorController.rightBumper()
-                                .whileTrue((algaeWrist.setSpeed(
+                                .whileTrue((algaeWrist.setWristSpeed(
                                                 -SpeedConstants.ALGAE_WRIST_MAX_SPEED_MPS.in(MetersPerSecond))));
         }
 

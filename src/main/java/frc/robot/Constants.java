@@ -6,7 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.LinearVelocity;
-
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 
 public final class Constants {
@@ -51,6 +51,8 @@ public final class Constants {
   }
 
   public static class SetpointConstants {
+    public static final Angle ALGAE_WRIST_INTAKE_ANGLE = Degrees.of(45);
+    public static final Angle ALGAE_WRIST_OUTTAKE_ANGLE = Degrees.of(-45);
   }
 
   public static class DriveControlConstants {

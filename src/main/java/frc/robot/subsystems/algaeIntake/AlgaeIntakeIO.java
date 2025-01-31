@@ -10,11 +10,7 @@ public interface AlgaeIntakeIO {
         public double rightAppliedVoltage = 0.0;
     }
 
-    public void setSpeed(double speed);
-
-    public double getVelocity();
-
-    public double getCurrent();
+    public void setRollerSpeed(double speed);
 
     public void updateStates(AlgaeIntakeIOStates states);
 }
