@@ -47,6 +47,8 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
 
         private static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(0.1);
 
+        private static final boolean POSITION_WRAPPING_ENABLED_SIDE_MOTORS = false;
+
         public AlgaeIntakeHardware() {
 
                 leftSparkMaxConfig.inverted(LEFT_MOTOR_INVERTED).idleMode(IDLE_MODE)
@@ -55,7 +57,8 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
                                 .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
                 leftSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                                 .pidf(P, I, D, FF)
-                                .outputRange(MIN_OUTPUT, MAX_OUTPUT);
+                                .outputRange(MIN_OUTPUT, MAX_OUTPUT)
+                                .positionWrappingEnabled(POSITION_WRAPPING_ENABLED_SIDE_MOTORS);
 
                 rightSparkMaxConfig.inverted(RIGHT_MOTOR_INVERTED).idleMode(IDLE_MODE)
                                 .smartCurrentLimit(MotorConstants.NEO550_CURRENT_LIMIT);
@@ -95,6 +98,7 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
         @Override
         public void updateStates(AlgaeIntakeIOStates states) {
                 states.intakeVelocity = algaeIntakeLeftEncoder.getVelocity();
+                states.intakeVelocity = algaeIntakeRightEncoder.getVelocity();
                 states.leftAppliedVoltage = algaeIntakeLeftSparkMax.getAppliedOutput()
                                 * algaeIntakeLeftSparkMax.getBusVoltage();
                 states.rightAppliedVoltage = algaeIntakeRightSparkMax.getAppliedOutput()

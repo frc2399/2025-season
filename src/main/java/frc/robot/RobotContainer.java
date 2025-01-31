@@ -15,7 +15,7 @@ import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
-import frc.robot.vision.*;
+import frc.robot.vision.VisionPoseEstimator;
 
 public class RobotContainer {
         private CommandFactory commandFactory = new CommandFactory();
