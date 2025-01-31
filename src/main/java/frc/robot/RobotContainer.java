@@ -20,6 +20,7 @@ import frc.robot.subsystems.gyro.Gyro;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.PathPlannerLogging;
+import frc.robot.vision.*;
 
 public class RobotContainer {
   private CommandFactory commandFactory = new CommandFactory();
@@ -29,6 +30,8 @@ public class RobotContainer {
   private static SendableChooser<Command> autoChooser;
   private ComplexWidget autonChooserWidget;
   private final Field2d field;
+  //this is public because we need to run the visionPoseEstimator periodic from Robot
+  public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
@@ -78,6 +81,7 @@ public class RobotContainer {
   }
  
   private void configureButtonBindingsDriver() {
+    driverController.b().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
   }
 
