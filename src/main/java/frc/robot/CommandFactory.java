@@ -9,7 +9,4 @@ public class CommandFactory {
         this.elevator = elevator;
     }
 
-    public void disableSubstems()  {
-        elevator.disableElevator();
-    }
 }

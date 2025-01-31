@@ -37,7 +37,7 @@ public class ElevatorHardware implements ElevatorIO {
         private static final Distance ALLOWED_SETPOINT_ERROR = Inches.of(.25); 
         private static final LinearVelocity MAX_VEL = MetersPerSecond.of(0.8);
         private static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(0.4);
-        private static final Voltage P_VALUE = Volts.of(2.0);
+        private static final Voltage P_VALUE = Volts.of(512.0);
         private static final Voltage I_VALUE = Volts.of(0);
         private static final Voltage D_VALUE = Volts.of(0);
         private static final Voltage FEEDFORWARD_VALUE = Volts.of(1.0 / 917); 
@@ -73,7 +73,7 @@ public class ElevatorHardware implements ElevatorIO {
 
         leftEncoder = elevatorLeftMotorLeader.getEncoder();
 
-        elevatorMotionProfile = new TrapezoidProfile(new Constraints(ElevatorHardwareConstants.MAX_ACCEL.in(MetersPerSecondPerSecond), ElevatorHardwareConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)));
+        elevatorMotionProfile = new TrapezoidProfile(new Constraints(ElevatorHardwareConstants.MAX_VEL.in(MetersPerSecond), ElevatorHardwareConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)));
 
         globalMotorConfig.encoder
             .positionConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION)
@@ -108,7 +108,6 @@ public class ElevatorHardware implements ElevatorIO {
         rightMotorConfigFollower
             .follow(MotorIdConstants.LEFT_ELEVATOR_MOTOR_ID, true)
             .apply(globalMotorConfig)
-            .inverted(true)
             .idleMode(IdleMode.kBrake)
             .smartCurrentLimit(MotorConstants.NEO_VORTEX_CURRENT_LIMIT);
 
@@ -118,6 +117,7 @@ public class ElevatorHardware implements ElevatorIO {
 
     @Override
     public void disableElevator() {
+        System.out.println("Got to disableElevator Method");
         elevatorLeftMotorLeader.set(0);
     }
 
@@ -178,6 +178,8 @@ public class ElevatorHardware implements ElevatorIO {
         inputs.appliedVoltageRight = elevatorRightMotorFollower.getAppliedOutput() * elevatorRightMotorFollower.getBusVoltage();
         inputs.appliedVoltageLeft = elevatorLeftMotorLeader.getAppliedOutput() * elevatorLeftMotorLeader.getBusVoltage();
         inputs.positionSetPoint = goalPosition; 
+        inputs.goalStatePosition = goalState.position;
         inputs.current = elevatorLeftMotorLeader.getOutputCurrent();
+        inputs.setpointStatePosition = setpointState.position;
     }
 }

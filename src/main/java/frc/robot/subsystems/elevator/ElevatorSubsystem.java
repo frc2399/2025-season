@@ -34,8 +34,10 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     //motion profile command that is seperate from PID
     public Command goToSetpointCmdMotionProfling(double position) {
-        profiledPIDEnabled = true;
-        return this.runOnce(() -> elevatorIO.setPositionMotionProfiling(position));
+        return this.runOnce(() -> {
+            elevatorIO.setPositionMotionProfiling(position); 
+            profiledPIDEnabled = true;
+        });
     }
 
     public Command setSpeedCommand(double speed) {
@@ -58,7 +60,9 @@ public class ElevatorSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Elevator/appliedVoltageRight", inputs.appliedVoltageRight);
         SmartDashboard.putNumber("Elevator/appliedVoltageLeft", inputs.appliedVoltageLeft);
         SmartDashboard.putNumber("Elevator/positionSetPoint", inputs.positionSetPoint);
+        SmartDashboard.putNumber("Elevator/goalStatePosition", inputs.goalStatePosition);
         SmartDashboard.putNumber("Elevator/output current", inputs.current);
+        SmartDashboard.putNumber("Elevator/setpointStatePosition", inputs.setpointStatePosition);
     }
 
 }

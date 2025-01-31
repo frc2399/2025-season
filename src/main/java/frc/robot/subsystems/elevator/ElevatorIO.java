@@ -8,6 +8,8 @@ public interface ElevatorIO {
         public double appliedVoltageRight = 0.0;
         public double appliedVoltageLeft = 0.0;
         public double positionSetPoint = 0.0;
+        public double goalStatePosition = 0.0;
+        public double setpointStatePosition = 0.0;
         public double current = 0.0;
     }
 
