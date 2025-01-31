@@ -15,8 +15,12 @@ public class SubsystemFactory {
     private static final double REAR_LEFT_CHASSIS_ANGULAR_OFFSET = Math.PI;
     private static final double REAR_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.PI / 2;
 
+    private static final String ALPHA_SERIAL_NUMBER = "";
+    private static final String BETA_SERIAL_NUMBER = "30FC267";
+    private static final String COMP_SERIAL_NUMBER = "";
+
     private enum RobotType {
-        SIM,
+        PLACEBO,
         ALPHA,
         BETA,
         COMP
@@ -27,17 +31,17 @@ public class SubsystemFactory {
     private String serialNum = System.getenv("serialnum");
 
     public SubsystemFactory() {
-
-        if (serialNum.equals("asdf")) {
+        if (serialNum.equals(ALPHA_SERIAL_NUMBER)) {
             robotType = RobotType.ALPHA;
-        } else if (serialNum.equals("sdf")) {
+        } else if (serialNum.equals(BETA_SERIAL_NUMBER)) {
             robotType = RobotType.BETA;
-        } else if (serialNum.equals("df")) {
+        } else if (serialNum.equals(COMP_SERIAL_NUMBER)) {
             robotType = RobotType.COMP;
         } else {
-            robotType = RobotType.SIM;
+            robotType = RobotType.PLACEBO;
         }
     }
+
     public DriveSubsystem buildDriveSubsystem(Gyro gyro) {
         SwerveModule frontLeft;
         SwerveModule rearLeft;
