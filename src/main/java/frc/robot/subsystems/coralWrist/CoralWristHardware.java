@@ -1,6 +1,8 @@
 package frc.robot.subsystems.coralWrist;
 
 import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -15,7 +17,12 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 
@@ -38,12 +45,22 @@ public class CoralWristHardware implements CoralWristIO {
         private static final double ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 60.0; // radians
         private static final double ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 60.0; // radians per second
 
-        private static final double WRIST_MOTOR_P = 0.0;
+        private static final double WRIST_MOTOR_P = 0.1;
         private static final double WRIST_MOTOR_I = 0.0;
         private static final double WRIST_MOTOR_D = 0.0;
         private static final double WRIST_MOTOR_FF = 0.0;
         private static final double WRIST_MOTOR_MIN_OUTPUT = -1.0;
         private static final double WRIST_MOTOR_MAX_OUTPUT = 1.0;
+
+        private static final AngularVelocity CORAL_WRIST_MAX_VELOCITY = RadiansPerSecond.of(0);
+        private static final AngularAcceleration CORAL_WRIST_MAX_ACCELERATION = RadiansPerSecondPerSecond.of(0);
+
+        private TrapezoidProfile.State setpointState;
+        private TrapezoidProfile.State goalState = new TrapezoidProfile.State();
+
+        private TrapezoidProfile wristTrapezoidProfile = new TrapezoidProfile(new Constraints(
+                        CORAL_WRIST_MAX_VELOCITY.in(RadiansPerSecond),
+                        CORAL_WRIST_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)));
 
         public CoralWristHardware() {
                 wristSparkFlexConfig.inverted(WRIST_MOTOR_INVERTED).idleMode(IDLE_MODE)
@@ -68,7 +85,11 @@ public class CoralWristHardware implements CoralWristIO {
         public void goToSetpoint(Angle angle) {
                 coralIntakeWristClosedLoopController.setReference(angle.in(Radians), ControlType.kPosition,
                                 ClosedLoopSlot.kSlot0,
-                                coralWristFeedFoward.calculate(angle.in(Radians), ENCODER_VELOCITY_FACTOR));
+                                coralWristFeedFoward.calculate(angle.in(Radians), 0));
+        }
+
+        public void setGoalStateTrapezoid(Angle angle) {
+                goalState.position = angle.in(Radians);
         }
 
         @Override
@@ -79,9 +100,19 @@ public class CoralWristHardware implements CoralWristIO {
 
         @Override
         public void updateStates(CoralWristIOStates states) {
+                states.wristVelocity = coralIntakeWristAbsoluteEncoder.getVelocity();
                 states.wristAppliedVoltage = coralIntakeWristSparkFlex.getAppliedOutput()
                                 * coralIntakeWristSparkFlex.getBusVoltage();
                 states.wristCurrent = coralIntakeWristSparkFlex.getOutputCurrent();
                 states.wristAbsoluteEncoderAngle = coralIntakeWristAbsoluteEncoder.getPosition();
+                states.trapezoidProfileGoalAngle = goalState.position;
+        }
+
+        @Override
+        public void periodic() {
+                setpointState = wristTrapezoidProfile.calculate(0.02, setpointState, goalState);
+                coralIntakeWristClosedLoopController.setReference(setpointState.position, ControlType.kPosition,
+                                ClosedLoopSlot.kSlot0,
+                                coralWristFeedFoward.calculate(setpointState.position, setpointState.velocity));
         }
 }

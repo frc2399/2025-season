@@ -69,5 +69,8 @@ public class RobotContainer {
     operatorController.a().whileTrue(coralWrist.setWristSpeed(-SpeedConstants.WRIST_MAX_SPEED));
     operatorController.x().whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_INTAKE_SPEED));
     operatorController.b().whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED));
+    operatorController.rightBumper().onTrue(coralWrist.setGoalStateTrapezoidCommand(SetpointConstants.CORAL_INTAKE_ANGLE));
+    operatorController.leftBumper().onTrue(coralWrist.setGoalStateTrapezoidCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE));
+
   }
 }
