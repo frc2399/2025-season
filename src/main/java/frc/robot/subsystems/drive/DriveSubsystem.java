@@ -48,8 +48,6 @@ import java.util.Optional;
 
 public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
-        
-
         private double velocityXMPS;
         private double velocityYMPS;
 
@@ -105,7 +103,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private FieldObject2d frontRightField2dModule = field2d.getObject("front right module");
         private FieldObject2d rearRightField2dModule = field2d.getObject("rear right module");
 
-        private ChassisSpeeds relativeRobotSpeeds;
+        private ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
 
         private Rotation2d lastAngle = new Rotation2d();
 
