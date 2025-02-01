@@ -19,6 +19,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.util.Units;
+import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -94,13 +95,13 @@ public class ElevatorHardware implements ElevatorIO {
             .apply(globalMotorConfig)
             .inverted(false)
             .idleMode(IdleMode.kBrake)
-            .smartCurrentLimit(MotorConstants.NEO_VORTEX_CURRENT_LIMIT);
+            .smartCurrentLimit((int) MotorConstants.NEO_VORTEX_CURRENT_LIMIT.in(Amps));
 
         rightMotorConfigFollower
             .follow(MotorIdConstants.LEFT_ELEVATOR_MOTOR_ID, true)
             .apply(globalMotorConfig)
             .idleMode(IdleMode.kBrake) 
-            .smartCurrentLimit(MotorConstants.NEO_VORTEX_CURRENT_LIMIT);
+            .smartCurrentLimit((int) MotorConstants.NEO_VORTEX_CURRENT_LIMIT.in(Amps));
 
         elevatorLeftMotorLeader.configure(leftMotorConfigLeader, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         elevatorRightMotorFollower.configure(rightMotorConfigFollower, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

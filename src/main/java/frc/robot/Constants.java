@@ -5,11 +5,15 @@
 package frc.robot;
 
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Voltage;
+
 import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.units.AngularVelocityUnit;
+import edu.wpi.first.units.CurrentUnit;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -37,11 +41,11 @@ public final class Constants {
   }
 
   public static class MotorConstants {
-    public static final int NEO550_CURRENT_LIMIT = 20;
-    public static final int NEO_CURRENT_LIMIT = 50;
+    public static final Current NEO550_CURRENT_LIMIT = Amps.of(20);
+    public static final Current NEO_CURRENT_LIMIT = Amps.of(50);
     public static final AngularVelocity NEO_FREE_SPEED = RPM.of(5676);
     public static final AngularVelocity NEO550_FREE_SPEED = RPM.of(11000);
-    public static final int NEO_VORTEX_CURRENT_LIMIT = 60;
+    public static final Current NEO_VORTEX_CURRENT_LIMIT = Amps.of(60);
   }
 
   public static class SpeedConstants {

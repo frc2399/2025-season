@@ -9,6 +9,9 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+
+import static edu.wpi.first.units.Units.Amp;
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
@@ -105,7 +108,8 @@ public class SwerveModuleHardware implements SwerveModuleIO {
         turningSparkMax = new SparkMax(turningCanId, MotorType.kBrushless);
 
         sparkMaxConfigDriving.inverted(DRIVING_MOTOR_INVERTED).idleMode(DRIVING_MOTOR_IDLE_MODE)
-                .smartCurrentLimit(MotorConstants.NEO_CURRENT_LIMIT)
+                .smartCurrentLimit(
+                    (int) MotorConstants.NEO_CURRENT_LIMIT.in(Amps))
                 .voltageCompensation(VOLTAGE_COMPENSATION);
         sparkMaxConfigDriving.encoder.positionConversionFactor(DRIVING_ENCODER_POSITION_FACTOR.in(Meters))
                 .velocityConversionFactor(DRIVING_ENCODER_VELOCITY_FACTOR.in(Meters));
@@ -114,7 +118,8 @@ public class SwerveModuleHardware implements SwerveModuleIO {
                 .outputRange(DRIVING_MIN_OUTPUT, DRIVING_MAX_OUTPUT);
 
         sparkMaxConfigTurning.inverted(TURNING_MOTOR_INVERTED).idleMode(TURNING_MOTOR_IDLE_MODE)
-                .smartCurrentLimit(MotorConstants.NEO550_CURRENT_LIMIT)
+                .smartCurrentLimit(
+                    (int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps))
                 .voltageCompensation(VOLTAGE_COMPENSATION);
         sparkMaxConfigTurning.absoluteEncoder.positionConversionFactor(TURNING_ENCODER_POSITION_FACTOR)
                 .velocityConversionFactor(TURNING_ENCODER_VELOCITY_FACTOR);

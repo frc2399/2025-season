@@ -16,13 +16,13 @@ import frc.robot.vision.*;
 import static edu.wpi.first.units.Units.*;
 
 public class RobotContainer {
-  private CommandFactory commandFactory = new CommandFactory();
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
   private Gyro gyro = subsystemFactory.buildGyro();
   private final ElevatorSubsystem elevator = subsystemFactory.buildElevator();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
   //this is public because we need to run the visionPoseEstimator periodic from Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
+  private CommandFactory commandFactory = new CommandFactory(drive, elevator);
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
