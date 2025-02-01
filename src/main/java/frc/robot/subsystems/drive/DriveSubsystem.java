@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.drive;
 
+import java.util.Optional;
+
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.Matrix;
@@ -42,9 +44,21 @@ import frc.robot.Robot;
 import frc.robot.subsystems.drive.SwerveModuleIO.SwerveModuleIOStates;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.vision.VisionPoseEstimator.DriveBase;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+
+import java.util.Optional;
 
 public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
+<<<<<<< HEAD
+=======
+        
+
+        private double velocityXMPS;
+        private double velocityYMPS;
+
+>>>>>>> main
         // correction PID
         private double DRIVE_P = 1.1;
         private double DRIVE_D = 0.05;
