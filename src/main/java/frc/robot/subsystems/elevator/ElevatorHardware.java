@@ -87,19 +87,19 @@ public class ElevatorHardware implements ElevatorIO {
             .forwardSoftLimit((ElevatorHardwareConstants.MAX_ELEVATOR_HEIGHT).in(Meters) - 0.02) //a little less than max height for safety
             .forwardSoftLimitEnabled(true)
             .reverseSoftLimit(0)
-            .reverseSoftLimitEnabled(false);
+            .reverseSoftLimitEnabled(true);
 
 
         leftMotorConfigLeader
             .apply(globalMotorConfig)
             .inverted(false)
-            .idleMode(IdleMode.kBrake)
+            .idleMode(IdleMode.kBrake) 
             .smartCurrentLimit(MotorConstants.NEO_VORTEX_CURRENT_LIMIT);
 
         rightMotorConfigFollower
             .follow(MotorIdConstants.LEFT_ELEVATOR_MOTOR_ID, true)
             .apply(globalMotorConfig)
-            .idleMode(IdleMode.kBrake)
+            .idleMode(IdleMode.kBrake) 
             .smartCurrentLimit(MotorConstants.NEO_VORTEX_CURRENT_LIMIT);
 
         elevatorLeftMotorLeader.configure(leftMotorConfigLeader, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
