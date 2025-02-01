@@ -8,12 +8,10 @@ public class CoralIntakePlacebo implements CoralIntakeIO {
 
     @Override
     public double getVelocity() {
-        return 0.0;
     }
 
     @Override
     public double getCurrent() {
-        return 0.0;
     }
 
     @Override
