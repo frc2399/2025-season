@@ -8,6 +8,9 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.Inches;
+
+import edu.wpi.first.units.AngularVelocityUnit;
+
 import static edu.wpi.first.units.Units.*;
 
 public final class Constants {
@@ -37,9 +40,7 @@ public final class Constants {
     public static final int NEO550_CURRENT_LIMIT = 20;
     public static final int NEO_CURRENT_LIMIT = 50;
     public static final AngularVelocity NEO_FREE_SPEED = RPM.of(5676);
-    public static final AngularVelocity NEO_FREE_SPEED_RPS = NEO_FREE_SPEED.divide(60);
-    // MPS = (GearRatio * 2πr * RPM) / 60
-    public static final int NEO550_FREE_SPEED_RPM = 11000;
+    public static final AngularVelocity NEO550_FREE_SPEED = RPM.of(11000);
     public static final int NEO_VORTEX_CURRENT_LIMIT = 60;
   }
 
@@ -55,7 +56,6 @@ public final class Constants {
     public static Distance L_TWO_HEIGHT = Inches.of(7.5);
     public static Distance L_THREE_HEIGHT = Inches.of(23.25);
     public static Distance L_FOUR_HEIGHT = Inches.of(49.5);
-    public static Distance MIDDLE = Inches.of(16.0); 
   }
 
   public static class DriveControlConstants {

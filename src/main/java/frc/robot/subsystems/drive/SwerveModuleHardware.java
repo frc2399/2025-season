@@ -11,6 +11,8 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.RevolutionsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -60,8 +62,8 @@ public class SwerveModuleHardware implements SwerveModuleIO {
 
     private static final double DRIVING_MOTOR_REDUCTION = (45.0 * 22) / (DRIVING_MOTOR_PINION_TEETH * 15);
 
-    private static final AngularVelocity DRIVE_WHEEL_FREE_SPEED_RPS = ((MotorConstants.NEO_FREE_SPEED_RPS.times(
-            WHEEL_CIRCUMFERENCE.in(Meters))).divide(DRIVING_MOTOR_REDUCTION));
+    private static final AngularVelocity DRIVE_WHEEL_FREE_SPEED = RotationsPerSecond.of((MotorConstants.NEO_FREE_SPEED.in(RotationsPerSecond) *
+            WHEEL_CIRCUMFERENCE.in(Meters)) / (DRIVING_MOTOR_REDUCTION));
 
     private static final Distance DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_DIAMETER.times(Math.PI))
             .divide(DRIVING_MOTOR_REDUCTION).divide((260.0 / 254)); // meters
@@ -79,7 +81,7 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     private static final double DRIVING_P = 0.2;
     private static final double DRIVING_I = 0;
     private static final double DRIVING_D = 0;
-    private static final double DRIVING_FF = 1 / DRIVE_WHEEL_FREE_SPEED_RPS.in(RotationsPerSecond);
+    private static final double DRIVING_FF = 1 / DRIVE_WHEEL_FREE_SPEED.in(RotationsPerSecond);
     private static final double DRIVING_MIN_OUTPUT = -1;
     private static final double DRIVING_MAX_OUTPUT = 1;
 

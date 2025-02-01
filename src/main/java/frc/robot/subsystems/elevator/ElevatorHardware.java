@@ -39,8 +39,8 @@ public class ElevatorHardware implements ElevatorIO {
         private static final Voltage D_VALUE = Volts.of(0);
         private static final Voltage FEEDFORWARD_VALUE = Volts.of(1.0 / 917); 
         private static final Voltage ARBITRARY_FF_GRAVITY_COMPENSATION = Volts.of(0.28); //calculated using recalc
-        private static final double OUTPUTRANGE_MIN_VALUE = -1;
-        private static final double OUTPUTRANGE_MAX_VALUE = 1;
+        private static final double OUTPUT_RANGE_MIN_VALUE = -1;
+        private static final double OUTPUT_RANGE_MAX_VALUE = 1;
         private static final double P_VALUE_VELOCITY = 0.0001;
         private static final double I_VALUE_VELOCITY = 0;
         private static final double D_VALUE_VELOCITY = 0;
@@ -81,7 +81,7 @@ public class ElevatorHardware implements ElevatorIO {
             .d(ElevatorHardwareConstants.D_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
             //https://docs.revrobotics.com/revlib/spark/closed-loop/closed-loop-control-getting-started#f-parameter
             .velocityFF(ElevatorHardwareConstants.FEEDFORWARD_VALUE.in(Volts), ClosedLoopSlot.kSlot1) 
-            .outputRange(ElevatorHardwareConstants.OUTPUTRANGE_MIN_VALUE, ElevatorHardwareConstants.OUTPUTRANGE_MAX_VALUE, ClosedLoopSlot.kSlot1);
+            .outputRange(ElevatorHardwareConstants.OUTPUT_RANGE_MIN_VALUE, ElevatorHardwareConstants.OUTPUT_RANGE_MAX_VALUE, ClosedLoopSlot.kSlot1);
      
         globalMotorConfig.softLimit
             .forwardSoftLimit((ElevatorHardwareConstants.MAX_ELEVATOR_HEIGHT).in(Meters) - 0.02) //a little less than max height for safety
