@@ -51,14 +51,6 @@ import java.util.Optional;
 
 public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
-<<<<<<< HEAD
-=======
-        
-
-        private double velocityXMPS;
-        private double velocityYMPS;
-
->>>>>>> main
         // correction PID
         private double DRIVE_P = 1.1;
         private double DRIVE_D = 0.05;
