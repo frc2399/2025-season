@@ -57,8 +57,6 @@ import java.util.Optional;
 
 public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
-        
-
         private double velocityXMPS;
         private double velocityYMPS;
 
@@ -372,14 +370,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         }
 
         public Command driveToPoseCommand(AlignType alignType, Optional<Alliance> ally) {
-                // TODO: not sure we want to be checking this each time, but also not sure we
-                // want to put it into robotContainer
-
-                // defaults to blue alliance
-                boolean isBlueAlliance = true;
-                if (ally.isPresent() && (ally.get() == Alliance.Red)) {
-                        isBlueAlliance = false;
-                }
 
                 // TODO: there is definitely a better way to do this than an atomic boolean
 
@@ -388,9 +378,20 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // risks
                 AtomicBoolean atGoal = new AtomicBoolean(false);
 
-                Pose2d goalPose = ReefscapeVisionUtil.getGoalPose(alignType, robotPose, isBlueAlliance);
 
                 return this.run(() -> {
+
+                        // TODO: not sure we want to be checking this each time, but also not sure we
+                        // want to put it into robotContainer
+
+                        // defaults to blue alliance
+                        boolean isBlueAlliance = true;
+                        if (ally.isPresent() && (ally.get() == Alliance.Red)) {
+                                isBlueAlliance = false;
+                        }
+
+                        Pose2d goalPose = ReefscapeVisionUtil.getGoalPose(alignType, robotPose, isBlueAlliance);
+
                         Transform2d velocities = DriveToPoseUtil.getDriveToPoseVelocities(
                                         robotPose, goalPose);
                         ChassisSpeeds alignmentSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(

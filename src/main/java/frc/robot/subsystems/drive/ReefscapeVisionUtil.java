@@ -77,6 +77,9 @@ public class ReefscapeVisionUtil {
 
     public static Pose2d getGoalPose(AlignType alignType, Pose2d robotPose, boolean isBlueAlliance) {
         Pose2d goalPose;
+        if (robotPose == null) {
+                return new Pose2d();
+        }
         if (isBlueAlliance) {
             if (alignType == AlignType.CORAL_STATION) {
                 goalPose = BLUE_CORAL_STATION;
