@@ -4,7 +4,11 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Radians;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveControlConstants;
@@ -65,10 +69,18 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsOperator() {
-    operatorController.y().whileTrue(coralWrist.setWristSpeed(SpeedConstants.WRIST_MAX_SPEED));
-    operatorController.a().whileTrue(coralWrist.setWristSpeed(-SpeedConstants.WRIST_MAX_SPEED));
-    operatorController.x().whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_INTAKE_SPEED));
-    operatorController.b().whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED));
+    operatorController.rightBumper().whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_INTAKE_SPEED));
+    operatorController.leftBumper().whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED));
+
+    operatorController.rightTrigger().whileTrue(coralWrist.setWristSpeed(SpeedConstants.WRIST_MAX_SPEED));
+    operatorController.leftTrigger().whileTrue(coralWrist.setWristSpeed(-SpeedConstants.WRIST_MAX_SPEED));
+    operatorController.x()
+        .whileTrue(coralWrist.goToSetpointCommand(SetpointConstants.L1_CORAL_INTAKE_ANGLE.in(Radians)));
+    operatorController.b()
+        .whileTrue(coralWrist.goToSetpointCommand(SetpointConstants.L2_CORAL_INTAKE_ANGLE.in(Radians)));
+    operatorController.y()
+        .whileTrue(coralWrist.goToSetpointCommand(SetpointConstants.L3_CORAL_INTAKE_ANGLE.in(Radians)));
+
     // operatorController.rightBumper().onTrue(coralWrist.setGoalStateTrapezoidCommand(SetpointConstants.CORAL_INTAKE_ANGLE));
     // operatorController.leftBumper().onTrue(coralWrist.setGoalStateTrapezoidCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE));
 

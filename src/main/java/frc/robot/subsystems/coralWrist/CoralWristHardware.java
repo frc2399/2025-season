@@ -3,6 +3,7 @@ package frc.robot.subsystems.coralWrist;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -22,10 +23,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
+import frc.robot.Constants;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 
 public class CoralWristHardware implements CoralWristIO {
+
         private final double STATIC_FF_CORAL = 0;
         private final double GRAVITY_FF_CORAL = 0.013;
         private final double VELOCITY_FF_CORAL = 0.0;
@@ -53,6 +57,8 @@ public class CoralWristHardware implements CoralWristIO {
 
         private static final AngularVelocity CORAL_WRIST_MAX_VELOCITY = RadiansPerSecond.of(0);
         private static final AngularAcceleration CORAL_WRIST_MAX_ACCELERATION = RadiansPerSecondPerSecond.of(0);
+
+        private double goalAngle;
 
         // taking out motion profiling for now
         // private TrapezoidProfile.State setpointState;
@@ -84,10 +90,11 @@ public class CoralWristHardware implements CoralWristIO {
         }
 
         @Override
-        public void goToSetpoint(Angle angle) {
-                coralIntakeWristClosedLoopController.setReference(angle.in(Radians), ControlType.kPosition,
-                                ClosedLoopSlot.kSlot0,
-                                coralWristFeedFoward.calculate(angle.in(Radians), 0));
+        public void setGoalAngle(double desiredAngle) {
+                coralIntakeWristClosedLoopController.setReference(desiredAngle, ControlType.kPosition,
+                                ClosedLoopSlot.kSlot1,
+                                coralWristFeedFoward.calculate(desiredAngle, 0));
+                goalAngle = desiredAngle;
         }
 
         // taking out motion profiling for now

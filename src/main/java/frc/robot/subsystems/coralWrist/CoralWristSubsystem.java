@@ -17,9 +17,9 @@ public class CoralWristSubsystem extends SubsystemBase {
         this.io = io;
     }
 
-    public Command goToSetpoint(Angle angle) {
+    public Command goToSetpointCommand(double angle) {
         return this.run(() -> {
-            io.goToSetpoint(angle);
+            io.setGoalAngle(angle);
         });
     }
 

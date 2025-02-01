@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
 import edu.wpi.first.units.measure.Angle;
 import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -24,9 +23,9 @@ public final class Constants {
 
     public static final int GYRO_CAN_ID = 3;
 
-    public static final int CORAL_INTAKE_TOP_CAN_ID = 7; 
-    public static final int CORAL_INTAKE_BOTTOM_CAN_ID = 5; 
-    public static final int CORAL_INTAKE_WRIST_CAN_ID = 13; 
+    public static final int CORAL_INTAKE_TOP_CAN_ID = 7;
+    public static final int CORAL_INTAKE_BOTTOM_CAN_ID = 5;
+    public static final int CORAL_INTAKE_WRIST_CAN_ID = 13;
   }
 
   public static class SensorIdConstants {
@@ -41,7 +40,7 @@ public final class Constants {
     // MPS = (GearRatio * 2πr * RPM) / 60
     public static final int NEO550_FREE_SPEED_RPM = 11000;
 
-    public static final int VORTEX_CURRENT_LIMIT = 80; 
+    public static final int VORTEX_CURRENT_LIMIT = 80;
   }
 
   public static class SpeedConstants {
@@ -54,8 +53,13 @@ public final class Constants {
   }
 
   public static class SetpointConstants {
-    public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(45);
-    public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-45);
+    public static final Angle L1_CORAL_INTAKE_ANGLE = Radians.of(35);
+    public static final Angle L2_CORAL_INTAKE_ANGLE = Radians.of(35);
+    public static final Angle L3_CORAL_INTAKE_ANGLE = Radians.of(35);
+
+    public static final Angle L1_CORAL_OUTTAKE_ANGLE = Radians.of(-30);
+    public static final Angle L2_CORAL_OUTTAKE_ANGLE = Radians.of(-30);
+    public static final Angle L3_CORAL_OUTTAKE_ANGLE = Radians.of(-30);
   }
 
   public static class DriveControlConstants {
