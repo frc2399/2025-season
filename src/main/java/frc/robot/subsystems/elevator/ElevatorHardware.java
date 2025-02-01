@@ -93,7 +93,7 @@ public class ElevatorHardware implements ElevatorIO {
         leftMotorConfigLeader
             .apply(globalMotorConfig)
             .inverted(false)
-            .idleMode(IdleMode.kBrake) 
+            .idleMode(IdleMode.kBrake)
             .smartCurrentLimit(MotorConstants.NEO_VORTEX_CURRENT_LIMIT);
 
         rightMotorConfigFollower
