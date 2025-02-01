@@ -12,6 +12,4 @@ public class CommandFactory {
         this.drive = drive;
         this.elevator = elevator;
     }
-
-    //public Command scalingDriveToElevatorHeight()
 }

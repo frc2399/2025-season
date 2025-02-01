@@ -31,7 +31,7 @@ import frc.robot.Constants.MotorIdConstants;
 public class ElevatorHardware implements ElevatorIO {
 
     public static final class ElevatorHardwareConstants {
-        private static final double METERS_PER_REVOLUTION = Units.inchesToMeters(27) / 41.951946; //Calculate correct value
+        private static final Distance METERS_PER_REVOLUTION = Inches.of(0.67); //(1/9)(1.92 * pi)
         private static final Distance ALLOWED_SETPOINT_ERROR = Inches.of(.25); 
         private static final LinearVelocity MAX_VEL = MetersPerSecond.of(0.8);
         private static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(0.4);
@@ -68,8 +68,8 @@ public class ElevatorHardware implements ElevatorIO {
         leftEncoder = elevatorLeftMotorLeader.getEncoder();
 
         globalMotorConfig.encoder
-            .positionConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION)
-            .velocityConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION / 60);
+            .positionConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION.in(Meters))
+            .velocityConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION.in(Meters) / 60);
             
         globalMotorConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)

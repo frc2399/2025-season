@@ -37,6 +37,10 @@ public class ElevatorSubsystem extends SubsystemBase{
         return this.startEnd(() -> elevatorIO.setPercentOutput(percentOutput), () -> elevatorIO.setPercentOutput(0));
     }
 
+    public Command keepElevatorAtCurrentPosition() {
+        return this.run(() -> elevatorIO.setGoalPosition(elevatorIO.getEncoderPosition()));
+    }
+
     @Override
     public void periodic() {
         elevatorIO.updateStates(inputs);

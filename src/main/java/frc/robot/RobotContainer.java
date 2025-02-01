@@ -57,7 +57,7 @@ public class RobotContainer {
                 DriveControlConstants.FIELD_ORIENTED_DRIVE),
             drive).withName("drive default"));
 
-      elevator.setDefaultCommand(elevator.setSpeedCommand(0));
+      elevator.setDefaultCommand(elevator.keepElevatorAtCurrentPosition());
   }
  
   private void configureButtonBindingsDriver() {
