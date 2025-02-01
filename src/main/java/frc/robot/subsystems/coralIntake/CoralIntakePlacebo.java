@@ -7,14 +7,6 @@ public class CoralIntakePlacebo implements CoralIntakeIO {
     }
 
     @Override
-    public double getVelocity() {
-    }
-
-    @Override
-    public double getCurrent() {
-    }
-
-    @Override
     public void updateStates(CoralIntakeIOStates states) {
     }
 }

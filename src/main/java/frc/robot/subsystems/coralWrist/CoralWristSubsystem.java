@@ -29,22 +29,27 @@ public class CoralWristSubsystem extends SubsystemBase {
         });
     }
 
-    public Command setGoalStateTrapezoidCommand(Angle angle) {
-        return this.run(() -> {
-            io.setGoalStateTrapezoid(angle);
-        });
-    }
+    // taking out motion profiling to see if code works
+    // public Command setGoalStateTrapezoidCommand(Angle angle) {
+    // return this.run(() -> {
+    // io.setGoalStateTrapezoid(angle);
+    // });
+    // }
 
     @Override
     public void periodic() {
         io.updateStates(states);
-        if (Math.abs(states.trapezoidProfileGoalAngle - states.wristAbsoluteEncoderAngle) < 
-                WRIST_ALIGN_TOLERANCE.in(Radians)) {
-            io.periodic();
-        }
+        if (Math.abs(// states.trapezoidProfileGoalAngle -
+                states.wristAbsoluteEncoderAngle) < WRIST_ALIGN_TOLERANCE.in(Radians))
+            ;
+        // {
+        // io.periodic();
+        // }
         SmartDashboard.putNumber("coralWrist/wristVelocity", states.wristVelocity);
-        SmartDashboard.putNumber("coralWrist/wristAppliedVoltage", states.wristAppliedVoltage);
+        SmartDashboard.putNumber("coralWrist/wristAppliedVoltage",
+                states.wristAppliedVoltage);
         SmartDashboard.putNumber("coralWrist/wristCurrent", states.wristCurrent);
-        SmartDashboard.putNumber("coralWrist/wristAbsoluteEncoderAngle", states.wristAbsoluteEncoderAngle);
+        SmartDashboard.putNumber("coralWrist/wristAbsoluteEncoderAngle",
+                states.wristAbsoluteEncoderAngle);
     }
 }

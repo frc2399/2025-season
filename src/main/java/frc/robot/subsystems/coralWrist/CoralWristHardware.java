@@ -19,7 +19,6 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -55,12 +54,15 @@ public class CoralWristHardware implements CoralWristIO {
         private static final AngularVelocity CORAL_WRIST_MAX_VELOCITY = RadiansPerSecond.of(0);
         private static final AngularAcceleration CORAL_WRIST_MAX_ACCELERATION = RadiansPerSecondPerSecond.of(0);
 
-        private TrapezoidProfile.State setpointState;
-        private TrapezoidProfile.State goalState = new TrapezoidProfile.State();
+        // taking out motion profiling for now
+        // private TrapezoidProfile.State setpointState;
+        // private TrapezoidProfile.State goalState = new TrapezoidProfile.State();
 
-        private TrapezoidProfile wristTrapezoidProfile = new TrapezoidProfile(new Constraints(
-                        CORAL_WRIST_MAX_VELOCITY.in(RadiansPerSecond),
-                        CORAL_WRIST_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)));
+        // taking out motion profiling for now
+        // private TrapezoidProfile wristTrapezoidProfile = new
+        // TrapezoidProfile(new Constraints(
+        // CORAL_WRIST_MAX_VELOCITY.in(RadiansPerSecond),
+        // CORAL_WRIST_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)));
 
         public CoralWristHardware() {
                 wristSparkFlexConfig.inverted(WRIST_MOTOR_INVERTED).idleMode(IDLE_MODE)
@@ -88,9 +90,10 @@ public class CoralWristHardware implements CoralWristIO {
                                 coralWristFeedFoward.calculate(angle.in(Radians), 0));
         }
 
-        public void setGoalStateTrapezoid(Angle angle) {
-                goalState.position = angle.in(Radians);
-        }
+        // taking out motion profiling for now
+        // public void setGoalStateTrapezoid(Angle angle) {
+        // goalState.position = angle.in(Radians);
+        // }
 
         @Override
         public void setWristSpeed(double speed) {
@@ -105,14 +108,17 @@ public class CoralWristHardware implements CoralWristIO {
                                 * coralIntakeWristSparkFlex.getBusVoltage();
                 states.wristCurrent = coralIntakeWristSparkFlex.getOutputCurrent();
                 states.wristAbsoluteEncoderAngle = coralIntakeWristAbsoluteEncoder.getPosition();
-                states.trapezoidProfileGoalAngle = goalState.position;
+                // states.trapezoidProfileGoalAngle = goalState.position;
         }
 
-        @Override
-        public void periodic() {
-                setpointState = wristTrapezoidProfile.calculate(0.02, setpointState, goalState);
-                coralIntakeWristClosedLoopController.setReference(setpointState.position, ControlType.kPosition,
-                                ClosedLoopSlot.kSlot0,
-                                coralWristFeedFoward.calculate(setpointState.position, setpointState.velocity));
-        }
+        // @Override
+        // public void periodic() {
+        // setpointState = wristTrapezoidProfile.calculate(0.02,
+        // setpointState, goalState);
+        // coralIntakeWristClosedLoopController.setReference(setpointState.position,
+        // ControlType.kPosition,
+        // ClosedLoopSlot.kSlot0,
+        // coralWristFeedFoward.calculate(setpointState.position,
+        // setpointState.velocity));
+        // }
 }
