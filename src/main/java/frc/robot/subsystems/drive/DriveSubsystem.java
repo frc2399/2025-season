@@ -95,7 +95,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private double currentRotationRate = 0.0;
         private double desiredAngle = 0;
         private Gyro gyro;
-        private ChassisSpeeds relativeRobotSpeeds;
+        private ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
 
         private Rotation2d lastAngle = new Rotation2d();
 
@@ -230,7 +230,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         relativeRobotSpeeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotRateDelivered);
                 }
 
-                states.relativeRobotSpeeds = relativeRobotSpeeds;
 
                 SmartDashboard.putNumber("Swerve/velocity",
                                 Math.sqrt(
