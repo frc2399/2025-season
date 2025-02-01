@@ -2,13 +2,15 @@ package frc.robot.subsystems.drive;
 
 public class SwerveModulePlacebo implements SwerveModuleIO {
 
-    public void setDriveEncoderPosition(double position) {}
+    public void setDriveEncoderPosition(double position) {
+    }
 
     public double getDriveEncoderPosition() {
         return 0.0;
     }
 
-    public void setDesiredDriveSpeedMPS(double speed) {}
+    public void setDesiredDriveSpeedMPS(double speed) {
+    }
 
     public double getDriveEncoderSpeedMPS() {
         return 0.0;
@@ -18,15 +20,12 @@ public class SwerveModulePlacebo implements SwerveModuleIO {
         return 0.0;
     }
 
-    public void setDesiredTurnAngle(double angle) {}
-
-    
+    public void setDesiredTurnAngle(double angle) {
+    }
 
     public double getDriveOutput() {
         return 0.0;
     }
-
-    
 
     public double getTurnOutput() {
         return 0.0;
@@ -40,26 +39,24 @@ public class SwerveModulePlacebo implements SwerveModuleIO {
         return "";
     }
 
-    public void updateStates(){
-        
+    public void updateStates() {
+
     }
 
-    public double getDriveCurrent(){
+    public double getDriveCurrent() {
         return 0.0;
 
     }
 
-    public double getTurnCurrent(){
+    public double getTurnCurrent() {
         return 0.0;
     }
-    public double getTurnEncoderSpeedMPS(){
-        return 0.0;
-    }
-    
 
-    
+    public double getTurnEncoderSpeedMPS() {
+        return 0.0;
+    }
+
     public void updateStates(SwerveModuleIOStates states) {
-        
-        
+
     }
 }

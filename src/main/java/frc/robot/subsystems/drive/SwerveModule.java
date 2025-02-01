@@ -15,14 +15,11 @@ public class SwerveModule {
 
     private SwerveModuleIOStates states;
 
-
     public SwerveModule(SwerveModuleIO io) {
         this.io = io;
         io.setDriveEncoderPosition(0);
         desiredState.angle = new Rotation2d(getTurnEncoderPosition());
     }
-
-    
 
     public double getDriveEncoderSpeedMPS() {
         return io.getDriveEncoderSpeedMPS();
@@ -40,25 +37,17 @@ public class SwerveModule {
         io.setDriveEncoderPosition(0);
     }
 
-     
-    
     public double getDriveOutput() {
         return io.getDriveOutput();
     }
 
-   
-
-    public double getTurnOutputCurrent(){
+    public double getTurnOutputCurrent() {
         return io.getTurnCurrent();
     }
 
-    public void updateStates(){
-         io.updateStates(states);
+    public void updateStates() {
+        io.updateStates(states);
     }
-
-    
-
-    
 
     /**
      * Returns the current state of the module.
@@ -104,6 +93,4 @@ public class SwerveModule {
         desiredState = newDesiredState; // TODO: this seems weird
     }
 
-    
-    
 }

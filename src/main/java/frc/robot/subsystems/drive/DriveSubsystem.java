@@ -14,8 +14,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
-
-
 import org.ietf.jgss.GSSContext;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -121,8 +119,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 rearLeft.getPosition(),
                                                 rearRight.getPosition() },
                                 new Pose2d(0, 0, new Rotation2d(0))); // TODO: make these constants in the constants
-                                                                         // file rather than
-                                                                         // free-floating numbers
+                                                                      // file rather than
+                                                                      // free-floating numbers
 
         }
 
@@ -131,7 +129,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // This will get the simulated sensor readings that we set
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
-                
+
                 poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromRadians(gyro.getYaw()),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
@@ -158,10 +156,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         gyro.setYaw(lastAngle.getRadians());
                 }
 
-               
                 logAndUpdateRobotSubsystemStates();
-                
-        frontLeft.updateStates();
+
+                frontLeft.updateStates();
 
         }
 
@@ -276,7 +273,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         }
 
-        
         private double getHeadingCorrectionRotRate(double currentAngle, double rotRate, double polarXSpeed,
                         double polarYSpeed) {
                 // Debouncer ensures that there is no back-correction immediately after turning
@@ -332,43 +328,30 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 public double totalVelocity;
                 public double gyroAngleDegrees;
                 public double angularVelocity;
-                
 
-            }
+        }
 
-            private DriveSubsystemStates states = new DriveSubsystemStates();
+        private DriveSubsystemStates states = new DriveSubsystemStates();
 
-            
-        
-            private void logAndUpdateRobotSubsystemStates() {
+        private void logAndUpdateRobotSubsystemStates() {
                 states.pose = getPose();
                 states.poseX = states.pose.getX();
-                states.poseY =states.pose.getY();
+                states.poseY = states.pose.getY();
                 states.poseTheta = states.pose.getRotation().getRadians();
                 states.velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
                 states.velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
                 states.totalVelocity = Math.hypot(states.velocityXMPS, states.velocityYMPS);
                 states.angularVelocity = relativeRobotSpeeds.omegaRadiansPerSecond;
                 states.gyroAngleDegrees = Math.toDegrees(gyro.getYaw());
-                        
+
                 SmartDashboard.putNumber("Pose X", states.poseX);
                 SmartDashboard.putNumber("Pose Y", states.poseY);
                 SmartDashboard.putNumber("Pose Theta(radians)", states.poseTheta);
                 SmartDashboard.putNumber("Robot Linear Velocity X", states.velocityXMPS);
                 SmartDashboard.putNumber("Robot Linear Velocity Y", states.velocityYMPS);
-                SmartDashboard.putNumber("Total Velocity",states.totalVelocity);
+                SmartDashboard.putNumber("Total Velocity", states.totalVelocity);
                 SmartDashboard.putNumber("Robot Angular Velocity", states.angularVelocity);
                 SmartDashboard.putNumber("Gyro Angle(degrees)", states.gyroAngleDegrees);
-            }
-
-           
-
-
-        
-                
-
         }
-        
 
-        
-
+}
