@@ -19,7 +19,7 @@ public class RobotContainer {
   private CommandFactory commandFactory = new CommandFactory();
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
   private Gyro gyro = subsystemFactory.buildGyro();
-  public final ElevatorSubsystem elevator = subsystemFactory.buildElevator();
+  private final ElevatorSubsystem elevator = subsystemFactory.buildElevator();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
   //this is public because we need to run the visionPoseEstimator periodic from Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
@@ -33,6 +33,10 @@ public class RobotContainer {
     configureDefaultCommands();
     configureButtonBindingsDriver();
     configureButtonBindingsOperator();
+  }
+
+  public void disableSubsystems() {
+    elevator.disableElevator();
   }
 
   public void configureDefaultCommands() {
