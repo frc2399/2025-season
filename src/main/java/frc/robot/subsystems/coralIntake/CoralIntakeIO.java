@@ -14,9 +14,5 @@ public interface CoralIntakeIO {
 
     public void setRollerSpeed(double speed);
 
-    public double getVelocity();
-
-    public double getCurrent();
-
     public void updateStates(CoralIntakeIOStates states);
 }
