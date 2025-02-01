@@ -10,11 +10,13 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 import java.util.Optional;
 
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.hal.SimBoolean;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -378,20 +380,19 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // risks
                 AtomicBoolean atGoal = new AtomicBoolean(false);
 
-
                 return this.run(() -> {
-
                         // TODO: not sure we want to be checking this each time, but also not sure we
                         // want to put it into robotContainer
 
                         // defaults to blue alliance
-                        boolean isBlueAlliance = true;
+                        BooleanSupplier isBlueAlliance = () -> true;
+                        
                         if (ally.isPresent() && (ally.get() == Alliance.Red)) {
-                                isBlueAlliance = false;
+                                isBlueAlliance = () -> false;
                         }
 
-                        Pose2d goalPose = ReefscapeVisionUtil.getGoalPose(alignType, robotPose, isBlueAlliance);
-
+                        Pose2d goalPose = ReefscapeVisionUtil.getGoalPose(alignType, robotPose, isBlueAlliance.getAsBoolean());
+                        SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.getY());
                         Transform2d velocities = DriveToPoseUtil.getDriveToPoseVelocities(
                                         robotPose, goalPose);
                         ChassisSpeeds alignmentSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -406,12 +407,12 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         SwerveDriveKinematics.desaturateWheelSpeeds(
                                         swerveModuleStates, SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
 
-                        frontLeft.setDesiredState(swerveModuleStates[0]);
-                        frontRight.setDesiredState(swerveModuleStates[1]);
-                        rearLeft.setDesiredState(swerveModuleStates[2]);
-                        rearRight.setDesiredState(swerveModuleStates[3]);
+                        // frontLeft.setDesiredState(swerveModuleStates[0]);
+                        // frontRight.setDesiredState(swerveModuleStates[1]);
+                        // rearLeft.setDesiredState(swerveModuleStates[2]);
+                        // rearRight.setDesiredState(swerveModuleStates[3]);
 
-                        swerveModuleDesiredStatePublisher.set(swerveModuleStates);
+                        // swerveModuleDesiredStatePublisher.set(swerveModuleStates);
                 }).until(() -> atGoal.get());
         }
 
@@ -437,12 +438,12 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         SwerveDriveKinematics.desaturateWheelSpeeds(
                                         swerveModuleStates, SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
 
-                        frontLeft.setDesiredState(swerveModuleStates[0]);
-                        frontRight.setDesiredState(swerveModuleStates[1]);
-                        rearLeft.setDesiredState(swerveModuleStates[2]);
-                        rearRight.setDesiredState(swerveModuleStates[3]);
+                        // frontLeft.setDesiredState(swerveModuleStates[0]);
+                        // frontRight.setDesiredState(swerveModuleStates[1]);
+                        // rearLeft.setDesiredState(swerveModuleStates[2]);
+                        // rearRight.setDesiredState(swerveModuleStates[3]);
 
-                        swerveModuleDesiredStatePublisher.set(swerveModuleStates);
+                        // swerveModuleDesiredStatePublisher.set(swerveModuleStates);
                 }).until(() -> atGoal.get());
         }
 }

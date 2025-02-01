@@ -28,24 +28,20 @@ import frc.robot.Constants.SpeedConstants;
 
 public final class VisionPoseEstimator extends SubsystemBase {
     // mozart values
-    // private static final Angle CAMERA_PITCH =
-    // Degrees.of(24.62);
-    // private static final Distance X_ROBOT_TO_CAMERA_OFFSET =
-    // Inches.of(-11.94);
+    private static final Angle CAMERA_PITCH = Degrees.of(24.62);
+    private static final Distance X_ROBOT_TO_CAMERA_OFFSET = Inches.of(-11.94);
     // this is positive instead of negative despite robot coordinate system due to
     // the 180* yaw rotation!
-    // private static final Distance Y_ROBOT_TO_CAMERA_OFFSET =
-    // Inches.of(7.54);
-    // private static final Distance Z_ROBOT_TO_CAMERA_OFFSET =
-    // Inches.of(4.937);
-    // private static final Angle CAMERA_YAW = Degrees.of(180);
- 
-    //TODO: change these when we get actual values for a robot!
-    private static final Angle CAMERA_PITCH = Degrees.of(0);
-    private static final Distance X_ROBOT_TO_CAMERA_OFFSET = Inches.of(0);
-    private static final Distance Y_ROBOT_TO_CAMERA_OFFSET = Inches.of(0);
-    private static final Distance Z_ROBOT_TO_CAMERA_OFFSET = Inches.of(0);
-    private static final Angle CAMERA_YAW = Degrees.of(0);
+    private static final Distance Y_ROBOT_TO_CAMERA_OFFSET = Inches.of(7.54);
+    private static final Distance Z_ROBOT_TO_CAMERA_OFFSET = Inches.of(11);
+    private static final Angle CAMERA_YAW = Degrees.of(180);
+
+    // //TODO: change these when we get actual values for a robot!
+    // private static final Angle CAMERA_PITCH = Degrees.of(0);
+    // private static final Distance X_ROBOT_TO_CAMERA_OFFSET = Inches.of(0);
+    // private static final Distance Y_ROBOT_TO_CAMERA_OFFSET = Inches.of(0);
+    // private static final Distance Z_ROBOT_TO_CAMERA_OFFSET = Inches.of(0);
+    // private static final Angle CAMERA_YAW = Degrees.of(0);
     /**
      * Provides the methods needed to do first-class pose estimation
      */

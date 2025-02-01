@@ -1,11 +1,15 @@
 package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
@@ -13,25 +17,35 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.Constants.SpeedConstants;
 
 public class DriveToPoseUtil {
-
-        // TODO: constraints for these pids
         // pids for driving to a pose
         private static final double DRIVE_TO_POSE_XY_P = 0.1;
         private static final double DRIVE_TO_POSE_XY_D = 0.01;
+        private static final LinearVelocity MAX_VELOCITY_DRIVE_TO_POSE = MetersPerSecond.of(1);
+        private static final LinearAcceleration MAX_ACCELERATION_DRIVE_TO_POSE = MetersPerSecondPerSecond.of(0.5);
         private static final ProfiledPIDController DRIVE_TO_POSE_XY_PID = new ProfiledPIDController(
-                        DRIVE_TO_POSE_XY_P, 0, DRIVE_TO_POSE_XY_D, null);
+                        DRIVE_TO_POSE_XY_P, 0, DRIVE_TO_POSE_XY_D,
+                        new Constraints(MAX_VELOCITY_DRIVE_TO_POSE.in(MetersPerSecond),
+                                        MAX_ACCELERATION_DRIVE_TO_POSE.in(MetersPerSecondPerSecond)));
 
         private static final double DRIVE_TO_POSE_THETA_P = 0.1;
         private static final double DRIVE_TO_POSE_THETA_D = 0.01;
+        private static final AngularVelocity MAX_ANGULAR_VELOCITY_DRIVE_TO_POSE = DegreesPerSecond.of(45);
+        private static final AngularAcceleration MAX_ANGULAR_ACCELERATION_DRIVE_TO_POSE = DegreesPerSecondPerSecond
+                        .of(10);
         private static final ProfiledPIDController DRIVE_TO_POSE_THETA_PID = new ProfiledPIDController(
-                        DRIVE_TO_POSE_THETA_P, 0, DRIVE_TO_POSE_THETA_D, null);
+                        DRIVE_TO_POSE_THETA_P, 0, DRIVE_TO_POSE_THETA_D,
+                        new Constraints(MAX_ANGULAR_VELOCITY_DRIVE_TO_POSE.in(RadiansPerSecond),
+                                        MAX_ANGULAR_ACCELERATION_DRIVE_TO_POSE.in(RadiansPerSecondPerSecond)));
 
         // tolerances
         private static final Distance XY_ALIGN_TOLERANCE = Inches.of(1);

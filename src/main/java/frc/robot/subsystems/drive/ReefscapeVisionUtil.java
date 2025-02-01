@@ -23,9 +23,9 @@ public class ReefscapeVisionUtil {
             new Rotation2d(Degrees.of(300)));
     private static final Pose2d RED_REEF_F = new Pose2d(new Translation2d(),
             new Rotation2d(Degrees.of(300)));
-    private static final Pose2d RED_REEF_G = new Pose2d(new Translation2d(),
+    private static final Pose2d RED_REEF_G = new Pose2d(new Translation2d(14.045, 4.18),
             new Rotation2d(Degrees.of(0)));
-    private static final Pose2d RED_REEF_H = new Pose2d(new Translation2d(),
+    private static final Pose2d RED_REEF_H = new Pose2d(new Translation2d(14.05, 3.78),
             new Rotation2d(Degrees.of(0)));
     private static final Pose2d RED_REEF_I = new Pose2d(new Translation2d(),
             new Rotation2d(Degrees.of(60)));
