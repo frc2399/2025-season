@@ -1,5 +1,6 @@
 package frc.robot.subsystems.coralWrist;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
@@ -72,7 +73,7 @@ public class CoralWristHardware implements CoralWristIO {
 
         public CoralWristHardware() {
                 wristSparkFlexConfig.inverted(WRIST_MOTOR_INVERTED).idleMode(IDLE_MODE)
-                                .smartCurrentLimit(MotorConstants.VORTEX_CURRENT_LIMIT);
+                                .smartCurrentLimit((int)MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
                 wristSparkFlexConfig.encoder.positionConversionFactor(ENCODER_WRIST_POSITION_FACTOR)
                                 .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
                 wristSparkFlexConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)

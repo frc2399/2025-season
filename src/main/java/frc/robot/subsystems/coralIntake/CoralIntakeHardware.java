@@ -10,6 +10,8 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import static edu.wpi.first.units.Units.Amps;
+
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 
@@ -44,7 +46,7 @@ public class CoralIntakeHardware implements CoralIntakeIO {
 
         public CoralIntakeHardware() {
                 topSparkMaxConfig.inverted(TOP_MOTOR_INVERTED).idleMode(IDLE_MODE)
-                                .smartCurrentLimit(MotorConstants.NEO550_CURRENT_LIMIT);
+                                .smartCurrentLimit((int)MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
                 topSparkMaxConfig.encoder.positionConversionFactor(ENCODER_ROLLER_POSITION_FACTOR)
                                 .velocityConversionFactor(ENCODER_ROLLER_POSITION_FACTOR);
                 topSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -53,7 +55,7 @@ public class CoralIntakeHardware implements CoralIntakeIO {
                                 .positionWrappingEnabled(POSITION_WRAPPING_ENABLED_SIDE_MOTORS);
 
                 bottomSparkMaxConfig.inverted(BOTTOM_MOTOR_INVERTED).idleMode(IDLE_MODE)
-                                .smartCurrentLimit(MotorConstants.NEO550_CURRENT_LIMIT);
+                                .smartCurrentLimit((int)MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
                 bottomSparkMaxConfig.encoder.positionConversionFactor(ENCODER_ROLLER_POSITION_FACTOR)
                                 .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
                 bottomSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)

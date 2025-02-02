@@ -45,7 +45,7 @@ public final class Constants {
     public static final Current NEO_CURRENT_LIMIT = Amps.of(50);
     public static final AngularVelocity NEO_FREE_SPEED = RPM.of(5676);
     public static final AngularVelocity NEO550_FREE_SPEED = RPM.of(11000);
-    public static final Current NEO_VORTEX_CURRENT_LIMIT = Amps.of(60);
+    public static final Current VORTEX_CURRENT_LIMIT = Amps.of(60);
   }
 
   public static class SpeedConstants {
