@@ -1,10 +1,10 @@
 package frc.robot.subsystems.coralWrist;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
-import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -21,11 +21,11 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.Constants;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 
@@ -44,12 +44,19 @@ public class CoralWristHardware implements CoralWristIO {
         private final AbsoluteEncoder coralIntakeWristAbsoluteEncoder;
         private static final SparkFlexConfig wristSparkFlexConfig = new SparkFlexConfig();
         private static final boolean WRIST_MOTOR_INVERTED = true;
+
+        private static final boolean ABSOLUTE_ENCODER_INVERTED = true;
+
         private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
 
-        private static final double ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 60.0; // radians
-        private static final double ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 60.0; // radians per second
+        private static final double ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 4.0; // radians
+        private static final double ABSOLUTE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 240.0; // radians per second
 
-        private static final double WRIST_MOTOR_P = 0.1;
+        private static final boolean ABSOLUTE_ENCODER_POSITION_WRAPPING = true;
+        private static final Angle ABSOLUTE_ENCODER_POSITION_MIN_INPUT = Degrees.of(-90);
+        private static final Angle ABSOLUTE_ENCODER_POSITION_MAX_INPUT = Degrees.of(90);
+
+        private static final double WRIST_MOTOR_P = 0.5;
         private static final double WRIST_MOTOR_I = 0.0;
         private static final double WRIST_MOTOR_D = 0.0;
         private static final double WRIST_MOTOR_FF = 0.0;
@@ -73,28 +80,33 @@ public class CoralWristHardware implements CoralWristIO {
 
         public CoralWristHardware() {
                 wristSparkFlexConfig.inverted(WRIST_MOTOR_INVERTED).idleMode(IDLE_MODE)
-                                .smartCurrentLimit((int)MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
-                wristSparkFlexConfig.encoder.positionConversionFactor(ENCODER_WRIST_POSITION_FACTOR)
-                                .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
-                wristSparkFlexConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                                .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
+                wristSparkFlexConfig.absoluteEncoder.positionConversionFactor(ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR)
+                                .velocityConversionFactor(ABSOLUTE_ENCODER_VELOCITY_FACTOR)
+                                .inverted(ABSOLUTE_ENCODER_INVERTED).zeroCentered(true);
+
+                wristSparkFlexConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                                 .pidf(WRIST_MOTOR_P, WRIST_MOTOR_I, WRIST_MOTOR_D, WRIST_MOTOR_FF)
-                                .outputRange(WRIST_MOTOR_MIN_OUTPUT, WRIST_MOTOR_MAX_OUTPUT);
+                                .outputRange(WRIST_MOTOR_MIN_OUTPUT, WRIST_MOTOR_MAX_OUTPUT)
+                                .positionWrappingEnabled(ABSOLUTE_ENCODER_POSITION_WRAPPING)
+                                .positionWrappingInputRange(ABSOLUTE_ENCODER_POSITION_MIN_INPUT.in(Radians),
+                                                ABSOLUTE_ENCODER_POSITION_MAX_INPUT.in(Radians));
 
                 coralIntakeWristSparkFlex = new SparkFlex(MotorIdConstants.CORAL_INTAKE_WRIST_CAN_ID,
                                 MotorType.kBrushless);
 
-                coralIntakeWristAbsoluteEncoder = coralIntakeWristSparkFlex.getAbsoluteEncoder();
-
                 coralIntakeWristSparkFlex.configure(wristSparkFlexConfig, ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);
+                coralIntakeWristAbsoluteEncoder = coralIntakeWristSparkFlex.getAbsoluteEncoder();
                 coralIntakeWristClosedLoopController = coralIntakeWristSparkFlex.getClosedLoopController();
         }
 
         @Override
         public void setGoalAngle(double desiredAngle) {
                 coralIntakeWristClosedLoopController.setReference(desiredAngle, ControlType.kPosition,
-                                ClosedLoopSlot.kSlot1,
-                                coralWristFeedFoward.calculate(desiredAngle, 0));
+                                ClosedLoopSlot.kSlot0,
+                                coralWristFeedFoward.calculate(desiredAngle,
+                                                coralIntakeWristAbsoluteEncoder.getVelocity()));
                 goalAngle = desiredAngle;
         }
 

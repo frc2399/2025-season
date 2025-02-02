@@ -7,8 +7,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveControlConstants;
@@ -69,7 +67,7 @@ public class RobotContainer {
     coralIntake.setDefaultCommand(coralIntake.setRollerSpeed(0));
     coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0));
 
-      elevator.setDefaultCommand(elevator.setPercentOutputCommand(0));
+    elevator.setDefaultCommand(elevator.setPercentOutputCommand(0));
   }
 
   private void configureButtonBindingsDriver() {
