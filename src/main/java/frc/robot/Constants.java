@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
@@ -58,13 +59,13 @@ public final class Constants {
   }
 
   public static class SetpointConstants {
-    public static final Angle L1_CORAL_INTAKE_ANGLE = Radians.of(35);
-    public static final Angle L2_CORAL_INTAKE_ANGLE = Radians.of(35);
-    public static final Angle L3_CORAL_INTAKE_ANGLE = Radians.of(35);
+    public static final Angle L1_CORAL_INTAKE_ANGLE = Degrees.of(35);
+    public static final Angle L2_CORAL_INTAKE_ANGLE = Degrees.of(35);
+    public static final Angle L3_CORAL_INTAKE_ANGLE = Degrees.of(35);
 
-    public static final Angle L1_CORAL_OUTTAKE_ANGLE = Radians.of(-30);
-    public static final Angle L2_CORAL_OUTTAKE_ANGLE = Radians.of(-30);
-    public static final Angle L3_CORAL_OUTTAKE_ANGLE = Radians.of(-30);
+    public static final Angle L1_CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
+    public static final Angle L2_CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
+    public static final Angle L3_CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
     public static Distance L_ONE_HEIGHT = Inches.of(0); 
     public static Distance L_TWO_HEIGHT = Inches.of(7.5);
     public static Distance L_THREE_HEIGHT = Inches.of(23.25);

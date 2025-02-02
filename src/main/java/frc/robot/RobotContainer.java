@@ -69,7 +69,7 @@ public class RobotContainer {
     coralIntake.setDefaultCommand(coralIntake.setRollerSpeed(0));
     coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0));
 
-      elevator.setDefaultCommand(elevator.keepElevatorAtCurrentPosition());
+      elevator.setDefaultCommand(elevator.setPercentOutputCommand(0));
   }
 
   private void configureButtonBindingsDriver() {
@@ -83,9 +83,9 @@ public class RobotContainer {
     operatorController.rightTrigger().whileTrue(coralWrist.setWristSpeed(SpeedConstants.WRIST_MAX_SPEED));
     operatorController.leftTrigger().whileTrue(coralWrist.setWristSpeed(-SpeedConstants.WRIST_MAX_SPEED));
     operatorController.leftBumper()
-        .whileTrue(coralWrist.goToSetpointCommand(SetpointConstants.L1_CORAL_INTAKE_ANGLE.in(Radians)));
+        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.L1_CORAL_INTAKE_ANGLE.in(Radians)));
     operatorController.rightBumper()
-        .whileTrue(coralWrist.goToSetpointCommand(SetpointConstants.L1_CORAL_OUTTAKE_ANGLE.in(Radians)));
+        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.L1_CORAL_OUTTAKE_ANGLE.in(Radians)));
     operatorController.y().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_TWO_HEIGHT.in(Meters)));
     operatorController.x().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
     operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
