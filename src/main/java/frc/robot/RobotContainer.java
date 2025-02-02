@@ -10,25 +10,36 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveControlConstants;
+import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.vision.*;
+import static edu.wpi.first.units.Units.*;
 
 public class RobotContainer {
-  private CommandFactory commandFactory = new CommandFactory();
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
   private Gyro gyro = subsystemFactory.buildGyro();
+  private final ElevatorSubsystem elevator = subsystemFactory.buildElevator();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
   // this is public because we need to run the visionPoseEstimator periodic from
   // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
+  private CommandFactory commandFactory = new CommandFactory(drive, elevator);
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
+  private final CommandXboxController operatorController = new CommandXboxController(
+      DriveControlConstants.OPERATOR_CONTROLLER_PORT);
 
   public RobotContainer() {
     configureDefaultCommands();
     configureButtonBindingsDriver();
+    configureButtonBindingsOperator();
+  }
+
+  public void disableSubsystems() {
+    elevator.disableElevator();
   }
 
   public enum AlignType {
@@ -54,6 +65,8 @@ public class RobotContainer {
                     DriveControlConstants.DRIVE_DEADBAND)),
                 DriveControlConstants.FIELD_ORIENTED_DRIVE),
             drive).withName("drive default"));
+
+      elevator.setDefaultCommand(elevator.keepElevatorAtCurrentPosition());
   }
 
   private void configureButtonBindingsDriver() {
@@ -66,5 +79,13 @@ public class RobotContainer {
     driverController.leftTrigger()
         .onTrue(drive.driveToPoseCommand(AlignType.REEF_LEFT, DriverStation.getAlliance())
             .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+  }
+
+  private void configureButtonBindingsOperator() {
+    operatorController.y().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_TWO_HEIGHT.in(Meters)));
+    operatorController.x().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
+    operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
+    operatorController.a().whileTrue(elevator.setPercentOutputCommand(-0.1));
+    //operatorController.x().onTrue(elevator.setEncoderPositionCommand(0.01));
   }
 }
