@@ -371,6 +371,12 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
         }
 
+        //this method has a LOT of suppliers - so short explanation of why they're good
+        //basically, when a button binding is called in robotContainer, it makes an object 
+        //represnting the command. this object does not change, and it does not actually look
+        //at the command each time - it just calls the one that was constructed at robotInit
+        //by using a supplier, the robot knows 'hey, this value might change, so i should
+        //check it every time i use this object' thus allowing it to change
         public Command driveToPoseCommand(AlignType alignType, Optional<Alliance> ally) {
 
                 // TODO: there is definitely a better way to do this than an atomic boolean
@@ -380,59 +386,31 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // risks
                 AtomicBoolean atGoal = new AtomicBoolean(false);
 
-                return this.run(() -> {
-                        // TODO: not sure we want to be checking this each time, but also not sure we
-                        // want to put it into robotContainer
+                // TODO: not sure we want to be checking this each time, but also not sure we
+                // want to put it into robotContainer
 
-                        // defaults to blue alliance
-                        BooleanSupplier isBlueAlliance = () -> true;
-                        
-                        if (ally.isPresent() && (ally.get() == Alliance.Red)) {
-                                isBlueAlliance = () -> false;
-                        }
+                // defaults to blue alliance
+                BooleanSupplier isBlueAlliance = () -> true;
 
-                        Pose2d goalPose = ReefscapeVisionUtil.getGoalPose(alignType, robotPose, isBlueAlliance.getAsBoolean());
-                        SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.getY());
-                        Transform2d velocities = DriveToPoseUtil.getDriveToPoseVelocities(
-                                        robotPose, goalPose);
-                        ChassisSpeeds alignmentSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                                        velocities.getX(), velocities.getY(), velocities.getRotation().getRadians(),
-                                        new Rotation2d(gyro.getYaw()));
-
-                        // tolerances were accounted for in getDriveToPoseVelocities
-                        atGoal.set((velocities.getX() == 0 && velocities.getY() == 0
-                                        && velocities.getRotation().getRadians() == 0));
-
-                        var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(alignmentSpeeds);
-                        SwerveDriveKinematics.desaturateWheelSpeeds(
-                                        swerveModuleStates, SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
-
-                        // frontLeft.setDesiredState(swerveModuleStates[0]);
-                        // frontRight.setDesiredState(swerveModuleStates[1]);
-                        // rearLeft.setDesiredState(swerveModuleStates[2]);
-                        // rearRight.setDesiredState(swerveModuleStates[3]);
-
-                        // swerveModuleDesiredStatePublisher.set(swerveModuleStates);
-                }).until(() -> atGoal.get());
-        }
-
-        public Command rotateToPoseCommand(AlignType alignType, Optional<Alliance> ally) {
-                boolean isBlueAlliance = true;
-                if (ally.isPresent() && ally.get() == Alliance.Red) {
-                        isBlueAlliance = false;
+                if (ally.isPresent() && (ally.get() == Alliance.Red)) {
+                        isBlueAlliance = () -> false;
                 }
 
-                Pose2d goalPose = ReefscapeVisionUtil.getGoalPose(alignType, robotPose, isBlueAlliance);
-                AtomicBoolean atGoal = new AtomicBoolean(false);
+                Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(alignType, robotPose,
+                                isBlueAlliance.getAsBoolean());
+                SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.get().getY());
+
                 return this.run(() -> {
-                        AngularVelocity thetaVelocity = DriveToPoseUtil.getAlignmentRotRate(
-                                        robotPose, goalPose);
+                        Supplier<Transform2d> velocities = DriveToPoseUtil.getDriveToPoseVelocities(
+                                        () -> robotPose, goalPose);
+                        Supplier<Rotation2d> gyroYawRotationSupplier = () -> new Rotation2d(gyro.getYaw());
                         ChassisSpeeds alignmentSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                                        0, 0, thetaVelocity.in(RadiansPerSecond),
-                                        new Rotation2d(gyro.getYaw()));
+                                        velocities.get().getX(), velocities.get().getY(), velocities.get().getRotation().getRadians(),
+                                        gyroYawRotationSupplier.get());
 
                         // tolerances were accounted for in getDriveToPoseVelocities
-                        atGoal.set(thetaVelocity.in(RotationsPerSecond) == 0);
+                        atGoal.set((velocities.get().getX() == 0 && velocities.get().getY() == 0
+                                        && velocities.get().getRotation().getRadians() == 0));
 
                         var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(alignmentSpeeds);
                         SwerveDriveKinematics.desaturateWheelSpeeds(
@@ -446,4 +424,35 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         // swerveModuleDesiredStatePublisher.set(swerveModuleStates);
                 }).until(() -> atGoal.get());
         }
+
+        // public Command rotateToPoseCommand(AlignType alignType, Optional<Alliance> ally) {
+        //         boolean isBlueAlliance = true;
+        //         if (ally.isPresent() && ally.get() == Alliance.Red) {
+        //                 isBlueAlliance = false;
+        //         }
+
+        //         Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(alignType, robotPose, isBlueAlliance);
+        //         AtomicBoolean atGoal = new AtomicBoolean(false);
+        //         return this.run(() -> {
+        //                 AngularVelocity thetaVelocity = DriveToPoseUtil.getAlignmentRotRate(
+        //                                 robotPose, goalPose);
+        //                 ChassisSpeeds alignmentSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        //                                 0, 0, thetaVelocity.in(RadiansPerSecond),
+        //                                 new Rotation2d(gyro.getYaw()));
+
+        //                 // tolerances were accounted for in getDriveToPoseVelocities
+        //                 atGoal.set(thetaVelocity.in(RotationsPerSecond) == 0);
+
+        //                 var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(alignmentSpeeds);
+        //                 SwerveDriveKinematics.desaturateWheelSpeeds(
+        //                                 swerveModuleStates, SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
+
+        //                 // frontLeft.setDesiredState(swerveModuleStates[0]);
+        //                 // frontRight.setDesiredState(swerveModuleStates[1]);
+        //                 // rearLeft.setDesiredState(swerveModuleStates[2]);
+        //                 // rearRight.setDesiredState(swerveModuleStates[3]);
+
+        //                 // swerveModuleDesiredStatePublisher.set(swerveModuleStates);
+        //         }).until(() -> atGoal.get());
+        // }
 }

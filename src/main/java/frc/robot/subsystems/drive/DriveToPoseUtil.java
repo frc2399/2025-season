@@ -13,6 +13,8 @@ import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -51,8 +53,9 @@ public class DriveToPoseUtil {
         private static final Distance XY_ALIGN_TOLERANCE = Inches.of(1);
         private static final Angle THETA_ALIGN_TOLERANCE = Degrees.of(5);
 
-        public static Transform2d getDriveToPoseVelocities(Pose2d robotPose, Pose2d goalPose) {
-                Transform2d transformToGoal = robotPose.minus(goalPose);
+        public static Supplier<Transform2d> getDriveToPoseVelocities(Supplier<Pose2d> robotPose,
+                        Supplier<Pose2d> goalPose) {
+                Transform2d transformToGoal = robotPose.get().minus(goalPose.get());
                 LinearVelocity xDesired = MetersPerSecond.of(DRIVE_TO_POSE_XY_PID.calculate(transformToGoal.getX(), 0)
                                 * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
                 LinearVelocity yDesired = MetersPerSecond.of(DRIVE_TO_POSE_XY_PID.calculate(transformToGoal.getY(), 0)
@@ -72,13 +75,14 @@ public class DriveToPoseUtil {
 
                 // packaging as a Transform2d because we don't have access to gyro here so
                 // cannot do ChassiSpeeds
-                return new Transform2d(xDesired.in(MetersPerSecond),
+                Transform2d alignmentSpeeds = new Transform2d(xDesired.in(MetersPerSecond),
                                 yDesired.in(MetersPerSecond),
                                 new Rotation2d(thetaDesired.in(RadiansPerSecond)));
+                return () -> alignmentSpeeds;
         }
 
-        public static AngularVelocity getAlignmentRotRate(Pose2d robotPose, Pose2d goalPose) {
-                Rotation2d rotationToGoal = robotPose.minus(goalPose).getRotation();
+        public static AngularVelocity getAlignmentRotRate(Pose2d robotPose, Supplier<Pose2d> goalPose) {
+                Rotation2d rotationToGoal = robotPose.minus(goalPose.get()).getRotation();
                 AngularVelocity thetaDesired = RotationsPerSecond.of(
                                 DRIVE_TO_POSE_THETA_PID.calculate(rotationToGoal.getRotations(), 0));
                 if (rotationToGoal.getDegrees() < THETA_ALIGN_TOLERANCE.in(Degrees)) {
