@@ -76,26 +76,31 @@ public class ReefscapeVisionUtil {
         private static final List<Pose2d> RIGHT_POSES_BLUE = Arrays.asList(
                         BLUE_REEF_B, BLUE_REEF_D, BLUE_REEF_F, BLUE_REEF_H, BLUE_REEF_J, BLUE_REEF_L);
 
-        public static Supplier<Pose2d> getGoalPose(AlignType alignType, Pose2d robotPose, boolean isBlueAlliance) {
+        public static Supplier<Pose2d> getGoalPose(AlignType alignType, Supplier<Pose2d> robotPose, boolean isBlueAlliance) {
                 Pose2d goalPose;
-                if (robotPose == null) {
-                        // return Pose2d();
+                System.out.println(alignType);
+                System.out.println(robotPose);
+                System.out.println(isBlueAlliance);
+                System.out.println("hiiii");
+                if (robotPose.get() == null) {
+                        Pose2d nullReturn = new Pose2d();
+                        return () -> nullReturn;
                 }
                 if (isBlueAlliance) {
                         if (alignType == AlignType.CORAL_STATION) {
                                 goalPose = BLUE_CORAL_STATION;
                         } else if (alignType == AlignType.REEF_LEFT) {
-                                goalPose = robotPose.nearest(LEFT_POSES_BLUE);
+                                goalPose = robotPose.get().nearest(LEFT_POSES_BLUE);
                         } else {
-                                goalPose = robotPose.nearest(RIGHT_POSES_BLUE);
+                                goalPose = robotPose.get().nearest(RIGHT_POSES_BLUE);
                         }
                 } else {
                         if (alignType == AlignType.CORAL_STATION) {
                                 goalPose = RED_CORAL_STATION;
                         } else if (alignType == AlignType.REEF_LEFT) {
-                                goalPose = robotPose.nearest(LEFT_POSES_RED);
+                                goalPose = robotPose.get().nearest(LEFT_POSES_RED);
                         } else {
-                                goalPose = robotPose.nearest(RIGHT_POSES_RED);
+                                goalPose = robotPose.get().nearest(RIGHT_POSES_RED);
                         }
                 }
                 Supplier<Pose2d> goalPoseSupplier = () -> goalPose;

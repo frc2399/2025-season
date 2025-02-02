@@ -55,6 +55,10 @@ public class DriveToPoseUtil {
 
         public static Supplier<Transform2d> getDriveToPoseVelocities(Supplier<Pose2d> robotPose,
                         Supplier<Pose2d> goalPose) {
+                if (robotPose.get() == null) {
+                        Transform2d nullReturn = new Transform2d(0, 0, new Rotation2d(0));
+                        return () -> nullReturn;
+                }
                 Transform2d transformToGoal = robotPose.get().minus(goalPose.get());
                 LinearVelocity xDesired = MetersPerSecond.of(DRIVE_TO_POSE_XY_PID.calculate(transformToGoal.getX(), 0)
                                 * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);

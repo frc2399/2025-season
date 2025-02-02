@@ -404,7 +404,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         isBlueAlliance = () -> false;
                 }
 
-                Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(alignType, robotPose,
+                Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(alignType, () -> robotPose,
                                 isBlueAlliance.getAsBoolean());
                 SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.get().getY());
 
