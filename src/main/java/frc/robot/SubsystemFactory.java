@@ -11,6 +11,8 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.SwerveModule;
 import frc.robot.subsystems.drive.SwerveModuleHardware;
 import frc.robot.subsystems.drive.SwerveModulePlacebo;
+import frc.robot.subsystems.elevator.ElevatorHardware;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.subsystems.gyro.GyroHardware;
 import frc.robot.subsystems.gyro.GyroPlacebo;
@@ -77,5 +79,8 @@ public class SubsystemFactory {
         } else {
             return new CoralWristSubsystem(new CoralWristPlacebo());
         }
+    }
+    protected ElevatorSubsystem buildElevator() {
+        return new ElevatorSubsystem(new ElevatorHardware());
     }
 }

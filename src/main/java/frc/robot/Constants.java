@@ -4,9 +4,15 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
+
 import edu.wpi.first.units.measure.Angle;
-import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
 
@@ -26,6 +32,8 @@ public final class Constants {
     public static final int CORAL_INTAKE_TOP_CAN_ID = 7;
     public static final int CORAL_INTAKE_BOTTOM_CAN_ID = 5;
     public static final int CORAL_INTAKE_WRIST_CAN_ID = 13;
+    public static final int LEFT_ELEVATOR_MOTOR_ID = 17;
+    public static final int RIGHT_ELEVATOR_MOTOR_ID = 15;
   }
 
   public static class SensorIdConstants {
@@ -33,14 +41,11 @@ public final class Constants {
   }
 
   public static class MotorConstants {
-    public static final int NEO550_CURRENT_LIMIT = 20;
-    public static final int NEO_CURRENT_LIMIT = 50;
+    public static final Current NEO550_CURRENT_LIMIT = Amps.of(20);
+    public static final Current NEO_CURRENT_LIMIT = Amps.of(50);
     public static final AngularVelocity NEO_FREE_SPEED = RPM.of(5676);
-    public static final AngularVelocity NEO_FREE_SPEED_RPS = NEO_FREE_SPEED.divide(60);
-    // MPS = (GearRatio * 2πr * RPM) / 60
-    public static final int NEO550_FREE_SPEED_RPM = 11000;
-
-    public static final int VORTEX_CURRENT_LIMIT = 80;
+    public static final AngularVelocity NEO550_FREE_SPEED = RPM.of(11000);
+    public static final Current NEO_VORTEX_CURRENT_LIMIT = Amps.of(60);
   }
 
   public static class SpeedConstants {
@@ -60,6 +65,10 @@ public final class Constants {
     public static final Angle L1_CORAL_OUTTAKE_ANGLE = Radians.of(-30);
     public static final Angle L2_CORAL_OUTTAKE_ANGLE = Radians.of(-30);
     public static final Angle L3_CORAL_OUTTAKE_ANGLE = Radians.of(-30);
+    public static Distance L_ONE_HEIGHT = Inches.of(0); 
+    public static Distance L_TWO_HEIGHT = Inches.of(7.5);
+    public static Distance L_THREE_HEIGHT = Inches.of(23.25);
+    public static Distance L_FOUR_HEIGHT = Inches.of(49.5);
   }
 
   public static class DriveControlConstants {

@@ -17,19 +17,22 @@ import frc.robot.Constants.SpeedConstants;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.vision.*;
+import static edu.wpi.first.units.Units.*;
 
 public class RobotContainer {
-  private CommandFactory commandFactory = new CommandFactory();
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
   private Gyro gyro = subsystemFactory.buildGyro();
+  private final ElevatorSubsystem elevator = subsystemFactory.buildElevator();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
   private final CoralIntakeSubsystem coralIntake = subsystemFactory.buildCoralIntake();
   private final CoralWristSubsystem coralWrist = subsystemFactory.buildCoralWrist();
   // this is public because we need to run the visionPoseEstimator periodic from
   // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
+  private CommandFactory commandFactory = new CommandFactory(drive, elevator);
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
@@ -40,6 +43,10 @@ public class RobotContainer {
     configureDefaultCommands();
     configureButtonBindingsDriver();
     configureButtonBindingsOperator();
+  }
+
+  public void disableSubsystems() {
+    elevator.disableElevator();
   }
 
   public void configureDefaultCommands() {
@@ -61,28 +68,27 @@ public class RobotContainer {
             drive).withName("drive default"));
     coralIntake.setDefaultCommand(coralIntake.setRollerSpeed(0));
     coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0));
+
+      elevator.setDefaultCommand(elevator.keepElevatorAtCurrentPosition());
   }
 
   private void configureButtonBindingsDriver() {
+    driverController.rightBumper().whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_INTAKE_SPEED));
+    driverController.leftBumper().whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED));
     driverController.b().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
   }
 
   private void configureButtonBindingsOperator() {
-    operatorController.rightBumper().whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_INTAKE_SPEED));
-    operatorController.leftBumper().whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED));
-
     operatorController.rightTrigger().whileTrue(coralWrist.setWristSpeed(SpeedConstants.WRIST_MAX_SPEED));
     operatorController.leftTrigger().whileTrue(coralWrist.setWristSpeed(-SpeedConstants.WRIST_MAX_SPEED));
-    operatorController.x()
+    operatorController.leftBumper()
         .whileTrue(coralWrist.goToSetpointCommand(SetpointConstants.L1_CORAL_INTAKE_ANGLE.in(Radians)));
-    operatorController.b()
-        .whileTrue(coralWrist.goToSetpointCommand(SetpointConstants.L2_CORAL_INTAKE_ANGLE.in(Radians)));
-    operatorController.y()
-        .whileTrue(coralWrist.goToSetpointCommand(SetpointConstants.L3_CORAL_INTAKE_ANGLE.in(Radians)));
-
-    // operatorController.rightBumper().onTrue(coralWrist.setGoalStateTrapezoidCommand(SetpointConstants.CORAL_INTAKE_ANGLE));
-    // operatorController.leftBumper().onTrue(coralWrist.setGoalStateTrapezoidCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE));
-
+    operatorController.rightBumper()
+        .whileTrue(coralWrist.goToSetpointCommand(SetpointConstants.L1_CORAL_OUTTAKE_ANGLE.in(Radians)));
+    operatorController.y().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_TWO_HEIGHT.in(Meters)));
+    operatorController.x().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
+    operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
+    operatorController.a().whileTrue(elevator.setPercentOutputCommand(-0.1));
   }
 }
