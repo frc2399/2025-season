@@ -58,6 +58,9 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import java.util.Optional;
 
 public class DriveSubsystem extends SubsystemBase implements DriveBase {
+        // for drivetopose
+        private AtomicBoolean atGoal = new AtomicBoolean(true);
+
         private double velocityXMPS;
         private double velocityYMPS;
 
@@ -131,19 +134,19 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 WHEEL_BASE = trackWidth;
 
                 FRONT_LEFT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
-                        TRACK_WIDTH.in(Meters) / 2);
+                                TRACK_WIDTH.in(Meters) / 2);
                 REAR_LEFT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2,
-                        TRACK_WIDTH.in(Meters) / 2);
+                                TRACK_WIDTH.in(Meters) / 2);
                 FRONT_RIGHT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
-                -TRACK_WIDTH.in(Meters) / 2);
+                                -TRACK_WIDTH.in(Meters) / 2);
                 REAR_RIGHT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2,
-                        -TRACK_WIDTH.in(Meters) / 2);
+                                -TRACK_WIDTH.in(Meters) / 2);
 
                 DRIVE_KINEMATICS = new SwerveDriveKinematics(
-                        FRONT_LEFT_OFFSET,
-                        FRONT_RIGHT_OFFSET,
-                        REAR_LEFT_OFFSET,
-                        REAR_RIGHT_OFFSET);
+                                FRONT_LEFT_OFFSET,
+                                FRONT_RIGHT_OFFSET,
+                                REAR_LEFT_OFFSET,
+                                REAR_RIGHT_OFFSET);
 
                 SmartDashboard.putData(field2d);
 
@@ -164,6 +167,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         @Override
         public void periodic() {
+                SmartDashboard.putBoolean("/drive/atGoal", atGoal.get());
                 // This will get the simulated sensor readings that we set
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
@@ -251,6 +255,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
          *                      field.
          */
         public void drive(double xSpeed, double ySpeed, double rotRate, boolean fieldRelative) {
+                disableDriveToPose();
                 rotRate = Math.pow(rotRate, 5);
                 double newRotRate = 0;
                 double currentAngle = (gyro.getYaw());
@@ -300,6 +305,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
          */
         public Command setX() {
                 return this.run(() -> {
+                        disableDriveToPose();
                         frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
                         frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
                         rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
@@ -379,50 +385,58 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
         }
 
-        //this method has a LOT of suppliers - so short explanation of why they're good
-        //basically, when a button binding is called in robotContainer, it makes an object 
-        //represnting the command. this object does not change, and it does not actually look
-        //at the command each time - it just calls the one that was constructed at robotInit
-        //by using a supplier, the robot knows 'hey, this value might change, so i should
-        //check it every time i use this object' thus allowing it to change
+        // this method has a LOT of suppliers - so short explanation of why they're good
+        // basically, when a button binding is called in robotContainer, it makes an
+        // object
+        // represnting the command. this object does not change, and it does not
+        // actually look
+        // at the command each time - it just calls the one that was constructed at
+        // robotInit
+        // by using a supplier, the robot knows 'hey, this value might change, so i
+        // should
+        // check it every time i use this object' thus allowing it to change
         public Command driveToPoseCommand(AlignType alignType, Optional<Alliance> ally) {
-
-                // TODO: there is definitely a better way to do this than an atomic boolean
-
-                // basically, bad things can happen if we try to update a normal boolean within
-                // a lambda and access it outside that lambda, but atomic booleans prevent these
-                // risks
-                AtomicBoolean atGoal = new AtomicBoolean(false);
-
-                // TODO: not sure we want to be checking this each time, but also not sure we
-                // want to put it into robotContainer
-
-                // defaults to blue alliance
-                BooleanSupplier isBlueAlliance = () -> true;
-
-                if (ally.isPresent() && (ally.get() == Alliance.Red)) {
-                        isBlueAlliance = () -> false;
-                }
-
-                Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(alignType, () -> robotPose,
-                                isBlueAlliance.getAsBoolean());
-                SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.get().getY());
-
                 return this.run(() -> {
-                        Supplier<Transform2d> velocities = DriveToPoseUtil.getDriveToPoseVelocities(
-                                        () -> robotPose, goalPose);
-                        Supplier<Rotation2d> gyroYawRotationSupplier = () -> new Rotation2d(gyro.getYaw());
-                        ChassisSpeeds alignmentSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                                        velocities.get().getX(), velocities.get().getY(), velocities.get().getRotation().getRadians(),
-                                        gyroYawRotationSupplier.get());
+                        atGoal.set(false);
+                        System.out.println("calling,,,");
+                        // TODO: there is definitely a better way to do this than an atomic boolean
 
-                        // tolerances were accounted for in getDriveToPoseVelocities
-                        atGoal.set((velocities.get().getX() == 0 && velocities.get().getY() == 0
-                                        && velocities.get().getRotation().getRadians() == 0));
+                        // basically, bad things can happen if we try to update a normal boolean within
+                        // a lambda and access it outside that lambda, but atomic booleans prevent these
+                        // risks
 
-                        var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(alignmentSpeeds);
-                        SwerveDriveKinematics.desaturateWheelSpeeds(
-                                        swerveModuleStates, SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
+                        // TODO: not sure we want to be checking this each time, but also not sure we
+                        // want to put it into robotContainer
+
+                        // defaults to blue alliance
+                        // BooleanSupplier isBlueAlliance = () -> true;
+
+                        // if (ally.isPresent() && (ally.get() == Alliance.Red)) {
+                        // isBlueAlliance = () -> false;
+                        // }
+
+                        // Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(alignType, () ->
+                        // robotPose,
+                        // isBlueAlliance.getAsBoolean());
+                        // SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.get().getY());
+
+                        // Supplier<Transform2d> velocities = DriveToPoseUtil.getDriveToPoseVelocities(
+                        // () -> robotPose, goalPose);
+                        // Supplier<Rotation2d> gyroYawRotationSupplier = () -> new
+                        // Rotation2d(gyro.getYaw());
+                        // ChassisSpeeds alignmentSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                        // velocities.get().getX(), velocities.get().getY(),
+                        // velocities.get().getRotation().getRadians(),
+                        // gyroYawRotationSupplier.get());
+
+                        // // tolerances were accounted for in getDriveToPoseVelocities
+                        // atGoal.set((velocities.get().getX() == 0 && velocities.get().getY() == 0
+                        // && velocities.get().getRotation().getRadians() == 0));
+
+                        // var swerveModuleStates =
+                        // DRIVE_KINEMATICS.toSwerveModuleStates(alignmentSpeeds);
+                        // SwerveDriveKinematics.desaturateWheelSpeeds(
+                        // swerveModuleStates, SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
 
                         // frontLeft.setDesiredState(swerveModuleStates[0]);
                         // frontRight.setDesiredState(swerveModuleStates[1]);
@@ -433,34 +447,41 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 }).until(() -> atGoal.get());
         }
 
-        // public Command rotateToPoseCommand(AlignType alignType, Optional<Alliance> ally) {
-        //         boolean isBlueAlliance = true;
-        //         if (ally.isPresent() && ally.get() == Alliance.Red) {
-        //                 isBlueAlliance = false;
-        //         }
+        public void disableDriveToPose() {
+                atGoal.set(true);
+        }
 
-        //         Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(alignType, robotPose, isBlueAlliance);
-        //         AtomicBoolean atGoal = new AtomicBoolean(false);
-        //         return this.run(() -> {
-        //                 AngularVelocity thetaVelocity = DriveToPoseUtil.getAlignmentRotRate(
-        //                                 robotPose, goalPose);
-        //                 ChassisSpeeds alignmentSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-        //                                 0, 0, thetaVelocity.in(RadiansPerSecond),
-        //                                 new Rotation2d(gyro.getYaw()));
+        // public Command rotateToPoseCommand(AlignType alignType, Optional<Alliance>
+        // ally) {
+        // boolean isBlueAlliance = true;
+        // if (ally.isPresent() && ally.get() == Alliance.Red) {
+        // isBlueAlliance = false;
+        // }
 
-        //                 // tolerances were accounted for in getDriveToPoseVelocities
-        //                 atGoal.set(thetaVelocity.in(RotationsPerSecond) == 0);
+        // Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(alignType,
+        // robotPose, isBlueAlliance);
+        // AtomicBoolean atGoal = new AtomicBoolean(false);
+        // return this.run(() -> {
+        // AngularVelocity thetaVelocity = DriveToPoseUtil.getAlignmentRotRate(
+        // robotPose, goalPose);
+        // ChassisSpeeds alignmentSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        // 0, 0, thetaVelocity.in(RadiansPerSecond),
+        // new Rotation2d(gyro.getYaw()));
 
-        //                 var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(alignmentSpeeds);
-        //                 SwerveDriveKinematics.desaturateWheelSpeeds(
-        //                                 swerveModuleStates, SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
+        // // tolerances were accounted for in getDriveToPoseVelocities
+        // atGoal.set(thetaVelocity.in(RotationsPerSecond) == 0);
 
-        //                 // frontLeft.setDesiredState(swerveModuleStates[0]);
-        //                 // frontRight.setDesiredState(swerveModuleStates[1]);
-        //                 // rearLeft.setDesiredState(swerveModuleStates[2]);
-        //                 // rearRight.setDesiredState(swerveModuleStates[3]);
+        // var swerveModuleStates =
+        // DRIVE_KINEMATICS.toSwerveModuleStates(alignmentSpeeds);
+        // SwerveDriveKinematics.desaturateWheelSpeeds(
+        // swerveModuleStates, SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
 
-        //                 // swerveModuleDesiredStatePublisher.set(swerveModuleStates);
-        //         }).until(() -> atGoal.get());
+        // // frontLeft.setDesiredState(swerveModuleStates[0]);
+        // // frontRight.setDesiredState(swerveModuleStates[1]);
+        // // rearLeft.setDesiredState(swerveModuleStates[2]);
+        // // rearRight.setDesiredState(swerveModuleStates[3]);
+
+        // // swerveModuleDesiredStatePublisher.set(swerveModuleStates);
+        // }).until(() -> atGoal.get());
         // }
 }

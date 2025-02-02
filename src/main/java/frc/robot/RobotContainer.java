@@ -40,6 +40,7 @@ public class RobotContainer {
 
   public void disableSubsystems() {
     elevator.disableElevator();
+    drive.disableDriveToPose();
   }
 
   public enum AlignType {
