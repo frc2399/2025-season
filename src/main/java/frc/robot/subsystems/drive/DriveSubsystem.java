@@ -47,9 +47,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import java.util.Optional;
 
 public class DriveSubsystem extends SubsystemBase implements DriveBase {
-
-        
-
         private double velocityXMPS;
         private double velocityYMPS;
 
@@ -105,7 +102,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private FieldObject2d frontRightField2dModule = field2d.getObject("front right module");
         private FieldObject2d rearRightField2dModule = field2d.getObject("rear right module");
 
-        private ChassisSpeeds relativeRobotSpeeds;
+        private ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
 
         private Rotation2d lastAngle = new Rotation2d();
 
@@ -232,7 +229,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
          *                      field.
          */
         public void drive(double xSpeed, double ySpeed, double rotRate, boolean fieldRelative) {
-
+                rotRate = Math.pow(rotRate, 5);
                 double newRotRate = 0;
                 double currentAngle = (gyro.getYaw());
                 double r = Math.pow(Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2)), 3);
@@ -274,7 +271,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 rearRight.setDesiredState(swerveModuleStates[3]);
 
                 swerveModuleDesiredStatePublisher.set(swerveModuleStates);
-
         }
 
         /**
