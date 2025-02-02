@@ -40,25 +40,17 @@ public class SubsystemFactory {
     private String serialNum = System.getenv("serialnum");
 
     public SubsystemFactory() {
-        SmartDashboard.putString("serialNum", serialNum);
-        String rt;
         if (serialNum.equals(ALPHA_SERIAL_NUMBER)) {
             robotType = RobotType.ALPHA;
-            rt = "alpha";
         } else if (serialNum.equals(BETA_SERIAL_NUMBER)) {
             robotType = RobotType.BETA;
-            rt = "beta";
         } else if (serialNum.equals(COMP_SERIAL_NUMBER)) {
             robotType = RobotType.COMP;
-            rt = "comp";
         } else if (serialNum.equals(MOZART_SERIAL_NUMBER)) {
             robotType = RobotType.MOZART;
-            rt = "mozart";
         } else {
             robotType = RobotType.SIM;
-            rt = "sim";
         }
-        SmartDashboard.putString("robot", rt);
     }
 
     public DriveSubsystem buildDriveSubsystem(Gyro gyro) {

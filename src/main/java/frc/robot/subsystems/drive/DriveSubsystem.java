@@ -133,7 +133,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         REAR_LEFT_OFFSET,
                         REAR_RIGHT_OFFSET);
 
-                SmartDashboard.putNumber("drive/trackBase", TRACK_WIDTH.in(Inches));
                 SmartDashboard.putData(field2d);
 
                 poseEstimator = new SwerveDrivePoseEstimator(
