@@ -255,7 +255,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
          *                      field.
          */
         public void drive(double xSpeed, double ySpeed, double rotRate, boolean fieldRelative) {
-                disableDriveToPose();
                 rotRate = Math.pow(rotRate, 5);
                 double newRotRate = 0;
                 double currentAngle = (gyro.getYaw());
@@ -305,7 +304,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
          */
         public Command setX() {
                 return this.run(() -> {
-                        disableDriveToPose();
                         frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
                         frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
                         rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
@@ -398,7 +396,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         public Command driveToPoseCommand(AlignType alignType, Optional<Alliance> ally) {
                 return this.run(() -> {
                         atGoal.set(false);
-                        System.out.println("calling,,,");
                         // TODO: there is definitely a better way to do this than an atomic boolean
 
                         // basically, bad things can happen if we try to update a normal boolean within
@@ -408,47 +405,44 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         // TODO: not sure we want to be checking this each time, but also not sure we
                         // want to put it into robotContainer
 
-                        // defaults to blue alliance
-                        // BooleanSupplier isBlueAlliance = () -> true;
+                        // defaults to red alliance (our testing reef is RED)
+                        boolean isBlueAlliance = false;
 
-                        // if (ally.isPresent() && (ally.get() == Alliance.Red)) {
-                        // isBlueAlliance = () -> false;
-                        // }
+                        if (ally.isPresent() && (ally.get() == Alliance.Red)) {
+                                isBlueAlliance = false;
+                        }
 
-                        // Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(alignType, () ->
-                        // robotPose,
-                        // isBlueAlliance.getAsBoolean());
-                        // SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.get().getY());
+                        Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(alignType, () -> robotPose,
+                                        isBlueAlliance);
+                        SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.get().getY());
 
-                        // Supplier<Transform2d> velocities = DriveToPoseUtil.getDriveToPoseVelocities(
-                        // () -> robotPose, goalPose);
-                        // Supplier<Rotation2d> gyroYawRotationSupplier = () -> new
-                        // Rotation2d(gyro.getYaw());
-                        // ChassisSpeeds alignmentSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                        // velocities.get().getX(), velocities.get().getY(),
-                        // velocities.get().getRotation().getRadians(),
-                        // gyroYawRotationSupplier.get());
+                        Supplier<Transform2d> velocities = DriveToPoseUtil.getDriveToPoseVelocities(
+                                        () -> robotPose, goalPose);
+                        Supplier<Rotation2d> gyroYawRotationSupplier = () -> new Rotation2d(gyro.getYaw());
+                        ChassisSpeeds alignmentSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                                        velocities.get().getX(), velocities.get().getY(),
+                                        velocities.get().getRotation().getRadians(),
+                                        gyroYawRotationSupplier.get());
 
-                        // // tolerances were accounted for in getDriveToPoseVelocities
-                        // atGoal.set((velocities.get().getX() == 0 && velocities.get().getY() == 0
-                        // && velocities.get().getRotation().getRadians() == 0));
+                        // tolerances were accounted for in getDriveToPoseVelocities
+                        atGoal.set((velocities.get().getX() == 0 && velocities.get().getY() == 0
+                                        && velocities.get().getRotation().getRadians() == 0));
 
-                        // var swerveModuleStates =
-                        // DRIVE_KINEMATICS.toSwerveModuleStates(alignmentSpeeds);
-                        // SwerveDriveKinematics.desaturateWheelSpeeds(
-                        // swerveModuleStates, SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
+                        var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(alignmentSpeeds);
+                        SwerveDriveKinematics.desaturateWheelSpeeds(
+                                        swerveModuleStates, SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
 
-                        // frontLeft.setDesiredState(swerveModuleStates[0]);
-                        // frontRight.setDesiredState(swerveModuleStates[1]);
-                        // rearLeft.setDesiredState(swerveModuleStates[2]);
-                        // rearRight.setDesiredState(swerveModuleStates[3]);
+                        frontLeft.setDesiredState(swerveModuleStates[0]);
+                        frontRight.setDesiredState(swerveModuleStates[1]);
+                        rearLeft.setDesiredState(swerveModuleStates[2]);
+                        rearRight.setDesiredState(swerveModuleStates[3]);
 
-                        // swerveModuleDesiredStatePublisher.set(swerveModuleStates);
+                         swerveModuleDesiredStatePublisher.set(swerveModuleStates);
                 }).until(() -> atGoal.get());
         }
 
-        public void disableDriveToPose() {
-                atGoal.set(true);
+        public Command disableDriveToPose() {
+                return this.runOnce(() -> atGoal.set(true));
         }
 
         // public Command rotateToPoseCommand(AlignType alignType, Optional<Alliance>

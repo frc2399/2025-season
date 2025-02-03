@@ -78,10 +78,6 @@ public class ReefscapeVisionUtil {
 
         public static Supplier<Pose2d> getGoalPose(AlignType alignType, Supplier<Pose2d> robotPose, boolean isBlueAlliance) {
                 Pose2d goalPose;
-                System.out.println(alignType);
-                System.out.println(robotPose);
-                System.out.println(isBlueAlliance);
-                System.out.println("hiiii");
                 if (robotPose.get() == null) {
                         Pose2d nullReturn = new Pose2d();
                         return () -> nullReturn;

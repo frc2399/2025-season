@@ -75,11 +75,11 @@ public class RobotContainer {
     driverController.x().whileTrue(drive.setX());
 
     driverController.rightTrigger()
-        .onTrue(drive.driveToPoseCommand(AlignType.REEF_RIGHT, DriverStation.getAlliance())
-            .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+        .whileTrue(drive.driveToPoseCommand(AlignType.REEF_RIGHT, DriverStation.getAlliance()))
+        .onFalse(drive.disableDriveToPose());
     driverController.leftTrigger()
-        .onTrue(drive.driveToPoseCommand(AlignType.REEF_LEFT, DriverStation.getAlliance())
-            .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+        .whileTrue(drive.driveToPoseCommand(AlignType.REEF_LEFT, DriverStation.getAlliance()))
+        .onFalse(drive.disableDriveToPose());
   }
 
   private void configureButtonBindingsOperator() {

@@ -10,7 +10,6 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
-import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import java.util.function.Supplier;
@@ -31,7 +30,7 @@ import frc.robot.Constants.SpeedConstants;
 public class DriveToPoseUtil {
         // pids for driving to a pose
         private static final double DRIVE_TO_POSE_XY_P = 0.1;
-        private static final double DRIVE_TO_POSE_XY_D = 0.01;
+        private static final double DRIVE_TO_POSE_XY_D = 0.0;
         private static final LinearVelocity MAX_VELOCITY_DRIVE_TO_POSE = MetersPerSecond.of(1);
         private static final LinearAcceleration MAX_ACCELERATION_DRIVE_TO_POSE = MetersPerSecondPerSecond.of(0.5);
         private static final ProfiledPIDController DRIVE_TO_POSE_XY_PID = new ProfiledPIDController(
@@ -40,7 +39,7 @@ public class DriveToPoseUtil {
                                         MAX_ACCELERATION_DRIVE_TO_POSE.in(MetersPerSecondPerSecond)));
 
         private static final double DRIVE_TO_POSE_THETA_P = 0.1;
-        private static final double DRIVE_TO_POSE_THETA_D = 0.01;
+        private static final double DRIVE_TO_POSE_THETA_D = 0.0;
         private static final AngularVelocity MAX_ANGULAR_VELOCITY_DRIVE_TO_POSE = DegreesPerSecond.of(45);
         private static final AngularAcceleration MAX_ANGULAR_ACCELERATION_DRIVE_TO_POSE = DegreesPerSecondPerSecond
                         .of(10);
