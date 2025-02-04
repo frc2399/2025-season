@@ -1,5 +1,9 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Inches;
+
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.MotorIdConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristHardware;
@@ -11,6 +15,9 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.SwerveModule;
 import frc.robot.subsystems.drive.SwerveModuleHardware;
 import frc.robot.subsystems.drive.SwerveModulePlacebo;
+import frc.robot.subsystems.elevator.ElevatorHardware;
+import frc.robot.subsystems.elevator.ElevatorPlacebo;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.subsystems.gyro.GyroHardware;
 import frc.robot.subsystems.gyro.GyroPlacebo;
@@ -23,12 +30,45 @@ public class SubsystemFactory {
 
     private static final boolean isSim = Robot.isSimulation();
 
+    private static final String MOZART_SERIAL_NUMBER = "030ee8c8";
+    private static final String ALPHA_SERIAL_NUMBER = "03260A64";
+    private static final String BETA_SERIAL_NUMBER = "30FC267";
+    private static final String COMP_SERIAL_NUMBER = "";
+
+    private enum RobotType {
+        MOZART,
+        SIM,
+        ALPHA,
+        BETA,
+        COMP
+    }
+
+    private RobotType robotType;
+
+    private String serialNum = System.getenv("serialnum");
+
+    public SubsystemFactory() {
+        if (serialNum.equals(ALPHA_SERIAL_NUMBER)) {
+            robotType = RobotType.ALPHA;
+        } else if (serialNum.equals(BETA_SERIAL_NUMBER)) {
+            robotType = RobotType.BETA;
+        } else if (serialNum.equals(COMP_SERIAL_NUMBER)) {
+            robotType = RobotType.COMP;
+        } else if (serialNum.equals(MOZART_SERIAL_NUMBER)) {
+            robotType = RobotType.MOZART;
+        } else {
+            robotType = RobotType.SIM;
+        }
+    }
+
     public DriveSubsystem buildDriveSubsystem(Gyro gyro) {
         SwerveModule frontLeft;
         SwerveModule rearLeft;
         SwerveModule frontRight;
         SwerveModule rearRight;
-        if (!isSim) {
+        Distance trackWidth;
+        if (robotType == RobotType.ALPHA) {
+            trackWidth = Constants.DriveControlConstants.ALPHA_TRACK_WIDTH;
             frontLeft = new SwerveModule(new SwerveModuleHardware(
                     MotorIdConstants.FRONT_LEFT_DRIVING_CAN_ID,
                     MotorIdConstants.FRONT_LEFT_TURNING_CAN_ID,
@@ -45,18 +85,38 @@ public class SubsystemFactory {
                     MotorIdConstants.REAR_RIGHT_DRIVING_CAN_ID,
                     MotorIdConstants.REAR_RIGHT_TURNING_CAN_ID,
                     REAR_RIGHT_CHASSIS_ANGULAR_OFFSET, "rear right"));
-            return new DriveSubsystem(frontLeft, frontRight, rearLeft, rearRight, gyro);
+            return new DriveSubsystem(frontLeft, frontRight, rearLeft, rearRight, gyro, trackWidth);
+        } else if (robotType == RobotType.MOZART) {
+            trackWidth = Constants.DriveControlConstants.MOZART_TRACK_WIDTH;
+            frontLeft = new SwerveModule(new SwerveModuleHardware(
+                    MotorIdConstants.FRONT_LEFT_DRIVING_CAN_ID,
+                    MotorIdConstants.FRONT_LEFT_TURNING_CAN_ID,
+                    FRONT_LEFT_CHASSIS_ANGULAR_OFFSET, "front left"));
+            frontRight = new SwerveModule(new SwerveModuleHardware(
+                    MotorIdConstants.FRONT_RIGHT_DRIVING_CAN_ID,
+                    MotorIdConstants.FRONT_RIGHT_TURNING_CAN_ID,
+                    FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET, "front right"));
+            rearLeft = new SwerveModule(new SwerveModuleHardware(
+                    MotorIdConstants.REAR_LEFT_DRIVING_CAN_ID,
+                    MotorIdConstants.REAR_LEFT_TURNING_CAN_ID,
+                    REAR_LEFT_CHASSIS_ANGULAR_OFFSET, "rear left"));
+            rearRight = new SwerveModule(new SwerveModuleHardware(
+                    MotorIdConstants.REAR_RIGHT_DRIVING_CAN_ID,
+                    MotorIdConstants.REAR_RIGHT_TURNING_CAN_ID,
+                    REAR_RIGHT_CHASSIS_ANGULAR_OFFSET, "rear right"));
+            return new DriveSubsystem(frontLeft, frontRight, rearLeft, rearRight, gyro, trackWidth);
         } else {
             frontLeft = new SwerveModule(new SwerveModulePlacebo());
             frontRight = new SwerveModule(new SwerveModulePlacebo());
             rearLeft = new SwerveModule(new SwerveModulePlacebo());
             rearRight = new SwerveModule(new SwerveModulePlacebo());
-            return new DriveSubsystem(frontLeft, frontRight, rearLeft, rearRight, gyro);
+            return new DriveSubsystem(frontLeft, frontRight, rearLeft, rearRight, gyro, Inches.of(10));
+            // 10 is a default value for sim lol
         }
     }
 
     public Gyro buildGyro() {
-        if (!isSim) {
+        if (robotType == RobotType.ALPHA || robotType == RobotType.MOZART) {
             return new Gyro(new GyroHardware());
         } else {
             return new Gyro(new GyroPlacebo());
@@ -79,4 +139,11 @@ public class SubsystemFactory {
         }
     }
 
+    protected ElevatorSubsystem buildElevator() {
+        if (robotType == RobotType.ALPHA) {
+            return new ElevatorSubsystem(new ElevatorHardware());
+        } else {
+            return new ElevatorSubsystem(new ElevatorPlacebo());
+        }
+    }
 }
