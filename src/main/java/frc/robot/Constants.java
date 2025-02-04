@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
 
@@ -66,7 +67,7 @@ public final class Constants {
     public static final Angle L1_CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
     public static final Angle L2_CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
     public static final Angle L3_CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
-    public static Distance L_ONE_HEIGHT = Inches.of(0); 
+    public static Distance L_ONE_HEIGHT = Inches.of(0);
     public static Distance L_TWO_HEIGHT = Inches.of(7.5);
     public static Distance L_THREE_HEIGHT = Inches.of(23.25);
     public static Distance L_FOUR_HEIGHT = Inches.of(49.5);
@@ -77,6 +78,9 @@ public final class Constants {
     public static final int OPERATOR_CONTROLLER_PORT = 1;
     public static final double DRIVE_DEADBAND = 0.05;
     public static final boolean FIELD_ORIENTED_DRIVE = true;
+
+    public static final Distance ALPHA_TRACK_WIDTH = Meters.of(0.4954);
+    public static final Distance MOZART_TRACK_WIDTH = Inches.of(26 - (2 * 1.75));
   }
 
 }

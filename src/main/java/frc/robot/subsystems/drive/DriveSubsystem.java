@@ -64,25 +64,17 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private SwerveModule rearLeft;
         private SwerveModule rearRight;
 
-        private static final Distance TRACK_WIDTH = Inches.of(26 - (2 * 1.75));
-        private static final Distance WHEEL_BASE = Inches.of(26 - (2 * 1.75));
+        private final Distance TRACK_WIDTH;
+        private final Distance WHEEL_BASE;
 
         // Distance between front and back wheels on robot
 
-        private static final Translation2d FRONT_LEFT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
-                        TRACK_WIDTH.in(Meters) / 2);
-        private static final Translation2d REAR_LEFT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2,
-                        TRACK_WIDTH.in(Meters) / 2);
-        private static final Translation2d FRONT_RIGHT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
-                        -TRACK_WIDTH.in(Meters) / 2);
-        private static final Translation2d REAR_RIGHT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2,
-                        -TRACK_WIDTH.in(Meters) / 2);
+        private final Translation2d FRONT_LEFT_OFFSET;
+        private final Translation2d REAR_LEFT_OFFSET;
+        private final Translation2d FRONT_RIGHT_OFFSET;
+        private final Translation2d REAR_RIGHT_OFFSET;
 
-        private static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
-                        FRONT_LEFT_OFFSET,
-                        FRONT_RIGHT_OFFSET,
-                        REAR_LEFT_OFFSET,
-                        REAR_RIGHT_OFFSET);
+        private final SwerveDriveKinematics DRIVE_KINEMATICS;
 
         // Slew rate filter variables for controlling lateral acceleration
         private double currentRotationRate = 0.0;
@@ -109,12 +101,30 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         /** Creates a new DriveSubsystem. */
         public DriveSubsystem(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule rearLeft,
-                        SwerveModule rearRight, Gyro gyro) {
+                        SwerveModule rearRight, Gyro gyro, Distance trackWidth) {
                 this.gyro = gyro;
                 this.frontLeft = frontLeft;
                 this.frontRight = frontRight;
                 this.rearLeft = rearLeft;
                 this.rearRight = rearRight;
+
+                TRACK_WIDTH = trackWidth;
+                WHEEL_BASE = trackWidth;
+
+                FRONT_LEFT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
+                        TRACK_WIDTH.in(Meters) / 2);
+                REAR_LEFT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2,
+                        TRACK_WIDTH.in(Meters) / 2);
+                FRONT_RIGHT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
+                -TRACK_WIDTH.in(Meters) / 2);
+                REAR_RIGHT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2,
+                        -TRACK_WIDTH.in(Meters) / 2);
+
+                DRIVE_KINEMATICS = new SwerveDriveKinematics(
+                        FRONT_LEFT_OFFSET,
+                        FRONT_RIGHT_OFFSET,
+                        REAR_LEFT_OFFSET,
+                        REAR_RIGHT_OFFSET);
 
                 SmartDashboard.putData(field2d);
 
