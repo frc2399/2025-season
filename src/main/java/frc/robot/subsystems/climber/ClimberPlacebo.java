@@ -2,23 +2,11 @@ package frc.robot.subsystems.climber;
 
 public class ClimberPlacebo implements ClimberIO{
     
-    public double getHeight(){
+    public double getAngle(){
         return 0.0;
     }
 
-    public void setHeight(double height){}
-
-    public void extend(){}
-
-    public void retract(){}
-
-    public boolean isExtended(){
-        return false;
-    }
-
-    public boolean isRetracted(){
-        return false; 
-    }
+    public void setAngle(double height){}
 
     public void set(double speed){}
 

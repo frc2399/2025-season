@@ -12,34 +12,14 @@ public class Climber extends SubsystemBase {
             this.io = io; 
     }
 
-    public double getHeight()
+    public double getAngle()
     {
-        return io.getHeight(); 
+        return io.getAngle(); 
     }
 
-    public Command setHeight(double height)
+    public Command setAngle(double height)
     {
-        return this.run(() -> io.setHeight(height));
-    }
-
-    public Command extend()
-    {
-        return this.run(() -> io.extend());
-    }
-
-    public Command retract()
-    {
-        return this.run(() -> io.retract());
-    } 
-
-    public boolean isExtended()
-    {
-        return io.isExtended();
-    }
-
-    public boolean isRetracted()
-    {
-        return io.isRetracted();
+        return this.run(() -> io.setAngle(height));
     }
 
     //TO DO: return cmd 

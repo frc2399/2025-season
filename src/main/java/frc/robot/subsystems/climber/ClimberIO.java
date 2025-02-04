@@ -2,17 +2,9 @@ package frc.robot.subsystems.climber;
 
 public interface ClimberIO {
     
-    public double getHeight();
+    public double getAngle();
 
-    public void setHeight(double height);
-    
-    public void extend();
-
-    public void retract(); 
-
-    public boolean isExtended();
-
-    public boolean isRetracted();
+    public void setAngle(double desiredPosition);
 
     public void set(double speed);
 }

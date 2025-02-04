@@ -19,7 +19,8 @@ public final class Constants {
 
     public static final int GYRO_CAN_ID = 3;
 
-    public static final int CLIMBER_CAN_ID = 0;
+    public static final int CLIMBER_LEFT_CAN_ID = 0;
+    public static final int CLIMBER_RIGHT_CAN_ID = 1;
   }
   
   public static class SensorIdConstants {

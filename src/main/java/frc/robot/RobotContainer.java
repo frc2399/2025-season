@@ -51,7 +51,6 @@ public class RobotContainer {
  
   private void configureButtonBindingsDriver() {
     driverController.x().whileTrue(drive.setX());
-    driverController.y().onTrue(new RunCommand( () -> climber.extend()));
 
   }
 }
