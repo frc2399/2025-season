@@ -128,6 +128,11 @@ public class ElevatorHardware implements ElevatorIO {
     }
 
     @Override
+    public void setManualControlMotionProfiling(double joystickInput){
+        goalState.position = 
+    }
+
+    @Override
     public void setPositionMotionProfiling(double newGoalPosition) {
         goalState.position = newGoalPosition; 
     }
