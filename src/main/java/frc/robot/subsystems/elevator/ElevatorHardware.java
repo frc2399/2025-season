@@ -88,7 +88,7 @@ public class ElevatorHardware implements ElevatorIO {
             .forwardSoftLimit((ElevatorHardwareConstants.MAX_ELEVATOR_HEIGHT).in(Meters) - 0.02) //a little less than max height for safety
             .forwardSoftLimitEnabled(true)
             .reverseSoftLimit(0)
-            .reverseSoftLimitEnabled(true);
+            .reverseSoftLimitEnabled(false);
 
 
         leftMotorConfigLeader
