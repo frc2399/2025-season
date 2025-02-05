@@ -29,7 +29,7 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     //pid command that is seperate from motion profiling
     public Command goToSetPointCommandPID(double position) {
-        return this.startEnd(() -> elevatorIO.setGoalPositionPID(position), () -> elevatorIO.setGoalPositionPID(0));
+        return this.runOnce(() -> elevatorIO.setGoalPositionPID(position));
     }
 
     //motion profile command that is seperate from PID
@@ -45,7 +45,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
 
     public Command setPercentOutputCommand(double percentOutput) {
-        return this.startEnd(() -> elevatorIO.setPercentOutput(percentOutput), () -> elevatorIO.setPercentOutput(0));
+        return this.runOnce(() -> elevatorIO.setPercentOutput(percentOutput));
     }
 
     @Override

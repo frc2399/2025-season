@@ -53,7 +53,7 @@ public class RobotContainer {
                 DriveControlConstants.FIELD_ORIENTED_DRIVE),
             drive).withName("drive default"));
 
-      elevator.setDefaultCommand(elevator.setSpeedCommand(0));
+      //elevator.setDefaultCommand(elevator.setSpeedCommand(0));
   }
  
   private void configureButtonBindingsDriver() {
@@ -65,6 +65,8 @@ public class RobotContainer {
     //a lot of these have the same button binding so be careful which one you uncomment
     //operatorController.y().whileTrue(elevator.goToSetPointCommandPID(SetpointConstants.MIDDLE.in(Meters)));
     operatorController.y().onTrue(elevator.goToSetpointCmdMotionProfling(SetpointConstants.MIDDLE.in(Meters)));
+    operatorController.a().onTrue(elevator.goToSetpointCmdMotionProfling(0));
+
     //operatorController.b().onTrue(elevator.goToSetpointCmdMotionProfling(0));
     //operatorController.a().onTrue(elevator.goToSetpointCmdMotionProfling(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
 

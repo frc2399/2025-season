@@ -37,7 +37,7 @@ public class ElevatorHardware implements ElevatorIO {
         private static final Distance ALLOWED_SETPOINT_ERROR = Inches.of(.25); 
         private static final LinearVelocity MAX_VEL = MetersPerSecond.of(0.8);
         private static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(0.4);
-        private static final Voltage P_VALUE = Volts.of(512.0);
+        private static final Voltage P_VALUE = Volts.of(2.0);
         private static final Voltage I_VALUE = Volts.of(0);
         private static final Voltage D_VALUE = Volts.of(0);
         private static final Voltage FEEDFORWARD_VALUE = Volts.of(1.0 / 917); 
