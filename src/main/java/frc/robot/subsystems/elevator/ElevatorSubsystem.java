@@ -40,7 +40,6 @@ public class ElevatorSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("elevator/current position", elevatorIO.getEncoderPosition());
         SmartDashboard.putNumber("elevator/setpoint", setpoint);
         SmartDashboard.putBoolean("elevator/at goal", (Math.abs(setpoint - elevatorIO.getEncoderPosition()) <= HEIGHT_TOLERANCE.in(Meters)));
-        System.out.println("working");
         return (Math.abs(setpoint - elevatorIO.getEncoderPosition()) <= HEIGHT_TOLERANCE.in(Meters));
     }
 
