@@ -31,8 +31,8 @@ public final class Constants {
 
     public static final int GYRO_CAN_ID = 3;
 
-    public static final int CORAL_INTAKE_TOP_CAN_ID = 7;
-    public static final int CORAL_INTAKE_BOTTOM_CAN_ID = 5;
+    public static final int CORAL_INTAKE_LEFT_CAN_ID = 7;
+    public static final int CORAL_INTAKE_RIGHT_CAN_ID = 5;
     public static final int CORAL_INTAKE_WRIST_CAN_ID = 13;
     public static final int LEFT_ELEVATOR_MOTOR_ID = 17;
     public static final int RIGHT_ELEVATOR_MOTOR_ID = 15;

@@ -17,88 +17,88 @@ import frc.robot.Constants.MotorIdConstants;
 
 public class CoralIntakeHardware implements CoralIntakeIO {
 
-        private final SparkMax coralIntakeTopSparkMax;
-        private final SparkMax coralIntakeBottomSparkMax;
+        private final SparkMax coralIntakeLeftSparkMax;
+        private final SparkMax coralIntakeRightSparkMax;
 
-        private final SparkClosedLoopController coralIntakeTopClosedLoopController;
-        private final SparkClosedLoopController coralIntakeBottomClosedLoopController;
+        private final SparkClosedLoopController coralIntakeLeftClosedLoopController;
+        private final SparkClosedLoopController coralIntakeRightClosedLoopController;
 
-        private final RelativeEncoder coralIntakeTopEncoder;
-        private final RelativeEncoder coralIntakeBottomEncoder;
+        private final RelativeEncoder coralIntakeLeftEncoder;
+        private final RelativeEncoder coralIntakeRightEncoder;
 
-        private static final SparkMaxConfig topSparkMaxConfig = new SparkMaxConfig();
-        private static final SparkMaxConfig bottomSparkMaxConfig = new SparkMaxConfig();
+        private static final SparkMaxConfig leftSparkMaxConfig = new SparkMaxConfig();
+        private static final SparkMaxConfig rightSparkMaxConfig = new SparkMaxConfig();
 
-        private static final boolean TOP_MOTOR_INVERTED = false;
-        private static final boolean BOTTOM_MOTOR_INVERTED = true;
+        private static final boolean LEFT_MOTOR_INVERTED = false;
+        private static final boolean RIGHT_MOTOR_INVERTED = true;
         private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
         private static final double ENCODER_ROLLER_POSITION_FACTOR = (2 * Math.PI); // radians
         private static final double ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 60.0; // radians per second
 
-        private static final double SIDE_MOTOR_P = 0.5;
-        private static final double SIDE_MOTOR_I = 0.0;
-        private static final double SIDE_MOTOR_D = 0.0;
-        private static final double SIDE_MOTOR_FF = 0.1;
-        private static final double SIDE_MOTOR_MIN_OUTPUT = -1.0;
-        private static final double SIDE_MOTOR_MAX_OUTPUT = 1.0;
+        private static final double INTAKE_MOTOR_P = 0.5;
+        private static final double INTAKE_MOTOR_I = 0.0;
+        private static final double INTAKE_MOTOR_D = 0.0;
+        private static final double INTAKE_MOTOR_FF = 0.1;
+        private static final double INTAKE_MOTOR_MIN_OUTPUT = -1.0;
+        private static final double INTAKE_MOTOR_MAX_OUTPUT = 1.0;
 
         private static final boolean POSITION_WRAPPING_ENABLED_SIDE_MOTORS = true;
 
         public CoralIntakeHardware() {
-                topSparkMaxConfig.inverted(TOP_MOTOR_INVERTED).idleMode(IDLE_MODE)
-                                .smartCurrentLimit((int)MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
-                topSparkMaxConfig.encoder.positionConversionFactor(ENCODER_ROLLER_POSITION_FACTOR)
-                                .velocityConversionFactor(ENCODER_ROLLER_POSITION_FACTOR);
-                topSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                .pidf(SIDE_MOTOR_P, SIDE_MOTOR_I, SIDE_MOTOR_D, SIDE_MOTOR_FF)
-                                .outputRange(SIDE_MOTOR_MIN_OUTPUT, SIDE_MOTOR_MAX_OUTPUT)
+                leftSparkMaxConfig.inverted(LEFT_MOTOR_INVERTED).idleMode(IDLE_MODE)
+                                .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
+                leftSparkMaxConfig.encoder.positionConversionFactor(ENCODER_ROLLER_POSITION_FACTOR)
+                                .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
+                leftSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                                .pidf(INTAKE_MOTOR_P, INTAKE_MOTOR_I, INTAKE_MOTOR_D, INTAKE_MOTOR_FF)
+                                .outputRange(INTAKE_MOTOR_MIN_OUTPUT, INTAKE_MOTOR_MAX_OUTPUT)
                                 .positionWrappingEnabled(POSITION_WRAPPING_ENABLED_SIDE_MOTORS);
 
-                bottomSparkMaxConfig.inverted(BOTTOM_MOTOR_INVERTED).idleMode(IDLE_MODE)
-                                .smartCurrentLimit((int)MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
-                bottomSparkMaxConfig.encoder.positionConversionFactor(ENCODER_ROLLER_POSITION_FACTOR)
+                rightSparkMaxConfig.inverted(RIGHT_MOTOR_INVERTED).idleMode(IDLE_MODE)
+                                .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
+                rightSparkMaxConfig.encoder.positionConversionFactor(ENCODER_ROLLER_POSITION_FACTOR)
                                 .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
-                bottomSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                .pidf(SIDE_MOTOR_P, SIDE_MOTOR_I, SIDE_MOTOR_D, SIDE_MOTOR_FF)
-                                .outputRange(SIDE_MOTOR_MIN_OUTPUT, SIDE_MOTOR_MAX_OUTPUT);
+                rightSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                                .pidf(INTAKE_MOTOR_P, INTAKE_MOTOR_I, INTAKE_MOTOR_D, INTAKE_MOTOR_FF)
+                                .outputRange(INTAKE_MOTOR_MIN_OUTPUT, INTAKE_MOTOR_MAX_OUTPUT);
 
-                coralIntakeTopSparkMax = new SparkMax(MotorIdConstants.CORAL_INTAKE_TOP_CAN_ID, MotorType.kBrushless);
-                coralIntakeBottomSparkMax = new SparkMax(MotorIdConstants.CORAL_INTAKE_BOTTOM_CAN_ID,
+                coralIntakeLeftSparkMax = new SparkMax(MotorIdConstants.CORAL_INTAKE_LEFT_CAN_ID, MotorType.kBrushless);
+                coralIntakeRightSparkMax = new SparkMax(MotorIdConstants.CORAL_INTAKE_RIGHT_CAN_ID,
                                 MotorType.kBrushless);
 
-                coralIntakeTopEncoder = coralIntakeTopSparkMax.getEncoder();
-                coralIntakeBottomEncoder = coralIntakeBottomSparkMax.getEncoder();
+                coralIntakeLeftEncoder = coralIntakeLeftSparkMax.getEncoder();
+                coralIntakeRightEncoder = coralIntakeRightSparkMax.getEncoder();
 
-                coralIntakeTopSparkMax.configure(topSparkMaxConfig, ResetMode.kResetSafeParameters,
+                coralIntakeLeftSparkMax.configure(leftSparkMaxConfig, ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);
-                coralIntakeBottomSparkMax.configure(bottomSparkMaxConfig, ResetMode.kResetSafeParameters,
+                coralIntakeRightSparkMax.configure(rightSparkMaxConfig, ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);
 
-                coralIntakeTopClosedLoopController = coralIntakeTopSparkMax.getClosedLoopController();
-                coralIntakeBottomClosedLoopController = coralIntakeBottomSparkMax.getClosedLoopController();
+                coralIntakeLeftClosedLoopController = coralIntakeLeftSparkMax.getClosedLoopController();
+                coralIntakeRightClosedLoopController = coralIntakeRightSparkMax.getClosedLoopController();
         }
 
         public void setRollerSpeed(double speed) {
-                coralIntakeBottomSparkMax.set(speed);
-                coralIntakeTopSparkMax.set(speed);
+                coralIntakeRightSparkMax.set(speed);
+                coralIntakeLeftSparkMax.set(speed);
         }
 
         public double getVelocity() {
-                return coralIntakeTopEncoder.getVelocity();
+                return coralIntakeLeftEncoder.getVelocity();
         }
 
         public double getCurrent() {
-                return coralIntakeTopSparkMax.getOutputCurrent();
+                return coralIntakeLeftSparkMax.getOutputCurrent();
         }
 
         @Override
         public void updateStates(CoralIntakeIOStates states) {
                 states.velocity = getVelocity();
-                states.topAppliedVoltage = coralIntakeTopSparkMax.getAppliedOutput()
-                                * coralIntakeTopSparkMax.getBusVoltage();
-                states.bottomAppliedVoltage = coralIntakeBottomSparkMax.getAppliedOutput()
-                                * coralIntakeBottomSparkMax.getBusVoltage();
-                states.topCurrent = coralIntakeTopSparkMax.getOutputCurrent();
-                states.bottomCurrent = coralIntakeBottomSparkMax.getOutputCurrent();
+                states.leftAppliedVoltage = coralIntakeLeftSparkMax.getAppliedOutput()
+                                * coralIntakeLeftSparkMax.getBusVoltage();
+                states.rightAppliedVoltage = coralIntakeRightSparkMax.getAppliedOutput()
+                                * coralIntakeRightSparkMax.getBusVoltage();
+                states.leftCurrent = coralIntakeLeftSparkMax.getOutputCurrent();
+                states.rightCurrent = coralIntakeRightSparkMax.getOutputCurrent();
         }
 }

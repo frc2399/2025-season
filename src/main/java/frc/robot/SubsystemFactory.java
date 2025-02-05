@@ -3,7 +3,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.MotorIdConstants;
 import frc.robot.subsystems.coralIntake.CoralIntakeHardware;
 import frc.robot.subsystems.coralIntake.CoralIntakePlacebo;
@@ -124,15 +123,16 @@ public class SubsystemFactory {
     }
 
     public CoralIntakeSubsystem buildCoralIntake() {
-        if (!isSim) {
+        if (robotType == RobotType.ALPHA) {
             return new CoralIntakeSubsystem(new CoralIntakeHardware());
         } else {
             return new CoralIntakeSubsystem(new CoralIntakePlacebo());
         }
+
     }
 
     public CoralWristSubsystem buildCoralWrist() {
-        if (!isSim) {
+        if (robotType == RobotType.ALPHA) {
             return new CoralWristSubsystem(new CoralWristHardware());
         } else {
             return new CoralWristSubsystem(new CoralWristPlacebo());

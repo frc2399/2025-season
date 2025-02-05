@@ -66,7 +66,6 @@ public class RobotContainer {
             drive).withName("drive default"));
     coralIntake.setDefaultCommand(coralIntake.setRollerSpeed(0));
     coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0));
-
     elevator.setDefaultCommand(elevator.setPercentOutputCommand(0));
   }
 

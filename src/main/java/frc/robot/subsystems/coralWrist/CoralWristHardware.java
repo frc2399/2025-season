@@ -3,8 +3,6 @@ package frc.robot.subsystems.coralWrist;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -19,13 +17,7 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularAcceleration;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 
@@ -63,20 +55,7 @@ public class CoralWristHardware implements CoralWristIO {
         private static final double WRIST_MOTOR_MIN_OUTPUT = -1.0;
         private static final double WRIST_MOTOR_MAX_OUTPUT = 1.0;
 
-        private static final AngularVelocity CORAL_WRIST_MAX_VELOCITY = RadiansPerSecond.of(0);
-        private static final AngularAcceleration CORAL_WRIST_MAX_ACCELERATION = RadiansPerSecondPerSecond.of(0);
-
         private double goalAngle;
-
-        // taking out motion profiling for now
-        // private TrapezoidProfile.State setpointState;
-        // private TrapezoidProfile.State goalState = new TrapezoidProfile.State();
-
-        // taking out motion profiling for now
-        // private TrapezoidProfile wristTrapezoidProfile = new
-        // TrapezoidProfile(new Constraints(
-        // CORAL_WRIST_MAX_VELOCITY.in(RadiansPerSecond),
-        // CORAL_WRIST_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)));
 
         public CoralWristHardware() {
                 wristSparkFlexConfig.inverted(WRIST_MOTOR_INVERTED).idleMode(IDLE_MODE)
