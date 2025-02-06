@@ -33,7 +33,8 @@ public class RobotContainer {
   private static SendableChooser<Command> autoChooser;
   private ComplexWidget autonChooserWidget;
   private final Field2d field;
-  //this is public because we need to run the visionPoseEstimator periodic from Robot
+  // this is public because we need to run the visionPoseEstimator periodic from
+  // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
   private CommandFactory commandFactory = new CommandFactory(drive, elevator);
 
@@ -45,35 +46,31 @@ public class RobotContainer {
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
     field = new Field2d();
-        SmartDashboard.putData("Field", field);
+    SmartDashboard.putData("Field", field);
 
-        // Logging callback for current robot pose
-        PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
-            field.setRobotPose(pose);
-        });
+    // Logging callback for current robot pose
+    PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+      field.setRobotPose(pose);
+    });
 
-        // Logging callback for target robot pose
-        PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
-            field.getObject("target pose").setPose(pose);
-        });
+    // Logging callback for target robot pose
+    PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+      field.getObject("target pose").setPose(pose);
+    });
 
-        // Logging callback for the active path, this is sent as a list of poses
-        PathPlannerLogging.setLogActivePathCallback((poses) -> {
-            field.getObject("path").setPoses(poses);
-        });
+    // Logging callback for the active path, this is sent as a list of poses
+    PathPlannerLogging.setLogActivePathCallback((poses) -> {
+      field.getObject("path").setPoses(poses);
+    });
     configureDefaultCommands();
     configureButtonBindingsDriver();
-<<<<<<< HEAD
-    setUpAuton();
-=======
     configureButtonBindingsOperator();
+    setUpAuton();
   }
 
   public void disableSubsystems() {
     elevator.disableElevator();
->>>>>>> main
   }
-
 
   public void configureDefaultCommands() {
     drive.setDefaultCommand(
@@ -93,15 +90,14 @@ public class RobotContainer {
                 DriveControlConstants.FIELD_ORIENTED_DRIVE),
             drive).withName("drive default"));
 
-      elevator.setDefaultCommand(elevator.keepElevatorAtCurrentPosition());
+    elevator.setDefaultCommand(elevator.keepElevatorAtCurrentPosition());
   }
- 
+
   private void configureButtonBindingsDriver() {
     driverController.b().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
   }
 
-<<<<<<< HEAD
   private void setUpAuton() {
     NamedCommands.registerCommand("intake coral", Commands.print("intake coral"));
     NamedCommands.registerCommand("Score coral on L1", Commands.print("coral scored on L1"));
@@ -114,14 +110,13 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
-=======
+  }
+
   private void configureButtonBindingsOperator() {
     operatorController.y().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_TWO_HEIGHT.in(Meters)));
     operatorController.x().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
     operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
     operatorController.a().whileTrue(elevator.setPercentOutputCommand(-0.1));
-    //operatorController.x().onTrue(elevator.setEncoderPositionCommand(0.01));
->>>>>>> main
+    // operatorController.x().onTrue(elevator.setEncoderPositionCommand(0.01));
   }
 }
-
