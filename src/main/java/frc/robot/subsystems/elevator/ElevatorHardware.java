@@ -22,6 +22,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
+import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -33,7 +34,7 @@ import frc.robot.Constants.MotorIdConstants;
 public class ElevatorHardware implements ElevatorIO {
 
     public static final class ElevatorHardwareConstants {
-        private static final double METERS_PER_REVOLUTION = Units.inchesToMeters(27) / 41.951946; //Calculate correct value
+        private static final Distance METERS_PER_REVOLUTION = Inches.of(0.67); //(1/9)(1.92 * pi)
         private static final Distance ALLOWED_SETPOINT_ERROR = Inches.of(.25); 
         private static final LinearVelocity MAX_VEL = MetersPerSecond.of(0.8);
         private static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(0.4);
@@ -42,8 +43,8 @@ public class ElevatorHardware implements ElevatorIO {
         private static final Voltage D_VALUE = Volts.of(0);
         private static final Voltage FEEDFORWARD_VALUE = Volts.of(1.0 / 917); 
         private static final Voltage ARBITRARY_FF_GRAVITY_COMPENSATION = Volts.of(0.28); //calculated using recalc
-        private static final double OUTPUTRANGE_MIN_VALUE = -1;
-        private static final double OUTPUTRANGE_MAX_VALUE = 1;
+        private static final double OUTPUT_RANGE_MIN_VALUE = -1;
+        private static final double OUTPUT_RANGE_MAX_VALUE = 1;
         private static final double P_VALUE_VELOCITY = 0.0001;
         private static final double I_VALUE_VELOCITY = 0;
         private static final double D_VALUE_VELOCITY = 0;
@@ -76,8 +77,8 @@ public class ElevatorHardware implements ElevatorIO {
         elevatorMotionProfile = new TrapezoidProfile(new Constraints(ElevatorHardwareConstants.MAX_VEL.in(MetersPerSecond), ElevatorHardwareConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)));
 
         globalMotorConfig.encoder
-            .positionConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION)
-            .velocityConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION / 60);
+            .positionConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION.in(Meters))
+            .velocityConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION.in(Meters) / 60);
             
         globalMotorConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -90,26 +91,26 @@ public class ElevatorHardware implements ElevatorIO {
             .d(ElevatorHardwareConstants.D_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
             //https://docs.revrobotics.com/revlib/spark/closed-loop/closed-loop-control-getting-started#f-parameter
             .velocityFF(ElevatorHardwareConstants.FEEDFORWARD_VALUE.in(Volts), ClosedLoopSlot.kSlot1) 
-            .outputRange(ElevatorHardwareConstants.OUTPUTRANGE_MIN_VALUE, ElevatorHardwareConstants.OUTPUTRANGE_MAX_VALUE, ClosedLoopSlot.kSlot1);
+            .outputRange(ElevatorHardwareConstants.OUTPUT_RANGE_MIN_VALUE, ElevatorHardwareConstants.OUTPUT_RANGE_MAX_VALUE, ClosedLoopSlot.kSlot1);
      
         globalMotorConfig.softLimit
             .forwardSoftLimit((ElevatorHardwareConstants.MAX_ELEVATOR_HEIGHT).in(Meters) - 0.02) //a little less than max height for safety
             .forwardSoftLimitEnabled(true)
             .reverseSoftLimit(0)
-            .reverseSoftLimitEnabled(false);
+            .reverseSoftLimitEnabled(true);
 
 
         leftMotorConfigLeader
             .apply(globalMotorConfig)
             .inverted(false)
             .idleMode(IdleMode.kBrake)
-            .smartCurrentLimit(MotorConstants.NEO_VORTEX_CURRENT_LIMIT);
+            .smartCurrentLimit((int) MotorConstants.NEO_VORTEX_CURRENT_LIMIT.in(Amps));
 
         rightMotorConfigFollower
             .follow(MotorIdConstants.LEFT_ELEVATOR_MOTOR_ID, true)
             .apply(globalMotorConfig)
-            .idleMode(IdleMode.kBrake)
-            .smartCurrentLimit(MotorConstants.NEO_VORTEX_CURRENT_LIMIT);
+            .idleMode(IdleMode.kBrake) 
+            .smartCurrentLimit((int) MotorConstants.NEO_VORTEX_CURRENT_LIMIT.in(Amps));
 
         elevatorLeftMotorLeader.configure(leftMotorConfigLeader, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         elevatorRightMotorFollower.configure(rightMotorConfigFollower, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

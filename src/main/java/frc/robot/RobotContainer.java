@@ -18,11 +18,11 @@ import static edu.wpi.first.units.Units.*;
 public class RobotContainer {
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
   private Gyro gyro = subsystemFactory.buildGyro();
-  public ElevatorSubsystem elevator = subsystemFactory.buildElevator();
+  private final ElevatorSubsystem elevator = subsystemFactory.buildElevator();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
   //this is public because we need to run the visionPoseEstimator periodic from Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
-  private CommandFactory commandFactory = new CommandFactory(elevator);
+  private CommandFactory commandFactory = new CommandFactory(drive, elevator);
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
@@ -33,6 +33,10 @@ public class RobotContainer {
     configureDefaultCommands();
     configureButtonBindingsDriver();
     configureButtonBindingsOperator();
+  }
+
+  public void disableSubsystems() {
+    elevator.disableElevator();
   }
 
   public void configureDefaultCommands() {
@@ -53,7 +57,7 @@ public class RobotContainer {
                 DriveControlConstants.FIELD_ORIENTED_DRIVE),
             drive).withName("drive default"));
 
-      //elevator.setDefaultCommand(elevator.setSpeedCommand(0));
+      elevator.setDefaultCommand(elevator.keepElevatorAtCurrentPosition());
   }
  
   private void configureButtonBindingsDriver() {
@@ -62,18 +66,10 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsOperator() {
-    //a lot of these have the same button binding so be careful which one you uncomment
-    //operatorController.y().whileTrue(elevator.goToSetPointCommandPID(SetpointConstants.MIDDLE.in(Meters)));
-    operatorController.y().onTrue(elevator.goToSetpointCmdMotionProfling(SetpointConstants.MIDDLE.in(Meters)));
-    operatorController.a().onTrue(elevator.goToSetpointCmdMotionProfling(0));
-
-    //operatorController.b().onTrue(elevator.goToSetpointCmdMotionProfling(0));
-    //operatorController.a().onTrue(elevator.goToSetpointCmdMotionProfling(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
-
+    operatorController.y().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_TWO_HEIGHT.in(Meters)));
+    operatorController.x().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
     operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
-    operatorController.x().whileTrue(elevator.setPercentOutputCommand(-0.1));
+    operatorController.a().whileTrue(elevator.setPercentOutputCommand(-0.1));
     //operatorController.x().onTrue(elevator.setEncoderPositionCommand(0.01));
-
-    
   }
 }

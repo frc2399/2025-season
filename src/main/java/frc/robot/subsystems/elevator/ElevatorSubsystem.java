@@ -34,7 +34,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
 
     //pid command that is seperate from motion profiling
-    public Command goToSetPointCommandPID(double position) {
+    public Command goToSetPointCommand(double position) {
         return this.runOnce(() -> elevatorIO.setGoalPositionPID(position));
     }
 
@@ -57,6 +57,10 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public boolean atGoal(){
         return (Math.abs(setpoint - elevatorIO.getEncoderPosition()) <= HEIGHT_TOLERANCE.in(Meters));
+    }
+
+    public Command keepElevatorAtCurrentPosition() {
+        return this.run(() -> elevatorIO.setGoalPosition(elevatorIO.getEncoderPosition()));
     }
 
     @Override
