@@ -59,13 +59,14 @@ public final class Constants {
 
   public static class SetpointConstants {
     public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(35);
-
     public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
+    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(40);
 
-    public static Distance L_ONE_HEIGHT = Inches.of(0);
-    public static Distance L_TWO_HEIGHT = Inches.of(7.5);
-    public static Distance L_THREE_HEIGHT = Inches.of(23.25);
-    public static Distance L_FOUR_HEIGHT = Inches.of(49.5);
+    public static final Distance ELEVATOR_TURTLE_HEIGHT = Inches.of(0);
+    public static final Distance L_ONE_HEIGHT = Inches.of(0);
+    public static final Distance L_TWO_HEIGHT = Inches.of(7.5);
+    public static final Distance L_THREE_HEIGHT = Inches.of(23.25);
+    public static final Distance L_FOUR_HEIGHT = Inches.of(49.5);
   }
 
   public static class DriveControlConstants {
