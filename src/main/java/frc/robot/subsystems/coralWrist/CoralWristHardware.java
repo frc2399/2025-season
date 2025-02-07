@@ -55,8 +55,6 @@ public class CoralWristHardware implements CoralWristIO {
         private static final double WRIST_MOTOR_MIN_OUTPUT = -1.0;
         private static final double WRIST_MOTOR_MAX_OUTPUT = 1.0;
 
-        private double goalAngle;
-
         public CoralWristHardware() {
                 wristSparkFlexConfig.inverted(WRIST_MOTOR_INVERTED).idleMode(IDLE_MODE)
                                 .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
@@ -86,7 +84,6 @@ public class CoralWristHardware implements CoralWristIO {
                                 ClosedLoopSlot.kSlot0,
                                 coralWristFeedFoward.calculate(desiredAngle,
                                                 coralIntakeWristAbsoluteEncoder.getVelocity()));
-                goalAngle = desiredAngle;
         }
 
         // taking out motion profiling for now
@@ -110,14 +107,11 @@ public class CoralWristHardware implements CoralWristIO {
                 // states.trapezoidProfileGoalAngle = goalState.position;
         }
 
-        // @Override
-        // public void periodic() {
-        // setpointState = wristTrapezoidProfile.calculate(0.02,
-        // setpointState, goalState);
-        // coralIntakeWristClosedLoopController.setReference(setpointState.position,
-        // ControlType.kPosition,
-        // ClosedLoopSlot.kSlot0,
-        // coralWristFeedFoward.calculate(setpointState.position,
-        // setpointState.velocity));
-        // }
+        @Override
+        public void periodic() {
+                // setpointState = wristTrapezoidProfile.calculate(0.02,
+                // setpointState, goalState);
+
+        }
+
 }

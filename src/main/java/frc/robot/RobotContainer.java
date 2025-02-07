@@ -64,25 +64,27 @@ public class RobotContainer {
                     DriveControlConstants.DRIVE_DEADBAND)),
                 DriveControlConstants.FIELD_ORIENTED_DRIVE),
             drive).withName("drive default"));
-    coralIntake.setDefaultCommand(coralIntake.setRollerSpeed(0));
-    coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0));
+    coralIntake.setDefaultCommand(coralIntake.setRollerSpeed(0).withName("coral Intake default"));
+    coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
     elevator.setDefaultCommand(elevator.setPercentOutputCommand(0));
   }
 
   private void configureButtonBindingsDriver() {
-    driverController.rightBumper().whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_INTAKE_SPEED));
-    driverController.leftBumper().whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED));
+    driverController.rightBumper()
+        .whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_INTAKE_SPEED).withName("run coral intake"));
+    driverController.leftBumper()
+        .whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED).withName("run coral outtake"));
     driverController.b().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
   }
 
   private void configureButtonBindingsOperator() {
-    operatorController.rightTrigger().whileTrue(coralWrist.setWristSpeed(SpeedConstants.WRIST_MAX_SPEED));
-    operatorController.leftTrigger().whileTrue(coralWrist.setWristSpeed(-SpeedConstants.WRIST_MAX_SPEED));
-    operatorController.leftBumper()
-        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.L1_CORAL_INTAKE_ANGLE.in(Radians)));
+    operatorController.rightTrigger()
+        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_INTAKE_ANGLE.in(Radians))
+            .withName("move coral wrist to intake setpoint"));
     operatorController.rightBumper()
-        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.L1_CORAL_OUTTAKE_ANGLE.in(Radians)));
+        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Radians))
+            .withName("move coral wrist to outtake setpoint"));
     operatorController.y().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_TWO_HEIGHT.in(Meters)));
     operatorController.x().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
     operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));

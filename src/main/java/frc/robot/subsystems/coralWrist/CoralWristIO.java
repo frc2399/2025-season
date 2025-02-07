@@ -18,5 +18,5 @@ public interface CoralWristIO {
 
     public void updateStates(CoralWristIOStates states);
 
-    // public void periodic();
+    public void periodic();
 }

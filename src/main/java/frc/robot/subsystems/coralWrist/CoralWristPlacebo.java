@@ -14,9 +14,9 @@ public class CoralWristPlacebo implements CoralWristIO {
     public void updateStates(CoralWristIOStates states) {
     }
 
-    // @Override
-    // public void periodic() {
-    // }
+    @Override
+    public void periodic() {
+    }
 
     // @Override
     // public void setGoalStateTrapezoid(Angle angle) {

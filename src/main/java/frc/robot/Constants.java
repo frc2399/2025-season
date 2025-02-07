@@ -9,7 +9,6 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -56,17 +55,13 @@ public final class Constants {
     public static final double DRIVETRAIN_MAX_ANGULAR_SPEED_RPS = 2 * Math.PI;
     public static final double CORAL_INTAKE_SPEED = 0.75;
     public static final double CORAL_OUTTAKE_SPEED = -0.25;
-    public static final double WRIST_MAX_SPEED = 0.05;
   }
 
   public static class SetpointConstants {
-    public static final Angle L1_CORAL_INTAKE_ANGLE = Degrees.of(35);
-    public static final Angle L2_CORAL_INTAKE_ANGLE = Degrees.of(35);
-    public static final Angle L3_CORAL_INTAKE_ANGLE = Degrees.of(35);
+    public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(35);
 
-    public static final Angle L1_CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
-    public static final Angle L2_CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
-    public static final Angle L3_CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
+    public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
+
     public static Distance L_ONE_HEIGHT = Inches.of(0);
     public static Distance L_TWO_HEIGHT = Inches.of(7.5);
     public static Distance L_THREE_HEIGHT = Inches.of(23.25);
