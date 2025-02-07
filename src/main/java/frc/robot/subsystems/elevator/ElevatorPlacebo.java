@@ -9,7 +9,7 @@ public class ElevatorPlacebo implements ElevatorIO {
     public void setSpeed(double speed) {}
 
     @Override
-    public void setGoalPositionPID(double position) {}
+    public void setGoalPosition(double position) {}
 
     @Override
     public void setPositionMotionProfiling(double position) {}
@@ -22,6 +22,9 @@ public class ElevatorPlacebo implements ElevatorIO {
 
     @Override
     public void setSetpointState(double position, double velocity) {}
+
+    @Override
+    public void setManualControlMotionProfiling(){};
 
     @Override
     public double getEncoderVelocity() {

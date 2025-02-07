@@ -35,7 +35,7 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     //pid command that is seperate from motion profiling
     public Command goToSetPointCommand(double position) {
-        return this.runOnce(() -> elevatorIO.setGoalPositionPID(position));
+        return this.runOnce(() -> elevatorIO.setGoalPosition(position));
     }
 
     //motion profile command that is seperate from PID

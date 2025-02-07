@@ -20,7 +20,8 @@ public class RobotContainer {
   private Gyro gyro = subsystemFactory.buildGyro();
   private final ElevatorSubsystem elevator = subsystemFactory.buildElevator();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
-  //this is public because we need to run the visionPoseEstimator periodic from Robot
+  // this is public because we need to run the visionPoseEstimator periodic from
+  // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
   private CommandFactory commandFactory = new CommandFactory(drive, elevator);
 
@@ -40,26 +41,22 @@ public class RobotContainer {
   }
 
   public void configureDefaultCommands() {
-    drive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () -> drive.drive(
-                -(MathUtil.applyDeadband(
-                    driverController.getLeftY(),
-                    DriveControlConstants.DRIVE_DEADBAND)),
-                -(MathUtil.applyDeadband(
-                    driverController.getLeftX(),
-                    DriveControlConstants.DRIVE_DEADBAND)),
-                -(MathUtil.applyDeadband(
-                    driverController.getRightX(),
-                    DriveControlConstants.DRIVE_DEADBAND)),
-                DriveControlConstants.FIELD_ORIENTED_DRIVE),
-            drive).withName("drive default"));
 
-      elevator.setDefaultCommand(elevator.keepElevatorAtCurrentPosition());
+    drive.setDefaultCommand(drive.driveCommand(
+        () -> -(MathUtil.applyDeadband(
+            driverController.getLeftY(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        () -> -(MathUtil.applyDeadband(
+            driverController.getLeftX(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        () -> -(MathUtil.applyDeadband(
+            driverController.getRightX(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        DriveControlConstants.FIELD_ORIENTED_DRIVE));
+
+    elevator.setDefaultCommand(elevator.keepElevatorAtCurrentPosition());
   }
- 
+
   private void configureButtonBindingsDriver() {
     driverController.b().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
@@ -70,6 +67,6 @@ public class RobotContainer {
     operatorController.x().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
     operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
     operatorController.a().whileTrue(elevator.setPercentOutputCommand(-0.1));
-    //operatorController.x().onTrue(elevator.setEncoderPositionCommand(0.01));
+    // operatorController.x().onTrue(elevator.setEncoderPositionCommand(0.01));
   }
 }

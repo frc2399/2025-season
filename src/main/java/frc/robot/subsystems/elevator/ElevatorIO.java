@@ -11,12 +11,14 @@ public interface ElevatorIO {
         public double goalStatePosition = 0.0;
         public double setpointStatePosition = 0.0;
         public double current = 0.0;
+        
     }
 
     public void disableElevator();
     public void setSpeed(double speed);
-    public void setGoalPositionPID(double position);
+    public void setGoalPosition(double position);
     public void setPositionMotionProfiling(double position);
+    public void setManualControlMotionProfiling();
     public void calculateNextSetpoint();
     public void setSetpointState(double position, double velocity);
     public void setEncoderPosition(double position);

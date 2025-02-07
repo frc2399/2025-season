@@ -5,6 +5,8 @@
 package frc.robot.subsystems.drive;
 
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.util.PathPlannerLogging;
 
@@ -238,12 +240,13 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
          * @param fieldRelative Whether the provided x and y speeds are relative to the
          *                      field.
          */
-        public void drive(double xSpeed, double ySpeed, double rotRate, boolean fieldRelative) {
-                rotRate = Math.pow(rotRate, 5);
+
+        public Command driveCommand(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotRate, Boolean fieldRelative){
+                return this.run(() -> {
                 double newRotRate = 0;
                 double currentAngle = (gyro.getYaw());
-                double r = Math.pow(Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2)), 3);
-                double polarAngle = Math.atan2(ySpeed, xSpeed);
+                double r = Math.pow(Math.sqrt(Math.pow(xSpeed.getAsDouble(), 2) + Math.pow(ySpeed.getAsDouble(), 2)), 3);
+                double polarAngle = Math.atan2(ySpeed.getAsDouble(), xSpeed.getAsDouble());
                 double polarXSpeed = r * Math.cos(polarAngle);
                 double polarYSpeed = r * Math.sin(polarAngle);
 
@@ -252,7 +255,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         desiredAngle = 0;
                 }
 
-                newRotRate = getHeadingCorrectionRotRate(currentAngle, rotRate, polarXSpeed, polarYSpeed);
+                newRotRate = getHeadingCorrectionRotRate(currentAngle, Math.pow(rotRate.getAsDouble(), 5), polarXSpeed, polarYSpeed);
 
                 // Convert the commanded speeds into the correct units for the drivetrain
                 double xSpeedDelivered = polarXSpeed * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS;
@@ -281,6 +284,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 rearRight.setDesiredState(swerveModuleStates[3]);
 
                 swerveModuleDesiredStatePublisher.set(swerveModuleStates);
+                }).withName("drive command");
         }
 
         /**

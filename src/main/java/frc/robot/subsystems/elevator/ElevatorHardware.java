@@ -60,6 +60,8 @@ public class ElevatorHardware implements ElevatorIO {
     public State setpointState = new State();
     private State goalState = new State();
     private double goalPosition;
+    public int newGoalPosition;
+
     
     public ElevatorHardware() {
 
@@ -114,6 +116,7 @@ public class ElevatorHardware implements ElevatorIO {
 
         elevatorLeftMotorLeader.configure(leftMotorConfigLeader, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         elevatorRightMotorFollower.configure(rightMotorConfigFollower, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
     }
 
     @Override
@@ -130,7 +133,6 @@ public class ElevatorHardware implements ElevatorIO {
 
     @Override
     public void setManualControlMotionProfiling(){
-        int newGoalPosition;
 
         goalState.position = newGoalPosition;
     }
@@ -152,7 +154,7 @@ public class ElevatorHardware implements ElevatorIO {
         leftClosedLoopController.setReference(setpointState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
 
-    public void setGoalPositionPID(double desiredPosition) {
+    public void setGoalPosition(double desiredPosition) {
         leftClosedLoopController.setReference(desiredPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0, ElevatorHardwareConstants.ARBITRARY_FF_GRAVITY_COMPENSATION.in(Volts));
         //leftClosedLoopController.setReference(position, SparkBase.ControlType.kMAXMotionPositionControl);
         goalPosition = desiredPosition;
