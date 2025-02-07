@@ -103,9 +103,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Score coral on L1", Commands.print("coral scored on L1"));
     NamedCommands.registerCommand("Score coral on L2", Commands.print("coral scored on L2"));
     NamedCommands.registerCommand("Score coral on L4", Commands.print("coral scored on L4"));
-    NamedCommands.registerCommand("Elevator to L1 setpoint", elevator.goToSetPointCommand(SetpointConstants.L_TWO_HEIGHT.in(Meters)).until(() -> elevator.atGoal()));
-    NamedCommands.registerCommand("Elevator to L2 setpoint", elevator.goToSetPointCommand(SetpointConstants.L_THREE_HEIGHT.in(Meters)));
-    NamedCommands.registerCommand("Elevator to L3 setpoint", elevator.goToSetPointCommand(SetpointConstants.L_FOUR_HEIGHT.in(Meters)));
+    NamedCommands.registerCommand("Elevator to L1 setpoint", elevator.goToSetPointCommand(SetpointConstants.L_TWO_HEIGHT.in(Meters)).andThen(elevator.atGoalCommand()));
+    NamedCommands.registerCommand("Elevator to L2 setpoint", elevator.goToSetPointCommand(SetpointConstants.L_THREE_HEIGHT.in(Meters)).andThen(elevator.atGoalCommand()));
+    NamedCommands.registerCommand("Elevator to L3 setpoint", elevator.goToSetPointCommand(SetpointConstants.L_FOUR_HEIGHT.in(Meters)).andThen(elevator.atGoalCommand()));
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Autos/Selector", autoChooser);
