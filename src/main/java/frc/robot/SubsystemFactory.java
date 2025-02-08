@@ -3,8 +3,13 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.MotorIdConstants;
+import frc.robot.subsystems.coralIntake.CoralIntakeHardware;
+import frc.robot.subsystems.coralIntake.CoralIntakePlacebo;
+import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
+import frc.robot.subsystems.coralWrist.CoralWristHardware;
+import frc.robot.subsystems.coralWrist.CoralWristPlacebo;
+import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.SwerveModule;
 import frc.robot.subsystems.drive.SwerveModuleHardware;
@@ -103,7 +108,7 @@ public class SubsystemFactory {
             rearLeft = new SwerveModule(new SwerveModulePlacebo());
             rearRight = new SwerveModule(new SwerveModulePlacebo());
             return new DriveSubsystem(frontLeft, frontRight, rearLeft, rearRight, gyro, Inches.of(10));
-            //10 is a default value for sim lol
+            // 10 is a default value for sim lol
         }
     }
 
@@ -112,6 +117,23 @@ public class SubsystemFactory {
             return new Gyro(new GyroHardware());
         } else {
             return new Gyro(new GyroPlacebo());
+        }
+    }
+
+    public CoralIntakeSubsystem buildCoralIntake() {
+        if (robotType == RobotType.ALPHA) {
+            return new CoralIntakeSubsystem(new CoralIntakeHardware());
+        } else {
+            return new CoralIntakeSubsystem(new CoralIntakePlacebo());
+        }
+
+    }
+
+    public CoralWristSubsystem buildCoralWrist() {
+        if (robotType == RobotType.ALPHA) {
+            return new CoralWristSubsystem(new CoralWristHardware());
+        } else {
+            return new CoralWristSubsystem(new CoralWristPlacebo());
         }
     }
 
