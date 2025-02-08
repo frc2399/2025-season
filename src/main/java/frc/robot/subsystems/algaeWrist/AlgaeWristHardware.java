@@ -1,5 +1,6 @@
 package frc.robot.subsystems.algaeWrist;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 
@@ -55,7 +56,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         public AlgaeWristHardware() {
 
                 wristSparkMaxConfig.inverted(MOTOR_INVERTED).idleMode(IDLE_MODE)
-                                .smartCurrentLimit(MotorConstants.NEO550_CURRENT_LIMIT);
+                                .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
                 wristSparkMaxConfig.encoder.positionConversionFactor(ENCODER_POSITION_FACTOR)
                                 .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
                 wristSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder).pidf(P, I, D, FF)

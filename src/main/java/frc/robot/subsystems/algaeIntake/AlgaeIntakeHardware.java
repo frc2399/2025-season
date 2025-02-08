@@ -1,5 +1,6 @@
 package frc.robot.subsystems.algaeIntake;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 
@@ -52,7 +53,7 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
         public AlgaeIntakeHardware() {
 
                 leftSparkMaxConfig.inverted(LEFT_MOTOR_INVERTED).idleMode(IDLE_MODE)
-                                .smartCurrentLimit(MotorConstants.NEO550_CURRENT_LIMIT);
+                                .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
                 leftSparkMaxConfig.encoder.positionConversionFactor(ENCODER_POSITION_FACTOR)
                                 .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
                 leftSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -61,7 +62,7 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
                                 .positionWrappingEnabled(POSITION_WRAPPING_ENABLED_SIDE_MOTORS);
 
                 rightSparkMaxConfig.inverted(RIGHT_MOTOR_INVERTED).idleMode(IDLE_MODE)
-                                .smartCurrentLimit(MotorConstants.NEO550_CURRENT_LIMIT);
+                                .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
                 rightSparkMaxConfig.encoder.positionConversionFactor(ENCODER_POSITION_FACTOR)
                                 .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
                 rightSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
