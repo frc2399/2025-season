@@ -14,7 +14,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
-import org.ietf.jgss.GSSContext;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
