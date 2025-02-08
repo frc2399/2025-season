@@ -30,7 +30,7 @@ public class RobotContainer {
   // this is public because we need to run the visionPoseEstimator periodic from
   // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
-  private CommandFactory commandFactory = new CommandFactory(drive, elevator);
+  private CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist);
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
@@ -76,6 +76,7 @@ public class RobotContainer {
         .whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED).withName("run coral outtake"));
     driverController.b().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
+    driverController.a().onTrue(commandFactory.turtleMode());
   }
 
   private void configureButtonBindingsOperator() {
