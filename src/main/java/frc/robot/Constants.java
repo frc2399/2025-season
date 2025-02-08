@@ -6,12 +6,16 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.LinearVelocity;
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RPM;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
-
-import static edu.wpi.first.units.Units.Inches;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -34,6 +38,9 @@ public final class Constants {
     public static final int ALGAE_INTAKE_RIGHT_CAN_ID = 1;
     public static final int ALGAE_WRIST_CAN_ID = 2;
 
+    public static final int CORAL_INTAKE_LEFT_CAN_ID = 7;
+    public static final int CORAL_INTAKE_RIGHT_CAN_ID = 5;
+    public static final int CORAL_INTAKE_WRIST_CAN_ID = 13;
     public static final int LEFT_ELEVATOR_MOTOR_ID = 17;
     public static final int RIGHT_ELEVATOR_MOTOR_ID = 15;
 
@@ -47,7 +54,7 @@ public final class Constants {
     public static final Current NEO_CURRENT_LIMIT = Amps.of(50);
     public static final AngularVelocity NEO_FREE_SPEED = RPM.of(5676);
     public static final AngularVelocity NEO550_FREE_SPEED = RPM.of(11000);
-    public static final Current NEO_VORTEX_CURRENT_LIMIT = Amps.of(60);
+    public static final Current VORTEX_CURRENT_LIMIT = Amps.of(60);
   }
 
   public static class SpeedConstants {
@@ -56,12 +63,16 @@ public final class Constants {
     public static final LinearVelocity ALGAE_WRIST_MAX_SPEED_MPS = MetersPerSecond.of(0);
     public static final double DRIVETRAIN_MAX_SPEED_MPS = 4.8;
     public static final double DRIVETRAIN_MAX_ANGULAR_SPEED_RPS = 2 * Math.PI;
+    public static final double CORAL_INTAKE_SPEED = 0.75;
+    public static final double CORAL_OUTTAKE_SPEED = -0.25;
   }
 
   public static class SetpointConstants {
 
     public static final Angle ALGAE_WRIST_INTAKE_ANGLE = Degrees.of(45);
     public static final Angle ALGAE_WRIST_OUTTAKE_ANGLE = Degrees.of(-45);
+    public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(35);
+    public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
 
     public static Distance L_ONE_HEIGHT = Inches.of(0);
     public static Distance L_TWO_HEIGHT = Inches.of(7.5);

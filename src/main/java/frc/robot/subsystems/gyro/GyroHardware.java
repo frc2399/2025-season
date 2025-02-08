@@ -7,15 +7,11 @@
 
 package frc.robot.subsystems.gyro;
 
-import java.util.Optional;
-
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 /** IO implementation for Pigeon2 */
 public class GyroHardware implements GyroIO {

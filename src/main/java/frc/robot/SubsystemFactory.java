@@ -4,12 +4,20 @@ import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants.MotorIdConstants;
+
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristHardware;
 import frc.robot.subsystems.algaeWrist.AlgaeWristPlacebo;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeHardware;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakePlacebo;
+import frc.robot.subsystems.coralIntake.CoralIntakeHardware;
+import frc.robot.subsystems.coralIntake.CoralIntakePlacebo;
+import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
+import frc.robot.subsystems.coralWrist.CoralWristHardware;
+import frc.robot.subsystems.coralWrist.CoralWristPlacebo;
+import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
+
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.SwerveModule;
 import frc.robot.subsystems.drive.SwerveModuleHardware;
@@ -135,6 +143,25 @@ public class SubsystemFactory {
             return new AlgaeWristSubsystem(new AlgaeWristHardware());
         } else {
             return new AlgaeWristSubsystem(new AlgaeWristPlacebo());
+
+        }
+
+    }
+
+    public CoralIntakeSubsystem buildCoralIntake() {
+        if (robotType == RobotType.ALPHA) {
+            return new CoralIntakeSubsystem(new CoralIntakeHardware());
+        } else {
+            return new CoralIntakeSubsystem(new CoralIntakePlacebo());
+        }
+
+    }
+
+    public CoralWristSubsystem buildCoralWrist() {
+        if (robotType == RobotType.ALPHA) {
+            return new CoralWristSubsystem(new CoralWristHardware());
+        } else {
+            return new CoralWristSubsystem(new CoralWristPlacebo());
         }
     }
 
@@ -145,4 +172,5 @@ public class SubsystemFactory {
             return new ElevatorSubsystem(new ElevatorPlacebo());
         }
     }
+
 }
