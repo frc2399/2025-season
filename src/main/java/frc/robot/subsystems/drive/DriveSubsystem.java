@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.drive;
 
-import java.util.Optional;
-
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.Matrix;
@@ -27,7 +25,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.units.measure.Distance;
@@ -36,20 +33,20 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SpeedConstants;
 import frc.robot.Robot;
+import frc.robot.subsystems.drive.SwerveModuleIO.DriveSubsystemStates;
 import frc.robot.subsystems.drive.SwerveModuleIO.SwerveModuleIOStates;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.vision.VisionPoseEstimator.DriveBase;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-
-import java.util.Optional;
 
 public class DriveSubsystem extends SubsystemBase implements DriveBase {
+        private double velocityXMPS;
+        private double velocityYMPS;
+        private DriveSubsystemStates states = new DriveSubsystemStates();
 
         // correction PID
         private double DRIVE_P = 1.1;
@@ -72,29 +69,28 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private SwerveModule rearLeft;
         private SwerveModule rearRight;
 
-        private static final Distance TRACK_WIDTH = Inches.of(26 - (2 * 1.75));
-        private static final Distance WHEEL_BASE = Inches.of(26 - (2 * 1.75));
+        private final Distance TRACK_WIDTH;
+        private final Distance WHEEL_BASE;
 
         // Distance between front and back wheels on robot
 
-        private static final Translation2d FRONT_LEFT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
-                        TRACK_WIDTH.in(Meters) / 2);
-        private static final Translation2d REAR_LEFT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2,
-                        TRACK_WIDTH.in(Meters) / 2);
-        private static final Translation2d FRONT_RIGHT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
-                        -TRACK_WIDTH.in(Meters) / 2);
-        private static final Translation2d REAR_RIGHT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2,
-                        -TRACK_WIDTH.in(Meters) / 2);
+        private final Translation2d FRONT_LEFT_OFFSET;
+        private final Translation2d REAR_LEFT_OFFSET;
+        private final Translation2d FRONT_RIGHT_OFFSET;
+        private final Translation2d REAR_RIGHT_OFFSET;
 
-        private static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
-                        FRONT_LEFT_OFFSET,
-                        FRONT_RIGHT_OFFSET,
-                        REAR_LEFT_OFFSET,
-                        REAR_RIGHT_OFFSET);
+        private final SwerveDriveKinematics DRIVE_KINEMATICS;
 
         private double currentRotationRate = 0.0;
         private double desiredAngle = 0;
         private Gyro gyro;
+
+        private final Field2d field2d = new Field2d();
+        private FieldObject2d frontLeftField2dModule = field2d.getObject("front left module");
+        private FieldObject2d rearLeftField2dModule = field2d.getObject("rear left module");
+        private FieldObject2d frontRightField2dModule = field2d.getObject("front right module");
+        private FieldObject2d rearRightField2dModule = field2d.getObject("rear right module");
+
         private ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
 
         private Rotation2d lastAngle = new Rotation2d();
@@ -109,12 +105,32 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         /** Creates a new DriveSubsystem. */
         public DriveSubsystem(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule rearLeft,
-                        SwerveModule rearRight, Gyro gyro) {
+                        SwerveModule rearRight, Gyro gyro, Distance trackWidth) {
                 this.gyro = gyro;
                 this.frontLeft = frontLeft;
                 this.frontRight = frontRight;
                 this.rearLeft = rearLeft;
                 this.rearRight = rearRight;
+
+                TRACK_WIDTH = trackWidth;
+                WHEEL_BASE = trackWidth;
+
+                FRONT_LEFT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
+                                TRACK_WIDTH.in(Meters) / 2);
+                REAR_LEFT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2,
+                                TRACK_WIDTH.in(Meters) / 2);
+                FRONT_RIGHT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
+                                -TRACK_WIDTH.in(Meters) / 2);
+                REAR_RIGHT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2,
+                                -TRACK_WIDTH.in(Meters) / 2);
+
+                DRIVE_KINEMATICS = new SwerveDriveKinematics(
+                                FRONT_LEFT_OFFSET,
+                                FRONT_RIGHT_OFFSET,
+                                REAR_LEFT_OFFSET,
+                                REAR_RIGHT_OFFSET);
+
+                SmartDashboard.putData(field2d);
 
                 poseEstimator = new SwerveDrivePoseEstimator(
                                 DRIVE_KINEMATICS,
@@ -165,6 +181,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 logAndUpdateRobotSubsystemStates();
 
                 frontLeft.updateStates();
+                frontRight.updateStates();
+                rearLeft.updateStates();
+                rearRight.updateStates();
+
 
         }
 
@@ -202,7 +222,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
          *                      field.
          */
         public void drive(double xSpeed, double ySpeed, double rotRate, boolean fieldRelative) {
-
+                rotRate = Math.pow(rotRate, 5);
                 double newRotRate = 0;
                 double currentAngle = (gyro.getYaw());
                 double r = Math.pow(Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2)), 3);
@@ -230,7 +250,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         relativeRobotSpeeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotRateDelivered);
                 }
 
-
                 SmartDashboard.putNumber("Swerve/velocity",
                                 Math.sqrt(
                                                 Math.pow(relativeRobotSpeeds.vxMetersPerSecond, 2)
@@ -245,7 +264,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 rearRight.setDesiredState(swerveModuleStates[3]);
 
                 swerveModuleDesiredStatePublisher.set(swerveModuleStates);
-
         }
 
         /**
@@ -318,25 +336,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
         }
 
-        public static class DriveSubsystemStates {
-                public SwerveModuleIOStates frontLeftStates = new SwerveModuleIOStates();
-                public SwerveModuleIOStates rearLeftStates = new SwerveModuleIOStates();
-                public SwerveModuleIOStates frontRightStates = new SwerveModuleIOStates();
-                public SwerveModuleIOStates rearRightStates = new SwerveModuleIOStates();
-                public ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
-                public Pose2d pose = new Pose2d();
-                public double poseY;
-                public double poseX;
-                public double poseTheta;
-                public double velocityXMPS;
-                public double velocityYMPS;
-                public double totalVelocity;
-                public double gyroAngleDegrees;
-                public double angularVelocity;
+        
 
-        }
-
-        private DriveSubsystemStates states = new DriveSubsystemStates();
 
         private void logAndUpdateRobotSubsystemStates() {
                 states.pose = getPose();

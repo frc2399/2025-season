@@ -9,6 +9,8 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -17,9 +19,7 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Dimensionless;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.MotorConstants;
@@ -63,8 +63,9 @@ public class SwerveModuleHardware implements SwerveModuleIO {
 
     private static final double DRIVING_MOTOR_REDUCTION = (45.0 * 22) / (DRIVING_MOTOR_PINION_TEETH * 15);
 
-    private static final AngularVelocity DRIVE_WHEEL_FREE_SPEED_RPS = ((MotorConstants.NEO_FREE_SPEED_RPS.times(
-            WHEEL_CIRCUMFERENCE.in(Meters))).divide(DRIVING_MOTOR_REDUCTION));
+    private static final AngularVelocity DRIVE_WHEEL_FREE_SPEED = RotationsPerSecond
+            .of((MotorConstants.NEO_FREE_SPEED.in(RotationsPerSecond) *
+                    WHEEL_CIRCUMFERENCE.in(Meters)) / (DRIVING_MOTOR_REDUCTION));
 
     private static final Distance DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_DIAMETER.times(Math.PI))
             .divide(DRIVING_MOTOR_REDUCTION).divide((260.0 / 254)); // meters
@@ -82,7 +83,7 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     private static final double DRIVING_P = 0.2;
     private static final double DRIVING_I = 0;
     private static final double DRIVING_D = 0;
-    private static final double DRIVING_FF = 1 / DRIVE_WHEEL_FREE_SPEED_RPS.in(RotationsPerSecond);
+    private static final double DRIVING_FF = 1 / DRIVE_WHEEL_FREE_SPEED.in(RotationsPerSecond);
     private static final double DRIVING_MIN_OUTPUT = -1;
     private static final double DRIVING_MAX_OUTPUT = 1;
 
@@ -106,7 +107,8 @@ public class SwerveModuleHardware implements SwerveModuleIO {
         turningSparkMax = new SparkMax(turningCanId, MotorType.kBrushless);
 
         sparkMaxConfigDriving.inverted(DRIVING_MOTOR_INVERTED).idleMode(DRIVING_MOTOR_IDLE_MODE)
-                .smartCurrentLimit(MotorConstants.NEO_CURRENT_LIMIT)
+                .smartCurrentLimit(
+                        (int) MotorConstants.NEO_CURRENT_LIMIT.in(Amps))
                 .voltageCompensation(VOLTAGE_COMPENSATION);
         sparkMaxConfigDriving.encoder.positionConversionFactor(DRIVING_ENCODER_POSITION_FACTOR.in(Meters))
                 .velocityConversionFactor(DRIVING_ENCODER_VELOCITY_FACTOR.in(Meters));
@@ -115,7 +117,8 @@ public class SwerveModuleHardware implements SwerveModuleIO {
                 .outputRange(DRIVING_MIN_OUTPUT, DRIVING_MAX_OUTPUT);
 
         sparkMaxConfigTurning.inverted(TURNING_MOTOR_INVERTED).idleMode(TURNING_MOTOR_IDLE_MODE)
-                .smartCurrentLimit(MotorConstants.NEO550_CURRENT_LIMIT)
+                .smartCurrentLimit(
+                        (int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps))
                 .voltageCompensation(VOLTAGE_COMPENSATION);
         sparkMaxConfigTurning.absoluteEncoder.positionConversionFactor(TURNING_ENCODER_POSITION_FACTOR)
                 .velocityConversionFactor(TURNING_ENCODER_VELOCITY_FACTOR);
@@ -210,14 +213,13 @@ public class SwerveModuleHardware implements SwerveModuleIO {
 
         SmartDashboard.putNumber("Swerve/module " + name + "/drive encoder position(rad)", states.driveEncoderPos);
         SmartDashboard.putNumber("Swerve/module " + name + "/turn encoder position(m)", states.turnEncoderPos);
-        SmartDashboard.putNumber("Swerve/module " + name + "/drive velocity(m/s)", states.driveVelocity);
+        SmartDashboard.putNumber("Swerve/module " + name + "/drive velocity(mps)", states.driveVelocity);
         SmartDashboard.putNumber("Swerve/module " + name + "/drive voltage", states.driveVoltage);
         SmartDashboard.putNumber("Swerve/module " + name + "/turn voltage", states.turnVoltage);
         SmartDashboard.putNumber("Swerve/module " + name + "/drive current", states.driveCurrent);
         SmartDashboard.putNumber("Swerve/module " + name + "/turn current", states.turnCurrent);
-        SmartDashboard.putNumber("Drive/module" + name + "/turn desired angle", states.desiredAngle);
-        SmartDashboard.putNumber("Swerve/module " + name + "/swerve desired velocity(m/s)",
-                states.driveDesiredVelocity);
+        SmartDashboard.putNumber("Swerve/module " + name + "/turn desired angle", states.desiredAngle);
+        SmartDashboard.putNumber("Swerve/module " + name + "/swerve desired velocity(mps)",states.driveDesiredVelocity);
 
 
     }

@@ -10,10 +10,9 @@ import frc.robot.subsystems.drive.SwerveModuleIO.SwerveModuleIOStates;
 public class SwerveModule {
 
     private SwerveModuleState desiredState = new SwerveModuleState(0.0, new Rotation2d());
+    private SwerveModuleIOStates states = new SwerveModuleIOStates();
 
     private SwerveModuleIO io;
-
-    private SwerveModuleIOStates states;
 
     public SwerveModule(SwerveModuleIO io) {
         this.io = io;
