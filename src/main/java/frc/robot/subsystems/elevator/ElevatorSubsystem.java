@@ -59,7 +59,6 @@ public class ElevatorSubsystem extends SubsystemBase{
         return (Math.abs(setpoint - elevatorIO.getEncoderPosition()) <= HEIGHT_TOLERANCE.in(Meters));
     }
 
-
     public Command incrementGoalPosition(double changeInGoalPosition)
     {
         profiledPIDEnabled = true;
@@ -77,7 +76,6 @@ public class ElevatorSubsystem extends SubsystemBase{
         if (profiledPIDEnabled) {
             elevatorIO.calculateNextSetpoint();
         }
-
         elevatorIO.updateStates(inputs);
         SmartDashboard.putNumber("Elevator/position", inputs.position);
         SmartDashboard.putNumber("Elevator/velocity", inputs.velocity);
