@@ -37,6 +37,7 @@ public class RobotContainer {
   private static final CommandXboxController operatorController = new CommandXboxController(
       DriveControlConstants.OPERATOR_CONTROLLER_PORT);
 
+
   public RobotContainer() {
     configureDefaultCommands();
     configureButtonBindingsDriver();
@@ -81,10 +82,12 @@ public class RobotContainer {
     operatorController.rightBumper()
         .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Radians))
             .withName("move coral wrist to outtake setpoint"));
-    operatorController.y().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_TWO_HEIGHT.in(Meters)));
-    operatorController.x().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
-    operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
-    operatorController.a().whileTrue(elevator.setPercentOutputCommand(-0.1));
-    // operatorController.x().onTrue(elevator.setEncoderPositionCommand(0.01));
+    operatorController.y().onTrue(elevator.goToSetpointCmdMotionProfling(SetpointConstants.L_TWO_HEIGHT.in(Meters)));
+    //operatorController.x().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
+    operatorController.x().onTrue(elevator.goToSetpointCmdMotionProfling(SetpointConstants.L_THREE_HEIGHT.in(Meters)));
+    //operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
+    operatorController.b().whileTrue(elevator.incrementGoalPosition(0.001));
+    operatorController.a().whileTrue(elevator.incrementGoalPosition(-0.001));
+    //operatorController.x().onTrue(elevator.setEncoderPositionCommand(0.01));
   }
 }

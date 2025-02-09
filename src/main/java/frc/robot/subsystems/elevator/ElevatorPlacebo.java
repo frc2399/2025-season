@@ -11,6 +11,8 @@ public class ElevatorPlacebo implements ElevatorIO {
     @Override
     public void setGoalPosition(double position) {}
 
+    public void incrementGoalPosition(double changeInGoalPosition){}
+
     @Override
     public void setPositionMotionProfiling(double position) {}
 

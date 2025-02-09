@@ -152,6 +152,11 @@ public class ElevatorHardware implements ElevatorIO {
         setpointState.velocity = velocity;
     }
 
+    public void incrementGoalPosition(double changeInGoalPosition)
+    {
+        goalState.position += changeInGoalPosition; 
+    }
+
     @Override
     public void calculateNextSetpoint() { 
         setpointState = elevatorMotionProfile.calculate(ElevatorHardwareConstants.kDt, setpointState, goalState);
@@ -199,5 +204,6 @@ public class ElevatorHardware implements ElevatorIO {
         inputs.positionSetPoint = goalPosition;
         inputs.current = elevatorLeftMotorLeader.getOutputCurrent();
         inputs.setpointStatePosition = setpointState.position;
+        inputs.goalStatePosition = goalState.position;
     }
 }
