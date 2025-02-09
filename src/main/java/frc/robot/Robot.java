@@ -57,15 +57,17 @@ public class Robot extends TimedRobot {
     robotContainer.visionPoseEstimator.periodic();
     CommandScheduler.getInstance().run();
   }
+
   @Override
-  public void robotInit(){
+  public void robotInit() {
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
   }
+
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    robotContainer.disableSubsystems(); 
+    robotContainer.disableSubsystems();
   }
 
   @Override
@@ -125,7 +127,5 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationPeriodic() {
   }
-
-
 
 }

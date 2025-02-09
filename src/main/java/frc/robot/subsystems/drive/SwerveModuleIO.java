@@ -20,22 +20,24 @@ public interface SwerveModuleIO {
         public double turningEncoderPos = 0.0;
 
     }
+
     public static class DriveSubsystemStates {
-                public SwerveModuleIOStates frontLeftStates = new SwerveModuleIOStates();
-                public SwerveModuleIOStates rearLeftStates = new SwerveModuleIOStates();
-                public SwerveModuleIOStates frontRightStates = new SwerveModuleIOStates();
-                public SwerveModuleIOStates rearRightStates = new SwerveModuleIOStates();
-                public ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
-                public Pose2d pose = new Pose2d();
-                public double poseY = 0;
-                public double poseX = 0;
-                public double poseTheta = 0;
-                public double velocityXMPS = 0;
-                public double velocityYMPS = 0;
-                public double totalVelocity = 0;
-                public double gyroAngleDegrees = 0;
-                public double angularVelocity = 0;
+        public SwerveModuleIOStates frontLeftStates = new SwerveModuleIOStates();
+        public SwerveModuleIOStates rearLeftStates = new SwerveModuleIOStates();
+        public SwerveModuleIOStates frontRightStates = new SwerveModuleIOStates();
+        public SwerveModuleIOStates rearRightStates = new SwerveModuleIOStates();
+        public ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
+        public Pose2d pose = new Pose2d();
+        public double poseY = 0;
+        public double poseX = 0;
+        public double poseTheta = 0;
+        public double velocityXMPS = 0;
+        public double velocityYMPS = 0;
+        public double totalVelocity = 0;
+        public double gyroAngleDegrees = 0;
+        public double angularVelocity = 0;
     }
+
     public void setDriveEncoderPosition(double position);
 
     public void setDesiredDriveSpeedMPS(double speed);
@@ -44,17 +46,11 @@ public interface SwerveModuleIO {
 
     public double getTurnEncoderSpeedMPS();
 
-    public double getTurnCurrent();
-
     public void setDesiredTurnAngle(double angle);
-
-    public double getDriveOutput();
 
     public double getTurnEncoderPosition();
 
     public double getDriveEncoderPosition();
-
-    public double getTurnOutput();
 
     public void updateStates(SwerveModuleIOStates states);
 

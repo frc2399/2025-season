@@ -9,6 +9,10 @@ public class SwerveModulePlacebo implements SwerveModuleIO {
         return 0.0;
     }
 
+    public double getTurnEncoderPosition() {
+        return 0.0;
+    }
+
     public void setDesiredDriveSpeedMPS(double speed) {
     }
 
@@ -16,40 +20,15 @@ public class SwerveModulePlacebo implements SwerveModuleIO {
         return 0.0;
     }
 
-    public double getTurnEncoderPosition() {
-        return 0.0;
-    }
-
     public void setDesiredTurnAngle(double angle) {
-    }
-
-    public double getDriveOutput() {
-        return 0.0;
-    }
-
-    public double getTurnOutput() {
-        return 0.0;
     }
 
     public double getChassisAngularOffset() {
         return 0.0;
     }
 
-    public String getName() {
-        return "";
-    }
-
     public void updateStates() {
 
-    }
-
-    public double getDriveCurrent() {
-        return 0.0;
-
-    }
-
-    public double getTurnCurrent() {
-        return 0.0;
     }
 
     public double getTurnEncoderSpeedMPS() {

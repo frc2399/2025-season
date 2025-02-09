@@ -36,14 +36,6 @@ public class SwerveModule {
         io.setDriveEncoderPosition(0);
     }
 
-    public double getDriveOutput() {
-        return io.getDriveOutput();
-    }
-
-    public double getTurnOutputCurrent() {
-        return io.getTurnCurrent();
-    }
-
     public void updateStates() {
         io.updateStates(states);
     }

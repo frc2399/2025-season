@@ -14,7 +14,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -160,6 +159,21 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 });
 
                 Pose2d pose = getPose();
+                // can be used for sim and logging purposes
+                frontLeftField2dModule.setPose(pose.transformBy(new Transform2d(FRONT_LEFT_OFFSET,
+                                new Rotation2d(frontLeft.getTurnEncoderPosition()))));
+
+                rearLeftField2dModule.setPose(pose.transformBy(new Transform2d(
+                                REAR_LEFT_OFFSET,
+                                new Rotation2d(rearLeft.getTurnEncoderPosition()))));
+
+                frontRightField2dModule.setPose(pose.transformBy(new Transform2d(
+                                FRONT_RIGHT_OFFSET,
+                                new Rotation2d(frontRight.getTurnEncoderPosition()))));
+
+                rearRightField2dModule.setPose(pose.transformBy(new Transform2d(
+                                REAR_RIGHT_OFFSET,
+                                new Rotation2d(rearRight.getTurnEncoderPosition()))));
 
                 SwerveModuleState[] swerveModuleStates = new SwerveModuleState[] {
                                 frontLeft.getState(),
@@ -177,13 +191,12 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         gyro.setYaw(lastAngle.getRadians());
                 }
 
-                logAndUpdateRobotSubsystemStates();
+                logAndUpdateDriveSubsystemStates();
 
                 frontLeft.updateStates();
                 frontRight.updateStates();
                 rearLeft.updateStates();
                 rearRight.updateStates();
-
 
         }
 
@@ -295,6 +308,20 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         }
 
+        private void configurePathPlannerLogging() {
+                PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+                        field2d.setRobotPose(pose);
+                });
+
+                PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+                        field2d.getObject("ROBOT target pose").setPose(pose);
+                });
+
+                PathPlannerLogging.setLogActivePathCallback((poses) -> {
+                        field2d.getObject("ROBOT path").setPoses(poses);
+                });
+        }
+
         private double getHeadingCorrectionRotRate(double currentAngle, double rotRate, double polarXSpeed,
                         double polarYSpeed) {
                 // Debouncer ensures that there is no back-correction immediately after turning
@@ -326,7 +353,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         public double getLinearSpeed() {
                 double velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
                 double velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
-                return Math.sqrt((Math.pow(velocityXMPS, 2) + Math.pow(velocityYMPS, 2)));
+                return Math.hypot(velocityXMPS, velocityYMPS);
         }
 
         @Override
@@ -335,10 +362,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
         }
 
-        
-
-
-        private void logAndUpdateRobotSubsystemStates() {
+        private void logAndUpdateDriveSubsystemStates() {
                 states.pose = getPose();
                 states.poseX = states.pose.getX();
                 states.poseY = states.pose.getY();
@@ -349,14 +373,14 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 states.angularVelocity = relativeRobotSpeeds.omegaRadiansPerSecond;
                 states.gyroAngleDegrees = Math.toDegrees(gyro.getYaw());
 
-                SmartDashboard.putNumber("Pose X", states.poseX);
-                SmartDashboard.putNumber("Pose Y", states.poseY);
-                SmartDashboard.putNumber("Pose Theta(radians)", states.poseTheta);
-                SmartDashboard.putNumber("Robot Linear Velocity X", states.velocityXMPS);
-                SmartDashboard.putNumber("Robot Linear Velocity Y", states.velocityYMPS);
-                SmartDashboard.putNumber("Total Velocity", states.totalVelocity);
-                SmartDashboard.putNumber("Robot Angular Velocity", states.angularVelocity);
-                SmartDashboard.putNumber("Gyro Angle(degrees)", states.gyroAngleDegrees);
+                SmartDashboard.putNumber("drive/Pose X(dg)", states.poseX);
+                SmartDashboard.putNumber("drive/Pose Y(dg)", states.poseY);
+                SmartDashboard.putNumber("drive/Pose Theta(dg)", states.poseTheta);
+                SmartDashboard.putNumber("drive/Linear Velocity X(mps)", states.velocityXMPS);
+                SmartDashboard.putNumber("drive/Linear Velocity Y(mps)", states.velocityYMPS);
+                SmartDashboard.putNumber("drive/Total Velocity(mps)", states.totalVelocity);
+                SmartDashboard.putNumber("drive/Angular Velocity(dg per sec)", states.angularVelocity);
+                SmartDashboard.putNumber("drive/Gyro Angle(degrees)", states.gyroAngleDegrees);
         }
 
 }
