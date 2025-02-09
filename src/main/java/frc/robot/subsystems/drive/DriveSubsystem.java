@@ -373,14 +373,14 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 states.angularVelocity = relativeRobotSpeeds.omegaRadiansPerSecond;
                 states.gyroAngleDegrees = Math.toDegrees(gyro.getYaw());
 
-                SmartDashboard.putNumber("drive/Pose X(dg)", states.poseX);
-                SmartDashboard.putNumber("drive/Pose Y(dg)", states.poseY);
-                SmartDashboard.putNumber("drive/Pose Theta(dg)", states.poseTheta);
+                SmartDashboard.putNumber("drive/Pose X(m)", states.poseX);
+                SmartDashboard.putNumber("drive/Pose Y(m)", states.poseY);
+                SmartDashboard.putNumber("drive/Pose Theta(deg)", states.poseTheta);
                 SmartDashboard.putNumber("drive/Linear Velocity X(mps)", states.velocityXMPS);
                 SmartDashboard.putNumber("drive/Linear Velocity Y(mps)", states.velocityYMPS);
                 SmartDashboard.putNumber("drive/Total Velocity(mps)", states.totalVelocity);
-                SmartDashboard.putNumber("drive/Angular Velocity(dg per sec)", states.angularVelocity);
-                SmartDashboard.putNumber("drive/Gyro Angle(degrees)", states.gyroAngleDegrees);
+                SmartDashboard.putNumber("drive/Angular Velocity(deg per sec)", states.angularVelocity);
+                SmartDashboard.putNumber("drive/Gyro Angle(deg)", states.gyroAngleDegrees);
         }
 
 }

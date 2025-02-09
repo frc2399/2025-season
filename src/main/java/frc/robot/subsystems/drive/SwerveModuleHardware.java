@@ -198,7 +198,7 @@ public class SwerveModuleHardware implements SwerveModuleIO {
         SmartDashboard.putNumber("Swerve/module " + name + "/turn voltage(volt)", states.turnVoltage);
         SmartDashboard.putNumber("Swerve/module " + name + "/drive current(amps)", states.driveCurrent);
         SmartDashboard.putNumber("Swerve/module " + name + "/turn current(amps)", states.turnCurrent);
-        SmartDashboard.putNumber("Swerve/module " + name + "/turn desired angle(dg)", states.desiredAngle);
+        SmartDashboard.putNumber("Swerve/module " + name + "/turn desired angle(deg)", states.desiredAngle);
         SmartDashboard.putNumber("Swerve/module " + name + "/swerve desired velocity(mps)",
                 states.driveDesiredVelocity);
 

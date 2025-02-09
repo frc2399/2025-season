@@ -41,5 +41,6 @@ public class CoralWristSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("coralWrist/wristCurrent", states.wristCurrent);
         SmartDashboard.putNumber("coralWrist/wristAbsoluteEncoderAngleInDegrees",
                 states.wristAbsoluteEncoderAngle * 180 / Math.PI);
+        SmartDashboard.putNumber("coralWrist/goalAngle", states.goalAngle);
     }
 }

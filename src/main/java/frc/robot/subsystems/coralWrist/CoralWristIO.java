@@ -7,6 +7,7 @@ public interface CoralWristIO {
         public double wristCurrent = 0.0;
         public double wristAbsoluteEncoderAngle = 0.0;
         // public double trapezoidProfileGoalAngle = 0.0;
+        public double goalAngle = 0.0;
     }
 
     public void setGoalAngle(double angle);
