@@ -59,7 +59,7 @@ public class CoralWristHardware implements CoralWristIO {
 
         public CoralWristHardware() {
                 wristSparkFlexConfig.inverted(WRIST_MOTOR_INVERTED).idleMode(IDLE_MODE)
-                                .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
+                                .smartCurrentLimit((int) MotorConstants.ALPHA_CORAL_WRIST_CURRENT_LIMIT.in(Amps));
                 wristSparkFlexConfig.absoluteEncoder.positionConversionFactor(ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR)
                                 .velocityConversionFactor(ABSOLUTE_ENCODER_VELOCITY_FACTOR)
                                 .inverted(ABSOLUTE_ENCODER_INVERTED).zeroCentered(true);

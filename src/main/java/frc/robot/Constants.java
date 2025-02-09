@@ -44,6 +44,11 @@ public final class Constants {
   public static class MotorConstants {
     public static final Current NEO550_CURRENT_LIMIT = Amps.of(20);
     public static final Current NEO_CURRENT_LIMIT = Amps.of(50);
+    // basically, on alpha bot, all 3 motors (intake and wrist) are connected to one
+    // port on the pdh with a current limit of 30. so, to avoid motors drawing too
+    // much, we put it down to 10 for each
+    public static final Current ALPHA_CORAL_INTAKE_CURRENT_LIMIT = Amps.of(5);
+    public static final Current ALPHA_CORAL_WRIST_CURRENT_LIMIT = Amps.of(40);
     public static final AngularVelocity NEO_FREE_SPEED = RPM.of(5676);
     public static final AngularVelocity NEO550_FREE_SPEED = RPM.of(11000);
     public static final Current VORTEX_CURRENT_LIMIT = Amps.of(60);
