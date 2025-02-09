@@ -21,6 +21,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.MotorConstants;
 
 public class SwerveModuleHardware implements SwerveModuleIO {
@@ -28,8 +29,13 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     private SparkMax drivingSparkMax;
     private SparkMax turningSparkMax;
 
+    private double desiredDrivingVelocity;
+    private SwerveModuleIOStates states = new SwerveModuleIOStates();
+
     private final RelativeEncoder drivingRelativeEncoder;
     private final SparkAbsoluteEncoder turningAbsoluteEncoder;
+    private double desiredSpeed;
+    private double desiredAngle;
 
     private final SparkClosedLoopController drivingPidController;
     private final SparkClosedLoopController turningPidController;
@@ -144,47 +150,58 @@ public class SwerveModuleHardware implements SwerveModuleIO {
         drivingRelativeEncoder.setPosition(position);
     };
 
-    public double getDriveEncoderPosition() {
-        return drivingRelativeEncoder.getPosition();
-    };
-
     public void setDesiredDriveSpeedMPS(double speed) {
         drivingPidController.setReference(speed, ControlType.kVelocity);
-    };
-
-    public double getDriveEncoderSpeedMPS() {
-        return drivingRelativeEncoder.getVelocity();
-    };
-
-    public double getTurnEncoderPosition() {
-        return turningAbsoluteEncoder.getPosition();
+        states.driveDesiredVelocity = speed;
     };
 
     public void setDesiredTurnAngle(double angle) {
         turningPidController.setReference(angle, ControlType.kPosition);
+        states.desiredAngle = angle;
     };
-
-    public double getDriveBusVoltage() {
-        return drivingSparkMax.getBusVoltage();
-    }
-
-    public double getDriveOutput() {
-        return drivingSparkMax.getAppliedOutput();
-    }
-
-    public double getTurnBusVoltage() {
-        return turningSparkMax.getBusVoltage();
-    }
-
-    public double getTurnOutput() {
-        return turningSparkMax.getAppliedOutput();
-    }
-
-    public String getName() {
-        return name;
-    }
 
     public double getChassisAngularOffset() {
         return chassisAngularOffset;
     }
+
+    public double getDriveEncoderPosition() {
+        return drivingRelativeEncoder.getPosition();
+
+    }
+
+    public double getTurnEncoderPosition() {
+        return turningAbsoluteEncoder.getPosition();
+    }
+
+    public double getDriveEncoderSpeedMPS() {
+        return drivingRelativeEncoder.getVelocity();
+    }
+
+    public double getTurnEncoderSpeedMPS() {
+
+        return turningAbsoluteEncoder.getVelocity();
+    }
+
+    public void updateStates(SwerveModuleIOStates states) {
+        states.driveEncoderPos = drivingRelativeEncoder.getPosition();
+        states.turnEncoderPos = turningAbsoluteEncoder.getPosition();
+        states.driveVelocity = drivingRelativeEncoder.getVelocity();
+        states.driveVoltage = drivingSparkMax.getBusVoltage() * drivingSparkMax.getAppliedOutput();
+        states.turnVoltage = turningSparkMax.getBusVoltage() * turningSparkMax.getAppliedOutput();
+        states.driveCurrent = drivingSparkMax.getOutputCurrent();
+        states.turnCurrent = turningSparkMax.getOutputCurrent();
+
+        SmartDashboard.putNumber("Swerve/module " + name + "/drive encoder position(rad)", states.driveEncoderPos);
+        SmartDashboard.putNumber("Swerve/module " + name + "/turn encoder position(m)", states.turnEncoderPos);
+        SmartDashboard.putNumber("Swerve/module " + name + "/drive velocity(mps)", states.driveVelocity);
+        SmartDashboard.putNumber("Swerve/module " + name + "/drive voltage(volt)", states.driveVoltage);
+        SmartDashboard.putNumber("Swerve/module " + name + "/turn voltage(volt)", states.turnVoltage);
+        SmartDashboard.putNumber("Swerve/module " + name + "/drive current(amps)", states.driveCurrent);
+        SmartDashboard.putNumber("Swerve/module " + name + "/turn current(amps)", states.turnCurrent);
+        SmartDashboard.putNumber("Swerve/module " + name + "/turn desired angle(deg)", states.desiredAngle);
+        SmartDashboard.putNumber("Swerve/module " + name + "/swerve desired velocity(mps)",
+                states.driveDesiredVelocity);
+
+    }
+
 }
