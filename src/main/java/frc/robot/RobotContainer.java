@@ -74,9 +74,11 @@ public class RobotContainer {
         .whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_INTAKE_SPEED).withName("run coral intake"));
     driverController.leftBumper()
         .whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED).withName("run coral outtake"));
+    driverController.rightTrigger().onTrue(commandFactory.turtleMode());
     driverController.b().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
-    driverController.a().onTrue(commandFactory.turtleMode());
+    driverController.y().onTrue(elevator.goToSetPointCommand(0.0));
+    driverController.leftTrigger().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_TWO_HEIGHT.in(Meters)));
   }
 
   private void configureButtonBindingsOperator() {
@@ -89,7 +91,8 @@ public class RobotContainer {
     operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians)).withName("move coral wrist to L1 outtake setpoint"));
     operatorController.y().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_TWO_HEIGHT.in(Meters)));
     operatorController.x().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
-    operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
+    operatorController.b().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_THREE_HEIGHT.in(Meters)));
+    //operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
     operatorController.a().whileTrue(elevator.setPercentOutputCommand(-0.1));
   }
 }

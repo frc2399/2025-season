@@ -84,7 +84,7 @@ public class ElevatorHardware implements ElevatorIO {
                         ElevatorHardwareConstants.OUTPUT_RANGE_MAX_VALUE, ClosedLoopSlot.kSlot1);
 
         globalMotorConfig.softLimit
-                .forwardSoftLimit((ElevatorHardwareConstants.MAX_ELEVATOR_HEIGHT).in(Meters) - 0.02) // a little less
+                .forwardSoftLimit((ElevatorHardwareConstants.MAX_ELEVATOR_HEIGHT).in(Meters)) // a little less
                                                                                                      // than max height
                                                                                                      // for safety
                 .forwardSoftLimitEnabled(true)
