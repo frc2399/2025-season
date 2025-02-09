@@ -78,6 +78,9 @@ public final class Constants {
 
     public static final Distance ALPHA_TRACK_WIDTH = Meters.of(0.4954);
     public static final Distance MOZART_TRACK_WIDTH = Inches.of(26 - (2 * 1.75));
+    //replace if needed
+    public static final Distance BETA_TRACK_WIDTH = Meters.of(0.4954);
+
   }
 
 }
