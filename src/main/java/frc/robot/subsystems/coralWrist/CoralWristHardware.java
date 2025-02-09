@@ -43,14 +43,16 @@ public class CoralWristHardware implements CoralWristIO {
 
         private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
 
+        //64:16 (4:1) gear ratio (through bore encoder on shaft) 
         private static final double ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 4.0; // radians
         private static final double ABSOLUTE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 240.0; // radians per second
+        //3:1 and 5:1 gearbox on motor. 64:16 (4:1) gear ratio. 3 * 5 * 4 = 60
         private static final double RELATIVE_ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 60;
         private static final double RELATIVE_ENCODER_WRIST_VELOCITY_FACTOR = (2 * Math.PI) / 3600;
 
-        private static final boolean ABSOLUTE_ENCODER_POSITION_WRAPPING = true;
-        private static final Angle ABSOLUTE_ENCODER_POSITION_MIN_INPUT = Degrees.of(0);
-        private static final Angle ABSOLUTE_ENCODER_POSITION_MAX_INPUT = Degrees.of(360);
+        private static final boolean POSITION_WRAPPING_ENABLED = true;
+        private static final Angle POSITION_WRAPPING_MIN_INPUT = Degrees.of(-90);
+        private static final Angle POSITION_WRAPPING_MAX_INPUT = Degrees.of(90);
 
         private static final double WRIST_MOTOR_P = 0.5;
         private static final double WRIST_MOTOR_I = 0.0;
@@ -75,9 +77,9 @@ public class CoralWristHardware implements CoralWristIO {
                 wristSparkFlexConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                                 .pidf(WRIST_MOTOR_P, WRIST_MOTOR_I, WRIST_MOTOR_D, WRIST_MOTOR_FF)
                                 .outputRange(WRIST_MOTOR_MIN_OUTPUT, WRIST_MOTOR_MAX_OUTPUT)
-                                .positionWrappingEnabled(true)
-                                .positionWrappingInputRange(ABSOLUTE_ENCODER_POSITION_MIN_INPUT.in(Radians),
-                                                ABSOLUTE_ENCODER_POSITION_MAX_INPUT.in(Radians));
+                                .positionWrappingEnabled(POSITION_WRAPPING_ENABLED)
+                                .positionWrappingInputRange(POSITION_WRAPPING_MIN_INPUT.in(Radians),
+                                                POSITION_WRAPPING_MAX_INPUT.in(Radians));
 
                 coralIntakeWristSparkFlex = new SparkFlex(MotorIdConstants.CORAL_INTAKE_WRIST_CAN_ID,
                                 MotorType.kBrushless);
