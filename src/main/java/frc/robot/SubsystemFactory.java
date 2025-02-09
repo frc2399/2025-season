@@ -84,9 +84,7 @@ public class SubsystemFactory {
                     MotorIdConstants.REAR_RIGHT_TURNING_CAN_ID,
                     REAR_RIGHT_CHASSIS_ANGULAR_OFFSET, "rear right"));
             return new DriveSubsystem(frontLeft, frontRight, rearLeft, rearRight, gyro, trackWidth);
-        }
-
-        else if (robotType == RobotType.BETA) {
+        } else if (robotType == RobotType.BETA) {
             trackWidth = Constants.DriveControlConstants.BETA_TRACK_WIDTH;
             frontLeft = new SwerveModule(new SwerveModuleHardwareVortex(
                     MotorIdConstants.FRONT_LEFT_DRIVING_CAN_ID,
