@@ -43,14 +43,12 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     //pid command that is seperate from motion profiling
     public Command goToSetPointCommand(double position) {
-        System.out.println("go to set point cmd running");
         return this.runOnce(() -> elevatorIO.setPositionMotionProfiling(position));
     }
 
     //motion profile command that is seperate from PID
     public Command goToSetpointCmdMotionProfling(double position) {
         return this.runOnce(() -> {
-            System.out.println("go to set point cmd running");
             elevatorIO.setPositionMotionProfiling(position); 
             profiledPIDEnabled = true;
             setpoint = position; 
@@ -82,7 +80,6 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public double getCurrentPosition()
     {
-        System.out.println("current position being found");
         return elevatorIO.getEncoderPosition();
     }
 

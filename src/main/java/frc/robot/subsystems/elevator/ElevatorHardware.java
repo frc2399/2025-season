@@ -141,7 +141,6 @@ public class ElevatorHardware implements ElevatorIO {
 
     @Override
     public void setManualControlMotionProfiling(){
-
         goalState.position = newGoalPosition;
     }
 
