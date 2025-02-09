@@ -15,6 +15,7 @@ public interface ElevatorIO {
     }
 
     public void disableElevator();
+    public void enableElevator(); 
     public void setSpeed(double speed);
     public void setGoalPosition(double position);
     public void incrementGoalPosition(double newGoalPosition);

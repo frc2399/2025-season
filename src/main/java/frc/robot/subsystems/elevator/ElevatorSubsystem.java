@@ -18,7 +18,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     public boolean profiledPIDEnabled = false;
     private double setpoint; 
     private final Distance HEIGHT_TOLERANCE = Inches.of(0.5);
-    private double JOYSTICK_INPUT_TO_CHANGE_IN_POSITION_CONVERSION_FACTOR = 0.001; 
+    private double JOYSTICK_INPUT_TO_CHANGE_IN_POSITION_CONVERSION_FACTOR = 0.002; 
 
     public static final class ElevatorConstants {}
 
@@ -28,8 +28,13 @@ public class ElevatorSubsystem extends SubsystemBase{
         elevatorIO.setSetpointState(0, 0);
     }
 
-    public Command disableElevator() {
-        return this.run(() ->elevatorIO.disableElevator());
+    public void disableElevator() {  
+        elevatorIO.disableElevator();
+    }
+
+    public void enableElevator()
+    {
+        elevatorIO.enableElevator();
     }
 
     public Command setEncoderPositionCommand(double position) {
@@ -38,12 +43,14 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     //pid command that is seperate from motion profiling
     public Command goToSetPointCommand(double position) {
+        System.out.println("go to set point cmd running");
         return this.runOnce(() -> elevatorIO.setPositionMotionProfiling(position));
     }
 
     //motion profile command that is seperate from PID
     public Command goToSetpointCmdMotionProfling(double position) {
         return this.runOnce(() -> {
+            System.out.println("go to set point cmd running");
             elevatorIO.setPositionMotionProfiling(position); 
             profiledPIDEnabled = true;
             setpoint = position; 
@@ -69,7 +76,14 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public Command incrementGoalPosition(double changeInGoalPosition)
     {
+        profiledPIDEnabled = true;
         return this.run(()-> elevatorIO.incrementGoalPosition(changeInGoalPosition));
+    }
+
+    public double getCurrentPosition()
+    {
+        System.out.println("current position being found");
+        return elevatorIO.getEncoderPosition();
     }
 
 

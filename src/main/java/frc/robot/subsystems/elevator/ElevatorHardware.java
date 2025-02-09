@@ -35,9 +35,9 @@ public class ElevatorHardware implements ElevatorIO {
     public static final class ElevatorHardwareConstants {
         private static final Distance METERS_PER_REVOLUTION = Inches.of(0.67); // (1/9)(1.92 * pi)
         private static final Distance ALLOWED_SETPOINT_ERROR = Inches.of(.25);
-        private static final LinearVelocity MAX_VEL = MetersPerSecond.of(0.8);
-        private static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(0.4);
-        private static final Voltage P_VALUE = Volts.of(2.0);
+        private static final LinearVelocity MAX_VEL = MetersPerSecond.of(1.5); 
+        private static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(3); 
+        private static final Voltage P_VALUE = Volts.of(6.0);
         private static final Voltage I_VALUE = Volts.of(0);
         private static final Voltage D_VALUE = Volts.of(0);
         private static final Voltage FEEDFORWARD_VALUE = Volts.of(1.0 / 917);
@@ -123,8 +123,12 @@ public class ElevatorHardware implements ElevatorIO {
 
     @Override
     public void disableElevator() {
-        System.out.println("Got to disableElevator Method");
         elevatorLeftMotorLeader.set(0);
+    }
+
+    @Override
+    public void enableElevator() {
+        goalState.position = leftEncoder.getPosition();
     }
 
     @Override

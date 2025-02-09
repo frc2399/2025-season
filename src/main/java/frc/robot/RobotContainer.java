@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Radians;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -48,6 +46,10 @@ public class RobotContainer {
     elevator.disableElevator();
   }
 
+  public void enableSubsystems(){
+    elevator.enableElevator();
+  }
+
   public void configureDefaultCommands() {
 
     drive.setDefaultCommand(drive.driveCommand(
@@ -62,7 +64,7 @@ public class RobotContainer {
             DriveControlConstants.DRIVE_DEADBAND)),
         DriveControlConstants.FIELD_ORIENTED_DRIVE));
 
-    elevator.setDefaultCommand(elevator.keepElevatorAtCurrentPosition());
+    //elevator.setDefaultCommand(elevator.keepElevatorAtCurrentPosition());
   }
 
   private void configureButtonBindingsDriver() {

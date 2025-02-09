@@ -6,6 +6,9 @@ public class ElevatorPlacebo implements ElevatorIO {
     public void disableElevator() {}
 
     @Override
+    public void enableElevator(){}
+
+    @Override
     public void setSpeed(double speed) {}
 
     @Override
