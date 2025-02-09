@@ -43,32 +43,20 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     //pid command that is seperate from motion profiling
     public Command goToSetPointCommand(double position) {
-        return this.runOnce(() -> elevatorIO.setPositionMotionProfiling(position));
+        return this.runOnce(() -> elevatorIO.setGoalPosition(position));
     }
 
     //motion profile command that is seperate from PID
     public Command goToSetpointCmdMotionProfling(double position) {
         return this.runOnce(() -> {
-            elevatorIO.setPositionMotionProfiling(position); 
+            elevatorIO.setGoalPosition(position); 
             profiledPIDEnabled = true;
             setpoint = position; 
         });
     }
 
-    public Command setSpeedCommand(double speed) {
-        return this.run(() -> elevatorIO.setSpeed(speed));
-    }
-
-    public Command setPercentOutputCommand(double percentOutput) {
-        return this.runOnce(() -> elevatorIO.setPercentOutput(percentOutput));
-    }
-
     public boolean atGoal(){
         return (Math.abs(setpoint - elevatorIO.getEncoderPosition()) <= HEIGHT_TOLERANCE.in(Meters));
-    }
-
-    public Command keepElevatorAtCurrentPosition() {
-        return this.run(() -> elevatorIO.setGoalPosition(elevatorIO.getEncoderPosition()));
     }
 
 

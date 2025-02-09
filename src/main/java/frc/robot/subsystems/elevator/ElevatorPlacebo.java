@@ -8,16 +8,10 @@ public class ElevatorPlacebo implements ElevatorIO {
     @Override
     public void enableElevator(){}
 
-    @Override
-    public void setSpeed(double speed) {}
-
-    @Override
-    public void setGoalPosition(double position) {}
-
     public void incrementGoalPosition(double changeInGoalPosition){}
 
     @Override
-    public void setPositionMotionProfiling(double position) {}
+    public void setGoalPosition(double position) {}
 
     @Override  
     public void calculateNextSetpoint() {}
@@ -29,9 +23,6 @@ public class ElevatorPlacebo implements ElevatorIO {
     public void setSetpointState(double position, double velocity) {}
 
     @Override
-    public void setManualControlMotionProfiling(){};
-
-    @Override
     public double getEncoderVelocity() {
         return 0.0;
     }
@@ -40,8 +31,6 @@ public class ElevatorPlacebo implements ElevatorIO {
     public double getEncoderPosition() {
         return 0.0;
     }
-
-    public void setPercentOutput(double percentOutput) {}
 
     @Override
     public void updateStates(ElevatorIOInputs inputs) {}

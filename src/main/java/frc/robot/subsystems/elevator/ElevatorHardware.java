@@ -132,20 +132,7 @@ public class ElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public void setSpeed(double speed) {
-        leftClosedLoopController.setReference(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot1,
-                ElevatorHardwareConstants.ARBITRARY_FF_GRAVITY_COMPENSATION.in(Volts));
-        // leftClosedLoopController.setReference(speed,
-        // SparkBase.ControlType.kMAXMotionVelocityControl);
-    }
-
-    @Override
-    public void setManualControlMotionProfiling(){
-        goalState.position = newGoalPosition;
-    }
-
-    @Override
-    public void setPositionMotionProfiling(double newGoalPosition) {
+    public void setGoalPosition(double newGoalPosition) {
         goalState.position = newGoalPosition; 
     }
 
@@ -166,14 +153,6 @@ public class ElevatorHardware implements ElevatorIO {
         leftClosedLoopController.setReference(setpointState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
 
-    public void setGoalPosition(double desiredPosition) {
-        leftClosedLoopController.setReference(desiredPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0,
-                ElevatorHardwareConstants.ARBITRARY_FF_GRAVITY_COMPENSATION.in(Volts));
-        // leftClosedLoopController.setReference(position,
-        // SparkBase.ControlType.kMAXMotionPositionControl);
-        goalPosition = desiredPosition;
-    }
-
     @Override
     public void setEncoderPosition(double position) {
         leftEncoder.setPosition(position);
@@ -187,13 +166,6 @@ public class ElevatorHardware implements ElevatorIO {
     @Override
     public double getEncoderPosition() {
         return leftEncoder.getPosition();
-    }
-
-    @Override
-    public void setPercentOutput(double percentOutput) {
-        // elevatorLeftMotorLeader.set(percentOutput);
-        leftClosedLoopController.setReference(percentOutput, ControlType.kDutyCycle, ClosedLoopSlot.kSlot0,
-                ElevatorHardwareConstants.ARBITRARY_FF_GRAVITY_COMPENSATION.in(Volts));
     }
 
     @Override
