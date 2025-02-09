@@ -139,7 +139,7 @@ public class SubsystemFactory {
 
     protected ElevatorSubsystem buildElevator() {
         if (robotType == RobotType.ALPHA) {
-            return new ElevatorSubsystem(new ElevatorHardware());
+            return new ElevatorSubsystem(new ElevatorHardware(Inches.of(34.25)));
         } else {
             return new ElevatorSubsystem(new ElevatorPlacebo());
         }
