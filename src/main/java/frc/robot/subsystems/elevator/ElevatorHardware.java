@@ -18,6 +18,10 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
@@ -31,9 +35,9 @@ public class ElevatorHardware implements ElevatorIO {
     public static final class ElevatorHardwareConstants {
         private static final Distance METERS_PER_REVOLUTION = Inches.of(0.67); // (1/9)(1.92 * pi)
         private static final Distance ALLOWED_SETPOINT_ERROR = Inches.of(.25);
-        private static final LinearVelocity MAX_VEL = MetersPerSecond.of(0.8);
-        private static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(0.4);
-        private static final Voltage P_VALUE = Volts.of(2.0);
+        private static final LinearVelocity MAX_VEL = MetersPerSecond.of(1.5); 
+        private static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(3); 
+        private static final Voltage P_VALUE = Volts.of(6.0);
         private static final Voltage I_VALUE = Volts.of(0);
         private static final Voltage D_VALUE = Volts.of(0);
         private static final Voltage FEEDFORWARD_VALUE = Volts.of(1.0 / 917);
@@ -43,15 +47,21 @@ public class ElevatorHardware implements ElevatorIO {
         private static final double P_VALUE_VELOCITY = 0.0001;
         private static final double I_VALUE_VELOCITY = 0;
         private static final double D_VALUE_VELOCITY = 0;
-        private static final Distance MAX_ELEVATOR_HEIGHT = Inches.of(34.25); // inches
+        private static final double kDt = 0.02;
+        private static final Distance MAX_ELEVATOR_HEIGHT = Inches.of(34.25); //inches 
     }
 
     private SparkFlex elevatorRightMotorFollower, elevatorLeftMotorLeader;
     private SparkFlexConfig globalMotorConfig, rightMotorConfigFollower, leftMotorConfigLeader;
     private SparkClosedLoopController leftClosedLoopController;
     private RelativeEncoder leftEncoder;
+    private TrapezoidProfile elevatorMotionProfile;
+    public State setpointState = new State();
+    private State goalState = new State();
     private double goalPosition;
+    public int newGoalPosition;
 
+    
     public ElevatorHardware() {
 
         globalMotorConfig = new SparkFlexConfig();
@@ -64,6 +74,8 @@ public class ElevatorHardware implements ElevatorIO {
         leftClosedLoopController = elevatorLeftMotorLeader.getClosedLoopController();
 
         leftEncoder = elevatorLeftMotorLeader.getEncoder();
+
+        elevatorMotionProfile = new TrapezoidProfile(new Constraints(ElevatorHardwareConstants.MAX_VEL.in(MetersPerSecond), ElevatorHardwareConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)));
 
         globalMotorConfig.encoder
                 .positionConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION.in(Meters))
@@ -115,25 +127,35 @@ public class ElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public void setSpeed(double speed) {
-        leftClosedLoopController.setReference(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot1,
-                ElevatorHardwareConstants.ARBITRARY_FF_GRAVITY_COMPENSATION.in(Volts));
-        // leftClosedLoopController.setReference(speed,
-        // SparkBase.ControlType.kMAXMotionVelocityControl);
+    public void enableElevator() {
+        goalState.position = leftEncoder.getPosition();
     }
 
     @Override
-    public void setGoalPosition(double desiredPosition) {
-        leftClosedLoopController.setReference(desiredPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0,
-                ElevatorHardwareConstants.ARBITRARY_FF_GRAVITY_COMPENSATION.in(Volts));
-        // leftClosedLoopController.setReference(position,
-        // SparkBase.ControlType.kMAXMotionPositionControl);
-        goalPosition = desiredPosition;
+    public void setGoalPosition(Distance newGoalPosition) {
+        goalState.position = newGoalPosition.in(Meters); 
     }
 
     @Override
-    public void setEncoderPosition(double position) {
-        leftEncoder.setPosition(position);
+    public void setSetpointState(Distance position, double velocity) {
+        setpointState.position = position.in(Meters);
+        setpointState.velocity = velocity;
+    }
+
+    public void incrementGoalPosition(Distance changeInGoalPosition)
+    {
+        goalState.position += changeInGoalPosition.in(Meters); 
+    }
+
+    @Override
+    public void calculateNextSetpoint() { 
+        setpointState = elevatorMotionProfile.calculate(ElevatorHardwareConstants.kDt, setpointState, goalState);
+        leftClosedLoopController.setReference(setpointState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    }
+
+    @Override
+    public void setEncoderPosition(Distance position) {
+        leftEncoder.setPosition(position.in(Meters));
     }
 
     @Override
@@ -147,13 +169,6 @@ public class ElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public void setPercentOutput(double percentOutput) {
-        // elevatorLeftMotorLeader.set(percentOutput);
-        leftClosedLoopController.setReference(percentOutput, ControlType.kDutyCycle, ClosedLoopSlot.kSlot0,
-                ElevatorHardwareConstants.ARBITRARY_FF_GRAVITY_COMPENSATION.in(Volts));
-    }
-
-    @Override
     public void updateStates(ElevatorIOInputs inputs) {
         inputs.position = getEncoderPosition();
         inputs.velocity = getEncoderVelocity();
@@ -163,5 +178,6 @@ public class ElevatorHardware implements ElevatorIO {
                 * elevatorLeftMotorLeader.getBusVoltage();
         inputs.positionSetPoint = goalPosition;
         inputs.current = elevatorLeftMotorLeader.getOutputCurrent();
+        inputs.goalStatePosition = goalState.position;
     }
 }

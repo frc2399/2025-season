@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Radians;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -37,6 +35,7 @@ public class RobotContainer {
   private static final CommandXboxController operatorController = new CommandXboxController(
       DriveControlConstants.OPERATOR_CONTROLLER_PORT);
 
+
   public RobotContainer() {
     configureDefaultCommands();
     configureButtonBindingsDriver();
@@ -47,26 +46,23 @@ public class RobotContainer {
     elevator.disableElevator();
   }
 
+  public void enableSubsystems(){
+    elevator.enableElevator();
+  }
+
   public void configureDefaultCommands() {
-    drive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () -> drive.drive(
-                -(MathUtil.applyDeadband(
-                    driverController.getLeftY(),
-                    DriveControlConstants.DRIVE_DEADBAND)),
-                -(MathUtil.applyDeadband(
-                    driverController.getLeftX(),
-                    DriveControlConstants.DRIVE_DEADBAND)),
-                -(MathUtil.applyDeadband(
-                    driverController.getRightX(),
-                    DriveControlConstants.DRIVE_DEADBAND)),
-                DriveControlConstants.FIELD_ORIENTED_DRIVE),
-            drive).withName("drive default"));
-    coralIntake.setDefaultCommand(coralIntake.setRollerSpeed(0).withName("coral Intake default"));
-    coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
-    elevator.setDefaultCommand(elevator.setPercentOutputCommand(0));
+
+    drive.setDefaultCommand(drive.driveCommand(
+        () -> -(MathUtil.applyDeadband(
+            driverController.getLeftY(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        () -> -(MathUtil.applyDeadband(
+            driverController.getLeftX(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        () -> -(MathUtil.applyDeadband(
+            driverController.getRightX(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        DriveControlConstants.FIELD_ORIENTED_DRIVE));
   }
 
   private void configureButtonBindingsDriver() {
@@ -86,10 +82,9 @@ public class RobotContainer {
     operatorController.rightBumper()
         .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Radians))
             .withName("move coral wrist to outtake setpoint"));
-    operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians)).withName("move coral wrist to L1 outtake setpoint"));
-    operatorController.y().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_TWO_HEIGHT.in(Meters)));
-    operatorController.x().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
-    operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
-    operatorController.a().whileTrue(elevator.setPercentOutputCommand(-0.1));
+    operatorController.y().onTrue(elevator.goToSetpointCmd(SetpointConstants.L_TWO_HEIGHT));
+    operatorController.x().onTrue(elevator.goToSetpointCmd(SetpointConstants.L_THREE_HEIGHT));
+    operatorController.b().whileTrue(elevator.incrementGoalPosition(Meters.of(0.001)));
+    operatorController.a().whileTrue(elevator.incrementGoalPosition(Meters.of(-0.001)));
   }
 }
