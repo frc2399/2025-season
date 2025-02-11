@@ -28,6 +28,7 @@ import frc.robot.vision.*;
 import static edu.wpi.first.units.Units.*;
 
 public class RobotContainer {
+
     private SubsystemFactory subsystemFactory = new SubsystemFactory();
     private Gyro gyro = subsystemFactory.buildGyro();
     private final ElevatorSubsystem elevator = subsystemFactory.buildElevator();
@@ -39,7 +40,7 @@ public class RobotContainer {
     // this is public because we need to run the visionPoseEstimator periodic from
     // Robot
     public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
-    private CommandFactory commandFactory = new CommandFactory(drive, elevator, algaeIntake, algaeWrist);
+    private CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist);
 
     private static final CommandXboxController driverController = new CommandXboxController(
             DriveControlConstants.DRIVER_CONTROLLER_PORT);
@@ -90,6 +91,20 @@ public class RobotContainer {
                         coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED).withName("run coral outtake"));
         driverController.b().onTrue(gyro.setYaw(0.0));
         driverController.x().whileTrue(drive.setX());
+        driverController.a().onTrue(commandFactory.turtleMode());
+        driverController.rightTrigger()
+                .whileTrue(algaeIntake.setRollerSpeed(
+                        SpeedConstants.ALGAE_INTAKE_MAX_SPEED_MPS.in(MetersPerSecond)));
+        driverController.leftTrigger()
+                .whileTrue((algaeIntake.setRollerSpeed(
+                        -SpeedConstants.ALGAE_INTAKE_MAX_SPEED_MPS.in(MetersPerSecond))));
+        driverController.leftBumper()
+                .whileTrue((algaeWrist.setWristSpeed(
+                        SpeedConstants.ALGAE_WRIST_MAX_SPEED_MPS.in(MetersPerSecond))));
+        driverController.rightBumper()
+                .whileTrue((algaeWrist.setWristSpeed(
+                        -SpeedConstants.ALGAE_WRIST_MAX_SPEED_MPS.in(MetersPerSecond))));
+
     }
 
     private void configureButtonBindingsOperator() {
@@ -103,29 +118,19 @@ public class RobotContainer {
         operatorController.x().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
         operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
         operatorController.a().whileTrue(elevator.setPercentOutputCommand(-0.1));
+        operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians)).withName("move coral wrist to L1 outtake setpoint"));
         // operatorController.x().onTrue(elevator.setEncoderPositionCommand(0.01));
-        operatorController.rightTrigger()
-                .whileTrue(algaeIntake.setRollerSpeed(
-                        SpeedConstants.ALGAE_INTAKE_MAX_SPEED_MPS.in(MetersPerSecond)));
-        operatorController.leftTrigger()
-                .whileTrue((algaeIntake.setRollerSpeed(
-                        -SpeedConstants.ALGAE_INTAKE_MAX_SPEED_MPS.in(MetersPerSecond))));
-        operatorController.leftBumper()
-                .whileTrue((algaeWrist.setWristSpeed(
-                        SpeedConstants.ALGAE_WRIST_MAX_SPEED_MPS.in(MetersPerSecond))));
-        operatorController.rightBumper()
-                .whileTrue((algaeWrist.setWristSpeed(
-                        -SpeedConstants.ALGAE_WRIST_MAX_SPEED_MPS.in(MetersPerSecond))));
-
     }
+    
+      }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    // public Command getAutonomousCommand() {
-    // // An example command will be run in autonomous
-    // }
+/**
+ * Use this to pass the autonomous command to the main {@link Robot} class.
+ *
+ * @return the command to run in autonomous
+ */
+// public Command getAutonomousCommand() {
+// // An example command will be run in autonomous
+// }
 
 }
