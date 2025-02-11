@@ -1,5 +1,7 @@
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.units.measure.Distance;
+
 public interface ElevatorIO {
 
     static class ElevatorIOInputs {
@@ -16,11 +18,11 @@ public interface ElevatorIO {
 
     public void disableElevator();
     public void enableElevator(); 
-    public void incrementGoalPosition(double newGoalPosition);
-    public void setGoalPosition(double position);
+    public void incrementGoalPosition(Distance newGoalPosition);
+    public void setGoalPosition(Distance position);
     public void calculateNextSetpoint();
-    public void setEncoderPosition(double position);
-    public void setSetpointState(double position, double velocity);
+    public void setEncoderPosition(Distance position);
+    public void setSetpointState(Distance position, double velocity);
     public double getEncoderVelocity();
     public double getEncoderPosition();
     public void updateStates(ElevatorIOInputs inputs);

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.units.measure.Distance;
+
 public class ElevatorPlacebo implements ElevatorIO {
 
     @Override
@@ -8,19 +10,19 @@ public class ElevatorPlacebo implements ElevatorIO {
     @Override
     public void enableElevator(){}
 
-    public void incrementGoalPosition(double changeInGoalPosition){}
+    public void incrementGoalPosition(Distance changeInGoalPosition){}
 
     @Override
-    public void setGoalPosition(double position) {}
+    public void setGoalPosition(Distance position) {}
 
     @Override  
     public void calculateNextSetpoint() {}
 
     @Override
-    public void setEncoderPosition(double position) {}
+    public void setEncoderPosition(Distance position) {}
 
     @Override
-    public void setSetpointState(double position, double velocity) {}
+    public void setSetpointState(Distance position, double velocity) {}
 
     @Override
     public double getEncoderVelocity() {

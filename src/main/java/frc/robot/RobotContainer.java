@@ -63,8 +63,6 @@ public class RobotContainer {
             driverController.getRightX(),
             DriveControlConstants.DRIVE_DEADBAND)),
         DriveControlConstants.FIELD_ORIENTED_DRIVE));
-
-    //elevator.setDefaultCommand(elevator.keepElevatorAtCurrentPosition());
   }
 
   private void configureButtonBindingsDriver() {
@@ -84,10 +82,9 @@ public class RobotContainer {
     operatorController.rightBumper()
         .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Radians))
             .withName("move coral wrist to outtake setpoint"));
-    operatorController.y().onTrue(elevator.goToSetpointCmdMotionProfling(SetpointConstants.L_TWO_HEIGHT.in(Meters)));
-    operatorController.x().onTrue(elevator.goToSetpointCmdMotionProfling(SetpointConstants.L_THREE_HEIGHT.in(Meters)));
-    operatorController.b().whileTrue(elevator.incrementGoalPosition(0.001));
-    operatorController.a().whileTrue(elevator.incrementGoalPosition(-0.001));
-    //operatorController.x().onTrue(elevator.setEncoderPositionCommand(0.01));
+    operatorController.y().onTrue(elevator.goToSetpointCmd(SetpointConstants.L_TWO_HEIGHT));
+    operatorController.x().onTrue(elevator.goToSetpointCmd(SetpointConstants.L_THREE_HEIGHT));
+    operatorController.b().whileTrue(elevator.incrementGoalPosition(Meters.of(0.001)));
+    operatorController.a().whileTrue(elevator.incrementGoalPosition(Meters.of(-0.001)));
   }
 }

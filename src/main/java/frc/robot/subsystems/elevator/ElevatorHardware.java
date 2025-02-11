@@ -132,19 +132,19 @@ public class ElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public void setGoalPosition(double newGoalPosition) {
-        goalState.position = newGoalPosition; 
+    public void setGoalPosition(Distance newGoalPosition) {
+        goalState.position = newGoalPosition.in(Meters); 
     }
 
     @Override
-    public void setSetpointState(double position, double velocity) {
-        setpointState.position = position;
+    public void setSetpointState(Distance position, double velocity) {
+        setpointState.position = position.in(Meters);
         setpointState.velocity = velocity;
     }
 
-    public void incrementGoalPosition(double changeInGoalPosition)
+    public void incrementGoalPosition(Distance changeInGoalPosition)
     {
-        goalState.position += changeInGoalPosition; 
+        goalState.position += changeInGoalPosition.in(Meters); 
     }
 
     @Override
@@ -154,8 +154,8 @@ public class ElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public void setEncoderPosition(double position) {
-        leftEncoder.setPosition(position);
+    public void setEncoderPosition(Distance position) {
+        leftEncoder.setPosition(position.in(Meters));
     }
 
     @Override
@@ -178,7 +178,6 @@ public class ElevatorHardware implements ElevatorIO {
                 * elevatorLeftMotorLeader.getBusVoltage();
         inputs.positionSetPoint = goalPosition;
         inputs.current = elevatorLeftMotorLeader.getOutputCurrent();
-        inputs.setpointStatePosition = setpointState.position;
         inputs.goalStatePosition = goalState.position;
     }
 }

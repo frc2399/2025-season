@@ -24,8 +24,8 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public ElevatorSubsystem(ElevatorIO elevatorIO) {
         this.elevatorIO = elevatorIO;
-        elevatorIO.setEncoderPosition(0);
-        elevatorIO.setSetpointState(0, 0);
+        elevatorIO.setEncoderPosition(Meters.of(0));
+        elevatorIO.setSetpointState(Meters.of(0), 0);
     }
 
     public void disableElevator() {  
@@ -37,21 +37,15 @@ public class ElevatorSubsystem extends SubsystemBase{
         elevatorIO.enableElevator();
     }
 
-    public Command setEncoderPositionCommand(double position) {
+    public Command setEncoderPositionCommand(Distance position) {
         return this.run(() -> elevatorIO.setEncoderPosition(position));
     }
 
-    //pid command that is seperate from motion profiling
-    public Command goToSetPointCommand(double position) {
-        return this.runOnce(() -> elevatorIO.setGoalPosition(position));
-    }
-
-    //motion profile command that is seperate from PID
-    public Command goToSetpointCmdMotionProfling(double position) {
+    public Command goToSetpointCmd(Distance position) {
         return this.runOnce(() -> {
             elevatorIO.setGoalPosition(position); 
             profiledPIDEnabled = true;
-            setpoint = position; 
+            setpoint = position.in(Meters); 
         });
     }
 
@@ -59,7 +53,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         return (Math.abs(setpoint - elevatorIO.getEncoderPosition()) <= HEIGHT_TOLERANCE.in(Meters));
     }
 
-    public Command incrementGoalPosition(double changeInGoalPosition)
+    public Command incrementGoalPosition(Distance changeInGoalPosition)
     {
         profiledPIDEnabled = true;
         return this.run(()-> elevatorIO.incrementGoalPosition(changeInGoalPosition));
@@ -84,7 +78,6 @@ public class ElevatorSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Elevator/positionSetPoint", inputs.positionSetPoint);
         SmartDashboard.putNumber("Elevator/goalStatePosition", inputs.goalStatePosition);
         SmartDashboard.putNumber("Elevator/output current", inputs.current);
-        SmartDashboard.putNumber("Elevator/setpointStatePosition", inputs.setpointStatePosition);
     }
 
 }
