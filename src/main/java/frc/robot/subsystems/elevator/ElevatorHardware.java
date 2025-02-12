@@ -74,6 +74,7 @@ public class ElevatorHardware implements ElevatorIO {
         leftClosedLoopController = elevatorLeftMotorLeader.getClosedLoopController();
 
         leftEncoder = elevatorLeftMotorLeader.getEncoder();
+        leftEncoder.setPosition(0);
 
         elevatorMotionProfile = new TrapezoidProfile(new Constraints(ElevatorHardwareConstants.MAX_VEL.in(MetersPerSecond), ElevatorHardwareConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)));
 
@@ -151,11 +152,6 @@ public class ElevatorHardware implements ElevatorIO {
     public void calculateNextSetpoint() { 
         setpointState = elevatorMotionProfile.calculate(ElevatorHardwareConstants.kDt, setpointState, goalState);
         leftClosedLoopController.setReference(setpointState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-    }
-
-    @Override
-    public void setEncoderPosition(Distance position) {
-        leftEncoder.setPosition(position.in(Meters));
     }
 
     @Override

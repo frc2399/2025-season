@@ -24,7 +24,6 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public ElevatorSubsystem(ElevatorIO elevatorIO) {
         this.elevatorIO = elevatorIO;
-        elevatorIO.setEncoderPosition(Meters.of(0));
         elevatorIO.setSetpointState(Meters.of(0), 0);
     }
 
@@ -35,10 +34,6 @@ public class ElevatorSubsystem extends SubsystemBase{
     public void enableElevator()
     {
         elevatorIO.enableElevator();
-    }
-
-    public Command setEncoderPositionCommand(Distance position) {
-        return this.run(() -> elevatorIO.setEncoderPosition(position));
     }
 
     public Command goToSetpointCmd(Distance position) {

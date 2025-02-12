@@ -21,7 +21,6 @@ public interface ElevatorIO {
     public void incrementGoalPosition(Distance newGoalPosition);
     public void setGoalPosition(Distance position);
     public void calculateNextSetpoint();
-    public void setEncoderPosition(Distance position);
     public void setSetpointState(Distance position, double velocity);
     public double getEncoderVelocity();
     public double getEncoderPosition();

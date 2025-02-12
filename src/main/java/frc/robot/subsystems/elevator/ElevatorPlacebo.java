@@ -19,9 +19,6 @@ public class ElevatorPlacebo implements ElevatorIO {
     public void calculateNextSetpoint() {}
 
     @Override
-    public void setEncoderPosition(Distance position) {}
-
-    @Override
     public void setSetpointState(Distance position, double velocity) {}
 
     @Override
