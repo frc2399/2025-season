@@ -236,7 +236,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         public Command driveCommand(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotRate,
                         Boolean fieldRelative) {
                 return this.run(() -> {
-                        double newRotRate;
                         double currentAngle = gyro.getYaw();
                         double r = Math.hypot(xSpeed.getAsDouble(), ySpeed.getAsDouble());
                         double polarAngle = Math.atan2(ySpeed.getAsDouble(), xSpeed.getAsDouble());
@@ -248,7 +247,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 desiredAngle = 0;
                         }
 
-                        newRotRate = getHeadingCorrectionRotRate(currentAngle, Math.pow(rotRate.getAsDouble(), 5),
+                        double newRotRate = getHeadingCorrectionRotRate(currentAngle, Math.pow(rotRate.getAsDouble(), 5),
                                         polarXSpeed, polarYSpeed);
 
                         // Convert the commanded speeds into the correct units for the drivetrain
