@@ -236,10 +236,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         public Command driveCommand(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotRate,
                         Boolean fieldRelative) {
                 return this.run(() -> {
-                        double newRotRate = 0;
-                        double currentAngle = (gyro.getYaw());
-                        double r = Math.pow(Math.sqrt(
-                                        Math.pow(xSpeed.getAsDouble(), 2) + Math.pow(ySpeed.getAsDouble(), 2)), 3);
+                        double newRotRate;
+                        double currentAngle = gyro.getYaw();
+                        double r = Math.hypot(xSpeed.getAsDouble(), ySpeed.getAsDouble());
                         double polarAngle = Math.atan2(ySpeed.getAsDouble(), xSpeed.getAsDouble());
                         double polarXSpeed = r * Math.cos(polarAngle);
                         double polarYSpeed = r * Math.sin(polarAngle);
