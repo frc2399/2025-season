@@ -1,6 +1,5 @@
 package frc.robot.subsystems.algaeWrist;
 
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -16,9 +15,9 @@ public class AlgaeWristSubsystem extends SubsystemBase {
         this.io = io;
     }
 
-    public Command goToSetpoint(Angle angle) {
+    public Command goToSetpointCommand(double angle) {
         return this.run(() -> {
-            io.goToSetpoint(angle);
+            io.setGoalAngle(angle);
         });
     }
 
@@ -32,6 +31,9 @@ public class AlgaeWristSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("algaeWrist/wristCurrent", states.wristCurrent);
         SmartDashboard.putNumber("algaeWrist/wristAppliedVoltage", states.wristAppliedVoltage);
         SmartDashboard.putNumber("algaeWrist/wristVelocity", states.wristVelocity);
+        SmartDashboard.putNumber("algaeWrist/wristEncoderAngleInDegrees",
+                states.wristRelativeEncoderAngle * 180 / Math.PI);
+        SmartDashboard.putNumber("algaeWrist/goalAngle", states.goalAngle);
     }
 
 }

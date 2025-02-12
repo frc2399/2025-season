@@ -131,7 +131,7 @@ public class SubsystemFactory {
     }
 
     public AlgaeIntakeSubsystem buildAlgaeIntake() {
-        if (!isSim) {
+        if (robotType == RobotType.ALPHA) {
             return new AlgaeIntakeSubsystem(new AlgaeIntakeHardware());
         } else {
             return new AlgaeIntakeSubsystem(new AlgaeIntakePlacebo());
@@ -139,7 +139,7 @@ public class SubsystemFactory {
     }
 
     public AlgaeWristSubsystem buildAlgaeWrist() {
-        if (!isSim) {
+        if (robotType == RobotType.ALPHA) {
             return new AlgaeWristSubsystem(new AlgaeWristHardware());
         } else {
             return new AlgaeWristSubsystem(new AlgaeWristPlacebo());

@@ -1,11 +1,9 @@
 package frc.robot.subsystems.algaeWrist;
 
-import edu.wpi.first.units.measure.Angle;
-
 public class AlgaeWristPlacebo implements AlgaeWristIO {
 
     @Override
-    public void goToSetpoint(Angle angle) {
+    public void setGoalAngle(double angle) {
     }
 
     @Override
@@ -14,6 +12,10 @@ public class AlgaeWristPlacebo implements AlgaeWristIO {
 
     @Override
     public void updateStates(AlgaeWristIOStates states) {
+    }
+
+    @Override
+    public void periodic() {
     }
 
 }

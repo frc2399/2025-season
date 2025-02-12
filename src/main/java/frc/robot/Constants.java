@@ -41,6 +41,7 @@ public final class Constants {
     public static final int CORAL_INTAKE_LEFT_CAN_ID = 7;
     public static final int CORAL_INTAKE_RIGHT_CAN_ID = 5;
     public static final int CORAL_INTAKE_WRIST_CAN_ID = 13;
+
     public static final int LEFT_ELEVATOR_MOTOR_ID = 17;
     public static final int RIGHT_ELEVATOR_MOTOR_ID = 15;
 
@@ -59,8 +60,8 @@ public final class Constants {
 
   public static class SpeedConstants {
     public static final double MAIN_LOOP_FREQUENCY_HZ = 50;
-    public static final LinearVelocity ALGAE_INTAKE_MAX_SPEED_MPS = MetersPerSecond.of(0);
-    public static final LinearVelocity ALGAE_WRIST_MAX_SPEED_MPS = MetersPerSecond.of(0);
+    public static final double ALGAE_INTAKE_SPEED = 0.0;
+    public static final double ALGAE_OUTAKE_SPEED = 0.0;
     public static final double DRIVETRAIN_MAX_SPEED_MPS = 4.8;
     public static final double DRIVETRAIN_MAX_ANGULAR_SPEED_RPS = 2 * Math.PI;
     public static final double CORAL_INTAKE_SPEED = 0.75;
