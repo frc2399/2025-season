@@ -56,7 +56,7 @@ public class ElevatorHardware implements ElevatorIO {
     private SparkClosedLoopController leftClosedLoopController;
     private RelativeEncoder leftEncoder;
     private TrapezoidProfile elevatorMotionProfile;
-    public State setpointState = new State();
+    public State intermediateSetpointState = new State();
     private State goalState = new State();
     private double goalPosition;
     public int newGoalPosition;
@@ -139,8 +139,8 @@ public class ElevatorHardware implements ElevatorIO {
 
     @Override
     public void setSetpointState(Distance position, double velocity) {
-        setpointState.position = position.in(Meters);
-        setpointState.velocity = velocity;
+        intermediateSetpointState.position = position.in(Meters);
+        intermediateSetpointState.velocity = velocity;
     }
 
     public void incrementGoalPosition(Distance changeInGoalPosition)
@@ -150,8 +150,8 @@ public class ElevatorHardware implements ElevatorIO {
 
     @Override
     public void calculateNextSetpoint() { 
-        setpointState = elevatorMotionProfile.calculate(ElevatorHardwareConstants.kDt, setpointState, goalState);
-        leftClosedLoopController.setReference(setpointState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        intermediateSetpointState = elevatorMotionProfile.calculate(ElevatorHardwareConstants.kDt, intermediateSetpointState, goalState);
+        leftClosedLoopController.setReference(intermediateSetpointState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
 
     @Override
