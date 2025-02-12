@@ -4,14 +4,14 @@ import edu.wpi.first.units.measure.Distance;
 
 public interface ElevatorIO {
 
-    static class ElevatorIOInputs {
+    static class ElevatorIOStates {
         public double position = 0.0; 
         public double velocity = 0.0;
         public double appliedVoltageRight = 0.0;
         public double appliedVoltageLeft = 0.0;
-        public double positionSetPoint = 0.0;
-        public double goalStatePosition = 0.0;
-        public double setpointStatePosition = 0.0;
+        public double positionGoalSetPoint = 0.0;
+        public double goalPosition = 0.0;
+        public double intermediateSetpointPosition = 0.0;
         public double current = 0.0;
         
     }
@@ -20,9 +20,9 @@ public interface ElevatorIO {
     public void enableElevator(); 
     public void incrementGoalPosition(Distance newGoalPosition);
     public void setGoalPosition(Distance position);
-    public void calculateNextSetpoint();
-    public void setSetpointState(Distance position, double velocity);
+    public void calculateNextIntermediateSetpoint();
+    public void setIntermediateSetpoint(Distance position, double velocity);
     public double getEncoderVelocity();
     public double getEncoderPosition();
-    public void updateStates(ElevatorIOInputs inputs);
+    public void updateStates(ElevatorIOStates states);
 }

@@ -16,10 +16,10 @@ public class ElevatorPlacebo implements ElevatorIO {
     public void setGoalPosition(Distance position) {}
 
     @Override  
-    public void calculateNextSetpoint() {}
+    public void calculateNextIntermediateSetpoint() {}
 
     @Override
-    public void setSetpointState(Distance position, double velocity) {}
+    public void setIntermediateSetpoint(Distance position, double velocity) {}
 
     @Override
     public double getEncoderVelocity() {
@@ -32,5 +32,5 @@ public class ElevatorPlacebo implements ElevatorIO {
     }
 
     @Override
-    public void updateStates(ElevatorIOInputs inputs) {}
+    public void updateStates(ElevatorIOStates states) {}
 }

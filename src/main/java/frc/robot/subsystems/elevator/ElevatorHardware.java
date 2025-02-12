@@ -138,7 +138,7 @@ public class ElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public void setSetpointState(Distance position, double velocity) {
+    public void setIntermediateSetpoint(Distance position, double velocity) {
         intermediateSetpointState.position = position.in(Meters);
         intermediateSetpointState.velocity = velocity;
     }
@@ -149,7 +149,7 @@ public class ElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public void calculateNextSetpoint() { 
+    public void calculateNextIntermediateSetpoint() { 
         intermediateSetpointState = elevatorMotionProfile.calculate(ElevatorHardwareConstants.kDt, intermediateSetpointState, goalState);
         leftClosedLoopController.setReference(intermediateSetpointState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
@@ -165,15 +165,15 @@ public class ElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public void updateStates(ElevatorIOInputs inputs) {
-        inputs.position = getEncoderPosition();
-        inputs.velocity = getEncoderVelocity();
-        inputs.appliedVoltageRight = elevatorRightMotorFollower.getAppliedOutput()
+    public void updateStates(ElevatorIOStates states) {
+        states.position = getEncoderPosition();
+        states.velocity = getEncoderVelocity();
+        states.appliedVoltageRight = elevatorRightMotorFollower.getAppliedOutput()
                 * elevatorRightMotorFollower.getBusVoltage();
-        inputs.appliedVoltageLeft = elevatorLeftMotorLeader.getAppliedOutput()
+        states.appliedVoltageLeft = elevatorLeftMotorLeader.getAppliedOutput()
                 * elevatorLeftMotorLeader.getBusVoltage();
-        inputs.positionSetPoint = goalPosition;
-        inputs.current = elevatorLeftMotorLeader.getOutputCurrent();
-        inputs.goalStatePosition = goalState.position;
+        states.positionGoalSetPoint = goalPosition;
+        states.current = elevatorLeftMotorLeader.getOutputCurrent();
+        states.goalPosition = goalState.position;
     }
 }

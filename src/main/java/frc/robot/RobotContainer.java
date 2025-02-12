@@ -44,6 +44,7 @@ public class RobotContainer {
 
   public void disableSubsystems() {
     elevator.disableElevator();
+    elevator.profiledPIDEnabled = false; 
   }
 
   public void enableSubsystems(){

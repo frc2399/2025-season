@@ -9,14 +9,14 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
+import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOStates;;
 
 public class ElevatorSubsystem extends SubsystemBase{
     
     private final ElevatorIO elevatorIO;
-    private final ElevatorIOInputs inputs = new ElevatorIOInputs();
+    private final ElevatorIOStates states = new ElevatorIOStates();
     public boolean profiledPIDEnabled = false;
-    private double setpoint; 
+    private double goalSetpoint; 
     private final Distance HEIGHT_TOLERANCE = Inches.of(0.5);
     private double JOYSTICK_INPUT_TO_CHANGE_IN_POSITION_CONVERSION_FACTOR = 0.002; 
 
@@ -24,7 +24,7 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public ElevatorSubsystem(ElevatorIO elevatorIO) {
         this.elevatorIO = elevatorIO;
-        elevatorIO.setSetpointState(Meters.of(0), 0);
+        elevatorIO.setIntermediateSetpoint(Meters.of(0), 0);
     }
 
     public void disableElevator() {  
@@ -40,12 +40,12 @@ public class ElevatorSubsystem extends SubsystemBase{
         return this.runOnce(() -> {
             elevatorIO.setGoalPosition(position); 
             profiledPIDEnabled = true;
-            setpoint = position.in(Meters); 
+            goalSetpoint = position.in(Meters); 
         });
     }
 
     public boolean atGoal(){
-        return (Math.abs(setpoint - elevatorIO.getEncoderPosition()) <= HEIGHT_TOLERANCE.in(Meters));
+        return (Math.abs(goalSetpoint - elevatorIO.getEncoderPosition()) <= HEIGHT_TOLERANCE.in(Meters));
     }
 
     public Command incrementGoalPosition(Distance changeInGoalPosition)
@@ -63,16 +63,16 @@ public class ElevatorSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         if (profiledPIDEnabled) {
-            elevatorIO.calculateNextSetpoint();
+            elevatorIO.calculateNextIntermediateSetpoint();
         }
-        elevatorIO.updateStates(inputs);
-        SmartDashboard.putNumber("Elevator/position", inputs.position);
-        SmartDashboard.putNumber("Elevator/velocity", inputs.velocity);
-        SmartDashboard.putNumber("Elevator/appliedVoltageRight", inputs.appliedVoltageRight);
-        SmartDashboard.putNumber("Elevator/appliedVoltageLeft", inputs.appliedVoltageLeft);
-        SmartDashboard.putNumber("Elevator/positionSetPoint", inputs.positionSetPoint);
-        SmartDashboard.putNumber("Elevator/goalStatePosition", inputs.goalStatePosition);
-        SmartDashboard.putNumber("Elevator/output current", inputs.current);
+        elevatorIO.updateStates(states);
+        SmartDashboard.putNumber("Elevator/position", states.position);
+        SmartDashboard.putNumber("Elevator/velocity", states.velocity);
+        SmartDashboard.putNumber("Elevator/appliedVoltageRight", states.appliedVoltageRight);
+        SmartDashboard.putNumber("Elevator/appliedVoltageLeft", states.appliedVoltageLeft);
+        SmartDashboard.putNumber("Elevator/positionSetPoint", states.positionGoalSetPoint);
+        SmartDashboard.putNumber("Elevator/goalStatePosition", states.goalPosition);
+        SmartDashboard.putNumber("Elevator/output current", states.current);
     }
 
 }
