@@ -26,7 +26,7 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 
-public class ElevatorHardware implements ElevatorIO {
+public class AlphaElevator implements ElevatorIO {
 
     public static final class ElevatorHardwareConstants {
         private static final Distance METERS_PER_REVOLUTION = Inches.of(0.67); // (1/9)(1.92 * pi)
@@ -52,7 +52,7 @@ public class ElevatorHardware implements ElevatorIO {
     private RelativeEncoder leftEncoder;
     private double goalPosition;
 
-    public ElevatorHardware() {
+    public AlphaElevator() {
 
         globalMotorConfig = new SparkFlexConfig();
         rightMotorConfigFollower = new SparkFlexConfig();
