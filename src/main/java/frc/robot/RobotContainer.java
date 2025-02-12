@@ -85,8 +85,8 @@ public class RobotContainer {
     operatorController.rightBumper()
         .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Radians))
             .withName("move coral wrist to outtake setpoint"));
-    operatorController.y().onTrue(elevator.goToSetpointCmd(SetpointConstants.L_TWO_HEIGHT));
-    operatorController.x().onTrue(elevator.goToSetpointCmd(SetpointConstants.L_THREE_HEIGHT));
+    operatorController.y().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_TWO_HEIGHT));
+    operatorController.x().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_THREE_HEIGHT));
     operatorController.b().whileTrue(elevator.incrementGoalPosition(Meters.of(0.001)));
     operatorController.a().whileTrue(elevator.incrementGoalPosition(Meters.of(-0.001)));
     operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians)).withName("move coral wrist to L1 outtake setpoint"));

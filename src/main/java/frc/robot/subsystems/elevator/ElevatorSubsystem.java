@@ -36,7 +36,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         elevatorIO.enableElevator();
     }
 
-    public Command goToSetpointCmd(Distance position) {
+    public Command goToGoalSetpointCmd(Distance position) {
         return this.runOnce(() -> {
             elevatorIO.setGoalPosition(position); 
             profiledPIDEnabled = true;
