@@ -22,10 +22,6 @@ public interface SwerveModuleIO {
     }
 
     public static class DriveSubsystemStates {
-        public SwerveModuleIOStates frontLeftStates = new SwerveModuleIOStates();
-        public SwerveModuleIOStates rearLeftStates = new SwerveModuleIOStates();
-        public SwerveModuleIOStates frontRightStates = new SwerveModuleIOStates();
-        public SwerveModuleIOStates rearRightStates = new SwerveModuleIOStates();
         public ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
         public Pose2d pose = new Pose2d();
         public double poseY = 0;
