@@ -28,7 +28,7 @@ import frc.robot.Constants.MotorIdConstants;
 
 public class AlphaElevator implements ElevatorIO {
 
-    public static final class ElevatorHardwareConstants {
+    public static final class AlphaElevatorConstants {
         private static final Distance METERS_PER_REVOLUTION = Inches.of(0.67); // (1/9)(1.92 * pi)
         private static final Distance ALLOWED_SETPOINT_ERROR = Inches.of(.25);
         private static final LinearVelocity MAX_VEL = MetersPerSecond.of(0.8);
@@ -66,25 +66,25 @@ public class AlphaElevator implements ElevatorIO {
         leftEncoder = elevatorLeftMotorLeader.getEncoder();
 
         globalMotorConfig.encoder
-                .positionConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION.in(Meters))
-                .velocityConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION.in(Meters) / 60);
+                .positionConversionFactor(AlphaElevatorConstants.METERS_PER_REVOLUTION.in(Meters))
+                .velocityConversionFactor(AlphaElevatorConstants.METERS_PER_REVOLUTION.in(Meters) / 60);
 
         globalMotorConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .p(ElevatorHardwareConstants.P_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
-                .i(ElevatorHardwareConstants.I_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
-                .d(ElevatorHardwareConstants.D_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
+                .p(AlphaElevatorConstants.P_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
+                .i(AlphaElevatorConstants.I_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
+                .d(AlphaElevatorConstants.D_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
                 .outputRange(-1, 1)
-                .p(ElevatorHardwareConstants.P_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
-                .i(ElevatorHardwareConstants.I_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
-                .d(ElevatorHardwareConstants.D_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
+                .p(AlphaElevatorConstants.P_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
+                .i(AlphaElevatorConstants.I_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
+                .d(AlphaElevatorConstants.D_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
                 // https://docs.revrobotics.com/revlib/spark/closed-loop/closed-loop-control-getting-started#f-parameter
-                .velocityFF(ElevatorHardwareConstants.FEEDFORWARD_VALUE.in(Volts), ClosedLoopSlot.kSlot1)
-                .outputRange(ElevatorHardwareConstants.OUTPUT_RANGE_MIN_VALUE,
-                        ElevatorHardwareConstants.OUTPUT_RANGE_MAX_VALUE, ClosedLoopSlot.kSlot1);
+                .velocityFF(AlphaElevatorConstants.FEEDFORWARD_VALUE.in(Volts), ClosedLoopSlot.kSlot1)
+                .outputRange(AlphaElevatorConstants.OUTPUT_RANGE_MIN_VALUE,
+                        AlphaElevatorConstants.OUTPUT_RANGE_MAX_VALUE, ClosedLoopSlot.kSlot1);
 
         globalMotorConfig.softLimit
-                .forwardSoftLimit((ElevatorHardwareConstants.MAX_ELEVATOR_HEIGHT).in(Meters) - 0.02) // a little less
+                .forwardSoftLimit((AlphaElevatorConstants.MAX_ELEVATOR_HEIGHT).in(Meters) - 0.02) // a little less
                                                                                                      // than max height
                                                                                                      // for safety
                 .forwardSoftLimitEnabled(true)
@@ -117,7 +117,7 @@ public class AlphaElevator implements ElevatorIO {
     @Override
     public void setSpeed(double speed) {
         leftClosedLoopController.setReference(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot1,
-                ElevatorHardwareConstants.ARBITRARY_FF_GRAVITY_COMPENSATION.in(Volts));
+                AlphaElevatorConstants.ARBITRARY_FF_GRAVITY_COMPENSATION.in(Volts));
         // leftClosedLoopController.setReference(speed,
         // SparkBase.ControlType.kMAXMotionVelocityControl);
     }
@@ -125,7 +125,7 @@ public class AlphaElevator implements ElevatorIO {
     @Override
     public void setGoalPosition(double desiredPosition) {
         leftClosedLoopController.setReference(desiredPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0,
-                ElevatorHardwareConstants.ARBITRARY_FF_GRAVITY_COMPENSATION.in(Volts));
+                AlphaElevatorConstants.ARBITRARY_FF_GRAVITY_COMPENSATION.in(Volts));
         // leftClosedLoopController.setReference(position,
         // SparkBase.ControlType.kMAXMotionPositionControl);
         goalPosition = desiredPosition;
@@ -150,7 +150,7 @@ public class AlphaElevator implements ElevatorIO {
     public void setPercentOutput(double percentOutput) {
         // elevatorLeftMotorLeader.set(percentOutput);
         leftClosedLoopController.setReference(percentOutput, ControlType.kDutyCycle, ClosedLoopSlot.kSlot0,
-                ElevatorHardwareConstants.ARBITRARY_FF_GRAVITY_COMPENSATION.in(Volts));
+                AlphaElevatorConstants.ARBITRARY_FF_GRAVITY_COMPENSATION.in(Volts));
     }
 
     @Override

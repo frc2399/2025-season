@@ -14,7 +14,7 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.SwerveModule;
 import frc.robot.subsystems.drive.SwerveModuleHardware;
 import frc.robot.subsystems.drive.SwerveModulePlacebo;
-import frc.robot.subsystems.elevator.ElevatorHardware;
+import frc.robot.subsystems.elevator.AlphaElevator;
 import frc.robot.subsystems.elevator.ElevatorPlacebo;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
@@ -139,7 +139,7 @@ public class SubsystemFactory {
 
     protected ElevatorSubsystem buildElevator() {
         if (robotType == RobotType.ALPHA) {
-            return new ElevatorSubsystem(new ElevatorHardware());
+            return new ElevatorSubsystem(new AlphaElevator());
         } else {
             return new ElevatorSubsystem(new ElevatorPlacebo());
         }
