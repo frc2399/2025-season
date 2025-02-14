@@ -35,6 +35,20 @@ public final class Constants {
     public static final int CORAL_INTAKE_WRIST_CAN_ID = 13;
     public static final int LEFT_ELEVATOR_MOTOR_ID = 17;
     public static final int RIGHT_ELEVATOR_MOTOR_ID = 15;
+
+    /**
+    public static final int LEFT_ELEVATOR_CAN_ID = 16;
+    public static final int RIGHT_ELEVATOR_CAN_ID = 17;
+
+    public static final int LEFT_CLIMBER_CAN_ID = 26;
+    public static final int RIGHT_CLIMBER_CAN_ID = 27;
+    
+    public static final int ALGAE_WRIST_CAN_ID = 36;
+    public static final int ALGAE_INTAKE_CAN_ID = 37;
+    
+    public static final int CORAL_WRIST_CAN_ID = 46;
+    public static final int CORAL_INTAKE_CAN_ID = 47;
+    **/
   }
 
   public static class SensorIdConstants {
