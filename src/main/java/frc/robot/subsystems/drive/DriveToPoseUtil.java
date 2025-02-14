@@ -28,7 +28,7 @@ import frc.robot.Constants.SpeedConstants;
 
 public class DriveToPoseUtil {
         // pids for driving to a pose
-        private static final double DRIVE_TO_POSE_XY_P = 1.2;
+        private static final double DRIVE_TO_POSE_XY_P = 0.6;
         private static final double DRIVE_TO_POSE_XY_D = 0.0;
         private static final LinearVelocity MAX_VELOCITY_DRIVE_TO_POSE = MetersPerSecond.of(1);
         private static final LinearAcceleration MAX_ACCELERATION_DRIVE_TO_POSE = MetersPerSecondPerSecond.of(0.5);
@@ -37,7 +37,7 @@ public class DriveToPoseUtil {
                         new Constraints(MAX_VELOCITY_DRIVE_TO_POSE.in(MetersPerSecond),
                                         MAX_ACCELERATION_DRIVE_TO_POSE.in(MetersPerSecondPerSecond)));
 
-        private static final double DRIVE_TO_POSE_THETA_P = 2.5; // radians per second per radian of error
+        private static final double DRIVE_TO_POSE_THETA_P = 0.5; // radians per second per radian of error
         private static final double DRIVE_TO_POSE_THETA_D = 0.0;
         private static final AngularVelocity MAX_ANGULAR_VELOCITY_DRIVE_TO_POSE = DegreesPerSecond.of(45);
         private static final AngularAcceleration MAX_ANGULAR_ACCELERATION_DRIVE_TO_POSE = DegreesPerSecondPerSecond
@@ -73,13 +73,11 @@ public class DriveToPoseUtil {
                         Transform2d nullReturn = new Transform2d(0, 0, new Rotation2d(0));
                         return () -> nullReturn;
                 }
-                Transform2d transformToGoal = robotPose.get().minus(goalPose.get());
-                LinearVelocity xDesired = MetersPerSecond.of(driveToPoseXYPid.calculate(transformToGoal.getX(), 0)
-                                * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
-                LinearVelocity yDesired = MetersPerSecond.of(driveToPoseXYPid.calculate(transformToGoal.getY(), 0)
-                                * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
+                Transform2d transformToGoal = goalPose.get().minus(robotPose.get());
+                LinearVelocity xDesired = MetersPerSecond.of(driveToPoseXYPid.calculate(transformToGoal.getX(), 0));
+                LinearVelocity yDesired = MetersPerSecond.of(driveToPoseXYPid.calculate(transformToGoal.getY(), 0));
                 AngularVelocity thetaDesired = RadiansPerSecond
-                                .of(driveToPoseThetaPid.calculate(transformToGoal.getRotation().getRadians()));
+                                .of(driveToPoseThetaPid.calculate(transformToGoal.getRotation().getRadians(), 0));
                 double xToGoal = transformToGoal.getX();
                 double yToGoal = transformToGoal.getY();
                 Angle thetaToGoal = Degrees.of(transformToGoal.getRotation().getDegrees());
@@ -102,16 +100,18 @@ public class DriveToPoseUtil {
                         thetaDesired = RadiansPerSecond.of(0);
                 }
 
-                // if the requested theta rotation is too small, make it bigger! (unless it was zeroed out above) (ks, where s = static)
-                if (Math.abs(thetaDesired.in(RadiansPerSecond)) > 0 && Math.abs(thetaDesired.in(RadiansPerSecond)) < 0.1) {
+                // if the requested theta rotation is too small, make it bigger! (unless it was
+                // zeroed out above) (ks, where s = static)
+                if (Math.abs(thetaDesired.in(RadiansPerSecond)) > 0
+                                && Math.abs(thetaDesired.in(RadiansPerSecond)) < 0.1) {
                         thetaDesired = RadiansPerSecond.of(Math.copySign(0.1, thetaDesired.in(RadiansPerSecond)));
                 }
 
                 // packaging as a Transform2d because we don't have access to gyro here so
                 // cannot do ChassisSpeeds
-                Transform2d alignmentSpeeds = new Transform2d(-xDesired.in(MetersPerSecond),
-                                -yDesired.in(MetersPerSecond),
-                               new Rotation2d(thetaDesired.in(RadiansPerSecond)));
+                Transform2d alignmentSpeeds = new Transform2d(xDesired.in(MetersPerSecond),
+                                yDesired.in(MetersPerSecond),
+                                new Rotation2d(-thetaDesired.in(RadiansPerSecond)));
                 return () -> alignmentSpeeds;
         }
 
