@@ -267,11 +267,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 rotRateDelivered);
                         }
 
-                        SmartDashboard.putNumber("Swerve/velocity",
-                                        Math.sqrt(
-                                                        Math.pow(relativeRobotSpeeds.vxMetersPerSecond, 2)
-                                                                        + Math.pow(relativeRobotSpeeds.vyMetersPerSecond,
-                                                                                        2)));
+                
 
                         var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(relativeRobotSpeeds);
                         SwerveDriveKinematics.desaturateWheelSpeeds(
