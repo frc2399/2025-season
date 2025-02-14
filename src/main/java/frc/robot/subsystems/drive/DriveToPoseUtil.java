@@ -24,11 +24,10 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
-import frc.robot.Constants.SpeedConstants;
 
 public class DriveToPoseUtil {
         // pids for driving to a pose
-        private static final double DRIVE_TO_POSE_XY_P = 0.6;
+        private static final double DRIVE_TO_POSE_XY_P = 3.75;
         private static final double DRIVE_TO_POSE_XY_D = 0.0;
         private static final LinearVelocity MAX_VELOCITY_DRIVE_TO_POSE = MetersPerSecond.of(1);
         private static final LinearAcceleration MAX_ACCELERATION_DRIVE_TO_POSE = MetersPerSecondPerSecond.of(0.5);
@@ -37,7 +36,7 @@ public class DriveToPoseUtil {
                         new Constraints(MAX_VELOCITY_DRIVE_TO_POSE.in(MetersPerSecond),
                                         MAX_ACCELERATION_DRIVE_TO_POSE.in(MetersPerSecondPerSecond)));
 
-        private static final double DRIVE_TO_POSE_THETA_P = 0.5; // radians per second per radian of error
+        private static final double DRIVE_TO_POSE_THETA_P = 2.5; // radians per second per radian of error
         private static final double DRIVE_TO_POSE_THETA_D = 0.0;
         private static final AngularVelocity MAX_ANGULAR_VELOCITY_DRIVE_TO_POSE = DegreesPerSecond.of(45);
         private static final AngularAcceleration MAX_ANGULAR_ACCELERATION_DRIVE_TO_POSE = DegreesPerSecondPerSecond
@@ -61,11 +60,12 @@ public class DriveToPoseUtil {
         }
 
         // tolerances
-        private static final Distance XY_ALIGN_TOLERANCE = Inches.of(1);
-        private static final Angle THETA_ALIGN_TOLERANCE = Degrees.of(3);
+        private static final Distance XY_ALIGN_TOLERANCE = Inches.of(0.5);
+        private static final Angle THETA_ALIGN_TOLERANCE = Degrees.of(1);
 
         // filtering
-        private static final Distance XY_MAX_ALIGN_DISTANCE = Meters.of(4);
+        private static final Distance XY_MAX_ALIGN_DISTANCE = Meters.of(3);
+        private static final Angle THETA_MAX_ALIGN_ANGLE = Degrees.of(90);
 
         public static Supplier<Transform2d> getDriveToPoseVelocities(Supplier<Pose2d> robotPose,
                         Supplier<Pose2d> goalPose) {
@@ -88,6 +88,9 @@ public class DriveToPoseUtil {
                         xDesired = MetersPerSecond.of(0);
                         yDesired = MetersPerSecond.of(0);
                 }
+                // if (Math.abs(thetaToGoal.in(Degrees)) > THETA_MAX_ALIGN_ANGLE.in(Degrees)) {
+                //         thetaDesired = RadiansPerSecond.of(0);
+                // }
 
                 // tolerance checking
                 if (Math.abs(xToGoal) < XY_ALIGN_TOLERANCE.in(Meters)) {

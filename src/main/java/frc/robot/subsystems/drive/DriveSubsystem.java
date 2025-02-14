@@ -152,7 +152,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 frontRight.getPosition(),
                                                 rearLeft.getPosition(),
                                                 rearRight.getPosition() },
-                                new Pose2d(0, 0, new Rotation2d(0, 0))); // TODO: make these constants in the constants
+                                new Pose2d(0, 0, new Rotation2d(0))); // TODO: make these constants in the constants
                                                                          // file rather than
                                                                          // free-floating numbers
 
@@ -394,12 +394,11 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         // check it every time i use this object' thus allowing it to change
         public Command driveToPoseCommand(AlignType alignType, Optional<Alliance> ally) {
                 return this.run(() -> {
-                        atGoal.set(false);
-                        // TODO: there is definitely a better way to do this than an atomic boolean
-
                         // basically, bad things can happen if we try to update a normal boolean within
                         // a lambda and access it outside that lambda, but atomic booleans prevent these
                         // risks
+
+                        atGoal.set(false);
 
                         // TODO: not sure we want to be checking this each time, but also not sure we
                         // want to put it into robotContainer
