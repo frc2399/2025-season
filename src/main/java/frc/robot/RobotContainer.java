@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Radians;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -48,22 +46,17 @@ public class RobotContainer {
   }
 
   public void configureDefaultCommands() {
-    drive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () -> drive.drive(
-                -(MathUtil.applyDeadband(
-                    driverController.getLeftY(),
-                    DriveControlConstants.DRIVE_DEADBAND)),
-                -(MathUtil.applyDeadband(
-                    driverController.getLeftX(),
-                    DriveControlConstants.DRIVE_DEADBAND)),
-                -(MathUtil.applyDeadband(
-                    driverController.getRightX(),
-                    DriveControlConstants.DRIVE_DEADBAND)),
-                DriveControlConstants.FIELD_ORIENTED_DRIVE),
-            drive).withName("drive default"));
+    drive.setDefaultCommand(drive.driveCommand(
+        () -> -(MathUtil.applyDeadband(
+            driverController.getLeftY(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        () -> -(MathUtil.applyDeadband(
+            driverController.getLeftX(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        () -> -(MathUtil.applyDeadband(
+            driverController.getRightX(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        DriveControlConstants.FIELD_ORIENTED_DRIVE));
     coralIntake.setDefaultCommand(coralIntake.setRollerSpeed(0).withName("coral Intake default"));
     coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
     elevator.setDefaultCommand(elevator.setPercentOutputCommand(0));

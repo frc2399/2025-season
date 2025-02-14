@@ -43,7 +43,6 @@ public class ElevatorHardware implements ElevatorIO {
         private static final double P_VALUE_VELOCITY = 0.0001;
         private static final double I_VALUE_VELOCITY = 0;
         private static final double D_VALUE_VELOCITY = 0;
-        private static final Distance MAX_ELEVATOR_HEIGHT = Inches.of(34.25); // inches
     }
 
     private SparkFlex elevatorRightMotorFollower, elevatorLeftMotorLeader;
@@ -52,7 +51,7 @@ public class ElevatorHardware implements ElevatorIO {
     private RelativeEncoder leftEncoder;
     private double goalPosition;
 
-    public ElevatorHardware() {
+    public ElevatorHardware(Distance maxElevatorHeight) {
 
         globalMotorConfig = new SparkFlexConfig();
         rightMotorConfigFollower = new SparkFlexConfig();
@@ -84,7 +83,7 @@ public class ElevatorHardware implements ElevatorIO {
                         ElevatorHardwareConstants.OUTPUT_RANGE_MAX_VALUE, ClosedLoopSlot.kSlot1);
 
         globalMotorConfig.softLimit
-                .forwardSoftLimit((ElevatorHardwareConstants.MAX_ELEVATOR_HEIGHT).in(Meters) - 0.02) // a little less
+                .forwardSoftLimit((maxElevatorHeight).in(Meters) - 0.02) // a little less
                                                                                                      // than max height
                                                                                                      // for safety
                 .forwardSoftLimitEnabled(true)
