@@ -1,7 +1,12 @@
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.units.measure.Distance;
+import static edu.wpi.first.units.Units.*;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
 
@@ -9,6 +14,8 @@ public class ElevatorSubsystem extends SubsystemBase{
     
     private final ElevatorIO elevatorIO;
     private final ElevatorIOInputs inputs = new ElevatorIOInputs();
+    private double setpoint;
+    private final Distance HEIGHT_TOLERANCE = Inches.of(0.5);
 
     public static final class ElevatorConstants {}
 
@@ -26,7 +33,22 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
 
     public Command goToSetPointCommand(double position) {
-        return this.startEnd(() -> elevatorIO.setGoalPosition(position), () -> elevatorIO.setGoalPosition(0));
+        return this.runOnce(() -> { 
+            elevatorIO.setGoalPosition(position);
+            setpoint = position;
+        });
+    }
+
+    public boolean atGoal() {
+        boolean isAtHeight = MathUtil.isNear(setpoint, elevatorIO.getEncoderPosition(), HEIGHT_TOLERANCE.in(Meters));
+        SmartDashboard.putNumber("Elevator/current position", elevatorIO.getEncoderPosition());
+        SmartDashboard.putNumber("Elevator/setpoint", setpoint);
+        SmartDashboard.putBoolean("Elevator/at goal", isAtHeight);
+        return isAtHeight;
+    }
+
+    public Command atGoalCommand() {
+        return Commands.waitUntil(() -> atGoal());
     }
 
     public Command setSpeedCommand(double speed) {

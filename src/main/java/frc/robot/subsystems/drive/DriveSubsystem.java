@@ -83,6 +83,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         private final SwerveDriveKinematics DRIVE_KINEMATICS;
 
+        private static final double HOLONOMIC_P_CONSTANT = 5.0;
+        private static final double HOLONOMIC_I_CONSTANT = 0.0;
+        private static final double HOLONOMIC_D_CONSTANT = 0.0;
+
         // Slew rate filter variables for controlling lateral acceleration
         private double currentRotationRate = 0.0;
         private double desiredAngle = 0;
@@ -147,8 +151,22 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                                          // file rather than
                                                                          // free-floating numbers
 
+<<<<<<< HEAD
                 try {
                         config = RobotConfig.fromGUISettings();
+=======
+                AutoBuilder.configure(
+                        this::getPose, 
+                        this::resetOdometry, 
+                        this::getRobotRelativeSpeeds, 
+                        (speeds, feedforwards) -> setRobotRelativeSpeeds(speeds), 
+                        new PPHolonomicDriveController( 
+                                new PIDConstants(HOLONOMIC_P_CONSTANT, HOLONOMIC_I_CONSTANT, HOLONOMIC_D_CONSTANT), // translation
+                                new PIDConstants(HOLONOMIC_P_CONSTANT, HOLONOMIC_I_CONSTANT, HOLONOMIC_D_CONSTANT)  // rotation
+                        ),
+                        config, // The robot configuration
+                        () -> {
+>>>>>>> 99188fd2d8e6856f8ebc842aa7b0e531898d2efb
 
                         AutoBuilder.configure(
                                         this::getPose,
