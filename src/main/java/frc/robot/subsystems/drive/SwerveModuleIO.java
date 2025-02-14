@@ -12,7 +12,7 @@ public interface SwerveModuleIO {
         public double turnVoltage = 0.0;
         public double driveVelocity = 0.0;
         public double driveDesiredVelocity = 0.0;
-        public double turnEncoderPos = 0.0;
+        public double turnAngle = 0.0;
         public double desiredAngle = 0.0;
         public double driveCurrent = 0.0;
         public double turnCurrent = 0.0;
@@ -46,7 +46,7 @@ public interface SwerveModuleIO {
     public double getTurnEncoderPosition();
 
     public double getDriveEncoderPosition();
-    
+
     public void updateStates(SwerveModuleIOStates states);
 
     public double getChassisAngularOffset();

@@ -152,6 +152,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
 
+                SmartDashboard.putNumber("relative X speeds", relativeRobotSpeeds.vxMetersPerSecond);
+                SmartDashboard.putNumber("relative Y speeds", relativeRobotSpeeds.vyMetersPerSecond);
+                SmartDashboard.putNumber("relative radian speeds", relativeRobotSpeeds.omegaRadiansPerSecond);
                 poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromRadians(gyro.getYaw()),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
@@ -249,7 +252,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 desiredAngle = 0;
                         }
 
-                        double newRotRate = getHeadingCorrectionRotRate(currentAngle, Math.pow(rotRate.getAsDouble(), 5),
+                        double newRotRate = getHeadingCorrectionRotRate(currentAngle,
+                                        Math.pow(rotRate.getAsDouble(), 5),
                                         polarXSpeed, polarYSpeed);
 
                         // Convert the commanded speeds into the correct units for the drivetrain
@@ -267,7 +271,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 rotRateDelivered);
                         }
 
-                
+                        SmartDashboard.putNumber("x speed delivered", xSpeedDelivered);
+                        SmartDashboard.putNumber("y speed delivered", ySpeedDelivered);
 
                         var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(relativeRobotSpeeds);
                         SwerveDriveKinematics.desaturateWheelSpeeds(
@@ -384,6 +389,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 SmartDashboard.putNumber("drive/Total Velocity(mps)", states.totalVelocity);
                 SmartDashboard.putNumber("drive/Angular Velocity(deg per sec)", states.angularVelocity);
                 SmartDashboard.putNumber("drive/Gyro Angle(deg)", states.gyroAngleDegrees);
+
         }
 
 }
