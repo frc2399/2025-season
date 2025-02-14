@@ -25,7 +25,7 @@ public class CommandFactory {
         this.drive = drive;
         this.elevator = elevator;
         this.coralWrist = coralWrist;
-        scoringStateTables = NetworkTableInstance.getDefault().getTable("scoringStateTables");
+        scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");
         ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
     }
 
@@ -37,6 +37,6 @@ public class CommandFactory {
 
     public Command testNumber() {
         return Commands
-            .print("Changed to " + ntEntry.getDouble(0));
+            .runOnce(() -> System.out.println(ntEntry.getDouble(0)));
     }
 }
