@@ -150,23 +150,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 new Pose2d(0, 0, new Rotation2d(0, 0))); // TODO: make these constants in the constants
                                                                          // file rather than
                                                                          // free-floating numbers
-
-<<<<<<< HEAD
                 try {
                         config = RobotConfig.fromGUISettings();
-=======
-                AutoBuilder.configure(
-                        this::getPose, 
-                        this::resetOdometry, 
-                        this::getRobotRelativeSpeeds, 
-                        (speeds, feedforwards) -> setRobotRelativeSpeeds(speeds), 
-                        new PPHolonomicDriveController( 
-                                new PIDConstants(HOLONOMIC_P_CONSTANT, HOLONOMIC_I_CONSTANT, HOLONOMIC_D_CONSTANT), // translation
-                                new PIDConstants(HOLONOMIC_P_CONSTANT, HOLONOMIC_I_CONSTANT, HOLONOMIC_D_CONSTANT)  // rotation
-                        ),
-                        config, // The robot configuration
-                        () -> {
->>>>>>> 99188fd2d8e6856f8ebc842aa7b0e531898d2efb
 
                         AutoBuilder.configure(
                                         this::getPose,
@@ -174,8 +159,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                         this::getRobotRelativeSpeeds,
                                         (speeds, feedforwards) -> setRobotRelativeSpeeds(speeds),
                                         new PPHolonomicDriveController(
-                                                        new PIDConstants(5.0, 0.0, 0.0),
-                                                        new PIDConstants(5.0, 0.0, 0.0)),
+                                                        new PIDConstants(HOLONOMIC_P_CONSTANT, HOLONOMIC_I_CONSTANT,
+                                                                        HOLONOMIC_D_CONSTANT),
+                                                        new PIDConstants(HOLONOMIC_P_CONSTANT, HOLONOMIC_I_CONSTANT,
+                                                                        HOLONOMIC_D_CONSTANT)),
                                         config, // The robot configuration
                                         () -> {
 
