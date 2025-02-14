@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -14,18 +15,6 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkFlexConfig;
-
-import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -34,7 +23,6 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 
 public class KrakenElevator implements ElevatorIO {
@@ -55,18 +43,19 @@ public class KrakenElevator implements ElevatorIO {
         private static final double I_VALUE_VELOCITY = 0;
         private static final double D_VALUE_VELOCITY = 0;
         private static final Distance MAX_ELEVATOR_HEIGHT = Inches.of(34.25); // inches
-        private static final double ELEVATOR_SENSOR_TO_MECHANISM_RATIO = 1; //TODO: tune!
-        private static final Current KRAKEN_CURRENT_LIMIT = Amps.of(80); 
+        private static final double ELEVATOR_SENSOR_TO_MECHANISM_RATIO = 1; // TODO: tune!
+        private static final Current KRAKEN_CURRENT_LIMIT = Amps.of(80);
     }
 
     private TalonFX elevatorRightMotorFollower, elevatorLeftMotorLeader;
     private TalonFXConfigurator rightMotorFollowerConfigurator, leftMotorLeaderConfigurator;
-    private TalonFXConfiguration globalMotorConfiguration, rightMotorFollowerConfiguration, leftMotorLeaderConfiguration;
+    private TalonFXConfiguration globalMotorConfiguration, rightMotorFollowerConfiguration,
+            leftMotorLeaderConfiguration;
     private RelativeEncoder leftEncoder;
     private double goalPosition;
     private TrapezoidProfile elevatorMotionProfile;
-    private PositionVoltage elevatorPIDPositionControl; 
-    private VelocityVoltage elevatorPIDVelocityControl; 
+    private PositionVoltage elevatorPIDPositionControl;
+    private VelocityVoltage elevatorPIDVelocityControl;
 
     public KrakenElevator() {
         elevatorRightMotorFollower = new TalonFX(MotorIdConstants.RIGHT_ELEVATOR_MOTOR_ID);
@@ -75,24 +64,26 @@ public class KrakenElevator implements ElevatorIO {
         rightMotorFollowerConfigurator = elevatorRightMotorFollower.getConfigurator();
         leftMotorLeaderConfigurator = elevatorLeftMotorLeader.getConfigurator();
 
-
         globalMotorConfiguration = new TalonFXConfiguration();
 
-        globalMotorConfiguration.Feedback.withSensorToMechanismRatio(KrakenElevatorConstants.ELEVATOR_SENSOR_TO_MECHANISM_RATIO); 
+        globalMotorConfiguration.Feedback
+                .withSensorToMechanismRatio(KrakenElevatorConstants.ELEVATOR_SENSOR_TO_MECHANISM_RATIO);
 
         globalMotorConfiguration.Slot0.kS = (KrakenElevatorConstants.FEEDFORWARD_VALUE).in(Volts);
         globalMotorConfiguration.Slot0.kG = (KrakenElevatorConstants.ARBITRARY_FF_GRAVITY_COMPENSATION).in(Volts);
+        globalMotorConfiguration.Slot0.kV = 1; // TODO: tune Kv
         globalMotorConfiguration.Slot0.kP = (KrakenElevatorConstants.P_VALUE).in(Volts);
         globalMotorConfiguration.Slot0.kI = (KrakenElevatorConstants.I_VALUE).in(Volts);
         globalMotorConfiguration.Slot0.kD = (KrakenElevatorConstants.D_VALUE).in(Volts);
 
-        globalMotorConfiguration.SoftwareLimitSwitch.withForwardSoftLimitThreshold(KrakenElevatorConstants.MAX_ELEVATOR_HEIGHT.in(Meters));
+        globalMotorConfiguration.SoftwareLimitSwitch
+                .withForwardSoftLimitThreshold(KrakenElevatorConstants.MAX_ELEVATOR_HEIGHT.in(Meters));
         globalMotorConfiguration.SoftwareLimitSwitch.withForwardSoftLimitEnable(true);
         globalMotorConfiguration.SoftwareLimitSwitch.withReverseSoftLimitThreshold(0);
         globalMotorConfiguration.SoftwareLimitSwitch.withReverseSoftLimitEnable(true);
-        
-        globalMotorConfiguration.CurrentLimits.withStatorCurrentLimit(KrakenElevatorConstants.KRAKEN_CURRENT_LIMIT.in(Amps)); 
 
+        globalMotorConfiguration.CurrentLimits
+                .withStatorCurrentLimit(KrakenElevatorConstants.KRAKEN_CURRENT_LIMIT.in(Amps));
 
         elevatorLeftMotorLeader.setPosition(0);
 
@@ -101,18 +92,19 @@ public class KrakenElevator implements ElevatorIO {
                         KrakenElevatorConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)));
 
         elevatorRightMotorFollower.setControl(new StrictFollower(elevatorLeftMotorLeader.getDeviceID()));
-        
+
         leftMotorLeaderConfigurator.apply(globalMotorConfiguration);
         rightMotorFollowerConfigurator.apply(globalMotorConfiguration);
 
-        //TODO: im assuming the inversions will be opposite but check!!
+        // TODO: im assuming the inversions will be opposite but check!!
         rightMotorFollowerConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         leftMotorLeaderConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         rightMotorFollowerConfigurator.apply(rightMotorFollowerConfiguration);
-        leftMotorLeaderConfigurator.apply(leftMotorLeaderConfiguration); 
+        leftMotorLeaderConfigurator.apply(leftMotorLeaderConfiguration);
 
         elevatorPIDPositionControl = new PositionVoltage(0).withSlot(0);
+        elevatorPIDVelocityControl = new VelocityVoltage(0).withSlot(0);
     }
 
     @Override
@@ -122,27 +114,30 @@ public class KrakenElevator implements ElevatorIO {
 
     @Override
     public void setSpeed(double speed) {
-        //add velocity control (see docs)
-        //also add Kv
+        elevatorLeftMotorLeader.setControl(elevatorPIDVelocityControl.withVelocity(speed)
+                .withFeedForward(KrakenElevatorConstants.ARBITRARY_FF_GRAVITY_COMPENSATION));
     }
 
     @Override
     public void setGoalPosition(double desiredPosition) {
-
+        elevatorLeftMotorLeader.setControl(elevatorPIDPositionControl.withPosition(desiredPosition)
+                .withFeedForward(KrakenElevatorConstants.ARBITRARY_FF_GRAVITY_COMPENSATION));
+        goalPosition = desiredPosition; 
     }
 
     @Override
     public void setEncoderPosition(double position) {
+        elevatorLeftMotorLeader.setPosition(position); 
     }
 
     @Override
     public double getEncoderVelocity() {
-        return 0;
+        return elevatorLeftMotorLeader.getVelocity().getValueAsDouble(); 
     }
 
     @Override
     public double getEncoderPosition() {
-        return 0;
+        return elevatorLeftMotorLeader.getPosition().getValueAsDouble();
     }
 
     @Override
@@ -151,6 +146,14 @@ public class KrakenElevator implements ElevatorIO {
 
     @Override
     public void updateStates(ElevatorIOInputs inputs) {
-
+        inputs.position = getEncoderPosition();
+        inputs.velocity = getEncoderVelocity();
+        inputs.appliedVoltageRight = elevatorRightMotorFollower.getClosedLoopOutput().getValueAsDouble()
+                * elevatorRightMotorFollower.getSupplyVoltage().getValueAsDouble();
+        inputs.appliedVoltageLeft = elevatorLeftMotorLeader.getClosedLoopOutput().getValueAsDouble()
+                * elevatorLeftMotorLeader.getSupplyVoltage().getValueAsDouble();
+        inputs.positionSetPoint = goalPosition;
+        //TODO: check if this is correct
+        inputs.current = elevatorLeftMotorLeader.getSupplyCurrent().getValueAsDouble();
     }
 }
