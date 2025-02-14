@@ -7,7 +7,6 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
-import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -33,26 +32,39 @@ public class DriveToPoseUtil {
         private static final double DRIVE_TO_POSE_XY_D = 0.0;
         private static final LinearVelocity MAX_VELOCITY_DRIVE_TO_POSE = MetersPerSecond.of(1);
         private static final LinearAcceleration MAX_ACCELERATION_DRIVE_TO_POSE = MetersPerSecondPerSecond.of(0.5);
-        private static final ProfiledPIDController DRIVE_TO_POSE_XY_PID = new ProfiledPIDController(
+        private static final ProfiledPIDController driveToPoseXYPid = new ProfiledPIDController(
                         DRIVE_TO_POSE_XY_P, 0, DRIVE_TO_POSE_XY_D,
                         new Constraints(MAX_VELOCITY_DRIVE_TO_POSE.in(MetersPerSecond),
                                         MAX_ACCELERATION_DRIVE_TO_POSE.in(MetersPerSecondPerSecond)));
 
-        private static final double DRIVE_TO_POSE_THETA_P = 1.8;
+        private static final double DRIVE_TO_POSE_THETA_P = 2.5; // radians per second per radian of error
         private static final double DRIVE_TO_POSE_THETA_D = 0.0;
         private static final AngularVelocity MAX_ANGULAR_VELOCITY_DRIVE_TO_POSE = DegreesPerSecond.of(45);
         private static final AngularAcceleration MAX_ANGULAR_ACCELERATION_DRIVE_TO_POSE = DegreesPerSecondPerSecond
                         .of(10);
-        private static final ProfiledPIDController DRIVE_TO_POSE_THETA_PID = new ProfiledPIDController(
+        // as of 2025, our gyro wraps -180 to 180. if this changes, these values need to
+        // change, too.
+        private static final Angle DRIVE_TO_POSE_MIN_INPUT = Degrees.of(-180);
+        private static final Angle DRIVE_TO_POSE_MAX_INPUT = Degrees.of(180);
+        private static ProfiledPIDController driveToPoseThetaPid = new ProfiledPIDController(
                         DRIVE_TO_POSE_THETA_P, 0, DRIVE_TO_POSE_THETA_D,
                         new Constraints(MAX_ANGULAR_VELOCITY_DRIVE_TO_POSE.in(RadiansPerSecond),
                                         MAX_ANGULAR_ACCELERATION_DRIVE_TO_POSE.in(RadiansPerSecondPerSecond)));
+        // this is called a static block. it is here because as of right now, this util
+        // has no state dependencies. this pid controller should always have continuous
+        // input wrapping, and the way to make that run in a static fashion is this
+        // static block
+        static {
+                driveToPoseThetaPid.enableContinuousInput(
+                                DRIVE_TO_POSE_MIN_INPUT.in(Degrees),
+                                DRIVE_TO_POSE_MAX_INPUT.in(Degrees));
+        }
 
         // tolerances
         private static final Distance XY_ALIGN_TOLERANCE = Inches.of(1);
         private static final Angle THETA_ALIGN_TOLERANCE = Degrees.of(3);
-        
-        //filtering
+
+        // filtering
         private static final Distance XY_MAX_ALIGN_DISTANCE = Meters.of(4);
 
         public static Supplier<Transform2d> getDriveToPoseVelocities(Supplier<Pose2d> robotPose,
@@ -62,41 +74,51 @@ public class DriveToPoseUtil {
                         return () -> nullReturn;
                 }
                 Transform2d transformToGoal = robotPose.get().minus(goalPose.get());
-                LinearVelocity xDesired = MetersPerSecond.of(DRIVE_TO_POSE_XY_PID.calculate(transformToGoal.getX(), 0)
+                LinearVelocity xDesired = MetersPerSecond.of(driveToPoseXYPid.calculate(transformToGoal.getX(), 0)
                                 * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
-                LinearVelocity yDesired = MetersPerSecond.of(DRIVE_TO_POSE_XY_PID.calculate(transformToGoal.getY(), 0)
+                LinearVelocity yDesired = MetersPerSecond.of(driveToPoseXYPid.calculate(transformToGoal.getY(), 0)
                                 * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
-                AngularVelocity thetaDesired = RotationsPerSecond
-                                .of(DRIVE_TO_POSE_THETA_PID.calculate(transformToGoal.getRotation().getRadians())
-                                                * SpeedConstants.DRIVETRAIN_MAX_ANGULAR_SPEED_RPS);
+                AngularVelocity thetaDesired = RadiansPerSecond
+                                .of(driveToPoseThetaPid.calculate(transformToGoal.getRotation().getRadians()));
                 double xToGoal = transformToGoal.getX();
                 double yToGoal = transformToGoal.getY();
+                Angle thetaToGoal = Degrees.of(transformToGoal.getRotation().getDegrees());
+
+                // filtering - if we're off by too much, it doesn't move. this keeps the robot
+                // from doing anything too drastic, especially in case of odometry failures.
                 if (Math.hypot(xToGoal, yToGoal) > XY_MAX_ALIGN_DISTANCE.in(Meters)) {
                         xDesired = MetersPerSecond.of(0);
                         yDesired = MetersPerSecond.of(0);
                 }
+
+                // tolerance checking
                 if (Math.abs(xToGoal) < XY_ALIGN_TOLERANCE.in(Meters)) {
                         xDesired = MetersPerSecond.of(0);
                 }
                 if (Math.abs(yToGoal) < XY_ALIGN_TOLERANCE.in(Meters)) {
                         yDesired = MetersPerSecond.of(0);
                 }
-                if (transformToGoal.getRotation().getRadians() < THETA_ALIGN_TOLERANCE.in(Radians)) {
-                        thetaDesired = RotationsPerSecond.of(0);
+                if (Math.abs(thetaToGoal.in(Degrees)) < THETA_ALIGN_TOLERANCE.in(Degrees)) {
+                        thetaDesired = RadiansPerSecond.of(0);
+                }
+
+                // if the requested theta rotation is too small, make it bigger! (unless it was zeroed out above) (ks, where s = static)
+                if (Math.abs(thetaDesired.in(RadiansPerSecond)) > 0 && Math.abs(thetaDesired.in(RadiansPerSecond)) < 0.1) {
+                        thetaDesired = RadiansPerSecond.of(Math.copySign(0.1, thetaDesired.in(RadiansPerSecond)));
                 }
 
                 // packaging as a Transform2d because we don't have access to gyro here so
-                // cannot do ChassiSpeeds
+                // cannot do ChassisSpeeds
                 Transform2d alignmentSpeeds = new Transform2d(-xDesired.in(MetersPerSecond),
                                 -yDesired.in(MetersPerSecond),
-                                new Rotation2d(-thetaDesired.in(RadiansPerSecond)));
+                               new Rotation2d(thetaDesired.in(RadiansPerSecond)));
                 return () -> alignmentSpeeds;
         }
 
         public static AngularVelocity getAlignmentRotRate(Pose2d robotPose, Supplier<Pose2d> goalPose) {
                 Rotation2d rotationToGoal = robotPose.minus(goalPose.get()).getRotation();
                 AngularVelocity thetaDesired = RotationsPerSecond.of(
-                                DRIVE_TO_POSE_THETA_PID.calculate(rotationToGoal.getRotations(), 0));
+                                driveToPoseThetaPid.calculate(rotationToGoal.getRotations(), 0));
                 if (rotationToGoal.getDegrees() < THETA_ALIGN_TOLERANCE.in(Degrees)) {
                         thetaDesired = RotationsPerSecond.of(0);
                 }
