@@ -24,6 +24,27 @@ public class CommandFactory {
     public Command turtleMode() {
         return Commands
                 .parallel(elevator.goToSetPointCommand(Constants.SetpointConstants.ELEVATOR_TURTLE_HEIGHT.in(Meters)),
-                        coralWrist.goToSetpointCommand((Constants.SetpointConstants.CORAL_TURTLE_ANGLE).in(Degrees)));
+                        coralWrist.goToSetpointCommand(Constants.SetpointConstants.CORAL_TURTLE_ANGLE.in(Degrees)));
     }
+
+    public Command L1Mode() {
+        return Commands.parallel(elevator.goToSetPointCommand(Constants.SetpointConstants.L_ONE_HEIGHT.in(Meters)),
+                coralWrist.goToSetpointCommand(Constants.SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Degrees)));
+    }
+
+    public Command L2Mode() {
+        return Commands.parallel(elevator.goToSetPointCommand(Constants.SetpointConstants.L_TWO_HEIGHT.in(Meters)),
+                coralWrist.goToSetpointCommand(Constants.SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Degrees)));
+    }
+
+    public Command L3Mode() {
+        return Commands.parallel(elevator.goToSetPointCommand(Constants.SetpointConstants.L_THREE_HEIGHT.in(Meters)),
+                coralWrist.goToSetpointCommand(Constants.SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Degrees)));
+    }
+
+    public Command L4Mode() {
+        return Commands.parallel(elevator.goToSetPointCommand(Constants.SetpointConstants.L_FOUR_HEIGHT.in(Meters)),
+                coralWrist.goToSetpointCommand(Constants.SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Degrees)));
+    }
+
 }

@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SetpointConstants;
@@ -70,6 +69,7 @@ public class RobotContainer {
     driverController.b().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleMode());
+    driverController.y().onTrue(commandFactory.L4Mode());
   }
 
   private void configureButtonBindingsOperator() {
@@ -79,9 +79,11 @@ public class RobotContainer {
     operatorController.rightBumper()
         .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Radians))
             .withName("move coral wrist to outtake setpoint"));
-    operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians)).withName("move coral wrist to L1 outtake setpoint"));
-    operatorController.y().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_TWO_HEIGHT.in(Meters)));
-    operatorController.x().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
+    operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians))
+        .withName("move coral wrist to L1 outtake setpoint"));
+    operatorController.leftTrigger().onTrue(commandFactory.L3Mode());
+    operatorController.x().onTrue(commandFactory.L1Mode());
+    operatorController.y().onTrue(commandFactory.L2Mode());
     operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
     operatorController.a().whileTrue(elevator.setPercentOutputCommand(-0.1));
   }
