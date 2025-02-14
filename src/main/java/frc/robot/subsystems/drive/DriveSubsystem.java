@@ -38,12 +38,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SpeedConstants;
 import frc.robot.Robot;
+import frc.robot.subsystems.drive.SwerveModuleIO.DriveSubsystemStates;
+import frc.robot.subsystems.drive.SwerveModuleIO.SwerveModuleIOStates;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.vision.VisionPoseEstimator.DriveBase;
 
 public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private double velocityXMPS;
         private double velocityYMPS;
+        private DriveSubsystemStates states = new DriveSubsystemStates();
 
         // correction PID
         private double DRIVE_P = 1.1;
@@ -78,7 +81,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         private final SwerveDriveKinematics DRIVE_KINEMATICS;
 
-        // Slew rate filter variables for controlling lateral acceleration
         private double currentRotationRate = 0.0;
         private double desiredAngle = 0;
         private Gyro gyro;
@@ -138,11 +140,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 frontRight.getPosition(),
                                                 rearLeft.getPosition(),
                                                 rearRight.getPosition() },
-                                new Pose2d(0, 0, new Rotation2d(0, 0))); // TODO: make these constants in the constants
-                                                                         // file rather than
-                                                                         // free-floating numbers
+                                new Pose2d(0, 0, new Rotation2d(0))); // TODO: make these constants in the constants
+                                                                      // file rather than
+                                                                      // free-floating numbers
 
-                configurePathPlannerLogging();
         }
 
         @Override
@@ -150,8 +151,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // This will get the simulated sensor readings that we set
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
-                SmartDashboard.putNumber("left front distance (meters)", frontLeft.getDriveEncoderPosition());
-                SmartDashboard.putNumber("drive/gyro angle(degrees)", Math.toDegrees(gyro.getYaw()));
+
                 poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromRadians(gyro.getYaw()),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
@@ -161,14 +161,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 });
 
                 Pose2d pose = getPose();
-                SmartDashboard.putNumber("Swerve/vision/x", pose.getX());
-                SmartDashboard.putNumber("Swerve/vision/y", pose.getY());
-
-                SmartDashboard.putNumber("robot pose theta", pose.getRotation().getDegrees());
-                field2d.setRobotPose(pose);
-
-                frontLeftField2dModule.setPose(pose.transformBy(new Transform2d(
-                                FRONT_LEFT_OFFSET,
+                // can be used for sim and logging purposes
+                frontLeftField2dModule.setPose(pose.transformBy(new Transform2d(FRONT_LEFT_OFFSET,
                                 new Rotation2d(frontLeft.getTurnEncoderPosition()))));
 
                 rearLeftField2dModule.setPose(pose.transformBy(new Transform2d(
@@ -198,6 +192,14 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         lastAngle = lastAngle.plus(Rotation2d.fromRadians(angleChange));
                         gyro.setYaw(lastAngle.getRadians());
                 }
+
+                logAndUpdateDriveSubsystemStates();
+
+                frontLeft.updateStates();
+                frontRight.updateStates();
+                rearLeft.updateStates();
+                rearRight.updateStates();
+
         }
 
         /** Returns the currently-estimated pose of the robot. */
@@ -265,11 +267,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 rotRateDelivered);
                         }
 
-                        SmartDashboard.putNumber("Swerve/velocity",
-                                        Math.sqrt(
-                                                        Math.pow(relativeRobotSpeeds.vxMetersPerSecond, 2)
-                                                                        + Math.pow(relativeRobotSpeeds.vyMetersPerSecond,
-                                                                                        2)));
+                
 
                         var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(relativeRobotSpeeds);
                         SwerveDriveKinematics.desaturateWheelSpeeds(
@@ -356,9 +354,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         @Override
         public double getLinearSpeed() {
-                velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
-                velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
-                return Math.sqrt((Math.pow(velocityXMPS, 2) + Math.pow(velocityYMPS, 2)));
+                double velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
+                double velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
+                return Math.hypot(velocityXMPS, velocityYMPS);
         }
 
         @Override
@@ -366,4 +364,26 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         Matrix<N3, N1> visionMeasurementStdDevs) {
                 poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
         }
+
+        private void logAndUpdateDriveSubsystemStates() {
+                states.pose = getPose();
+                states.poseX = states.pose.getX();
+                states.poseY = states.pose.getY();
+                states.poseTheta = states.pose.getRotation().getDegrees();
+                states.velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
+                states.velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
+                states.totalVelocity = Math.hypot(states.velocityXMPS, states.velocityYMPS);
+                states.angularVelocity = relativeRobotSpeeds.omegaRadiansPerSecond;
+                states.gyroAngleDegrees = Math.toDegrees(gyro.getYaw());
+
+                SmartDashboard.putNumber("drive/Pose X(m)", states.poseX);
+                SmartDashboard.putNumber("drive/Pose Y(m)", states.poseY);
+                SmartDashboard.putNumber("drive/Pose Theta(deg)", states.poseTheta);
+                SmartDashboard.putNumber("drive/Linear Velocity X(mps)", states.velocityXMPS);
+                SmartDashboard.putNumber("drive/Linear Velocity Y(mps)", states.velocityYMPS);
+                SmartDashboard.putNumber("drive/Total Velocity(mps)", states.totalVelocity);
+                SmartDashboard.putNumber("drive/Angular Velocity(deg per sec)", states.angularVelocity);
+                SmartDashboard.putNumber("drive/Gyro Angle(deg)", states.gyroAngleDegrees);
+        }
+
 }
