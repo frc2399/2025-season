@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer.AlignType;
 
 public class ReefscapeVisionUtil {
@@ -24,10 +25,10 @@ public class ReefscapeVisionUtil {
                         new Rotation2d(Degrees.of(300)));
         private static final Pose2d RED_REEF_F = new Pose2d(new Translation2d(),
                         new Rotation2d(Degrees.of(300)));
-        private static final Pose2d RED_REEF_G = new Pose2d(new Translation2d(14.045, 4.18),
-                        new Rotation2d(Degrees.of(0)));
-        private static final Pose2d RED_REEF_H = new Pose2d(new Translation2d(14.05, 3.78),
-                        new Rotation2d(Degrees.of(0)));
+        private static final Pose2d RED_REEF_G = new Pose2d(new Translation2d(11.63, 4.18),
+                        new Rotation2d(Degrees.of(180)));
+        private static final Pose2d RED_REEF_H = new Pose2d(new Translation2d(11.63, 3.56),
+                        new Rotation2d(Degrees.of(180))); //TODO: SWAP THESE BACK TO 0!
         private static final Pose2d RED_REEF_I = new Pose2d(new Translation2d(),
                         new Rotation2d(Degrees.of(60)));
         private static final Pose2d RED_REEF_J = new Pose2d(new Translation2d(),

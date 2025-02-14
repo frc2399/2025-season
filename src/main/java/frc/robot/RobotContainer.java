@@ -76,7 +76,7 @@ public class RobotContainer {
         .whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_INTAKE_SPEED).withName("run coral intake"));
     driverController.leftBumper()
         .whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED).withName("run coral outtake"));
-    driverController.b().onTrue(gyro.setYaw(0.0));
+    driverController.b().onTrue(gyro.setYaw(Math.PI));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleMode());
     driverController.rightTrigger()

@@ -418,6 +418,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(alignType, () -> robotPose,
                                         isBlueAlliance);
                         SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.get().getY());
+                        SmartDashboard.putNumber("Swerve/vision/goalPosex", goalPose.get().getX());
+                        SmartDashboard.putNumber("Swerve/vision/goalTheta", goalPose.get().getRotation().getDegrees());
 
                         Supplier<Transform2d> velocities = DriveToPoseUtil.getDriveToPoseVelocities(
                                         () -> robotPose, goalPose);
@@ -426,6 +428,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                         velocities.get().getX(), velocities.get().getY(),
                                         velocities.get().getRotation().getRadians(),
                                         gyroYawRotationSupplier.get());
+
+                        SmartDashboard.putNumber("Swerve/vision/xVel", alignmentSpeeds.vxMetersPerSecond);
+                        SmartDashboard.putNumber("Swerve/vision/yVel", alignmentSpeeds.vyMetersPerSecond);
+
 
                         // tolerances were accounted for in getDriveToPoseVelocities
                         atGoal.set((velocities.get().getX() == 0 && velocities.get().getY() == 0
@@ -445,7 +451,11 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         }
 
         public Command disableDriveToPose() {
-                return this.runOnce(() -> atGoal.set(true));
+                return this.runOnce(() -> {atGoal.set(true);
+                        frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
+                        frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
+                        rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
+                        rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));});
         }
 
         // public Command rotateToPoseCommand(AlignType alignType, Optional<Alliance>

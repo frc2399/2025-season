@@ -29,7 +29,7 @@ import frc.robot.Constants.SpeedConstants;
 
 public class DriveToPoseUtil {
         // pids for driving to a pose
-        private static final double DRIVE_TO_POSE_XY_P = 0.1;
+        private static final double DRIVE_TO_POSE_XY_P = 1.2;
         private static final double DRIVE_TO_POSE_XY_D = 0.0;
         private static final LinearVelocity MAX_VELOCITY_DRIVE_TO_POSE = MetersPerSecond.of(1);
         private static final LinearAcceleration MAX_ACCELERATION_DRIVE_TO_POSE = MetersPerSecondPerSecond.of(0.5);
@@ -38,7 +38,7 @@ public class DriveToPoseUtil {
                         new Constraints(MAX_VELOCITY_DRIVE_TO_POSE.in(MetersPerSecond),
                                         MAX_ACCELERATION_DRIVE_TO_POSE.in(MetersPerSecondPerSecond)));
 
-        private static final double DRIVE_TO_POSE_THETA_P = 0.1;
+        private static final double DRIVE_TO_POSE_THETA_P = 1.8;
         private static final double DRIVE_TO_POSE_THETA_D = 0.0;
         private static final AngularVelocity MAX_ANGULAR_VELOCITY_DRIVE_TO_POSE = DegreesPerSecond.of(45);
         private static final AngularAcceleration MAX_ANGULAR_ACCELERATION_DRIVE_TO_POSE = DegreesPerSecondPerSecond
@@ -50,7 +50,10 @@ public class DriveToPoseUtil {
 
         // tolerances
         private static final Distance XY_ALIGN_TOLERANCE = Inches.of(1);
-        private static final Angle THETA_ALIGN_TOLERANCE = Degrees.of(5);
+        private static final Angle THETA_ALIGN_TOLERANCE = Degrees.of(3);
+        
+        //filtering
+        private static final Distance XY_MAX_ALIGN_DISTANCE = Meters.of(4);
 
         public static Supplier<Transform2d> getDriveToPoseVelocities(Supplier<Pose2d> robotPose,
                         Supplier<Pose2d> goalPose) {
@@ -66,10 +69,16 @@ public class DriveToPoseUtil {
                 AngularVelocity thetaDesired = RotationsPerSecond
                                 .of(DRIVE_TO_POSE_THETA_PID.calculate(transformToGoal.getRotation().getRadians())
                                                 * SpeedConstants.DRIVETRAIN_MAX_ANGULAR_SPEED_RPS);
-                if (transformToGoal.getX() < XY_ALIGN_TOLERANCE.in(Meters)) {
+                double xToGoal = transformToGoal.getX();
+                double yToGoal = transformToGoal.getY();
+                if (Math.hypot(xToGoal, yToGoal) > XY_MAX_ALIGN_DISTANCE.in(Meters)) {
+                        xDesired = MetersPerSecond.of(0);
+                        yDesired = MetersPerSecond.of(0);
+                }
+                if (Math.abs(xToGoal) < XY_ALIGN_TOLERANCE.in(Meters)) {
                         xDesired = MetersPerSecond.of(0);
                 }
-                if (transformToGoal.getY() < XY_ALIGN_TOLERANCE.in(Meters)) {
+                if (Math.abs(yToGoal) < XY_ALIGN_TOLERANCE.in(Meters)) {
                         yDesired = MetersPerSecond.of(0);
                 }
                 if (transformToGoal.getRotation().getRadians() < THETA_ALIGN_TOLERANCE.in(Radians)) {
@@ -78,9 +87,9 @@ public class DriveToPoseUtil {
 
                 // packaging as a Transform2d because we don't have access to gyro here so
                 // cannot do ChassiSpeeds
-                Transform2d alignmentSpeeds = new Transform2d(xDesired.in(MetersPerSecond),
-                                yDesired.in(MetersPerSecond),
-                                new Rotation2d(thetaDesired.in(RadiansPerSecond)));
+                Transform2d alignmentSpeeds = new Transform2d(-xDesired.in(MetersPerSecond),
+                                -yDesired.in(MetersPerSecond),
+                                new Rotation2d(-thetaDesired.in(RadiansPerSecond)));
                 return () -> alignmentSpeeds;
         }
 
