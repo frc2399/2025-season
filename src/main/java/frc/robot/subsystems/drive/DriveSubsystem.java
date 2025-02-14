@@ -369,7 +369,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 states.pose = getPose();
                 states.poseX = states.pose.getX();
                 states.poseY = states.pose.getY();
-                states.poseTheta = states.pose.getRotation().getRadians();
+                states.poseTheta = states.pose.getRotation().getDegrees();
                 states.velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
                 states.velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
                 states.totalVelocity = Math.hypot(states.velocityXMPS, states.velocityYMPS);
