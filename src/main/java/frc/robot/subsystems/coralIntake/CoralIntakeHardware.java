@@ -1,16 +1,21 @@
 package frc.robot.subsystems.coralIntake;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+
+import edu.wpi.first.units.measure.AngularVelocity;
+
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.RPM;
 
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
@@ -78,9 +83,13 @@ public class CoralIntakeHardware implements CoralIntakeIO {
                 coralIntakeRightClosedLoopController = coralIntakeRightSparkMax.getClosedLoopController();
         }
 
-        public void setRollerSpeed(double speed) {
-                coralIntakeRightSparkMax.set(speed);
-                coralIntakeLeftSparkMax.set(speed);
+        public void setRollerSpeed(AngularVelocity speed) {
+                coralIntakeRightSparkMax.set(speed.in(RPM));
+                coralIntakeLeftSparkMax.set(speed.in(RPM));
+        }
+
+        public void setSpeedType(AngularVelocity speed) {
+                coralIntakeLeftClosedLoopController.setReference(speed.in(RPM), ControlType.kVelocity);
         }
 
         public double getVelocity() {

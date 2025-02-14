@@ -53,8 +53,8 @@ public final class Constants {
     public static final double MAIN_LOOP_FREQUENCY_HZ = 50;
     public static final double DRIVETRAIN_MAX_SPEED_MPS = 4.8;
     public static final double DRIVETRAIN_MAX_ANGULAR_SPEED_RPS = 2 * Math.PI;
-    public static final double CORAL_INTAKE_SPEED = 0.75;
-    public static final double CORAL_OUTTAKE_SPEED = -0.50;
+    public static final AngularVelocity CORAL_INTAKE_SPEED = RPM.of(0.75);
+    public static final AngularVelocity CORAL_OUTTAKE_SPEED = RPM.of(-0.50);
   }
 
   public static class SetpointConstants {

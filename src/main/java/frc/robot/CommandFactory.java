@@ -1,6 +1,5 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,6 +23,6 @@ public class CommandFactory {
     public Command turtleMode() {
         return Commands
                 .parallel(elevator.goToSetPointCommand(Constants.SetpointConstants.ELEVATOR_TURTLE_HEIGHT.in(Meters)),
-                        coralWrist.goToSetpointCommand((Constants.SetpointConstants.CORAL_TURTLE_ANGLE).in(Degrees)));
+                        coralWrist.goToSetpointCommand((Constants.SetpointConstants.CORAL_TURTLE_ANGLE)));
     }
 }

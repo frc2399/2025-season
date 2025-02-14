@@ -1,5 +1,7 @@
 package frc.robot.subsystems.coralWrist;
 
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,15 +15,21 @@ public class CoralWristSubsystem extends SubsystemBase {
         this.io = io;
     }
 
-    public Command goToSetpointCommand(double angle) {
+    public Command goToSetpointCommand(Angle angle) {
         return this.run(() -> {
             io.setGoalAngle(angle);
         });
     }
 
-    public Command setWristSpeed(double speed) {
+    public Command setWristSpeed(AngularVelocity speed) {
         return this.run(() -> {
             io.setWristSpeed(speed);
+        });
+    }
+
+    public Command setWristSpeedType(AngularVelocity speed) {
+        return this.run(() -> {
+            io.setWristSpeedType(speed);
         });
     }
 
