@@ -4,8 +4,9 @@
 
 package frc.robot.subsystems.drive;
 
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
+
+import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -118,19 +119,19 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 WHEEL_BASE = trackWidth;
 
                 FRONT_LEFT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
-                        TRACK_WIDTH.in(Meters) / 2);
+                                TRACK_WIDTH.in(Meters) / 2);
                 REAR_LEFT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2,
-                        TRACK_WIDTH.in(Meters) / 2);
+                                TRACK_WIDTH.in(Meters) / 2);
                 FRONT_RIGHT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
-                -TRACK_WIDTH.in(Meters) / 2);
+                                -TRACK_WIDTH.in(Meters) / 2);
                 REAR_RIGHT_OFFSET = new Translation2d(-WHEEL_BASE.in(Meters) / 2,
-                        -TRACK_WIDTH.in(Meters) / 2);
+                                -TRACK_WIDTH.in(Meters) / 2);
 
                 DRIVE_KINEMATICS = new SwerveDriveKinematics(
-                        FRONT_LEFT_OFFSET,
-                        FRONT_RIGHT_OFFSET,
-                        REAR_LEFT_OFFSET,
-                        REAR_RIGHT_OFFSET);
+                                FRONT_LEFT_OFFSET,
+                                FRONT_RIGHT_OFFSET,
+                                REAR_LEFT_OFFSET,
+                                REAR_RIGHT_OFFSET);
 
                 SmartDashboard.putData(field2d);
 
@@ -145,32 +146,31 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 new Pose2d(0, 0, new Rotation2d(0, 0))); // TODO: make these constants in the constants
                                                                          // file rather than
                                                                          // free-floating numbers
-                
-                try{
-                        config = RobotConfig.fromGUISettings(); 
 
-                AutoBuilder.configure(
-                        this::getPose, 
-                        this::resetOdometry, 
-                        this::getRobotRelativeSpeeds, 
-                        (speeds, feedforwards) -> setRobotRelativeSpeeds(speeds), 
-                        new PPHolonomicDriveController( 
-                                new PIDConstants(5.0, 0.0, 0.0), 
-                                new PIDConstants(5.0, 0.0, 0.0) 
-                        ),
-                        config, // The robot configuration
-                        () -> {
+                try {
+                        config = RobotConfig.fromGUISettings();
 
-                                var alliance = DriverStation.getAlliance();
-                                if (alliance.isPresent()) {
-                                        return alliance.get() == DriverStation.Alliance.Red;
-                                }
-                                return false;
-                        },
-                        this 
-                );
+                        AutoBuilder.configure(
+                                        this::getPose,
+                                        this::resetOdometry,
+                                        this::getRobotRelativeSpeeds,
+                                        (speeds, feedforwards) -> setRobotRelativeSpeeds(speeds),
+                                        new PPHolonomicDriveController(
+                                                        new PIDConstants(5.0, 0.0, 0.0),
+                                                        new PIDConstants(5.0, 0.0, 0.0)),
+                                        config, // The robot configuration
+                                        () -> {
+
+                                                var alliance = DriverStation.getAlliance();
+                                                if (alliance.isPresent()) {
+                                                        return alliance.get() == DriverStation.Alliance.Red;
+                                                }
+                                                return false;
+                                        },
+                                        this);
                 } catch (Exception e) {
-                        DriverStation.reportError("Failed to load Pathplanner config and configure Autobuilder", e.getStackTrace());
+                        DriverStation.reportError("Failed to load Pathplanner config and configure Autobuilder",
+                                        e.getStackTrace());
                 }
                 configurePathPlannerLogging();
         }
@@ -263,49 +263,55 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
          * @param fieldRelative Whether the provided x and y speeds are relative to the
          *                      field.
          */
-        public void drive(double xSpeed, double ySpeed, double rotRate, boolean fieldRelative) {
-                rotRate = Math.pow(rotRate, 5);
-                double newRotRate = 0;
-                double currentAngle = (gyro.getYaw());
-                double r = Math.pow(Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2)), 3);
-                double polarAngle = Math.atan2(ySpeed, xSpeed);
-                double polarXSpeed = r * Math.cos(polarAngle);
-                double polarYSpeed = r * Math.sin(polarAngle);
+        public Command driveCommand(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotRate,
+                        Boolean fieldRelative) {
+                return this.run(() -> {
+                        double currentAngle = gyro.getYaw();
+                        double r = Math.hypot(xSpeed.getAsDouble(), ySpeed.getAsDouble());
+                        double polarAngle = Math.atan2(ySpeed.getAsDouble(), xSpeed.getAsDouble());
+                        double polarXSpeed = r * Math.cos(polarAngle);
+                        double polarYSpeed = r * Math.sin(polarAngle);
 
-                // //Account for edge case when gyro resets
-                if (currentAngle == 0) {
-                        desiredAngle = 0;
-                }
+                        // //Account for edge case when gyro resets
+                        if (currentAngle == 0) {
+                                desiredAngle = 0;
+                        }
 
-                newRotRate = getHeadingCorrectionRotRate(currentAngle, rotRate, polarXSpeed, polarYSpeed);
+                        double newRotRate = getHeadingCorrectionRotRate(currentAngle,
+                                        Math.pow(rotRate.getAsDouble(), 5),
+                                        polarXSpeed, polarYSpeed);
 
-                // Convert the commanded speeds into the correct units for the drivetrain
-                double xSpeedDelivered = polarXSpeed * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS;
-                double ySpeedDelivered = polarYSpeed * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS;
-                double rotRateDelivered = newRotRate * SpeedConstants.DRIVETRAIN_MAX_ANGULAR_SPEED_RPS;
+                        // Convert the commanded speeds into the correct units for the drivetrain
+                        double xSpeedDelivered = polarXSpeed * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS;
+                        double ySpeedDelivered = polarYSpeed * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS;
+                        double rotRateDelivered = newRotRate * SpeedConstants.DRIVETRAIN_MAX_ANGULAR_SPEED_RPS;
 
-                if (fieldRelative) {
-                        relativeRobotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered,
-                                        rotRateDelivered,
-                                        Rotation2d.fromRadians(gyro.getYaw()));
-                } else {
-                        relativeRobotSpeeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotRateDelivered);
-                }
+                        if (fieldRelative) {
+                                relativeRobotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered,
+                                                ySpeedDelivered,
+                                                rotRateDelivered,
+                                                Rotation2d.fromRadians(gyro.getYaw()));
+                        } else {
+                                relativeRobotSpeeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered,
+                                                rotRateDelivered);
+                        }
 
-                SmartDashboard.putNumber("Swerve/velocity",
-                                Math.sqrt(
-                                                Math.pow(relativeRobotSpeeds.vxMetersPerSecond, 2)
-                                                                + Math.pow(relativeRobotSpeeds.vyMetersPerSecond, 2)));
+                        SmartDashboard.putNumber("Swerve/velocity",
+                                        Math.sqrt(
+                                                        Math.pow(relativeRobotSpeeds.vxMetersPerSecond, 2)
+                                                                        + Math.pow(relativeRobotSpeeds.vyMetersPerSecond,
+                                                                                        2)));
 
-                var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(relativeRobotSpeeds);
-                SwerveDriveKinematics.desaturateWheelSpeeds(
-                                swerveModuleStates, SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
-                frontLeft.setDesiredState(swerveModuleStates[0]);
-                frontRight.setDesiredState(swerveModuleStates[1]);
-                rearLeft.setDesiredState(swerveModuleStates[2]);
-                rearRight.setDesiredState(swerveModuleStates[3]);
+                        var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(relativeRobotSpeeds);
+                        SwerveDriveKinematics.desaturateWheelSpeeds(
+                                        swerveModuleStates, SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
+                        frontLeft.setDesiredState(swerveModuleStates[0]);
+                        frontRight.setDesiredState(swerveModuleStates[1]);
+                        rearLeft.setDesiredState(swerveModuleStates[2]);
+                        rearRight.setDesiredState(swerveModuleStates[3]);
 
-                swerveModuleDesiredStatePublisher.set(swerveModuleStates);
+                        swerveModuleDesiredStatePublisher.set(swerveModuleStates);
+                }).withName("drive command");
         }
 
         /**

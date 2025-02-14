@@ -4,18 +4,16 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RPM;
+
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Voltage;
-
-import static edu.wpi.first.units.Units.Centimeters;
-import static edu.wpi.first.units.Units.Inches;
-
-import edu.wpi.first.units.AngularVelocityUnit;
-import edu.wpi.first.units.CurrentUnit;
-
-import static edu.wpi.first.units.Units.*;
 
 public final class Constants {
 
@@ -32,6 +30,9 @@ public final class Constants {
 
     public static final int GYRO_CAN_ID = 3;
 
+    public static final int CORAL_INTAKE_LEFT_CAN_ID = 7;
+    public static final int CORAL_INTAKE_RIGHT_CAN_ID = 5;
+    public static final int CORAL_INTAKE_WRIST_CAN_ID = 13;
     public static final int LEFT_ELEVATOR_MOTOR_ID = 17;
     public static final int RIGHT_ELEVATOR_MOTOR_ID = 15;
   }
@@ -45,21 +46,28 @@ public final class Constants {
     public static final Current NEO_CURRENT_LIMIT = Amps.of(50);
     public static final AngularVelocity NEO_FREE_SPEED = RPM.of(5676);
     public static final AngularVelocity NEO550_FREE_SPEED = RPM.of(11000);
-    public static final Current NEO_VORTEX_CURRENT_LIMIT = Amps.of(60);
+    public static final Current VORTEX_CURRENT_LIMIT = Amps.of(60);
   }
 
   public static class SpeedConstants {
     public static final double MAIN_LOOP_FREQUENCY_HZ = 50;
-
     public static final double DRIVETRAIN_MAX_SPEED_MPS = 4.8;
     public static final double DRIVETRAIN_MAX_ANGULAR_SPEED_RPS = 2 * Math.PI;
+    public static final double CORAL_INTAKE_SPEED = 0.75;
+    public static final double CORAL_OUTTAKE_SPEED = -0.50;
   }
 
   public static class SetpointConstants {
-    public static Distance L_ONE_HEIGHT = Inches.of(0); 
-    public static Distance L_TWO_HEIGHT = Inches.of(7.5);
-    public static Distance L_THREE_HEIGHT = Inches.of(23.25);
-    public static Distance L_FOUR_HEIGHT = Inches.of(49.5);
+    public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(35);
+    public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
+    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(35);
+    public static final Angle CORAL_L1_ANGLE = Degrees.of(0);
+
+    public static final Distance ELEVATOR_TURTLE_HEIGHT = Inches.of(0);
+    public static final Distance L_ONE_HEIGHT = Meters.of(0.125);
+    public static final Distance L_TWO_HEIGHT = Meters.of(0.476);
+    public static final Distance L_THREE_HEIGHT = Meters.of(0.849);
+    public static final Distance L_FOUR_HEIGHT = Inches.of(49.5);
   }
 
   public static class DriveControlConstants {
