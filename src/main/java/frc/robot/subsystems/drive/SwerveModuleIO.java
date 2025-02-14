@@ -32,6 +32,7 @@ public interface SwerveModuleIO {
         public double totalVelocity = 0;
         public double gyroAngleDegrees = 0;
         public double angularVelocity = 0;
+        public double driveEncoderPos = 0.0;
     }
 
     public void setDriveEncoderPosition(double position);
@@ -40,14 +41,12 @@ public interface SwerveModuleIO {
 
     public double getDriveEncoderSpeedMPS();
 
-    public double getTurnEncoderSpeedMPS();
-
     public void setDesiredTurnAngle(double angle);
 
     public double getTurnEncoderPosition();
 
     public double getDriveEncoderPosition();
-
+    
     public void updateStates(SwerveModuleIOStates states);
 
     public double getChassisAngularOffset();
