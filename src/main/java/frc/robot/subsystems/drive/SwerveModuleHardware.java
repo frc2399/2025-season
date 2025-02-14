@@ -180,27 +180,27 @@ public class SwerveModuleHardware implements SwerveModuleIO {
 
         public void updateStates(SwerveModuleIOStates states) {
                 states.desiredAngle = Units.radiansToDegrees(this.desiredAngle);
-                states.driveDesiredVelocity = this.driveDesiredVelocity;
-                states.driveEncoderPos = drivingRelativeEncoder.getPosition();
                 states.turnAngle = Units.radiansToDegrees(turningAbsoluteEncoder.getPosition());
+                states.driveDesiredVelocity = this.driveDesiredVelocity;
                 states.driveVelocity = drivingRelativeEncoder.getVelocity();
+                states.driveEncoderPos = drivingRelativeEncoder.getPosition();
                 states.driveVoltage = drivingSparkMax.getBusVoltage() * drivingSparkMax.getAppliedOutput();
                 states.turnVoltage = turningSparkMax.getBusVoltage() * turningSparkMax.getAppliedOutput();
                 states.driveCurrent = drivingSparkMax.getOutputCurrent();
                 states.turnCurrent = turningSparkMax.getOutputCurrent();
 
-                SmartDashboard.putNumber("Swerve/module " + name + "/drive encoder position(m)",
-                                states.driveEncoderPos);
+                SmartDashboard.putNumber("Swerve/module " + name + "/turn desired angle(deg)", states.desiredAngle);
                 SmartDashboard.putNumber("Swerve/module " + name + "/turn angle(deg)",
                                 states.turnAngle);
+                SmartDashboard.putNumber("Swerve/module " + name + "/drive desired velocity(mps)",
+                                states.driveDesiredVelocity);
                 SmartDashboard.putNumber("Swerve/module " + name + "/drive velocity(mps)", states.driveVelocity);
+                SmartDashboard.putNumber("Swerve/module " + name + "/drive encoder position(m)",
+                                states.driveEncoderPos);
                 SmartDashboard.putNumber("Swerve/module " + name + "/drive voltage(volt)", states.driveVoltage);
                 SmartDashboard.putNumber("Swerve/module " + name + "/turn voltage(volt)", states.turnVoltage);
                 SmartDashboard.putNumber("Swerve/module " + name + "/drive current(amps)", states.driveCurrent);
                 SmartDashboard.putNumber("Swerve/module " + name + "/turn current(amps)", states.turnCurrent);
-                SmartDashboard.putNumber("Swerve/module " + name + "/turn desired angle(deg)", states.desiredAngle);
-                SmartDashboard.putNumber("Swerve/module " + name + "/swerve desired velocity(mps)",
-                                states.driveDesiredVelocity);
 
         }
 
