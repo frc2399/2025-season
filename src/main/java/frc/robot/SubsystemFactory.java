@@ -17,6 +17,7 @@ import frc.robot.subsystems.drive.SwerveModulePlacebo;
 import frc.robot.subsystems.elevator.AlphaElevator;
 import frc.robot.subsystems.elevator.ElevatorPlacebo;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.elevator.KrakenElevator;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.subsystems.gyro.GyroHardware;
 import frc.robot.subsystems.gyro.GyroPlacebo;
@@ -33,6 +34,7 @@ public class SubsystemFactory {
     private static final String COMP_SERIAL_NUMBER = "";
 
     private static final Distance ELEVATOR_ALPHA_MAX_HEIGHT = Inches.of(34.25);
+    private static final Distance ELEVATOR_BETA_MAX_HEIGHT = Inches.of();
 
     private enum RobotType {
         MOZART,
@@ -142,7 +144,10 @@ public class SubsystemFactory {
     protected ElevatorSubsystem buildElevator() {
         if (robotType == RobotType.ALPHA) {
             return new ElevatorSubsystem(new AlphaElevator(ELEVATOR_ALPHA_MAX_HEIGHT));
-        } else {
+        } if else (robotType == RobotType.BETA) {
+            return new ElevatorSubsystem(new KrakenElevator(ELEVATOR_BETA_MAX_HEIGHT)); 
+        }
+        else {
             return new ElevatorSubsystem(new ElevatorPlacebo());
         }
     }
