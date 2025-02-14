@@ -153,11 +153,13 @@ public class SwerveModuleHardware implements SwerveModuleIO {
         public void setDesiredDriveSpeedMPS(double speed) {
                 drivingPidController.setReference(speed, ControlType.kVelocity);
                 states.driveDesiredVelocity = speed;
+                // System.out.println( "desired velocity " + states.driveDesiredVelocity);
         };
 
         public void setDesiredTurnAngle(double angle) {
                 turningPidController.setReference(angle, ControlType.kPosition);
                 states.desiredAngle = angle;
+                System.out.println("desired angle " + states.desiredAngle);
         };
 
         public double getChassisAngularOffset() {
@@ -184,10 +186,12 @@ public class SwerveModuleHardware implements SwerveModuleIO {
                 states.turnVoltage = turningSparkMax.getBusVoltage() * turningSparkMax.getAppliedOutput();
                 states.driveCurrent = drivingSparkMax.getOutputCurrent();
                 states.turnCurrent = turningSparkMax.getOutputCurrent();
+                
+                System.out.println(" non smartdashboard desired angle " + states.desiredAngle);
 
-                SmartDashboard.putNumber("Swerve/module " + name + "/drive encoder position(rad)",
+                SmartDashboard.putNumber("Swerve/module " + name + "/drive encoder position(m)",
                                 states.driveEncoderPos);
-                SmartDashboard.putNumber("Swerve/module " + name + "/turn encoder position(m)", states.turnEncoderPos);
+                SmartDashboard.putNumber("Swerve/module " + name + "/turn encoder position(deg)", states.turnEncoderPos);
                 SmartDashboard.putNumber("Swerve/module " + name + "/drive velocity(mps)", states.driveVelocity);
                 SmartDashboard.putNumber("Swerve/module " + name + "/drive voltage(volt)", states.driveVoltage);
                 SmartDashboard.putNumber("Swerve/module " + name + "/turn voltage(volt)", states.turnVoltage);
