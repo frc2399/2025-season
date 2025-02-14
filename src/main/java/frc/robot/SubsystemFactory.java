@@ -32,6 +32,8 @@ public class SubsystemFactory {
     private static final String BETA_SERIAL_NUMBER = "30FC267";
     private static final String COMP_SERIAL_NUMBER = "";
 
+    private static final Distance ELEVATOR_ALPHA_MAX_HEIGHT = Inches.of(34.25);
+
     private enum RobotType {
         MOZART,
         SIM,
@@ -139,7 +141,7 @@ public class SubsystemFactory {
 
     protected ElevatorSubsystem buildElevator() {
         if (robotType == RobotType.ALPHA) {
-            return new ElevatorSubsystem(new AlphaElevator());
+            return new ElevatorSubsystem(new AlphaElevator(ELEVATOR_ALPHA_MAX_HEIGHT));
         } else {
             return new ElevatorSubsystem(new ElevatorPlacebo());
         }
