@@ -74,7 +74,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // schedule the autonomous command (example)
-    robotContainer.enableSubsystems(); 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
@@ -91,7 +90,6 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    robotContainer.enableSubsystems(); 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

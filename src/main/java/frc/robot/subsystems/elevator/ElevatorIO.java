@@ -9,15 +9,12 @@ public interface ElevatorIO {
         public double velocity = 0.0;
         public double appliedVoltageRight = 0.0;
         public double appliedVoltageLeft = 0.0;
-        public double positionGoalSetPoint = 0.0;
         public double goalPosition = 0.0;
         public double intermediateSetpointPosition = 0.0;
-        public double current = 0.0;
-        
+        public double current = 0.0;        
     }
 
-    public void disableElevator();
-    public void enableElevator(); 
+    public void resetSetpointsToCurrentPosition(); 
     public void incrementGoalPosition(Distance newGoalPosition);
     public void setGoalPosition(Distance position);
     public void calculateNextIntermediateSetpoint();

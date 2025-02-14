@@ -27,14 +27,6 @@ public class ElevatorSubsystem extends SubsystemBase{
         elevatorIO.setIntermediateSetpoint(Meters.of(0), 0);
     }
 
-    public void disableElevator() {  
-        elevatorIO.disableElevator();
-    }
-
-    public void enableElevator()
-    {
-        elevatorIO.enableElevator();
-    }
 
     public Command goToGoalSetpointCmd(Distance position) {
         return this.runOnce(() -> {
@@ -62,17 +54,20 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        if (profiledPIDEnabled) {
-            elevatorIO.calculateNextIntermediateSetpoint();
+        if (!profiledPIDEnabled) {
+            elevatorIO.resetSetpointsToCurrentPosition();
         }
+        elevatorIO.calculateNextIntermediateSetpoint();
+
         elevatorIO.updateStates(states);
         SmartDashboard.putNumber("Elevator/position", states.position);
         SmartDashboard.putNumber("Elevator/velocity", states.velocity);
         SmartDashboard.putNumber("Elevator/appliedVoltageRight", states.appliedVoltageRight);
         SmartDashboard.putNumber("Elevator/appliedVoltageLeft", states.appliedVoltageLeft);
-        SmartDashboard.putNumber("Elevator/positionSetPoint", states.positionGoalSetPoint);
         SmartDashboard.putNumber("Elevator/goalStatePosition", states.goalPosition);
         SmartDashboard.putNumber("Elevator/output current", states.current);
+        SmartDashboard.putNumber("Elevator/intermediate setpoint position", states.intermediateSetpointPosition);
+        SmartDashboard.putBoolean("Elevator/profiled PID enabled", profiledPIDEnabled); 
     }
 
 }

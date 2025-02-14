@@ -58,11 +58,8 @@ public class ElevatorHardware implements ElevatorIO {
     private TrapezoidProfile elevatorMotionProfile;
     public State intermediateSetpointState = new State();
     private State goalState = new State();
-    private double goalPosition;
-    public int newGoalPosition;
 
-    
-    public ElevatorHardware() {
+    public ElevatorHardware(Distance maxElevatorHeight) {
 
         globalMotorConfig = new SparkFlexConfig();
         rightMotorConfigFollower = new SparkFlexConfig();
@@ -97,7 +94,7 @@ public class ElevatorHardware implements ElevatorIO {
                         ElevatorHardwareConstants.OUTPUT_RANGE_MAX_VALUE, ClosedLoopSlot.kSlot1);
 
         globalMotorConfig.softLimit
-                .forwardSoftLimit((ElevatorHardwareConstants.MAX_ELEVATOR_HEIGHT).in(Meters) - 0.02) // a little less
+                .forwardSoftLimit((maxElevatorHeight).in(Meters) - 0.02) // a little less
                                                                                                      // than max height
                                                                                                      // for safety
                 .forwardSoftLimitEnabled(true)
@@ -122,14 +119,14 @@ public class ElevatorHardware implements ElevatorIO {
                 PersistMode.kPersistParameters);
     }
 
-    @Override
-    public void disableElevator() {
-        elevatorLeftMotorLeader.set(0);
-    }
 
     @Override
-    public void enableElevator() {
+    public void resetSetpointsToCurrentPosition() {
         goalState.position = leftEncoder.getPosition();
+        intermediateSetpointState.position = leftEncoder.getPosition(); 
+
+        goalState.velocity = 0;
+        intermediateSetpointState.velocity = 0; 
     }
 
     @Override
@@ -172,8 +169,8 @@ public class ElevatorHardware implements ElevatorIO {
                 * elevatorRightMotorFollower.getBusVoltage();
         states.appliedVoltageLeft = elevatorLeftMotorLeader.getAppliedOutput()
                 * elevatorLeftMotorLeader.getBusVoltage();
-        states.positionGoalSetPoint = goalPosition;
         states.current = elevatorLeftMotorLeader.getOutputCurrent();
         states.goalPosition = goalState.position;
+        states.intermediateSetpointPosition = intermediateSetpointState.position; 
     }
 }

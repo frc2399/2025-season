@@ -43,16 +43,10 @@ public class RobotContainer {
   }
 
   public void disableSubsystems() {
-    elevator.disableElevator();
     elevator.profiledPIDEnabled = false; 
   }
 
-  public void enableSubsystems(){
-    elevator.enableElevator();
-  }
-
   public void configureDefaultCommands() {
-
     drive.setDefaultCommand(drive.driveCommand(
         () -> -(MathUtil.applyDeadband(
             driverController.getLeftY(),

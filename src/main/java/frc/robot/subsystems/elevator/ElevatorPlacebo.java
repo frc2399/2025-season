@@ -5,10 +5,7 @@ import edu.wpi.first.units.measure.Distance;
 public class ElevatorPlacebo implements ElevatorIO {
 
     @Override
-    public void disableElevator() {}
-
-    @Override
-    public void enableElevator(){}
+    public void resetSetpointsToCurrentPosition(){}
 
     public void incrementGoalPosition(Distance changeInGoalPosition){}
 
