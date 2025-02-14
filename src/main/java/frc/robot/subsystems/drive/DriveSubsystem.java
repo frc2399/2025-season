@@ -13,6 +13,8 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import static edu.wpi.first.units.Units.Meters;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -230,49 +232,54 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
          * @param fieldRelative Whether the provided x and y speeds are relative to the
          *                      field.
          */
-        public void drive(double xSpeed, double ySpeed, double rotRate, boolean fieldRelative) {
-                rotRate = Math.pow(rotRate, 5);
-                double newRotRate = 0;
-                double currentAngle = (gyro.getYaw());
-                double r = Math.pow(Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2)), 3);
-                double polarAngle = Math.atan2(ySpeed, xSpeed);
-                double polarXSpeed = r * Math.cos(polarAngle);
-                double polarYSpeed = r * Math.sin(polarAngle);
+        public Command driveCommand(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotRate,
+                        Boolean fieldRelative) {
+                return this.run(() -> {
+                        double currentAngle = gyro.getYaw();
+                        double r = Math.hypot(xSpeed.getAsDouble(), ySpeed.getAsDouble());
+                        double polarAngle = Math.atan2(ySpeed.getAsDouble(), xSpeed.getAsDouble());
+                        double polarXSpeed = r * Math.cos(polarAngle);
+                        double polarYSpeed = r * Math.sin(polarAngle);
 
-                // //Account for edge case when gyro resets
-                if (currentAngle == 0) {
-                        desiredAngle = 0;
-                }
+                        // //Account for edge case when gyro resets
+                        if (currentAngle == 0) {
+                                desiredAngle = 0;
+                        }
 
-                newRotRate = getHeadingCorrectionRotRate(currentAngle, rotRate, polarXSpeed, polarYSpeed);
+                        double newRotRate = getHeadingCorrectionRotRate(currentAngle, Math.pow(rotRate.getAsDouble(), 5),
+                                        polarXSpeed, polarYSpeed);
 
-                // Convert the commanded speeds into the correct units for the drivetrain
-                double xSpeedDelivered = polarXSpeed * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS;
-                double ySpeedDelivered = polarYSpeed * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS;
-                double rotRateDelivered = newRotRate * SpeedConstants.DRIVETRAIN_MAX_ANGULAR_SPEED_RPS;
+                        // Convert the commanded speeds into the correct units for the drivetrain
+                        double xSpeedDelivered = polarXSpeed * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS;
+                        double ySpeedDelivered = polarYSpeed * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS;
+                        double rotRateDelivered = newRotRate * SpeedConstants.DRIVETRAIN_MAX_ANGULAR_SPEED_RPS;
 
-                if (fieldRelative) {
-                        relativeRobotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered,
-                                        rotRateDelivered,
-                                        Rotation2d.fromRadians(gyro.getYaw()));
-                } else {
-                        relativeRobotSpeeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotRateDelivered);
-                }
+                        if (fieldRelative) {
+                                relativeRobotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered,
+                                                ySpeedDelivered,
+                                                rotRateDelivered,
+                                                Rotation2d.fromRadians(gyro.getYaw()));
+                        } else {
+                                relativeRobotSpeeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered,
+                                                rotRateDelivered);
+                        }
 
-                SmartDashboard.putNumber("Swerve/velocity",
-                                Math.sqrt(
-                                                Math.pow(relativeRobotSpeeds.vxMetersPerSecond, 2)
-                                                                + Math.pow(relativeRobotSpeeds.vyMetersPerSecond, 2)));
+                        SmartDashboard.putNumber("Swerve/velocity",
+                                        Math.sqrt(
+                                                        Math.pow(relativeRobotSpeeds.vxMetersPerSecond, 2)
+                                                                        + Math.pow(relativeRobotSpeeds.vyMetersPerSecond,
+                                                                                        2)));
 
-                var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(relativeRobotSpeeds);
-                SwerveDriveKinematics.desaturateWheelSpeeds(
-                                swerveModuleStates, SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
-                frontLeft.setDesiredState(swerveModuleStates[0]);
-                frontRight.setDesiredState(swerveModuleStates[1]);
-                rearLeft.setDesiredState(swerveModuleStates[2]);
-                rearRight.setDesiredState(swerveModuleStates[3]);
+                        var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(relativeRobotSpeeds);
+                        SwerveDriveKinematics.desaturateWheelSpeeds(
+                                        swerveModuleStates, SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS);
+                        frontLeft.setDesiredState(swerveModuleStates[0]);
+                        frontRight.setDesiredState(swerveModuleStates[1]);
+                        rearLeft.setDesiredState(swerveModuleStates[2]);
+                        rearRight.setDesiredState(swerveModuleStates[3]);
 
-                swerveModuleDesiredStatePublisher.set(swerveModuleStates);
+                        swerveModuleDesiredStatePublisher.set(swerveModuleStates);
+                }).withName("drive command");
         }
 
         /**
