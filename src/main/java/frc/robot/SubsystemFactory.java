@@ -31,6 +31,7 @@ public class SubsystemFactory {
 
     private static final String MOZART_SERIAL_NUMBER = "030ee8c8";
     private static final String ALPHA_SERIAL_NUMBER = "03260A64";
+   //TODO: update beta serial number!!
     private static final String BETA_SERIAL_NUMBER = "30FC267";
     private static final String COMP_SERIAL_NUMBER = "";
 
