@@ -4,7 +4,8 @@ import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants.MotorIdConstants;
-import frc.robot.subsystems.coralIntake.CoralIntakeHardware;
+import frc.robot.subsystems.coralIntake.CoralIntakeAlphaHardware;
+import frc.robot.subsystems.coralIntake.CoralIntakeBetaHardware;
 import frc.robot.subsystems.coralIntake.CoralIntakePlacebo;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristHardware;
@@ -31,6 +32,8 @@ public class SubsystemFactory {
     private static final String ALPHA_SERIAL_NUMBER = "03260A64";
     private static final String BETA_SERIAL_NUMBER = "30FC267";
     private static final String COMP_SERIAL_NUMBER = "";
+
+    private static final Distance ELEVATOR_ALPHA_MAX_HEIGHT = Inches.of(34.25);
 
     private enum RobotType {
         MOZART,
@@ -122,7 +125,9 @@ public class SubsystemFactory {
 
     public CoralIntakeSubsystem buildCoralIntake() {
         if (robotType == RobotType.ALPHA) {
-            return new CoralIntakeSubsystem(new CoralIntakeHardware());
+            return new CoralIntakeSubsystem(new CoralIntakeAlphaHardware());
+        } else if (robotType == RobotType.BETA) {
+            return new CoralIntakeSubsystem(new CoralIntakeBetaHardware());
         } else {
             return new CoralIntakeSubsystem(new CoralIntakePlacebo());
         }
@@ -139,7 +144,7 @@ public class SubsystemFactory {
 
     protected ElevatorSubsystem buildElevator() {
         if (robotType == RobotType.ALPHA) {
-            return new ElevatorSubsystem(new ElevatorHardware());
+            return new ElevatorSubsystem(new ElevatorHardware(ELEVATOR_ALPHA_MAX_HEIGHT));
         } else {
             return new ElevatorSubsystem(new ElevatorPlacebo());
         }
