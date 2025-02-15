@@ -80,11 +80,6 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     @Override
     public void updateStates(CoralIntakeIOStates states) {
-        // velocity = 0.0;
-        // public double leftCurrent = 0.0;
-        // public double rightCurrent = 0.0;
-        // public double leftAppliedVoltage = 0.0;
-        // public double rightAppliedVoltage = 0.0;
         states.velocity = betaCoralIntakeEncoder.getVelocity();
         states.leftCurrent = betaCoralIntakeSparkFlex.getOutputCurrent();
         states.rightCurrent = betaCoralIntakeSparkFlex.getOutputCurrent();
@@ -93,5 +88,4 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
         states.rightAppliedVoltage = betaCoralIntakeSparkFlex.getAppliedOutput()
                 * betaCoralIntakeSparkFlex.getBusVoltage();
     }
-
 }

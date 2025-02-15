@@ -15,15 +15,15 @@ public class CoralIntakeSubsystem extends SubsystemBase {
     }
 
     public Command intake() {
-        return this.run(() -> io.intake());
+        return this.run(() -> io.intake()).withName("run coral intake");
     }
 
     public Command outtake() {
-        return this.run(() -> io.outtake());
+        return this.run(() -> io.outtake()).withName("run coral outtake");
     }
 
     public Command setZero() {
-        return this.run(() -> io.setZero());
+        return this.run(() -> io.setZero()).withName("coral intake default");
     }
 
     @Override
