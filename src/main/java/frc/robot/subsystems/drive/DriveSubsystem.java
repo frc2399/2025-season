@@ -418,7 +418,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                         () -> robotPose, goalPose);
                         Supplier<Rotation2d> gyroYawRotationSupplier = () -> new Rotation2d(gyro.getYaw());
                         ChassisSpeeds alignmentSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                                        velocities.get().getX(), velocities.get().getY(),
+                                        -velocities.get().getX(), -velocities.get().getY(),
                                         velocities.get().getRotation().getRadians(),
                                         gyroYawRotationSupplier.get());
 

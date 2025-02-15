@@ -27,7 +27,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 
 public class DriveToPoseUtil {
         // pids for driving to a pose
-        private static final double DRIVE_TO_POSE_XY_P = 3.75;
+        private static final double DRIVE_TO_POSE_XY_P = 3; // 3.75 before change for alt
         private static final double DRIVE_TO_POSE_XY_D = 0.0;
         private static final LinearVelocity MAX_VELOCITY_DRIVE_TO_POSE = MetersPerSecond.of(1);
         private static final LinearAcceleration MAX_ACCELERATION_DRIVE_TO_POSE = MetersPerSecondPerSecond.of(0.5);
@@ -108,12 +108,12 @@ public class DriveToPoseUtil {
                         thetaDesired = RadiansPerSecond.of(0);
                 }
 
-                // // if the requested theta rotation is too small, make it bigger! (unless it was
-                // // zeroed out above) (ks, where s = static)
-                // if (Math.abs(thetaDesired.in(RadiansPerSecond)) > 0
-                //                 && Math.abs(thetaDesired.in(RadiansPerSecond)) < 0.1) {
-                //         thetaDesired = RadiansPerSecond.of(Math.copySign(0.1, thetaDesired.in(RadiansPerSecond)));
-                // }
+                // if the requested theta rotation is too small, make it bigger! (unless it was
+                // zeroed out above) (ks, where s = static)
+                if (Math.abs(thetaDesired.in(RadiansPerSecond)) > 0
+                                && Math.abs(thetaDesired.in(RadiansPerSecond)) < 0.1) {
+                        thetaDesired = RadiansPerSecond.of(Math.copySign(0.1, thetaDesired.in(RadiansPerSecond)));
+                }
 
                 // scale based solely on distance!
                 double dist = Math.hypot(xToGoal, yToGoal);
@@ -124,8 +124,6 @@ public class DriveToPoseUtil {
                 // cannot do ChassisSpeeds
                 Transform2d alignmentSpeeds = new Transform2d(xDesired.in(MetersPerSecond),
                                 yDesired.in(MetersPerSecond),
-                                new Rotation2d(-thetaDesired.in(RadiansPerSecond)));
-                Transform2d altAlignmentSpeeds = new Transform2d(transToGoal.getX(), transToGoal.getY(),
                                 new Rotation2d(-thetaDesired.in(RadiansPerSecond)));
                 return () -> alignmentSpeeds;
         }
