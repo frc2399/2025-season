@@ -83,7 +83,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private final SwerveDriveKinematics DRIVE_KINEMATICS;
 
         // Slew rate filter variables for controlling lateral acceleration
-        private double currentRotationRate = 0.0;
         private double desiredAngle = 0;
         private Gyro gyro;
 

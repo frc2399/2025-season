@@ -49,7 +49,6 @@ public class SubsystemFactory {
     
 
     public SubsystemFactory() {
-        System.out.println(serialNum);
         if (serialNum.equals(ALPHA_SERIAL_NUMBER)) {
             robotType = RobotType.ALPHA;
         } else if (serialNum.equals(BETA_SERIAL_NUMBER)) {

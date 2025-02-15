@@ -28,7 +28,7 @@ import frc.robot.Constants.MotorConstants;
 public class SwerveModuleHardwareVortex implements SwerveModuleIO {
 
     private SparkFlex drivingSparkFlex;
-    private SparkFlex turningSparkMax;
+    private SparkMax turningSparkMax;
 
     private final RelativeEncoder drivingRelativeEncoder;
     private final SparkAbsoluteEncoder turningAbsoluteEncoder;
@@ -102,11 +102,11 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
         this.chassisAngularOffset = chassisAngularOffset;
         this.name = name;
         drivingSparkFlex = new SparkFlex(drivingCanId, MotorType.kBrushless);
-        turningSparkMax = new SparkFlex(turningCanId, MotorType.kBrushless);
+        turningSparkMax = new SparkMax(turningCanId, MotorType.kBrushless);
 
         sparkFlexConfigDriving.inverted(DRIVING_MOTOR_INVERTED).idleMode(DRIVING_MOTOR_IDLE_MODE)
                 .smartCurrentLimit(
-                        (int) MotorConstants.NEO_CURRENT_LIMIT.in(Amps))
+                        (int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps))
                 .voltageCompensation(VOLTAGE_COMPENSATION);
         sparkFlexConfigDriving.encoder.positionConversionFactor(DRIVING_ENCODER_POSITION_FACTOR.in(Meters))
                 .velocityConversionFactor(DRIVING_ENCODER_VELOCITY_FACTOR.in(Meters));
