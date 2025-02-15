@@ -21,170 +21,187 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.MotorConstants;
 
 public class SwerveModuleHardware implements SwerveModuleIO {
 
-    private SparkMax drivingSparkMax;
-    private SparkMax turningSparkMax;
+        private SparkMax drivingSparkMax;
+        private SparkMax turningSparkMax;
 
-    private final RelativeEncoder drivingRelativeEncoder;
-    private final SparkAbsoluteEncoder turningAbsoluteEncoder;
+        private double desiredDrivingVelocity;
 
-    private final SparkClosedLoopController drivingPidController;
-    private final SparkClosedLoopController turningPidController;
+        private final RelativeEncoder drivingRelativeEncoder;
+        private final SparkAbsoluteEncoder turningAbsoluteEncoder;
+        private double driveDesiredVelocity;
+        private double desiredAngle;
 
-    private double chassisAngularOffset;
-    private String name;
+        private final SparkClosedLoopController drivingPidController;
+        private final SparkClosedLoopController turningPidController;
 
-    private static final SparkMaxConfig sparkMaxConfigDriving = new SparkMaxConfig();
-    private static final SparkMaxConfig sparkMaxConfigTurning = new SparkMaxConfig();
+        private double chassisAngularOffset;
 
-    // drivings are NEOs, turnings are NEO 550s
-    // THIS IS 13 ON COMP BOT
-    private static final int DRIVING_MOTOR_PINION_TEETH = 14;
+        private String name;
 
-    // Invert the turning encoder, since the output shaft rotates in the opposite
-    // direction of the steering motor in the MAXSwerve Module.
-    private static final boolean TURNING_ENCODER_INVERTED = true;
-    private static final boolean DRIVING_MOTOR_INVERTED = false;
-    private static final boolean TURNING_MOTOR_INVERTED = false;
+        private static final SparkMaxConfig sparkMaxConfigDriving = new SparkMaxConfig();
+        private static final SparkMaxConfig sparkMaxConfigTurning = new SparkMaxConfig();
 
-    // Calculations required for driving motor conversion factors and feed forward
-    private static final Distance WHEEL_DIAMETER = Inches.of(3);
-    private static final Distance WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER.times(Math.PI);
+        // drivings are NEOs, turnings are NEO 550s
+        // THIS IS 13 ON COMP BOT
+        private static final int DRIVING_MOTOR_PINION_TEETH = 14;
 
-    // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
-    // teeth on the bevel pinion
-    // This is also the gear ratio (14T)
+        // Invert the turning encoder, since the output shaft rotates in the opposite
+        // direction of the steering motor in the MAXSwerve Module.
+        private static final boolean TURNING_ENCODER_INVERTED = true;
+        private static final boolean DRIVING_MOTOR_INVERTED = false;
+        private static final boolean TURNING_MOTOR_INVERTED = false;
 
-    private static final double DRIVING_MOTOR_REDUCTION = (45.0 * 22) / (DRIVING_MOTOR_PINION_TEETH * 15);
+        // Calculations required for driving motor conversion factors and feed forward
+        private static final Distance WHEEL_DIAMETER = Inches.of(3);
+        private static final Distance WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER.times(Math.PI);
 
-    private static final AngularVelocity DRIVE_WHEEL_FREE_SPEED = RotationsPerSecond
-            .of((MotorConstants.NEO_FREE_SPEED.in(RotationsPerSecond) *
-                    WHEEL_CIRCUMFERENCE.in(Meters)) / (DRIVING_MOTOR_REDUCTION));
+        // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
+        // teeth on the bevel pinion
+        // This is also the gear ratio (14T)
 
-    private static final Distance DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_DIAMETER.times(Math.PI))
-            .divide(DRIVING_MOTOR_REDUCTION).divide((260.0 / 254)); // meters
-    private static final Distance DRIVING_ENCODER_VELOCITY_FACTOR = DRIVING_ENCODER_POSITION_FACTOR.divide(60); // meters
-                                                                                                                // per
-                                                                                                                // second
+        private static final double DRIVING_MOTOR_REDUCTION = (45.0 * 22) / (DRIVING_MOTOR_PINION_TEETH * 15);
 
-    private static final double TURNING_ENCODER_POSITION_FACTOR = Units.rotationsToRadians(1);
-    private static final double TURNING_ENCODER_VELOCITY_FACTOR = Units.rotationsToRadians(1) / 60.0;
+        private static final AngularVelocity DRIVE_WHEEL_FREE_SPEED = RotationsPerSecond
+                        .of((MotorConstants.NEO_FREE_SPEED.in(RotationsPerSecond) *
+                                        WHEEL_CIRCUMFERENCE.in(Meters)) / (DRIVING_MOTOR_REDUCTION));
 
-    private static final boolean TURNING_ENCODER_POSITION_WRAPPING = true;
-    private static final double TURNING_ENCODER_POSITION_PID_MIN_INPUT = 0; // radians
-    private static final double TURNING_ENCODER_POSITION_PID_MAX_INPUT = TURNING_ENCODER_POSITION_FACTOR; // radians
+        private static final Distance DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_DIAMETER.times(Math.PI))
+                        .divide(DRIVING_MOTOR_REDUCTION).divide((260.0 / 254)); // meters
+        private static final Distance DRIVING_ENCODER_VELOCITY_FACTOR = DRIVING_ENCODER_POSITION_FACTOR.divide(60); // meters
+                                                                                                                    // per
+                                                                                                                    // second
 
-    private static final double DRIVING_P = 0.2;
-    private static final double DRIVING_I = 0;
-    private static final double DRIVING_D = 0;
-    private static final double DRIVING_FF = 1 / DRIVE_WHEEL_FREE_SPEED.in(RotationsPerSecond);
-    private static final double DRIVING_MIN_OUTPUT = -1;
-    private static final double DRIVING_MAX_OUTPUT = 1;
+        private static final double TURNING_ENCODER_POSITION_FACTOR = Units.rotationsToRadians(1);
+        private static final double TURNING_ENCODER_VELOCITY_FACTOR = Units.rotationsToRadians(1) / 60.0;
 
-    private static final double TURNING_P = 1.0;
-    private static final double TURNING_I = 0;
-    private static final double TURNING_D = 0.001;
-    private static final double TURNING_FF = 0;
-    private static final double TURNING_MIN_OUTPUT = -1;
-    private static final double TURNING_MAX_OUTPUT = 1;
+        private static final boolean TURNING_ENCODER_POSITION_WRAPPING = true;
+        private static final double TURNING_ENCODER_POSITION_PID_MIN_INPUT = 0; // radians
+        private static final double TURNING_ENCODER_POSITION_PID_MAX_INPUT = TURNING_ENCODER_POSITION_FACTOR; // radians
 
-    private static final double VOLTAGE_COMPENSATION = 12;
+        private static final double DRIVING_P = 0.2;
+        private static final double DRIVING_I = 0;
+        private static final double DRIVING_D = 0;
+        private static final double DRIVING_FF = 1 / DRIVE_WHEEL_FREE_SPEED.in(RotationsPerSecond);
+        private static final double DRIVING_MIN_OUTPUT = -1;
+        private static final double DRIVING_MAX_OUTPUT = 1;
 
-    private static final SparkBaseConfig.IdleMode DRIVING_MOTOR_IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
-    private static final SparkBaseConfig.IdleMode TURNING_MOTOR_IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
+        private static final double TURNING_P = 1.0;
+        private static final double TURNING_I = 0;
+        private static final double TURNING_D = 0.001;
+        private static final double TURNING_FF = 0;
+        private static final double TURNING_MIN_OUTPUT = -1;
+        private static final double TURNING_MAX_OUTPUT = 1;
 
-    public SwerveModuleHardware(int drivingCanId, int turningCanId, double chassisAngularOffset, String name) {
-        this.chassisAngularOffset = chassisAngularOffset;
-        this.name = name;
+        private static final double VOLTAGE_COMPENSATION = 12;
 
-        drivingSparkMax = new SparkMax(drivingCanId, MotorType.kBrushless);
-        turningSparkMax = new SparkMax(turningCanId, MotorType.kBrushless);
+        private static final SparkBaseConfig.IdleMode DRIVING_MOTOR_IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
+        private static final SparkBaseConfig.IdleMode TURNING_MOTOR_IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
 
-        sparkMaxConfigDriving.inverted(DRIVING_MOTOR_INVERTED).idleMode(DRIVING_MOTOR_IDLE_MODE)
-                .smartCurrentLimit(
-                        (int) MotorConstants.NEO_CURRENT_LIMIT.in(Amps))
-                .voltageCompensation(VOLTAGE_COMPENSATION);
-        sparkMaxConfigDriving.encoder.positionConversionFactor(DRIVING_ENCODER_POSITION_FACTOR.in(Meters))
-                .velocityConversionFactor(DRIVING_ENCODER_VELOCITY_FACTOR.in(Meters));
-        sparkMaxConfigDriving.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pidf(DRIVING_P, DRIVING_I, DRIVING_D, DRIVING_FF)
-                .outputRange(DRIVING_MIN_OUTPUT, DRIVING_MAX_OUTPUT);
+        public SwerveModuleHardware(int drivingCanId, int turningCanId, double chassisAngularOffset, String name) {
+                this.chassisAngularOffset = chassisAngularOffset;
+                this.name = name;
 
-        sparkMaxConfigTurning.inverted(TURNING_MOTOR_INVERTED).idleMode(TURNING_MOTOR_IDLE_MODE)
-                .smartCurrentLimit(
-                        (int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps))
-                .voltageCompensation(VOLTAGE_COMPENSATION);
-        sparkMaxConfigTurning.absoluteEncoder.positionConversionFactor(TURNING_ENCODER_POSITION_FACTOR)
-                .velocityConversionFactor(TURNING_ENCODER_VELOCITY_FACTOR);
-        sparkMaxConfigTurning.absoluteEncoder.inverted(TURNING_ENCODER_INVERTED);
-        sparkMaxConfigTurning.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pidf(TURNING_P, TURNING_I, TURNING_D, TURNING_FF)
-                .outputRange(TURNING_MIN_OUTPUT, TURNING_MAX_OUTPUT)
-                .positionWrappingEnabled(TURNING_ENCODER_POSITION_WRAPPING)
-                .positionWrappingInputRange(
-                        TURNING_ENCODER_POSITION_PID_MIN_INPUT,
-                        TURNING_ENCODER_POSITION_PID_MAX_INPUT);
+                drivingSparkMax = new SparkMax(drivingCanId, MotorType.kBrushless);
+                turningSparkMax = new SparkMax(turningCanId, MotorType.kBrushless);
 
-        drivingSparkMax.configure(sparkMaxConfigDriving, ResetMode.kResetSafeParameters,
-                PersistMode.kNoPersistParameters);
-        turningSparkMax.configure(sparkMaxConfigTurning, ResetMode.kResetSafeParameters,
-                PersistMode.kNoPersistParameters);
+                sparkMaxConfigDriving.inverted(DRIVING_MOTOR_INVERTED).idleMode(DRIVING_MOTOR_IDLE_MODE)
+                                .smartCurrentLimit(
+                                                (int) MotorConstants.NEO_CURRENT_LIMIT.in(Amps))
+                                .voltageCompensation(VOLTAGE_COMPENSATION);
+                sparkMaxConfigDriving.encoder.positionConversionFactor(DRIVING_ENCODER_POSITION_FACTOR.in(Meters))
+                                .velocityConversionFactor(DRIVING_ENCODER_VELOCITY_FACTOR.in(Meters));
+                sparkMaxConfigDriving.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                                .pidf(DRIVING_P, DRIVING_I, DRIVING_D, DRIVING_FF)
+                                .outputRange(DRIVING_MIN_OUTPUT, DRIVING_MAX_OUTPUT);
 
-        drivingRelativeEncoder = drivingSparkMax.getEncoder();
-        turningAbsoluteEncoder = turningSparkMax.getAbsoluteEncoder();
+                sparkMaxConfigTurning.inverted(TURNING_MOTOR_INVERTED).idleMode(TURNING_MOTOR_IDLE_MODE)
+                                .smartCurrentLimit(
+                                                (int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps))
+                                .voltageCompensation(VOLTAGE_COMPENSATION);
+                sparkMaxConfigTurning.absoluteEncoder.positionConversionFactor(TURNING_ENCODER_POSITION_FACTOR)
+                                .velocityConversionFactor(TURNING_ENCODER_VELOCITY_FACTOR);
+                sparkMaxConfigTurning.absoluteEncoder.inverted(TURNING_ENCODER_INVERTED);
+                sparkMaxConfigTurning.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+                                .pidf(TURNING_P, TURNING_I, TURNING_D, TURNING_FF)
+                                .outputRange(TURNING_MIN_OUTPUT, TURNING_MAX_OUTPUT)
+                                .positionWrappingEnabled(TURNING_ENCODER_POSITION_WRAPPING)
+                                .positionWrappingInputRange(
+                                                TURNING_ENCODER_POSITION_PID_MIN_INPUT,
+                                                TURNING_ENCODER_POSITION_PID_MAX_INPUT);
 
-        drivingPidController = drivingSparkMax.getClosedLoopController();
-        turningPidController = turningSparkMax.getClosedLoopController();
-    }
+                drivingSparkMax.configure(sparkMaxConfigDriving, ResetMode.kResetSafeParameters,
+                                PersistMode.kNoPersistParameters);
+                turningSparkMax.configure(sparkMaxConfigTurning, ResetMode.kResetSafeParameters,
+                                PersistMode.kNoPersistParameters);
 
-    public void setDriveEncoderPosition(double position) {
-        drivingRelativeEncoder.setPosition(position);
-    };
+                drivingRelativeEncoder = drivingSparkMax.getEncoder();
+                turningAbsoluteEncoder = turningSparkMax.getAbsoluteEncoder();
 
-    public double getDriveEncoderPosition() {
-        return drivingRelativeEncoder.getPosition();
-    };
+                drivingPidController = drivingSparkMax.getClosedLoopController();
+                turningPidController = turningSparkMax.getClosedLoopController();
+        }
 
-    public void setDesiredDriveSpeedMPS(double speed) {
-        drivingPidController.setReference(speed, ControlType.kVelocity);
-    };
+        public void setDriveEncoderPosition(double position) {
+                drivingRelativeEncoder.setPosition(position);
+        };
 
-    public double getDriveEncoderSpeedMPS() {
-        return drivingRelativeEncoder.getVelocity();
-    };
+        public void setDesiredDriveSpeedMPS(double speed) {
+                drivingPidController.setReference(speed, ControlType.kVelocity);
+                this.driveDesiredVelocity = speed;
 
-    public double getTurnEncoderPosition() {
-        return turningAbsoluteEncoder.getPosition();
-    };
+        };
 
-    public void setDesiredTurnAngle(double angle) {
-        turningPidController.setReference(angle, ControlType.kPosition);
-    };
+        public void setDesiredTurnAngle(double angle) {
+                turningPidController.setReference(angle, ControlType.kPosition);
+                this.desiredAngle = angle;
 
-    public double getDriveBusVoltage() {
-        return drivingSparkMax.getBusVoltage();
-    }
+        };
 
-    public double getDriveOutput() {
-        return drivingSparkMax.getAppliedOutput();
-    }
+        public double getChassisAngularOffset() {
+                return chassisAngularOffset;
+        }
 
-    public double getTurnBusVoltage() {
-        return turningSparkMax.getBusVoltage();
-    }
+        public double getTurnEncoderPosition() {
+                return turningAbsoluteEncoder.getPosition();
+        }
 
-    public double getTurnOutput() {
-        return turningSparkMax.getAppliedOutput();
-    }
+        public double getDriveEncoderSpeedMPS() {
+                return drivingRelativeEncoder.getVelocity();
+        }
 
-    public String getName() {
-        return name;
-    }
+        public double getDriveEncoderPosition() {
+                return drivingRelativeEncoder.getPosition();
+        }
 
-    public double getChassisAngularOffset() {
-        return chassisAngularOffset;
-    }
+        public void updateStates(SwerveModuleIOStates states) {
+                states.desiredAngle = Units.radiansToDegrees(this.desiredAngle);
+                states.turnAngle = Units.radiansToDegrees(turningAbsoluteEncoder.getPosition());
+                states.driveDesiredVelocity = this.driveDesiredVelocity;
+                states.driveVelocity = drivingRelativeEncoder.getVelocity();
+                states.driveEncoderPos = drivingRelativeEncoder.getPosition();
+                states.driveVoltage = drivingSparkMax.getBusVoltage() * drivingSparkMax.getAppliedOutput();
+                states.turnVoltage = turningSparkMax.getBusVoltage() * turningSparkMax.getAppliedOutput();
+                states.driveCurrent = drivingSparkMax.getOutputCurrent();
+                states.turnCurrent = turningSparkMax.getOutputCurrent();
+
+                SmartDashboard.putNumber("Swerve/module " + name + "/turn desired angle(deg)", states.desiredAngle);
+                SmartDashboard.putNumber("Swerve/module " + name + "/turn angle(deg)",
+                                states.turnAngle);
+                SmartDashboard.putNumber("Swerve/module " + name + "/drive desired velocity(mps)",
+                                states.driveDesiredVelocity);
+                SmartDashboard.putNumber("Swerve/module " + name + "/drive velocity(mps)", states.driveVelocity);
+                SmartDashboard.putNumber("Swerve/module " + name + "/drive encoder position(m)",
+                                states.driveEncoderPos);
+                SmartDashboard.putNumber("Swerve/module " + name + "/drive voltage(volt)", states.driveVoltage);
+                SmartDashboard.putNumber("Swerve/module " + name + "/turn voltage(volt)", states.turnVoltage);
+                SmartDashboard.putNumber("Swerve/module " + name + "/drive current(amps)", states.driveCurrent);
+                SmartDashboard.putNumber("Swerve/module " + name + "/turn current(amps)", states.turnCurrent);
+
+        }
+
 }
