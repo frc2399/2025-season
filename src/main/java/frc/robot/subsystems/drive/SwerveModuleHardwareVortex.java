@@ -6,12 +6,14 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
@@ -23,10 +25,10 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants.MotorConstants;
 
-public class SwerveModuleHardware implements SwerveModuleIO {
+public class SwerveModuleHardwareVortex implements SwerveModuleIO {
 
-    private SparkMax drivingSparkMax;
-    private SparkMax turningSparkMax;
+    private SparkFlex drivingSparkFlex;
+    private SparkFlex turningSparkMax;
 
     private final RelativeEncoder drivingRelativeEncoder;
     private final SparkAbsoluteEncoder turningAbsoluteEncoder;
@@ -37,7 +39,7 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     private double chassisAngularOffset;
     private String name;
 
-    private static final SparkMaxConfig sparkMaxConfigDriving = new SparkMaxConfig();
+    private static final SparkFlexConfig sparkFlexConfigDriving = new SparkFlexConfig();
     private static final SparkMaxConfig sparkMaxConfigTurning = new SparkMaxConfig();
 
     // drivings are NEOs, turnings are NEO 550s
@@ -96,20 +98,19 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     private static final SparkBaseConfig.IdleMode DRIVING_MOTOR_IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
     private static final SparkBaseConfig.IdleMode TURNING_MOTOR_IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
 
-    public SwerveModuleHardware(int drivingCanId, int turningCanId, double chassisAngularOffset, String name) {
+    public SwerveModuleHardwareVortex(int drivingCanId, int turningCanId, double chassisAngularOffset, String name) {
         this.chassisAngularOffset = chassisAngularOffset;
         this.name = name;
+        drivingSparkFlex = new SparkFlex(drivingCanId, MotorType.kBrushless);
+        turningSparkMax = new SparkFlex(turningCanId, MotorType.kBrushless);
 
-        drivingSparkMax = new SparkMax(drivingCanId, MotorType.kBrushless);
-        turningSparkMax = new SparkMax(turningCanId, MotorType.kBrushless);
-
-        sparkMaxConfigDriving.inverted(DRIVING_MOTOR_INVERTED).idleMode(DRIVING_MOTOR_IDLE_MODE)
+        sparkFlexConfigDriving.inverted(DRIVING_MOTOR_INVERTED).idleMode(DRIVING_MOTOR_IDLE_MODE)
                 .smartCurrentLimit(
                         (int) MotorConstants.NEO_CURRENT_LIMIT.in(Amps))
                 .voltageCompensation(VOLTAGE_COMPENSATION);
-        sparkMaxConfigDriving.encoder.positionConversionFactor(DRIVING_ENCODER_POSITION_FACTOR.in(Meters))
+        sparkFlexConfigDriving.encoder.positionConversionFactor(DRIVING_ENCODER_POSITION_FACTOR.in(Meters))
                 .velocityConversionFactor(DRIVING_ENCODER_VELOCITY_FACTOR.in(Meters));
-        sparkMaxConfigDriving.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        sparkFlexConfigDriving.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .pidf(DRIVING_P, DRIVING_I, DRIVING_D, DRIVING_FF)
                 .outputRange(DRIVING_MIN_OUTPUT, DRIVING_MAX_OUTPUT);
 
@@ -128,15 +129,15 @@ public class SwerveModuleHardware implements SwerveModuleIO {
                         TURNING_ENCODER_POSITION_PID_MIN_INPUT,
                         TURNING_ENCODER_POSITION_PID_MAX_INPUT);
 
-        drivingSparkMax.configure(sparkMaxConfigDriving, ResetMode.kResetSafeParameters,
+        drivingSparkFlex.configure(sparkFlexConfigDriving, ResetMode.kResetSafeParameters,
                 PersistMode.kNoPersistParameters);
         turningSparkMax.configure(sparkMaxConfigTurning, ResetMode.kResetSafeParameters,
                 PersistMode.kNoPersistParameters);
 
-        drivingRelativeEncoder = drivingSparkMax.getEncoder();
+        drivingRelativeEncoder = drivingSparkFlex.getEncoder();
         turningAbsoluteEncoder = turningSparkMax.getAbsoluteEncoder();
 
-        drivingPidController = drivingSparkMax.getClosedLoopController();
+        drivingPidController = drivingSparkFlex.getClosedLoopController();
         turningPidController = turningSparkMax.getClosedLoopController();
     }
 
@@ -165,11 +166,11 @@ public class SwerveModuleHardware implements SwerveModuleIO {
     };
 
     public double getDriveBusVoltage() {
-        return drivingSparkMax.getBusVoltage();
+        return drivingSparkFlex.getBusVoltage();
     }
 
     public double getDriveOutput() {
-        return drivingSparkMax.getAppliedOutput();
+        return drivingSparkFlex.getAppliedOutput();
     }
 
     public double getTurnBusVoltage() {
