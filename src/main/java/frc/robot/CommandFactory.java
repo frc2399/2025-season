@@ -18,25 +18,40 @@ public class CommandFactory {
     private final DriveSubsystem drive;
     private final ElevatorSubsystem elevator;
     private final CoralWristSubsystem coralWrist;
-    private final NetworkTableEntry ntEntry;
+    private final NetworkTableEntry ntEntry; //one for each entry we want to read (state changes)
     private final NetworkTable scoringStateTables;
-
-    public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist) {
-        this.drive = drive;
-        this.elevator = elevator;
-        this.coralWrist = coralWrist;
-        scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");
-        ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
-    }
-
-    public Command turtleMode() {
-        return Commands
-                .parallel(elevator.goToGoalSetpointCmd(Constants.SetpointConstants.ELEVATOR_TURTLE_HEIGHT),
-                        coralWrist.goToSetpointCommand((Constants.SetpointConstants.CORAL_TURTLE_ANGLE).in(Degrees)));
-    }
-
-    public Command testNumber() {
-        return Commands
-            .runOnce(() -> System.out.println(ntEntry.getDouble(0)));
+    private boolean indicator;
+    private final NetworkTableEntry newEntry;
+    
+        public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist) {
+            this.drive = drive;
+            this.elevator = elevator;
+            this.coralWrist = coralWrist;
+            scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");
+            ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
+            newEntry = scoringStateTables.getEntry("Indicator");
+        }
+    
+        public Command turtleMode() {
+            return Commands
+                    .parallel(elevator.goToGoalSetpointCmd(Constants.SetpointConstants.ELEVATOR_TURTLE_HEIGHT),
+                            coralWrist.goToSetpointCommand((Constants.SetpointConstants.CORAL_TURTLE_ANGLE).in(Degrees)));
+        }
+    
+        public Command testNumber() {
+            return Commands
+                .runOnce(() -> System.out.println(ntEntry.getDouble(0)));
+        }
+    
+        public Command indicatorChange() {
+          return Commands
+            .runOnce(() -> {
+              if (indicator = true) {
+                indicator = false;
+              } else {
+                indicator = true;
+              }
+              newEntry.setBoolean(indicator);
+            });
     }
 }
