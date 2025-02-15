@@ -25,6 +25,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.units.measure.Distance;
@@ -384,7 +385,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 states.velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
                 states.velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
                 states.totalVelocity = Math.hypot(states.velocityXMPS, states.velocityYMPS);
-                states.angularVelocity = relativeRobotSpeeds.omegaRadiansPerSecond;
+                states.angularVelocity = Units.radiansToDegrees(relativeRobotSpeeds.omegaRadiansPerSecond);
                 states.gyroAngleDegrees = Math.toDegrees(gyro.getYaw());
 
                 SmartDashboard.putNumber("drive/Pose Theta(deg)", states.poseTheta);
