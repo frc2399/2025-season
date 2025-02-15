@@ -1,5 +1,6 @@
 package frc.robot.subsystems.coralIntake;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,8 +14,16 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         this.io = io;
     }
 
-    public Command setRollerSpeed(double speed) {
-        return this.run(() -> io.setRollerSpeed(speed));
+    public Command intake() {
+        return this.run(() -> io.intake());
+    }
+
+    public Command outtake() {
+        return this.run(() -> io.outtake());
+    }
+
+    public Command setZero() {
+        return this.run(() -> io.setZero());
     }
 
     @Override
