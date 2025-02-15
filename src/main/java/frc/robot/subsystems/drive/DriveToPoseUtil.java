@@ -27,7 +27,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 
 public class DriveToPoseUtil {
         // pids for driving to a pose
-        private static final double DRIVE_TO_POSE_XY_P = 3; // 3.75 before change for alt
+        private static final double DRIVE_TO_POSE_XY_P = 3.75;
         private static final double DRIVE_TO_POSE_XY_D = 0.0;
         private static final LinearVelocity MAX_VELOCITY_DRIVE_TO_POSE = MetersPerSecond.of(1);
         private static final LinearAcceleration MAX_ACCELERATION_DRIVE_TO_POSE = MetersPerSecondPerSecond.of(0.5);
@@ -88,14 +88,12 @@ public class DriveToPoseUtil {
                 
                 // filtering - if we're off by too much, it doesn't move. this keeps the robot
                 // from doing anything too drastic, especially in case of odometry failures.
-                if (Math.hypot(xToGoal, yToGoal) > XY_MAX_ALIGN_DISTANCE.in(Meters)) {
+                if (Math.hypot(xToGoal, yToGoal) > XY_MAX_ALIGN_DISTANCE.in(Meters) || 
+                thetaToGoal.in(Degrees) > THETA_MAX_ALIGN_ANGLE.in(Degrees)) {
                         xDesired = MetersPerSecond.of(0);
                         yDesired = MetersPerSecond.of(0);
+                        thetaDesired = RadiansPerSecond.of(0);
                 }
-
-                // if (Math.abs(thetaToGoal.in(Degrees)) > THETA_MAX_ALIGN_ANGLE.in(Degrees)) {
-                //         thetaDesired = RadiansPerSecond.of(0);
-                // }
 
                 // tolerance checking
                 if (Math.abs(xToGoal) < XY_ALIGN_TOLERANCE.in(Meters)) {
