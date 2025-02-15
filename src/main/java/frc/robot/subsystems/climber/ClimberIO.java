@@ -1,14 +1,16 @@
 package frc.robot.subsystems.climber;
 
+import edu.wpi.first.units.measure.Angle;
+
 public interface ClimberIO {
 
     static class ClimberIOInputs {
-        double position = 0.0;
-        double goalPosition = 0.0;
+        double angle = 0.0;
+        double goalAngle = 0.0;
         double velocity = 0.0; 
     }
     
-    public void setGoalAngle(double desiredPosition);
+    public void setGoalAngle(Angle desiredAngle);
     public double getAngle();
     public void setSpeed(double speed);
     public double getVelocity();

@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -16,6 +17,19 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants.MotorIdConstants;
 
 public class ClimberHardware implements ClimberIO {
+
+  public static final class ClimberConstants{
+    private static final double CURRENT_LIMIT = 80; 
+      //TODO: tune!
+    private static final double SENSOR_TO_MECHANISM_RATIO = 1;
+    private static final Voltage FEEDFORWARD_VALUE = Volts.of(1);
+    private static final Voltage ARBITRARY_FF_GRAVITY_COMPENSATION = Volts.of(1);
+    private static final Voltage P_VALUE = Volts.of(1);
+    private static final Voltage I_VALUE = Volts.of(0);
+    private static final Voltage D_VALUE = Volts.of(0);
+    private static final Angle MAX_ANGLE = Degrees.of(90);
+  } 
+
     final TalonFX leftClimber = new TalonFX(MotorIdConstants.LEFT_CLIMBER_CAN_ID);
     final TalonFX rightClimber  = new TalonFX(MotorIdConstants.RIGHT_CLIMBER_CAN_ID);
     final TalonFXConfigurator leftConfigurator = leftClimber.getConfigurator();  
@@ -23,22 +37,12 @@ public class ClimberHardware implements ClimberIO {
     final TalonFXConfiguration leftConfiguration = new TalonFXConfiguration();
     final TalonFXConfiguration rightConfiguration = new TalonFXConfiguration(); 
     final TalonFXConfiguration globalMotorConfiguration = new TalonFXConfiguration();
-
-    public static final class ClimberConstants{
-      private static final double CURRENT_LIMIT = 80; 
-          //TODO: tune!
-      private static final double SENSOR_TO_MECHANISM_RATIO = 1;
-      private static final Voltage FEEDFORWARD_VALUE = Volts.of(1);
-      private static final Voltage ARBITRARY_FF_GRAVITY_COMPENSATION = Volts.of(1);
-      private static final Voltage P_VALUE = Volts.of(1);
-      private static final Voltage I_VALUE = Volts.of(0);
-      private static final Voltage D_VALUE = Volts.of(0);
-      private static final Angle MAX_ANGLE = Degrees.of(90);
-    } 
+    private PositionVoltage climberPIDPositionControl;
+    private double goalAngle; 
 
     public ClimberHardware(){
 
-        leftConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
+        leftConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; 
         leftConfiguration.CurrentLimits.withStatorCurrentLimit(ClimberConstants.CURRENT_LIMIT);
         leftConfiguration.Feedback.withSensorToMechanismRatio(ClimberConstants.SENSOR_TO_MECHANISM_RATIO);
 
@@ -68,20 +72,21 @@ public class ClimberHardware implements ClimberIO {
         // globalMotorConfiguration.SoftwareLimitSwitch.withReverseSoftLimitThreshold(0);
         // globalMotorConfiguration.SoftwareLimitSwitch.withReverseSoftLimitEnable(true);
 
-
-
+        rightConfigurator.apply(globalMotorConfiguration);
+        leftConfigurator.apply(globalMotorConfiguration);
+        
+        leftClimber.setPosition(0); 
     }
 
 
     public double getAngle(){
         return leftClimber.getPosition().getValueAsDouble(); 
-        //TODO: add a position conversion fcator 
     }
 
-    public void setGoalAngle(double desiredAngle){
-        // leftClimber.setControl(elevatorPIDPositionControl.withPosition(desiredPosition)
-        //         .withFeedForward(KrakenElevatorConstants.ARBITRARY_FF_GRAVITY_COMPENSATION));
-        // goalPosition = desiredPosition; 
+    public void setGoalAngle(Angle desiredAngle){
+        leftClimber.setControl(climberPIDPositionControl.withPosition(desiredAngle)
+                .withFeedForward(ClimberConstants.ARBITRARY_FF_GRAVITY_COMPENSATION));
+        goalAngle = desiredAngle.in(Degrees); 
     } 
   
     public void setSpeed(double speed)
@@ -95,7 +100,9 @@ public class ClimberHardware implements ClimberIO {
     }
 
     public void updateStates(ClimberIOInputs inputs){
-        //add 
+        inputs.angle = getAngle(); 
+        inputs.velocity = getVelocity();
+        inputs.goalAngle = goalAngle; 
     }
 
 }

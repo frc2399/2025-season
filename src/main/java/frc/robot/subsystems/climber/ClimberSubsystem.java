@@ -1,5 +1,8 @@
 package frc.robot.subsystems.climber;
 
+import static edu.wpi.first.units.Units.Degrees;
+
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import frc.robot.subsystems.climber.ClimberIO.ClimberIOInputs;
@@ -26,9 +29,9 @@ public class ClimberSubsystem extends SubsystemBase {
         return climberIO.getVelocity(); 
     }
 
-    public Command goToAngle(double height)
+    public Command goToAngle(Angle goalAngle)
     {
-        return this.run(() -> climberIO.setGoalAngle(height));
+        return this.run(() -> climberIO.setGoalAngle(goalAngle));
     }
 
     public Command setSpeed(double speed)

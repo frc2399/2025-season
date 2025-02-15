@@ -1,8 +1,10 @@
 package frc.robot.subsystems.climber;
 
+import edu.wpi.first.units.measure.Angle;
+
 public class ClimberPlacebo implements ClimberIO{
     
-    public void setGoalAngle(double desiredPosition){}
+    public void setGoalAngle(Angle desiredAngle){}
 
     public double getAngle(){
         return 0.0; 

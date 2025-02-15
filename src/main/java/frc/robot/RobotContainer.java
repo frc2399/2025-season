@@ -63,6 +63,7 @@ public class RobotContainer {
 
         coralIntake.setDefaultCommand(coralIntake.setZero());
         coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
+        climber.setDefaultCommand(climber.setSpeed(0));
   }
 
   private void configureButtonBindingsDriver() {
@@ -75,7 +76,7 @@ public class RobotContainer {
     // driverController.a().onTrue(commandFactory.turtleMode());
 
     driverController.rightBumper().whileTrue(climber.setSpeed(0.1)); 
-    driverController.leftBumper().whileTrue(climber.setSpeed(-0.1)); 
+    driverController.leftBumper().whileTrue(climber.setSpeed(-0.2)); 
   }
 
   private void configureButtonBindingsOperator() {
