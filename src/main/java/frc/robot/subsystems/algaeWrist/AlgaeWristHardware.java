@@ -76,7 +76,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                                 .positionWrappingInputRange(POSITION_WRAPPING_MIN_INPUT.in(Radians),
                                                 POSITION_WRAPPING_MAX_INPUT.in(Radians));
 
-                algaeWristSparkMax = new SparkMax(MotorIdConstants.ALGAE_WRIST_CAN_ID, MotorType.kBrushless);
+                algaeWristSparkMax = new SparkMax(MotorIdConstants.ALGAE_BETA_WRIST_CAN_ID, MotorType.kBrushless);
 
                 algaeWristSparkMax.configure(wristSparkMaxConfig, ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);

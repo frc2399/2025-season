@@ -23,9 +23,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
         io.updateStates(states);
         SmartDashboard.putNumber("algaeIntake/intakeVelocity", states.intakeVelocity);
         SmartDashboard.putNumber("algaeIntake/leftCurrent", states.leftCurrent);
-        SmartDashboard.putNumber("algaeIntake/rightCurrent", states.rightCurrent);
         SmartDashboard.putNumber("algaeIntake/leftAppliedVoltage", states.leftAppliedVoltage);
-        SmartDashboard.putNumber("algaeIntake/rightAppliedVoltage", states.rightAppliedVoltage);
     }
 
 }

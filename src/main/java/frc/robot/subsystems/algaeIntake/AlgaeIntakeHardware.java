@@ -16,21 +16,13 @@ import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 
 public class AlgaeIntakeHardware implements AlgaeIntakeIO {
+        private final SparkMax algaeIntakeSparkMax;
+        private final SparkClosedLoopController algaeIntakeClosedLoopController;
+        private final RelativeEncoder algaeIntakeEncoder;
 
-        private final SparkMax algaeIntakeLeftSparkMax;
-        private final SparkMax algaeIntakeRightSparkMax;
-
-        private final SparkClosedLoopController algaeIntakeLeftClosedLoopController;
-        private final SparkClosedLoopController algaeIntakeRightClosedLoopController;
-
-        private final RelativeEncoder algaeIntakeLeftEncoder;
-        private final RelativeEncoder algaeIntakeRightEncoder;
-
-        private static final SparkMaxConfig leftSparkMaxConfig = new SparkMaxConfig();
-        private static final SparkMaxConfig rightSparkMaxConfig = new SparkMaxConfig();
+        private static final SparkMaxConfig algaeIntakeSparkMaxConfig = new SparkMaxConfig();
 
         private static final boolean LEFT_MOTOR_INVERTED = false;
-        private static final boolean RIGHT_MOTOR_INVERTED = false;
         private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
         private static final double ENCODER_POSITION_FACTOR = (2 * Math.PI); // radians
         private static final double ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 60.0; // radians per second
@@ -46,62 +38,43 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
 
         public AlgaeIntakeHardware() {
 
-                leftSparkMaxConfig.inverted(LEFT_MOTOR_INVERTED).idleMode(IDLE_MODE)
+                algaeIntakeSparkMaxConfig.inverted(LEFT_MOTOR_INVERTED).idleMode(IDLE_MODE)
                                 .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
-                leftSparkMaxConfig.encoder.positionConversionFactor(ENCODER_POSITION_FACTOR)
+                algaeIntakeSparkMaxConfig.encoder.positionConversionFactor(ENCODER_POSITION_FACTOR)
                                 .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
-                leftSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                algaeIntakeSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                                 .pidf(ALGAE_MOTOR_P, ALGAE_MOTOR_I, ALGAE_MOTOR_D, ALGAE_MOTOR_FF)
                                 .outputRange(ALGAE_MOTOR_MIN_OUTPUT, ALGAE_MOTOR_MAX_OUTPUT)
                                 .positionWrappingEnabled(POSITION_WRAPPING_ENABLED_SIDE_MOTORS);
 
-                rightSparkMaxConfig.inverted(RIGHT_MOTOR_INVERTED).idleMode(IDLE_MODE)
-                                .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
-                rightSparkMaxConfig.encoder.positionConversionFactor(ENCODER_POSITION_FACTOR)
-                                .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
-                rightSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                .pidf(ALGAE_MOTOR_P, ALGAE_MOTOR_I, ALGAE_MOTOR_D, ALGAE_MOTOR_FF)
-                                .outputRange(ALGAE_MOTOR_MIN_OUTPUT, ALGAE_MOTOR_MAX_OUTPUT);
+                algaeIntakeSparkMax = new SparkMax(MotorIdConstants.ALGAE_BETA_INTAKE_CAN_ID, MotorType.kBrushless);
 
-                algaeIntakeLeftSparkMax = new SparkMax(MotorIdConstants.ALGAE_INTAKE_LEFT_CAN_ID, MotorType.kBrushless);
-                algaeIntakeRightSparkMax = new SparkMax(MotorIdConstants.ALGAE_INTAKE_RIGHT_CAN_ID,
-                                MotorType.kBrushless);
+                algaeIntakeEncoder = algaeIntakeSparkMax.getEncoder();
 
-                algaeIntakeLeftEncoder = algaeIntakeLeftSparkMax.getEncoder();
-                algaeIntakeRightEncoder = algaeIntakeRightSparkMax.getEncoder();
-
-                algaeIntakeLeftSparkMax.configure(leftSparkMaxConfig, ResetMode.kResetSafeParameters,
+                algaeIntakeSparkMax.configure(algaeIntakeSparkMaxConfig, ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);
 
-                algaeIntakeRightSparkMax.configure(rightSparkMaxConfig, ResetMode.kResetSafeParameters,
-                                PersistMode.kPersistParameters);
-
-                algaeIntakeLeftClosedLoopController = algaeIntakeLeftSparkMax.getClosedLoopController();
-                algaeIntakeRightClosedLoopController = algaeIntakeRightSparkMax.getClosedLoopController();
+                algaeIntakeClosedLoopController = algaeIntakeSparkMax.getClosedLoopController();
         }
 
         public void setRollerSpeed(double speed) {
-                algaeIntakeLeftSparkMax.set(speed);
-                algaeIntakeRightSparkMax.set(speed);
+                algaeIntakeSparkMax.set(speed);
         }
 
         public double getVelocity() {
-                return algaeIntakeLeftEncoder.getVelocity();
+                return algaeIntakeEncoder.getVelocity();
         }
 
         public double getCurrent() {
-                return algaeIntakeLeftSparkMax.getOutputCurrent();
+                return algaeIntakeSparkMax.getOutputCurrent();
         }
 
         @Override
         public void updateStates(AlgaeIntakeIOStates states) {
                 states.intakeVelocity = getVelocity();
-                states.leftAppliedVoltage = algaeIntakeLeftSparkMax.getAppliedOutput()
-                                * algaeIntakeLeftSparkMax.getBusVoltage();
-                states.rightAppliedVoltage = algaeIntakeRightSparkMax.getAppliedOutput()
-                                * algaeIntakeRightSparkMax.getBusVoltage();
-                states.leftCurrent = algaeIntakeLeftSparkMax.getOutputCurrent();
-                states.rightCurrent = algaeIntakeRightSparkMax.getOutputCurrent();
+                states.leftAppliedVoltage = algaeIntakeSparkMax.getAppliedOutput()
+                                * algaeIntakeSparkMax.getBusVoltage();                
+                states.leftCurrent = algaeIntakeSparkMax.getOutputCurrent();
         }
 
 }
