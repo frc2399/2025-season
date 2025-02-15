@@ -16,6 +16,9 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SetpointConstants;
+import frc.robot.Constants.SpeedConstants;
+import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
+import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
@@ -34,13 +37,18 @@ public class RobotContainer {
   private ComplexWidget autonChooserWidget;
   private final Field2d field;
   //this is public because we need to run the visionPoseEstimator periodic from Robot
+  private final CoralIntakeSubsystem coralIntake = subsystemFactory.buildCoralIntake();
+  private final CoralWristSubsystem coralWrist = subsystemFactory.buildCoralWrist();
+  // this is public because we need to run the visionPoseEstimator periodic from
+  // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
-  private CommandFactory commandFactory = new CommandFactory(drive, elevator);
+  private CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist);
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
-  private final CommandXboxController operatorController = new CommandXboxController(
+  private static final CommandXboxController operatorController = new CommandXboxController(
       DriveControlConstants.OPERATOR_CONTROLLER_PORT);
+
 
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -68,34 +76,33 @@ public class RobotContainer {
   }
 
   public void disableSubsystems() {
-    elevator.disableElevator();
+    elevator.profiledPIDEnabled = false; 
   }
 
 
   public void configureDefaultCommands() {
-    drive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () -> drive.drive(
-                -(MathUtil.applyDeadband(
-                    driverController.getLeftY(),
-                    DriveControlConstants.DRIVE_DEADBAND)),
-                -(MathUtil.applyDeadband(
-                    driverController.getLeftX(),
-                    DriveControlConstants.DRIVE_DEADBAND)),
-                -(MathUtil.applyDeadband(
-                    driverController.getRightX(),
-                    DriveControlConstants.DRIVE_DEADBAND)),
-                DriveControlConstants.FIELD_ORIENTED_DRIVE),
-            drive).withName("drive default"));
+    drive.setDefaultCommand(drive.driveCommand(
+        () -> -(MathUtil.applyDeadband(
+            driverController.getLeftY(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        () -> -(MathUtil.applyDeadband(
+            driverController.getLeftX(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        () -> -(MathUtil.applyDeadband(
+            driverController.getRightX(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        DriveControlConstants.FIELD_ORIENTED_DRIVE));
 
-      elevator.setDefaultCommand(elevator.keepElevatorAtCurrentPosition());
+        coralIntake.setDefaultCommand(coralIntake.setZero());
+        coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
   }
- 
+
   private void configureButtonBindingsDriver() {
+    driverController.rightBumper().whileTrue(coralIntake.intake());
+    driverController.leftBumper().whileTrue(coralIntake.outtake());
     driverController.b().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
+    driverController.a().onTrue(commandFactory.turtleMode());
   }
 
   private void setUpAuton() {
@@ -103,9 +110,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Score coral on L1", Commands.print("coral scored on L1"));
     NamedCommands.registerCommand("Score coral on L2", Commands.print("coral scored on L2"));
     NamedCommands.registerCommand("Score coral on L4", Commands.print("coral scored on L4"));
-    NamedCommands.registerCommand("Elevator to L1 setpoint", elevator.goToSetPointCommand(SetpointConstants.L_TWO_HEIGHT.in(Meters)).andThen(elevator.atGoalCommand()));
-    NamedCommands.registerCommand("Elevator to L2 setpoint", elevator.goToSetPointCommand(SetpointConstants.L_THREE_HEIGHT.in(Meters)).andThen(elevator.atGoalCommand()));
-    NamedCommands.registerCommand("Elevator to L3 setpoint", elevator.goToSetPointCommand(SetpointConstants.L_FOUR_HEIGHT.in(Meters)).andThen(elevator.atGoalCommand()));
+    NamedCommands.registerCommand("Elevator to L1 setpoint", elevator.goToGoalSetpointCmd(SetpointConstants.L_TWO_HEIGHT).andThen(elevator.atGoalCommand()));
+    NamedCommands.registerCommand("Elevator to L2 setpoint", elevator.goToGoalSetpointCmd(SetpointConstants.L_THREE_HEIGHT).andThen(elevator.atGoalCommand()));
+    NamedCommands.registerCommand("Elevator to L3 setpoint", elevator.goToGoalSetpointCmd(SetpointConstants.L_FOUR_HEIGHT).andThen(elevator.atGoalCommand()));
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Autos/Selector", autoChooser);
@@ -116,11 +123,17 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsOperator() {
-    operatorController.y().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_TWO_HEIGHT.in(Meters)));
-    operatorController.x().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
-    operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
-    operatorController.a().whileTrue(elevator.setPercentOutputCommand(-0.1));
-    //operatorController.x().onTrue(elevator.setEncoderPositionCommand(0.01));
+    operatorController.rightTrigger()
+        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_INTAKE_ANGLE.in(Radians))
+            .withName("move coral wrist to intake setpoint"));
+    operatorController.rightBumper()
+        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Radians))
+            .withName("move coral wrist to outtake setpoint"));
+    operatorController.y().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_TWO_HEIGHT));
+    operatorController.x().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_THREE_HEIGHT));
+    operatorController.b().whileTrue(elevator.incrementGoalPosition(Meters.of(0.001)));
+    operatorController.a().whileTrue(elevator.incrementGoalPosition(Meters.of(-0.001)));
+    operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians)).withName("move coral wrist to L1 outtake setpoint"));
   }
 }
 

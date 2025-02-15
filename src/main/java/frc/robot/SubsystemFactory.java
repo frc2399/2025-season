@@ -3,8 +3,14 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.MotorIdConstants;
+import frc.robot.subsystems.coralIntake.CoralIntakeAlphaHardware;
+import frc.robot.subsystems.coralIntake.CoralIntakeBetaHardware;
+import frc.robot.subsystems.coralIntake.CoralIntakePlacebo;
+import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
+import frc.robot.subsystems.coralWrist.CoralWristHardware;
+import frc.robot.subsystems.coralWrist.CoralWristPlacebo;
+import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.SwerveModule;
 import frc.robot.subsystems.drive.SwerveModuleHardware;
@@ -26,6 +32,8 @@ public class SubsystemFactory {
     private static final String ALPHA_SERIAL_NUMBER = "03260A64";
     private static final String BETA_SERIAL_NUMBER = "30FC267";
     private static final String COMP_SERIAL_NUMBER = "";
+
+    private static final Distance ELEVATOR_ALPHA_MAX_HEIGHT = Inches.of(34.25);
 
     private enum RobotType {
         MOZART,
@@ -103,7 +111,7 @@ public class SubsystemFactory {
             rearLeft = new SwerveModule(new SwerveModulePlacebo());
             rearRight = new SwerveModule(new SwerveModulePlacebo());
             return new DriveSubsystem(frontLeft, frontRight, rearLeft, rearRight, gyro, Inches.of(10));
-            //10 is a default value for sim lol
+            // 10 is a default value for sim lol
         }
     }
 
@@ -115,9 +123,28 @@ public class SubsystemFactory {
         }
     }
 
+    public CoralIntakeSubsystem buildCoralIntake() {
+        if (robotType == RobotType.ALPHA) {
+            return new CoralIntakeSubsystem(new CoralIntakeAlphaHardware());
+        } else if (robotType == RobotType.BETA) {
+            return new CoralIntakeSubsystem(new CoralIntakeBetaHardware());
+        } else {
+            return new CoralIntakeSubsystem(new CoralIntakePlacebo());
+        }
+
+    }
+
+    public CoralWristSubsystem buildCoralWrist() {
+        if (robotType == RobotType.ALPHA) {
+            return new CoralWristSubsystem(new CoralWristHardware());
+        } else {
+            return new CoralWristSubsystem(new CoralWristPlacebo());
+        }
+    }
+
     protected ElevatorSubsystem buildElevator() {
         if (robotType == RobotType.ALPHA) {
-            return new ElevatorSubsystem(new ElevatorHardware());
+            return new ElevatorSubsystem(new ElevatorHardware(ELEVATOR_ALPHA_MAX_HEIGHT));
         } else {
             return new ElevatorSubsystem(new ElevatorPlacebo());
         }
