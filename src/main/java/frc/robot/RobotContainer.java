@@ -59,15 +59,13 @@ public class RobotContainer {
             DriveControlConstants.DRIVE_DEADBAND)),
         DriveControlConstants.FIELD_ORIENTED_DRIVE));
 
-        coralIntake.setDefaultCommand(coralIntake.setRollerSpeed(0).withName("coral Intake default"));
+        coralIntake.setDefaultCommand(coralIntake.setZero());
         coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
   }
 
   private void configureButtonBindingsDriver() {
-    driverController.rightBumper()
-        .whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_INTAKE_SPEED).withName("run coral intake"));
-    driverController.leftBumper()
-        .whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED).withName("run coral outtake"));
+    driverController.rightBumper().whileTrue(coralIntake.intake());
+    driverController.leftBumper().whileTrue(coralIntake.outtake());
     driverController.b().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleMode());

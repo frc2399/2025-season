@@ -65,8 +65,8 @@ public class AlphaElevator implements ElevatorIO {
         rightMotorConfigFollower = new SparkFlexConfig();
         leftMotorConfigLeader = new SparkFlexConfig();
 
-        elevatorRightMotorFollower = new SparkFlex(MotorIdConstants.RIGHT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
-        elevatorLeftMotorLeader = new SparkFlex(MotorIdConstants.LEFT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
+        elevatorRightMotorFollower = new SparkFlex(MotorIdConstants.RIGHT_ALPHA_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
+        elevatorLeftMotorLeader = new SparkFlex(MotorIdConstants.LEFT_ALPHA_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
 
         leftClosedLoopController = elevatorLeftMotorLeader.getClosedLoopController();
 
@@ -108,7 +108,7 @@ public class AlphaElevator implements ElevatorIO {
                 .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
 
         rightMotorConfigFollower
-                .follow(MotorIdConstants.LEFT_ELEVATOR_MOTOR_ID, true)
+                .follow(MotorIdConstants.LEFT_ALPHA_ELEVATOR_MOTOR_ID, true)
                 .apply(globalMotorConfig)
                 .idleMode(IdleMode.kBrake)
                 .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));

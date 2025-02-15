@@ -83,7 +83,7 @@ public class CoralWristHardware implements CoralWristIO {
                                 .positionWrappingInputRange(POSITION_WRAPPING_MIN_INPUT.in(Radians),
                                                 POSITION_WRAPPING_MAX_INPUT.in(Radians));
 
-                coralIntakeWristSparkFlex = new SparkFlex(MotorIdConstants.CORAL_INTAKE_WRIST_CAN_ID,
+                coralIntakeWristSparkFlex = new SparkFlex(MotorIdConstants.CORAL_ALPHA_INTAKE_WRIST_CAN_ID,
                                 MotorType.kBrushless);
 
                 coralIntakeWristSparkFlex.configure(wristSparkFlexConfig, ResetMode.kResetSafeParameters,
