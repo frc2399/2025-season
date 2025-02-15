@@ -1,12 +1,12 @@
 package frc.robot.subsystems.climber;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.controls.StrictFollower;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.Constants.MotorIdConstants;
 
@@ -15,58 +15,62 @@ public class ClimberHardware implements ClimberIO {
     final TalonFX rightClimber  = new TalonFX(MotorIdConstants.CLIMBER_RIGHT_CAN_ID);
     final TalonFXConfigurator leftConfigurator = leftClimber.getConfigurator();  
     final TalonFXConfigurator rightConfigurator = rightClimber.getConfigurator(); 
-    final TalonFXConfiguration configuration = new TalonFXConfiguration();
-
-    //TODO: tune min and max positions 
-    private static final double MAX_POSITION = 0; 
-    private static final double MIN_POSITION = 0;
-
-    //TODO: tune tolerance
-    private static final double HEIGHT_TOLERANCE = 0.05;
+    final TalonFXConfiguration leftConfiguration = new TalonFXConfiguration();
+    final TalonFXConfiguration rightConfiguration = new TalonFXConfiguration(); 
 
     //TODO: tune! 
     private static final double SENSOR_TO_MECHANISM_RATIO = 1;
 
     public ClimberHardware(){
 
-        //TODO: tune PID 
-        configuration.Slot0.kP = 0;
-        configuration.Slot0.kI = 0;
-        configuration.Slot0.kD = 0;
-        configuration.Slot0.kV = 0;
+        leftConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
+        leftConfiguration.CurrentLimits.withStatorCurrentLimit(80);
+        leftConfiguration.Feedback.withSensorToMechanismRatio(SENSOR_TO_MECHANISM_RATIO);
 
-        //we may have to add a second configuration if the inversion is switched 
-        configuration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
+        //rightMotorConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; 
+        rightConfiguration.CurrentLimits.withStatorCurrentLimit(80);
+        rightConfiguration.Feedback.withSensorToMechanismRatio(SENSOR_TO_MECHANISM_RATIO);
 
-        configuration.CurrentLimits.StatorCurrentLimit = 120;
-        configuration.CurrentLimits.StatorCurrentLimitEnable = true;
+        rightConfigurator.apply(rightConfiguration); 
+        leftConfigurator.apply(leftConfiguration); 
 
-        configuration.Feedback.withSensorToMechanismRatio(SENSOR_TO_MECHANISM_RATIO);
+        rightClimber.setNeutralMode(NeutralModeValue.Brake);
+        leftClimber.setNeutralMode(NeutralModeValue.Brake);
 
-        leftConfigurator.apply(configuration); 
-        rightConfigurator.apply(configuration); 
-
-        rightClimber.setControl(new StrictFollower(leftClimber.getDeviceID()));
+        rightClimber.setControl(new Follower(leftClimber.getDeviceID(), true));
 
     }
 
-    //returns angle in unit of rotations
-    //TODO: convert to degrees/radians 
+    public void setAngle(double angle)
+    {
+        leftClimber.setPosition(angle); 
+    }
+
     public double getAngle(){
         return leftClimber.getPosition().getValueAsDouble(); 
         //TODO: add a position conversion fcator 
     }
 
     public void setGoalAngle(double desiredAngle){
-        leftClimber.setPosition(desiredAngle); 
+        // leftClimber.setControl(elevatorPIDPositionControl.withPosition(desiredPosition)
+        //         .withFeedForward(KrakenElevatorConstants.ARBITRARY_FF_GRAVITY_COMPENSATION));
+        // goalPosition = desiredPosition; 
     } 
   
     public void setSpeed(double speed)
     {
-        leftClimber.set(speed);
+        leftClimber.setControl(new DutyCycleOut(speed));
     }
 
-    
+    public double getVelocity()
+    {
+        return leftClimber.getVelocity().getValueAsDouble(); 
+    }
+
+    public void updateStates(ClimberIOInputs inputs){
+        //add 
+    }
+
 }
 
     

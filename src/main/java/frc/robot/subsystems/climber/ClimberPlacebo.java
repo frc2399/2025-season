@@ -2,22 +2,22 @@ package frc.robot.subsystems.climber;
 
 public class ClimberPlacebo implements ClimberIO{
     
-    public double getAngle(){
-        return 0.0;
-    }
 
-    public void setEncoderAngle(double Angle){}
+    public void setAngle(double angle){} 
 
     public void setGoalAngle(double desiredPosition){}
 
+    public double getAngle(){
+        return 0.0; 
+    }
+
     public void setSpeed(double speed){}
 
-    public void getEncoderVelocity(){}
+    public double getVelocity(){
+        return 0.0; 
+    }
 
-    public void getEncoderPosition(){}
-
-    public void updateStates(){}
-
+    public void updateStates(ClimberIOInputs inputs){}
 
 
 }

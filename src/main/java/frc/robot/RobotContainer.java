@@ -66,13 +66,16 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsDriver() {
-    driverController.rightBumper()
-        .whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_INTAKE_SPEED).withName("run coral intake"));
-    driverController.leftBumper()
-        .whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED).withName("run coral outtake"));
-    driverController.b().onTrue(gyro.setYaw(0.0));
-    driverController.x().whileTrue(drive.setX());
-    driverController.a().onTrue(commandFactory.turtleMode());
+    // driverController.rightBumper()
+    //     .whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_INTAKE_SPEED).withName("run coral intake"));
+    // driverController.leftBumper()
+    //     .whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED).withName("run coral outtake"));
+    // driverController.b().onTrue(gyro.setYaw(0.0));
+    // driverController.x().whileTrue(drive.setX());
+    // driverController.a().onTrue(commandFactory.turtleMode());
+
+    driverController.rightBumper().whileTrue(climber.setSpeed(0.1)); 
+    driverController.leftBumper().whileTrue(climber.setSpeed(-0.1)); 
   }
 
   private void configureButtonBindingsOperator() {
