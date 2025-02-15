@@ -16,8 +16,8 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants.MotorIdConstants;
 
 public class ClimberHardware implements ClimberIO {
-    final TalonFX leftClimber = new TalonFX(MotorIdConstants.CLIMBER_LEFT_CAN_ID);
-    final TalonFX rightClimber  = new TalonFX(MotorIdConstants.CLIMBER_RIGHT_CAN_ID);
+    final TalonFX leftClimber = new TalonFX(MotorIdConstants.LEFT_CLIMBER_CAN_ID);
+    final TalonFX rightClimber  = new TalonFX(MotorIdConstants.RIGHT_CLIMBER_CAN_ID);
     final TalonFXConfigurator leftConfigurator = leftClimber.getConfigurator();  
     final TalonFXConfigurator rightConfigurator = rightClimber.getConfigurator(); 
     final TalonFXConfiguration leftConfiguration = new TalonFXConfiguration();
