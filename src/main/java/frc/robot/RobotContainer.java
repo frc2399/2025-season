@@ -79,10 +79,10 @@ public class RobotContainer {
         driverController.x().whileTrue(drive.setX());
         driverController.a().onTrue(commandFactory.turtleMode());
         driverController.rightTrigger()
-                .whileTrue(drive.driveToPoseCommand(AlignType.REEF_RIGHT, DriverStation.getAlliance()))
+                .whileTrue(drive.driveToPoseCommand(AlignType.REEF_RIGHT))
                 .onFalse(drive.disableDriveToPose());
         driverController.leftTrigger()
-                .whileTrue(drive.driveToPoseCommand(AlignType.REEF_LEFT, DriverStation.getAlliance()))
+                .whileTrue(drive.driveToPoseCommand(AlignType.REEF_LEFT))
                 .onFalse(drive.disableDriveToPose());
     }
 

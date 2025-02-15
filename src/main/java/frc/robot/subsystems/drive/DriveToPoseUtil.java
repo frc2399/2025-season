@@ -117,14 +117,4 @@ public class DriveToPoseUtil {
                                 new Rotation2d(-thetaDesired.in(RadiansPerSecond)));
                 return () -> alignmentSpeeds;
         }
-
-        public static AngularVelocity getAlignmentRotRate(Pose2d robotPose, Supplier<Pose2d> goalPose) {
-                Rotation2d rotationToGoal = robotPose.minus(goalPose.get()).getRotation();
-                AngularVelocity thetaDesired = RotationsPerSecond.of(
-                                driveToPoseThetaPid.calculate(rotationToGoal.getRotations(), 0));
-                if (rotationToGoal.getDegrees() < THETA_ALIGN_TOLERANCE.in(Degrees)) {
-                        thetaDesired = RotationsPerSecond.of(0);
-                }
-                return thetaDesired;
-        }
 }
