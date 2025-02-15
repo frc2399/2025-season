@@ -62,7 +62,6 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         private double goalAngle;
 
         public AlgaeWristHardware() {
-
                 wristSparkMaxConfig.inverted(MOTOR_INVERTED).idleMode(IDLE_MODE)
                                 .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
                 wristSparkMaxConfig.absoluteEncoder.positionConversionFactor(ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR)
@@ -83,6 +82,8 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                                 PersistMode.kPersistParameters);
                 algaeWristAbsoluteEncoder = algaeWristSparkMax.getAbsoluteEncoder();
                 algaeWristRelativeEncoder = algaeWristSparkMax.getEncoder();
+
+                algaeWristRelativeEncoder.setPosition(algaeWristAbsoluteEncoder.getPosition());
 
                 algaeWristClosedLoopController = algaeWristSparkMax.getClosedLoopController();
 
