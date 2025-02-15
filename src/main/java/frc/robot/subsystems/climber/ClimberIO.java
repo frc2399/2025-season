@@ -8,7 +8,6 @@ public interface ClimberIO {
         double velocity = 0.0; 
     }
     
-    public void setAngle(double angle); 
     public void setGoalAngle(double desiredPosition);
     public double getAngle();
     public void setSpeed(double speed);
