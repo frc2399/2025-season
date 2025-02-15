@@ -4,9 +4,20 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RPM;
+
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Distance;
+
 public final class Constants {
 
-  public static class MotorIdConstants{
+  public static class MotorIdConstants {
     public static final int FRONT_LEFT_DRIVING_CAN_ID = 11;
     public static final int REAR_LEFT_DRIVING_CAN_ID = 21;
     public static final int FRONT_RIGHT_DRIVING_CAN_ID = 31;
@@ -19,32 +30,60 @@ public final class Constants {
 
     public static final int GYRO_CAN_ID = 3;
 
-    public static final int CLIMBER_LEFT_CAN_ID = 0;
-    public static final int CLIMBER_RIGHT_CAN_ID = 1;
+    public static final int CLIMBER_LEFT_CAN_ID = 26;
+    public static final int CLIMBER_RIGHT_CAN_ID = 27;
+    public static final int CORAL_INTAKE_LEFT_CAN_ID = 7;
+    public static final int CORAL_INTAKE_RIGHT_CAN_ID = 5;
+    public static final int CORAL_INTAKE_WRIST_CAN_ID = 13;
+    public static final int LEFT_ELEVATOR_MOTOR_ID = 17;
+    public static final int RIGHT_ELEVATOR_MOTOR_ID = 15;
+
+    /**
+    public static final int LEFT_ELEVATOR_CAN_ID = 16;
+    public static final int RIGHT_ELEVATOR_CAN_ID = 17;
+
+    public static final int LEFT_CLIMBER_CAN_ID = 26;
+    public static final int RIGHT_CLIMBER_CAN_ID = 27;
+    
+    public static final int ALGAE_WRIST_CAN_ID = 36;
+    public static final int ALGAE_INTAKE_CAN_ID = 37;
+    
+    public static final int CORAL_WRIST_CAN_ID = 46;
+    public static final int CORAL_INTAKE_CAN_ID = 47;
+    **/
   }
-  
+
   public static class SensorIdConstants {
 
   }
 
   public static class MotorConstants {
-    public static final int NEO550_CURRENT_LIMIT = 20;
-    public static final int NEO_CURRENT_LIMIT = 50;
-    public static final int NEO_FREE_SPEED_RPM = 5676;
-    public static final double NEO_FREE_SPEED_RPS = NEO_FREE_SPEED_RPM / 60;
-    // MPS = (GearRatio * 2πr * RPM) / 60
-    public static final int NEO550_FREE_SPEED_RPM = 11000;
+    public static final Current NEO550_CURRENT_LIMIT = Amps.of(20);
+    public static final Current NEO_CURRENT_LIMIT = Amps.of(50);
+    public static final AngularVelocity NEO_FREE_SPEED = RPM.of(5676);
+    public static final AngularVelocity NEO550_FREE_SPEED = RPM.of(11000);
+    public static final Current VORTEX_CURRENT_LIMIT = Amps.of(60);
   }
 
   public static class SpeedConstants {
     public static final double MAIN_LOOP_FREQUENCY_HZ = 50;
-
     public static final double DRIVETRAIN_MAX_SPEED_MPS = 4.8;
     public static final double DRIVETRAIN_MAX_ANGULAR_SPEED_RPS = 2 * Math.PI;
+    public static final double CORAL_INTAKE_SPEED = 0.75;
+    public static final double CORAL_OUTTAKE_SPEED = -0.50;
   }
 
   public static class SetpointConstants {
+    public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(35);
+    public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
+    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(35);
+    public static final Angle CORAL_L1_ANGLE = Degrees.of(0);
 
+    public static final Distance ELEVATOR_TURTLE_HEIGHT = Inches.of(0);
+    public static final Distance L_ONE_HEIGHT = Meters.of(0.125);
+    public static final Distance L_TWO_HEIGHT = Meters.of(0.476);
+    public static final Distance L_THREE_HEIGHT = Meters.of(0.849);
+    public static final Distance L_FOUR_HEIGHT = Inches.of(49.5);
   }
 
   public static class DriveControlConstants {
@@ -52,6 +91,9 @@ public final class Constants {
     public static final int OPERATOR_CONTROLLER_PORT = 1;
     public static final double DRIVE_DEADBAND = 0.05;
     public static final boolean FIELD_ORIENTED_DRIVE = true;
+
+    public static final Distance ALPHA_TRACK_WIDTH = Meters.of(0.4954);
+    public static final Distance MOZART_TRACK_WIDTH = Inches.of(26 - (2 * 1.75));
   }
 
 }

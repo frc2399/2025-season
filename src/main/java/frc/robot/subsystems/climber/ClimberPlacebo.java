@@ -6,8 +6,18 @@ public class ClimberPlacebo implements ClimberIO{
         return 0.0;
     }
 
-    public void setAngle(double height){}
+    public void setEncoderAngle(double Angle){}
 
-    public void set(double speed){}
+    public void setGoalAngle(double desiredPosition){}
+
+    public void setSpeed(double speed){}
+
+    public void getEncoderVelocity(){}
+
+    public void getEncoderPosition(){}
+
+    public void updateStates(){}
+
+
 
 }

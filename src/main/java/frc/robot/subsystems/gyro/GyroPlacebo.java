@@ -1,6 +1,8 @@
 package frc.robot.subsystems.gyro;
 
-import frc.robot.subsystems.gyro.Gyro.GyroIOInputs;
+import com.ctre.phoenix6.StatusSignal;
+
+import edu.wpi.first.units.measure.AngularVelocity;
 
 public class GyroPlacebo implements GyroIO {
     public double getYaw() {
@@ -10,6 +12,7 @@ public class GyroPlacebo implements GyroIO {
     public void setYaw(double yaw) {
     }
 
-    public void updateInputs(GyroIOInputs inputs) {
+    public StatusSignal<AngularVelocity> getAngularVelocity() {
+        return new StatusSignal<AngularVelocity>(null, null, null);
     }
 }

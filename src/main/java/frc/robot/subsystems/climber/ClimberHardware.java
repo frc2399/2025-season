@@ -57,11 +57,11 @@ public class ClimberHardware implements ClimberIO {
         //TODO: add a position conversion fcator 
     }
 
-    public void setAngle(double desiredAngle){
+    public void setGoalAngle(double desiredAngle){
         leftClimber.setPosition(desiredAngle); 
     } 
   
-    public void set(double speed)
+    public void setSpeed(double speed)
     {
         leftClimber.set(speed);
     }
