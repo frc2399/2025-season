@@ -40,7 +40,7 @@ public class KrakenElevator implements ElevatorIO {
         private static final double P_VALUE_VELOCITY = 0.0001;
         private static final double I_VALUE_VELOCITY = 0;
         private static final double D_VALUE_VELOCITY = 0;
-        private static final double ELEVATOR_SENSOR_TO_MECHANISM_RATIO = 1; // TODO: tune!
+        private static final double ELEVATOR_SENSOR_TO_MECHANISM_RATIO = 2; // TODO: tune! make sure there is a factor of 2 bc for every inch of chain the elevator moves two inches
         private static final double kDt = 0.02;
         private static final Current KRAKEN_CURRENT_LIMIT = Amps.of(80);
     }
@@ -55,8 +55,8 @@ public class KrakenElevator implements ElevatorIO {
     private PositionVoltage closedLoopController;
 
     public KrakenElevator(Distance maxElevatorHeight) {
-        elevatorRightMotorFollower = new TalonFX(MotorIdConstants.RIGHT_ELEVATOR_MOTOR_ID);
-        elevatorLeftMotorLeader = new TalonFX(MotorIdConstants.LEFT_ELEVATOR_MOTOR_ID);
+        elevatorRightMotorFollower = new TalonFX(MotorIdConstants.RIGHT_BETA_ELEVATOR_CAN_ID);
+        elevatorLeftMotorLeader = new TalonFX(MotorIdConstants.LEFT_BETA_ELEVATOR_CAN_ID);
 
         rightMotorFollowerConfigurator = elevatorRightMotorFollower.getConfigurator();
         leftMotorLeaderConfigurator = elevatorLeftMotorLeader.getConfigurator();
