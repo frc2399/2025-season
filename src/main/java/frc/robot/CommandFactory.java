@@ -51,6 +51,7 @@ public class CommandFactory {
               } else {
                 indicator = true;
               }
+              System.out.println("Indicator is " + indicator);
               newEntry.setBoolean(indicator);
             });
     }
