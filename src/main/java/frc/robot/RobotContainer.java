@@ -36,7 +36,6 @@ public class RobotContainer {
   private static SendableChooser<Command> autoChooser;
   private ComplexWidget autonChooserWidget;
   private final Field2d field;
-  //this is public because we need to run the visionPoseEstimator periodic from Robot
   private final CoralIntakeSubsystem coralIntake = subsystemFactory.buildCoralIntake();
   private final CoralWristSubsystem coralWrist = subsystemFactory.buildCoralWrist();
   // this is public because we need to run the visionPoseEstimator periodic from
@@ -53,32 +52,31 @@ public class RobotContainer {
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
     field = new Field2d();
-        SmartDashboard.putData("Field", field);
+    SmartDashboard.putData("Field", field);
 
-        // Logging callback for current robot pose
-        PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
-            field.setRobotPose(pose);
-        });
+    // Logging callback for current robot pose
+    PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+      field.setRobotPose(pose);
+    });
 
-        // Logging callback for target robot pose
-        PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
-            field.getObject("target pose").setPose(pose);
-        });
+    // Logging callback for target robot pose
+    PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+      field.getObject("target pose").setPose(pose);
+    });
 
-        // Logging callback for the active path, this is sent as a list of poses
-        PathPlannerLogging.setLogActivePathCallback((poses) -> {
-            field.getObject("path").setPoses(poses);
-        });
+    // Logging callback for the active path, this is sent as a list of poses
+    PathPlannerLogging.setLogActivePathCallback((poses) -> {
+      field.getObject("path").setPoses(poses);
+    });
     configureDefaultCommands();
     configureButtonBindingsDriver();
-    setUpAuton();
     configureButtonBindingsOperator();
+    setUpAuton();
   }
 
   public void disableSubsystems() {
     elevator.profiledPIDEnabled = false; 
   }
-
 
   public void configureDefaultCommands() {
     drive.setDefaultCommand(drive.driveCommand(
@@ -95,6 +93,7 @@ public class RobotContainer {
 
         coralIntake.setDefaultCommand(coralIntake.setZero());
         coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
+
   }
 
   private void configureButtonBindingsDriver() {
@@ -129,11 +128,12 @@ public class RobotContainer {
     operatorController.rightBumper()
         .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Radians))
             .withName("move coral wrist to outtake setpoint"));
+    operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians))
+        .withName("move coral wrist to L1 outtake setpoint"));
     operatorController.y().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_TWO_HEIGHT));
-    operatorController.x().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_THREE_HEIGHT));
+    operatorController.x().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_ONE_HEIGHT));
     operatorController.b().whileTrue(elevator.incrementGoalPosition(Meters.of(0.001)));
     operatorController.a().whileTrue(elevator.incrementGoalPosition(Meters.of(-0.001)));
     operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians)).withName("move coral wrist to L1 outtake setpoint"));
   }
-}
-
+  }

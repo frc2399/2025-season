@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import java.util.function.DoubleSupplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -21,11 +23,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
-
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -158,32 +155,32 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 new Pose2d(0, 0, new Rotation2d(0, 0))); // TODO: make these constants in the constants
                                                                          // file rather than
                                                                          // free-floating numbers
-                
-                try{
-                        config = RobotConfig.fromGUISettings(); 
+                try {
+                        config = RobotConfig.fromGUISettings();
 
-                AutoBuilder.configure(
-                        this::getPose, 
-                        this::resetOdometry, 
-                        this::getRobotRelativeSpeeds, 
-                        (speeds, feedforwards) -> setRobotRelativeSpeeds(speeds), 
-                        new PPHolonomicDriveController( 
-                                new PIDConstants(HOLONOMIC_P_CONSTANT, HOLONOMIC_I_CONSTANT, HOLONOMIC_D_CONSTANT), // translation
-                                new PIDConstants(HOLONOMIC_P_CONSTANT, HOLONOMIC_I_CONSTANT, HOLONOMIC_D_CONSTANT)  // rotation
-                        ),
-                        config, // The robot configuration
-                        () -> {
+                        AutoBuilder.configure(
+                                        this::getPose,
+                                        this::resetOdometry,
+                                        this::getRobotRelativeSpeeds,
+                                        (speeds, feedforwards) -> setRobotRelativeSpeeds(speeds),
+                                        new PPHolonomicDriveController(
+                                                        new PIDConstants(HOLONOMIC_P_CONSTANT, HOLONOMIC_I_CONSTANT,
+                                                                        HOLONOMIC_D_CONSTANT),
+                                                        new PIDConstants(HOLONOMIC_P_CONSTANT, HOLONOMIC_I_CONSTANT,
+                                                                        HOLONOMIC_D_CONSTANT)),
+                                        config, // The robot configuration
+                                        () -> {
 
-                                var alliance = DriverStation.getAlliance();
-                                if (alliance.isPresent()) {
-                                        return alliance.get() == DriverStation.Alliance.Red;
-                                }
-                                return false;
-                        },
-                        this 
-                );
+                                                var alliance = DriverStation.getAlliance();
+                                                if (alliance.isPresent()) {
+                                                        return alliance.get() == DriverStation.Alliance.Red;
+                                                }
+                                                return false;
+                                        },
+                                        this);
                 } catch (Exception e) {
-                        DriverStation.reportError("Failed to load Pathplanner config and configure Autobuilder", e.getStackTrace());
+                        DriverStation.reportError("Failed to load Pathplanner config and configure Autobuilder",
+                                        e.getStackTrace());
                 }
                 configurePathPlannerLogging();
         }
@@ -290,7 +287,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 desiredAngle = 0;
                         }
 
-                        double newRotRate = getHeadingCorrectionRotRate(currentAngle, Math.pow(rotRate.getAsDouble(), 5),
+                        double newRotRate = getHeadingCorrectionRotRate(currentAngle,
+                                        Math.pow(rotRate.getAsDouble(), 5),
                                         polarXSpeed, polarYSpeed);
 
                         // Convert the commanded speeds into the correct units for the drivetrain
