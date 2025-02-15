@@ -34,7 +34,7 @@ public class SubsystemFactory {
     private static final String COMP_SERIAL_NUMBER = "";
 
     private static final Distance ELEVATOR_ALPHA_MAX_HEIGHT = Inches.of(34.25);
-    private static final Distance ELEVATOR_BETA_MAX_HEIGHT = Inches.of();
+    private static final Distance ELEVATOR_BETA_MAX_HEIGHT = Inches.of(24.5); //TODO: add max height 
 
     private enum RobotType {
         MOZART,
@@ -144,7 +144,9 @@ public class SubsystemFactory {
     protected ElevatorSubsystem buildElevator() {
         if (robotType == RobotType.ALPHA) {
             return new ElevatorSubsystem(new AlphaElevator(ELEVATOR_ALPHA_MAX_HEIGHT));
-        } if else (robotType == RobotType.BETA) {
+        } 
+        
+        if (robotType == RobotType.BETA) {
             return new ElevatorSubsystem(new KrakenElevator(ELEVATOR_BETA_MAX_HEIGHT)); 
         }
         else {
