@@ -46,7 +46,7 @@ public class CommandFactory {
         public Command indicatorChange() {
           return Commands
             .runOnce(() -> {
-              if (indicator = true) {
+              if (indicator == true) {
                 indicator = false;
               } else {
                 indicator = true;
