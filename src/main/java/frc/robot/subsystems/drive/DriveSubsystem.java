@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.drive;
 
+<<<<<<< HEAD
 import static edu.wpi.first.units.Units.Meters;
 
 import java.util.function.DoubleSupplier;
@@ -12,6 +13,12 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+=======
+import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
+>>>>>>> main
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.Matrix;
