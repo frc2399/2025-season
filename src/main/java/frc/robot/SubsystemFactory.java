@@ -68,8 +68,6 @@ public class SubsystemFactory {
         SwerveModule rearLeft;
         SwerveModule frontRight;
         SwerveModule rearRight;
-        Distance trackWidth;
-        Distance wheelBase;
 
         if (robotType == RobotType.ALPHA) {
             frontLeft = new SwerveModule(new SwerveModuleHardwareNEO(
