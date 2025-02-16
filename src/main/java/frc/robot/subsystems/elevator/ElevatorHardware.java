@@ -98,6 +98,28 @@ public class ElevatorHardware implements ElevatorIO {
             .reverseSoftLimit(0)
             .reverseSoftLimitEnabled(false);
 
+        globalMotorConfig.closedLoop
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .p(ElevatorHardwareConstants.P_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
+                .i(ElevatorHardwareConstants.I_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
+                .d(ElevatorHardwareConstants.D_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
+                .outputRange(-1, 1)
+                .p(ElevatorHardwareConstants.P_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
+                .i(ElevatorHardwareConstants.I_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
+                .d(ElevatorHardwareConstants.D_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
+                // https://docs.revrobotics.com/revlib/spark/closed-loop/closed-loop-control-getting-started#f-parameter
+                .velocityFF(ElevatorHardwareConstants.FEEDFORWARD_VALUE.in(Volts), ClosedLoopSlot.kSlot1)
+                .outputRange(ElevatorHardwareConstants.OUTPUT_RANGE_MIN_VALUE,
+                        ElevatorHardwareConstants.OUTPUT_RANGE_MAX_VALUE, ClosedLoopSlot.kSlot1);
+
+        globalMotorConfig.softLimit
+                .forwardSoftLimit((maxElevatorHeight).in(Meters) - 0.02) // a little less
+                                                                                                     // than max height
+                                                                                                     // for safety
+                .forwardSoftLimitEnabled(true)
+                .reverseSoftLimit(0)
+                .reverseSoftLimitEnabled(true);
+
         leftMotorConfigLeader
                 .apply(globalMotorConfig)
                 .inverted(false)
