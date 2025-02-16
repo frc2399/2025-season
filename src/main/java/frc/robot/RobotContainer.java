@@ -112,8 +112,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("Elevator to L1 setpoint", elevator.goToGoalSetpointCmd(SetpointConstants.L_TWO_HEIGHT).andThen(elevator.atGoalCommand()));
     NamedCommands.registerCommand("Elevator to L2 setpoint", elevator.goToGoalSetpointCmd(SetpointConstants.L_THREE_HEIGHT).andThen(elevator.atGoalCommand()));
     NamedCommands.registerCommand("Elevator to L3 setpoint", elevator.goToGoalSetpointCmd(SetpointConstants.L_FOUR_HEIGHT).andThen(elevator.atGoalCommand()));
-    NamedCommands.registerCommand("Coral wrist to L1 setpoint", coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians)));
-    NamedCommands.registerCommand("Outtake coral", coralIntake.outtake().withTimeout(1));
+    NamedCommands.registerCommand("Coral wrist to L1 setpoint", coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians)).withTimeout(1));
+    NamedCommands.registerCommand("Coral wrist to L2 setpoint", coralWrist.goToSetpointCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Radians)));
+    NamedCommands.registerCommand("Outtake coral", coralIntake.outtake().andThen(Commands.waitSeconds(1)));
+    NamedCommands.registerCommand("Outtake coral print", Commands.print("outake coral"));
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Autos/Selector", autoChooser);
