@@ -3,6 +3,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.units.measure.Distance;
+import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
@@ -36,6 +37,20 @@ public class SubsystemFactory {
     private static final double REAR_LEFT_CHASSIS_ANGULAR_OFFSET = Math.PI;
     private static final double REAR_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.PI / 2;
 
+    // 64:16 (4:1) gear ratio (through bore encoder on shaft)
+    private static final double BETA_CORAL_ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 3.0; // radians
+    // divide position factor by 60 for radians per second
+    private static final double BETA_CORAL_ABSOLUTE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 180.0; // radians per
+                                                                                                     // second
+    private static final boolean BETA_CORAL_WRIST_SOFT_LIMIT = false;
+
+    // 64:16 (4:1) gear ratio (through bore encoder on shaft)
+    private static final double ALPHA_CORAL_ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 4.0; // radians
+    // divide position factor by 60 for radians per second
+    private static final double ALPHA_CORAL_ABSOLUTE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 240.0; // radians per
+                                                                                                      // second
+    private static final boolean ALPHA_CORAL_WRIST_SOFT_LIMIT = false;
+
     private static final String MOZART_SERIAL_NUMBER = "030ee8c8";
     private static final String ALPHA_SERIAL_NUMBER = "03260A64";
     private static final String BETA_SERIAL_NUMBER = "030589d5";
@@ -66,7 +81,6 @@ public class SubsystemFactory {
             robotType = RobotType.MOZART;
         } else {
             robotType = RobotType.SIM;
-            System.out.println("no match serial number, sad :(");
         }
     }
 
@@ -162,7 +176,13 @@ public class SubsystemFactory {
 
     public CoralWristSubsystem buildCoralWrist() {
         if (robotType == RobotType.ALPHA) {
-            return new CoralWristSubsystem(new CoralWristHardware());
+            return new CoralWristSubsystem(new CoralWristHardware(ALPHA_CORAL_ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR,
+                    ALPHA_CORAL_ABSOLUTE_ENCODER_VELOCITY_FACTOR, ALPHA_CORAL_WRIST_SOFT_LIMIT,
+                    MotorIdConstants.CORAL_ALPHA_INTAKE_WRIST_CAN_ID));
+        } else if (robotType == RobotType.BETA) {
+            return new CoralWristSubsystem(new CoralWristHardware(BETA_CORAL_ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR,
+                    BETA_CORAL_ABSOLUTE_ENCODER_VELOCITY_FACTOR, BETA_CORAL_WRIST_SOFT_LIMIT,
+                    MotorIdConstants.CORAL_BETA_WRIST_CAN_ID));
         } else {
             return new CoralWristSubsystem(new CoralWristPlacebo());
         }
