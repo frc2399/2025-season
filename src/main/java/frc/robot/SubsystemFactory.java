@@ -36,11 +36,9 @@ public class SubsystemFactory {
     private static final double REAR_LEFT_CHASSIS_ANGULAR_OFFSET = Math.PI;
     private static final double REAR_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.PI / 2;
 
-    private static final boolean isSim = Robot.isSimulation();
-
     private static final String MOZART_SERIAL_NUMBER = "030ee8c8";
     private static final String ALPHA_SERIAL_NUMBER = "03260A64";
-    private static final String BETA_SERIAL_NUMBER = "030FC267";
+    private static final String BETA_SERIAL_NUMBER = "030589d5";
     private static final String COMP_SERIAL_NUMBER = "";
 
     private static final Distance ELEVATOR_ALPHA_MAX_HEIGHT = Inches.of(34.25);
@@ -68,6 +66,7 @@ public class SubsystemFactory {
             robotType = RobotType.MOZART;
         } else {
             robotType = RobotType.SIM;
+            System.out.println("no match serial number, sad :(");
         }
     }
 
@@ -134,7 +133,7 @@ public class SubsystemFactory {
     }
 
     public AlgaeIntakeSubsystem buildAlgaeIntake() {
-        if (robotType == RobotType.ALPHA) {
+        if (robotType == RobotType.BETA) {
             return new AlgaeIntakeSubsystem(new AlgaeIntakeHardware());
         } else {
             return new AlgaeIntakeSubsystem(new AlgaeIntakePlacebo());
@@ -142,11 +141,10 @@ public class SubsystemFactory {
     }
 
     public AlgaeWristSubsystem buildAlgaeWrist() {
-        if (robotType == RobotType.ALPHA) {
+        if (robotType == RobotType.BETA) {
             return new AlgaeWristSubsystem(new AlgaeWristHardware());
         } else {
             return new AlgaeWristSubsystem(new AlgaeWristPlacebo());
-
         }
 
     }

@@ -141,7 +141,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 frontRight.getPosition(),
                                                 rearLeft.getPosition(),
                                                 rearRight.getPosition() },
-                                new Pose2d(0, 0, new Rotation2d(0, 0))); // TODO: make these constants in the constants
+                                new Pose2d(0, 0, new Rotation2d(0))); // TODO: make these constants in the constants
                                                                          // file rather than
                                                                          // free-floating numbers
 

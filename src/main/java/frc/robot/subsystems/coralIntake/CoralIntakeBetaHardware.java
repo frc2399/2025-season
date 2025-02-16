@@ -8,6 +8,7 @@ import frc.robot.Constants.SpeedConstants;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -19,16 +20,17 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-
+//intake to stall
 public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
-    private static final boolean BETA_CORAL_INTAKE_MOTOR_INVERTED = false;
+    private static final boolean BETA_CORAL_INTAKE_MOTOR_INVERTED = true;
     private static final IdleMode BETA_CORAL_INTAKE_IDLE_MODE = IdleMode.kBrake;
 
-    private static final double BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR = 2 * Math.PI; // radians
-    private static final double BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR = 2 * Math.PI / 60; // radians per second
+    // 5:1 gearbox ratio
+    private static final double BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR = 2 * Math.PI / 5.0; // radians
+    private static final double BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR = 2 * Math.PI / 5.0 / 60; // radians per second
 
-    private static final double BETA_CORAL_INTAKE_P = 1.0;
+    private static final double BETA_CORAL_INTAKE_P = 0.01;
     private static final double BETA_CORAL_INTAKE_I = 0;
     private static final double BETA_CORAL_INTAKE_D = 0;
     private static final double BETA_CORAL_INTAKE_FF = 0;
@@ -42,6 +44,8 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     private final SparkFlexConfig betaCoralIntakeConfig = new SparkFlexConfig();
 
     private final SparkFlex betaCoralIntakeSparkFlex;
+
+    private double velocityGoal = 0;
 
     public CoralIntakeBetaHardware() {
         betaCoralIntakeConfig.inverted(BETA_CORAL_INTAKE_MOTOR_INVERTED).idleMode(BETA_CORAL_INTAKE_IDLE_MODE)
@@ -66,21 +70,25 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     @Override
     public void intake() {
         betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_INTAKE_SPEED.in(RPM), ControlType.kVelocity);
+        velocityGoal = SpeedConstants.BETA_CORAL_INTAKE_SPEED.in(RadiansPerSecond) / 5;
     }
 
     @Override
     public void outtake() {
         betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_OUTTAKE_SPEED.in(RPM), ControlType.kVelocity);
+        velocityGoal = SpeedConstants.BETA_CORAL_OUTTAKE_SPEED.in(RadiansPerSecond) / 5;
     }
 
     @Override
     public void setZero() {
         betaCoralIntakeClosedLoop.setReference(0, ControlType.kVelocity);
+        velocityGoal = 0;
     }
 
     @Override
     public void updateStates(CoralIntakeIOStates states) {
         states.velocity = betaCoralIntakeEncoder.getVelocity();
+        states.goalVelocity = velocityGoal;
         states.leftCurrent = betaCoralIntakeSparkFlex.getOutputCurrent();
         states.rightCurrent = betaCoralIntakeSparkFlex.getOutputCurrent();
         states.leftAppliedVoltage = betaCoralIntakeSparkFlex.getAppliedOutput()
