@@ -12,6 +12,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -28,31 +29,19 @@ import edu.wpi.first.units.measure.LinearVelocity;
 public class DriveToPoseUtil {
         // pids for driving to a pose
         private static final double DRIVE_TO_POSE_XY_P = 3.75;
-        private static final double DRIVE_TO_POSE_XY_D = 0.0;
-        private static final LinearVelocity MAX_VELOCITY_DRIVE_TO_POSE = MetersPerSecond.of(4);
-        private static final LinearAcceleration MAX_ACCELERATION_DRIVE_TO_POSE = MetersPerSecondPerSecond.of(2.5);
-        private static final ProfiledPIDController driveToPoseXYPid = new ProfiledPIDController(
-                        DRIVE_TO_POSE_XY_P, 0, DRIVE_TO_POSE_XY_D,
-                        new Constraints(MAX_VELOCITY_DRIVE_TO_POSE.in(MetersPerSecond),
-                                        MAX_ACCELERATION_DRIVE_TO_POSE.in(MetersPerSecondPerSecond)));
-        private static final ProfiledPIDController altXyPid = new ProfiledPIDController(
-                        DRIVE_TO_POSE_XY_P, 0, DRIVE_TO_POSE_XY_D,
-                        new Constraints(MAX_VELOCITY_DRIVE_TO_POSE.in(MetersPerSecond),
-                                        MAX_ACCELERATION_DRIVE_TO_POSE.in(MetersPerSecondPerSecond)));
+        private static final PIDController driveToPoseXYPid = new PIDController(
+                DRIVE_TO_POSE_XY_P, 0, 0
+        );
         
-        private static final double DRIVE_TO_POSE_THETA_P = 2.5; // radians per second per radian of error
-        private static final double DRIVE_TO_POSE_THETA_D = 0.0;
-        private static final AngularVelocity MAX_ANGULAR_VELOCITY_DRIVE_TO_POSE = DegreesPerSecond.of(45);
-        private static final AngularAcceleration MAX_ANGULAR_ACCELERATION_DRIVE_TO_POSE = DegreesPerSecondPerSecond
-                        .of(10);
+        private static final double DRIVE_TO_POSE_THETA_P = 4; // radians per second per radian of error
+        private static final PIDController driveToPoseThetaPid = new PIDController(
+                DRIVE_TO_POSE_THETA_P, 0, 0
+        );
         // as of 2025, our gyro wraps -180 to 180. if this changes, these values need to
         // change, too.
         private static final Angle DRIVE_TO_POSE_MIN_INPUT = Degrees.of(-180);
         private static final Angle DRIVE_TO_POSE_MAX_INPUT = Degrees.of(180);
-        private static ProfiledPIDController driveToPoseThetaPid = new ProfiledPIDController(
-                        DRIVE_TO_POSE_THETA_P, 0, DRIVE_TO_POSE_THETA_D,
-                        new Constraints(MAX_ANGULAR_VELOCITY_DRIVE_TO_POSE.in(RadiansPerSecond),
-                                        MAX_ANGULAR_ACCELERATION_DRIVE_TO_POSE.in(RadiansPerSecondPerSecond)));
+
         // this is called a static block. it is here because as of right now, this util
         // has no state dependencies. this pid controller should always have continuous
         // input wrapping, and the way to make that run in a static fashion is this
@@ -108,15 +97,15 @@ public class DriveToPoseUtil {
 
                 // if the requested theta rotation is too small, make it bigger! (unless it was
                 // zeroed out above) (ks, where s = static)
-                if (Math.abs(thetaDesired.in(RadiansPerSecond)) > 0
-                                && Math.abs(thetaDesired.in(RadiansPerSecond)) < 0.1) {
-                        thetaDesired = RadiansPerSecond.of(Math.copySign(0.1, thetaDesired.in(RadiansPerSecond)));
-                }
+                // if (Math.abs(thetaDesired.in(RadiansPerSecond)) > 0
+                //                 && Math.abs(thetaDesired.in(RadiansPerSecond)) < 0.1) {
+                //         thetaDesired = RadiansPerSecond.of(Math.copySign(0.1, thetaDesired.in(RadiansPerSecond)));
+                // }
 
                 // scale based solely on distance!
-                double dist = Math.hypot(xToGoal, yToGoal);
-                double distDesiredPID = altXyPid.calculate(dist);
-                Translation2d transToGoal = transformToGoal.getTranslation().times(distDesiredPID);
+                // double dist = Math.hypot(xToGoal, yToGoal);
+                // double distDesiredPID = altXyPid.calculate(dist);
+                // Translation2d transToGoal = transformToGoal.getTranslation().times(distDesiredPID);
 
                 // packaging as a Transform2d because we don't have access to gyro here so
                 // cannot do ChassisSpeeds
