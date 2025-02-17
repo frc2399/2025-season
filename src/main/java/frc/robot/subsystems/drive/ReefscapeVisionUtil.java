@@ -7,8 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.RobotContainer.AlignType;
 
@@ -28,7 +31,7 @@ public class ReefscapeVisionUtil {
         private static final Pose2d RED_REEF_G = new Pose2d(new Translation2d(11.23, 4.18),
                         new Rotation2d(Degrees.of(180)));
         private static final Pose2d RED_REEF_H = new Pose2d(new Translation2d(11.23, 3.56),
-                        new Rotation2d(Degrees.of(180))); //TODO: SWAP THESE BACK TO 0!
+                        new Rotation2d(Degrees.of(180))); // TODO: SWAP THESE BACK TO 0!
         private static final Pose2d RED_REEF_I = new Pose2d(new Translation2d(),
                         new Rotation2d(Degrees.of(60)));
         private static final Pose2d RED_REEF_J = new Pose2d(new Translation2d(),
@@ -77,7 +80,8 @@ public class ReefscapeVisionUtil {
         private static final List<Pose2d> RIGHT_POSES_BLUE = Arrays.asList(
                         BLUE_REEF_B, BLUE_REEF_D, BLUE_REEF_F, BLUE_REEF_H, BLUE_REEF_J, BLUE_REEF_L);
 
-        public static Supplier<Pose2d> getGoalPose(AlignType alignType, Supplier<Pose2d> robotPose, boolean isBlueAlliance) {
+        public static Supplier<Pose2d> getGoalPose(AlignType alignType, Supplier<Pose2d> robotPose,
+                        boolean isBlueAlliance) {
                 Pose2d goalPose;
                 if (robotPose.get() == null) {
                         Pose2d nullReturn = new Pose2d();
@@ -105,10 +109,38 @@ public class ReefscapeVisionUtil {
         }
 
         public static ArrayList<Pose2d> getAlignmentPoses() {
+                AprilTagFieldLayout tagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
                 ArrayList<Pose2d> tagList = new ArrayList<Pose2d>();
-                ArrayList<Pose2d> backedOff;
+                tagList.add(tagLayout.getTagPose(7).get().toPose2d());
+                tagList.add(tagLayout.getTagPose(8).get().toPose2d());
+                tagList.add(tagLayout.getTagPose(9).get().toPose2d());
+                tagList.add(tagLayout.getTagPose(10).get().toPose2d());
+                tagList.add(tagLayout.getTagPose(11).get().toPose2d());
+                tagList.add(tagLayout.getTagPose(6).get().toPose2d());
+                tagList.add(tagLayout.getTagPose(18).get().toPose2d());
+                tagList.add(tagLayout.getTagPose(17).get().toPose2d());
+                tagList.add(tagLayout.getTagPose(22).get().toPose2d());
+                tagList.add(tagLayout.getTagPose(21).get().toPose2d());
+                tagList.add(tagLayout.getTagPose(20).get().toPose2d());
+                tagList.add(tagLayout.getTagPose(19).get().toPose2d());
+                ArrayList<Pose2d> backedOff = backedOff(tagList);
                 ArrayList<Pose2d> split;
-                
+
                 return tagList;
+        }
+
+        public static ArrayList<Pose2d> backedOff(ArrayList<Pose2d> apriltags) {
+                double backoffDist = 0.20; // distance off the reef to score in METERS
+                ArrayList<Pose2d> backed = new ArrayList<Pose2d>();
+                for (Pose2d tag : apriltags) {
+                        Pose2d backingOff = tag.plus(new Transform2d( // 0 for rotation bc we're going off the tags pose, which has
+                                                         // our correct desired rotation. but for beta, we will have to
+                                                         // change them by a factor of 180 degrees
+                                        backoffDist * Math.sin(tag.getRotation().getRadians()), // if our theta is 0, we want to move straight back, so x should not change
+                                        backoffDist * Math.cos(tag.getRotation().getRadians()),
+                                        new Rotation2d(0)));
+                        System.out.println(backingOff);
+                }
+                return backed;
         }
 }
