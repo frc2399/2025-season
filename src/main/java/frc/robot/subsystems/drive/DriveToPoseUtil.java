@@ -29,8 +29,8 @@ public class DriveToPoseUtil {
         // pids for driving to a pose
         private static final double DRIVE_TO_POSE_XY_P = 3.75;
         private static final double DRIVE_TO_POSE_XY_D = 0.0;
-        private static final LinearVelocity MAX_VELOCITY_DRIVE_TO_POSE = MetersPerSecond.of(1);
-        private static final LinearAcceleration MAX_ACCELERATION_DRIVE_TO_POSE = MetersPerSecondPerSecond.of(0.5);
+        private static final LinearVelocity MAX_VELOCITY_DRIVE_TO_POSE = MetersPerSecond.of(4);
+        private static final LinearAcceleration MAX_ACCELERATION_DRIVE_TO_POSE = MetersPerSecondPerSecond.of(2.5);
         private static final ProfiledPIDController driveToPoseXYPid = new ProfiledPIDController(
                         DRIVE_TO_POSE_XY_P, 0, DRIVE_TO_POSE_XY_D,
                         new Constraints(MAX_VELOCITY_DRIVE_TO_POSE.in(MetersPerSecond),
@@ -120,8 +120,8 @@ public class DriveToPoseUtil {
 
                 // packaging as a Transform2d because we don't have access to gyro here so
                 // cannot do ChassisSpeeds
-                Transform2d alignmentSpeeds = new Transform2d(xDesired.in(MetersPerSecond),
-                                yDesired.in(MetersPerSecond),
+                Transform2d alignmentSpeeds = new Transform2d(-xDesired.in(MetersPerSecond),
+                                -yDesired.in(MetersPerSecond),
                                 new Rotation2d(-thetaDesired.in(RadiansPerSecond)));
                 return () -> alignmentSpeeds;
         }

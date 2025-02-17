@@ -20,29 +20,29 @@ import frc.robot.RobotContainer.AlignType;
 
 public class ReefscapeVisionUtil {
         private static final Pose2d RED_REEF_A = new Pose2d(new Translation2d(14.538, 3.861),
-                        new Rotation2d(Degrees.of(180)));
+                        new Rotation2d(Degrees.of(0)));
         private static final Pose2d RED_REEF_B = new Pose2d(new Translation2d(14.538, 4.191),
-                        new Rotation2d(Degrees.of(180)));
+                        new Rotation2d(Degrees.of(0)));
         private static final Pose2d RED_REEF_C = new Pose2d(new Translation2d(13.942, 5.225),
-                        new Rotation2d(Degrees.of(240)));
+                        new Rotation2d(Degrees.of(60)));
         private static final Pose2d RED_REEF_D = new Pose2d(new Translation2d(13.656, 5.390),
-                        new Rotation2d(Degrees.of(240)));
+                        new Rotation2d(Degrees.of(60)));
         private static final Pose2d RED_REEF_E = new Pose2d(new Translation2d(12.462, 5.390),
-                        new Rotation2d(Degrees.of(300)));
+                        new Rotation2d(Degrees.of(120)));
         private static final Pose2d RED_REEF_F = new Pose2d(new Translation2d(12.176, 5.225),
-                        new Rotation2d(Degrees.of(300)));
+                        new Rotation2d(Degrees.of(120)));
         private static final Pose2d RED_REEF_G = new Pose2d(new Translation2d(11.579, 4.191),
                         new Rotation2d(Degrees.of(180)));
         private static final Pose2d RED_REEF_H = new Pose2d(new Translation2d(11.579, 3.861),
                         new Rotation2d(Degrees.of(180))); // TODO: SWAP THESE BACK TO 0!
         private static final Pose2d RED_REEF_I = new Pose2d(new Translation2d(12.176, 2.827),
-                        new Rotation2d(Degrees.of(60)));
+                        new Rotation2d(Degrees.of(-120)));
         private static final Pose2d RED_REEF_J = new Pose2d(new Translation2d(12.462, 2.662),
-                        new Rotation2d(Degrees.of(60)));
+                        new Rotation2d(Degrees.of(-120)));
         private static final Pose2d RED_REEF_K = new Pose2d(new Translation2d(13.656, 2.662),
-                        new Rotation2d(Degrees.of(120)));
+                        new Rotation2d(Degrees.of(-60)));
         private static final Pose2d RED_REEF_L = new Pose2d(new Translation2d(13.942, 2.827),
-                        new Rotation2d(Degrees.of(120)));
+                        new Rotation2d(Degrees.of(-60)));
 
         private static final Pose2d BLUE_REEF_A = new Pose2d(new Translation2d(3.010, 4.191),
                         new Rotation2d(Degrees.of(0)));
