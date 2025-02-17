@@ -97,11 +97,15 @@ public final class Constants {
   public static class DriveControlConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
     public static final int OPERATOR_CONTROLLER_PORT = 1;
-    public static final double DRIVE_DEADBAND = 0.05;
+    public static final double DRIVE_DEADBAND = 0.1;
     public static final boolean FIELD_ORIENTED_DRIVE = true;
 
     public static final Distance ALPHA_TRACK_WIDTH = Meters.of(0.4954);
     public static final Distance MOZART_TRACK_WIDTH = Inches.of(26 - (2 * 1.75));
+    // replace if needed
+    public static final Distance BETA_XTRACK_WIDTH = Inches.of(23.807);
+    public static final Distance BETA_YTRACK_WIDTH = Inches.of(27.190);
+
   }
 
 }
