@@ -43,7 +43,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         private static final boolean ABSOLUTE_ENCODER_INVERTED = false;
 
         private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
-//29 degrees 
+
         private static final double ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 2.0;
         private static final double ABSOLUTE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 2 / 60.0;
         private static final double RELATIVE_ENCODER_POSITION_FACTOR = (2 * Math.PI) / 40.0; // radians
@@ -59,6 +59,10 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         private static final boolean POSITION_WRAPPING_ENABLED = true;
         private static final Angle POSITION_WRAPPING_MIN_INPUT = Degrees.of(-90);
         private static final Angle POSITION_WRAPPING_MAX_INPUT = Degrees.of(90);
+
+        private static final Angle FORWARD_SOFT_LIMIT = Degrees.of(0);
+        private static final Angle REVERSE_SOFT_LIMIT = Degrees.of(-100);
+        private static final boolean SOFT_LIMIT_ENABLED = true;
 
         private double goalAngle;
 
@@ -76,6 +80,12 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                                 .positionWrappingEnabled(POSITION_WRAPPING_ENABLED)
                                 .positionWrappingInputRange(POSITION_WRAPPING_MIN_INPUT.in(Radians),
                                                 POSITION_WRAPPING_MAX_INPUT.in(Radians));
+
+                wristSparkMaxConfig.softLimit
+                                .forwardSoftLimit(FORWARD_SOFT_LIMIT.in(Radians))
+                                .forwardSoftLimitEnabled(SOFT_LIMIT_ENABLED)
+                                .reverseSoftLimit(REVERSE_SOFT_LIMIT.in(Radians))
+                                .reverseSoftLimitEnabled(SOFT_LIMIT_ENABLED);
 
                 algaeWristSparkMax = new SparkMax(MotorIdConstants.ALGAE_BETA_WRIST_CAN_ID, MotorType.kBrushless);
 
@@ -113,6 +123,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                 states.wristAppliedVoltage = algaeWristSparkMax.getAppliedOutput() * algaeWristSparkMax.getBusVoltage();
                 states.wristCurrent = algaeWristSparkMax.getOutputCurrent();
                 states.wristRelativeEncoderAngle = algaeWristRelativeEncoder.getPosition();
+                states.wristAbsoluteEncoderAngle = algaeWristAbsoluteEncoder.getPosition();
                 states.goalAngle = goalAngle;
         }
 

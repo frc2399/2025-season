@@ -42,7 +42,7 @@ public class SubsystemFactory {
     // divide position factor by 60 for radians per second
     private static final double BETA_CORAL_ABSOLUTE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 180.0; // radians per
                                                                                                      // second
-    private static final boolean BETA_CORAL_WRIST_SOFT_LIMIT = false;
+    private static final boolean BETA_CORAL_WRIST_SOFT_LIMIT = true;
 
     // 64:16 (4:1) gear ratio (through bore encoder on shaft)
     private static final double ALPHA_CORAL_ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 4.0; // radians

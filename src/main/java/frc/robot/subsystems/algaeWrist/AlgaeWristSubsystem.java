@@ -22,7 +22,7 @@ public class AlgaeWristSubsystem extends SubsystemBase {
     }
 
     public Command setWristSpeed(double speed) {
-        return this.run(() -> Commands.run(() -> io.setWristSpeed(speed)));
+        return this.run(() -> io.setWristSpeed(speed));
     }
 
     @Override
@@ -33,6 +33,7 @@ public class AlgaeWristSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("algaeWrist/wristVelocity", states.wristVelocity);
         SmartDashboard.putNumber("algaeWrist/wristEncoderAngleInDegrees",
                 states.wristRelativeEncoderAngle * 180 / Math.PI);
+        SmartDashboard.putNumber("algaeWrist/abs enc ang", states.wristAbsoluteEncoderAngle * 180 / Math.PI);
         SmartDashboard.putNumber("algaeWrist/goalAngle", states.goalAngle);
     }
 
