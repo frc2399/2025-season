@@ -2,6 +2,7 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.Degrees;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
@@ -101,5 +102,13 @@ public class ReefscapeVisionUtil {
                 }
                 Supplier<Pose2d> goalPoseSupplier = () -> goalPose;
                 return goalPoseSupplier;
+        }
+
+        public static ArrayList<Pose2d> getAlignmentPoses() {
+                ArrayList<Pose2d> tagList = new ArrayList<Pose2d>();
+                ArrayList<Pose2d> backedOff;
+                ArrayList<Pose2d> split;
+                
+                return tagList;
         }
 }
