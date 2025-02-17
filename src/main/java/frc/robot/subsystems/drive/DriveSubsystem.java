@@ -125,8 +125,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 this.rearLeft = rearLeft;
                 this.rearRight = rearRight;
                 
-                ReefscapeVisionUtil.getAlignmentPoses();
-
                 TRACK_WIDTH = trackWidth;
                 WHEEL_BASE = wheelBase;
 
