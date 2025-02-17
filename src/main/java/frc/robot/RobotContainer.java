@@ -5,11 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SetpointConstants;
-import frc.robot.Constants.SpeedConstants;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -65,16 +63,13 @@ public class RobotContainer {
             DriveControlConstants.DRIVE_DEADBAND)),
         DriveControlConstants.FIELD_ORIENTED_DRIVE));
 
-    coralIntake.setDefaultCommand(coralIntake.setRollerSpeed(0).withName("coral Intake default"));
-    coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
+        coralIntake.setDefaultCommand(coralIntake.setZero());
+        coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
   }
 
   private void configureButtonBindingsDriver() {
-    driverController.rightBumper()
-        .whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_INTAKE_SPEED).withName("run coral intake"));
-    driverController.leftBumper()
-        .whileTrue(
-            coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED).withName("run coral outtake"));
+    driverController.rightBumper().whileTrue(coralIntake.intake());
+    driverController.leftBumper().whileTrue(coralIntake.outtake());
     driverController.b().onTrue(gyro.setYaw(Math.PI));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleMode());
@@ -97,8 +92,7 @@ public class RobotContainer {
     operatorController.x().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_THREE_HEIGHT));
     operatorController.b().whileTrue(elevator.incrementGoalPosition(Meters.of(0.001)));
     operatorController.a().whileTrue(elevator.incrementGoalPosition(Meters.of(-0.001)));
-    operatorController.leftBumper()
-        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians))
-            .withName("move coral wrist to L1 outtake setpoint"));
+    operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians))
+        .withName("move coral wrist to L1 outtake setpoint"));
   }
 }
