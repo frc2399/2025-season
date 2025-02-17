@@ -83,7 +83,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private final SwerveDriveKinematics DRIVE_KINEMATICS;
 
         // Slew rate filter variables for controlling lateral acceleration
-        private double currentRotationRate = 0.0;
         private double desiredAngle = 0;
         private Gyro gyro;
 
@@ -107,15 +106,15 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         /** Creates a new DriveSubsystem. */
         public DriveSubsystem(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule rearLeft,
-                        SwerveModule rearRight, Gyro gyro, Distance trackWidth) {
+                        SwerveModule rearRight, Gyro gyro, Distance trackWidth, Distance wheelBase) {
                 this.gyro = gyro;
                 this.frontLeft = frontLeft;
                 this.frontRight = frontRight;
                 this.rearLeft = rearLeft;
                 this.rearRight = rearRight;
-
+                
                 TRACK_WIDTH = trackWidth;
-                WHEEL_BASE = trackWidth;
+                WHEEL_BASE = wheelBase;
 
                 FRONT_LEFT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
                                 TRACK_WIDTH.in(Meters) / 2);
@@ -154,8 +153,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // This will get the simulated sensor readings that we set
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
-                SmartDashboard.putNumber("left front distance (meters)", frontLeft.getDriveEncoderPosition());
-                SmartDashboard.putNumber("drive/gyro angle(degrees)", Math.toDegrees(gyro.getYaw()));
                 poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromRadians(gyro.getYaw()),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
@@ -165,10 +162,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 });
 
                 Pose2d pose = getPose();
-                SmartDashboard.putNumber("Swerve/vision/x", pose.getX());
-                SmartDashboard.putNumber("Swerve/vision/y", pose.getY());
-
-                SmartDashboard.putNumber("robot pose theta", pose.getRotation().getDegrees());
                 field2d.setRobotPose(pose);
 
                 frontLeftField2dModule.setPose(pose.transformBy(new Transform2d(
