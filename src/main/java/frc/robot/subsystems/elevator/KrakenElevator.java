@@ -72,18 +72,18 @@ public class KrakenElevator implements ElevatorIO {
         globalMotorConfiguration.Feedback
                 .withSensorToMechanismRatio(KrakenElevatorConstants.ELEVATOR_SENSOR_TO_MECHANISM_RATIO);
 
-        globalMotorConfiguration.Slot0.kS = 0;
-        globalMotorConfiguration.Slot0.kG = (KrakenElevatorConstants.ARBITRARY_FF_GRAVITY_COMPENSATION).in(Volts);
-        globalMotorConfiguration.Slot0.kV = (KrakenElevatorConstants.FEEDFORWARD_VALUE).in(Volts); // TODO: tune Kv
-        globalMotorConfiguration.Slot0.kP = (KrakenElevatorConstants.P_VALUE).in(Volts);
-        globalMotorConfiguration.Slot0.kI = (KrakenElevatorConstants.I_VALUE).in(Volts);
-        globalMotorConfiguration.Slot0.kD = (KrakenElevatorConstants.D_VALUE).in(Volts);
+        globalMotorConfiguration.Slot0.kS = 0.1; //0;
+        //globalMotorConfiguration.Slot0.kG = (KrakenElevatorConstants.ARBITRARY_FF_GRAVITY_COMPENSATION).in(Volts);
+        globalMotorConfiguration.Slot0.kV = 0.12; //(KrakenElevatorConstants.FEEDFORWARD_VALUE).in(Volts); // TODO: tune Kv
+        globalMotorConfiguration.Slot0.kP = 0.11; //(KrakenElevatorConstants.P_VALUE).in(Volts);
+        globalMotorConfiguration.Slot0.kI = 0; //(KrakenElevatorConstants.I_VALUE).in(Volts);
+        globalMotorConfiguration.Slot0.kD = 0; // (KrakenElevatorConstants.D_VALUE).in(Volts);
 
-        globalMotorConfiguration.SoftwareLimitSwitch
-                .withForwardSoftLimitThreshold(maxElevatorHeight.in(Meters));
-        globalMotorConfiguration.SoftwareLimitSwitch.withForwardSoftLimitEnable(false);
-        globalMotorConfiguration.SoftwareLimitSwitch.withReverseSoftLimitThreshold(0);
-        globalMotorConfiguration.SoftwareLimitSwitch.withReverseSoftLimitEnable(false);
+        // globalMotorConfiguration.SoftwareLimitSwitch
+        //         .withForwardSoftLimitThreshold(maxElevatorHeight.in(Meters));
+        // globalMotorConfiguration.SoftwareLimitSwitch.withForwardSoftLimitEnable(false);
+        // globalMotorConfiguration.SoftwareLimitSwitch.withReverseSoftLimitThreshold(0);
+        // globalMotorConfiguration.SoftwareLimitSwitch.withReverseSoftLimitEnable(false);
 
         globalMotorConfiguration.CurrentLimits
                 .withStatorCurrentLimit(KrakenElevatorConstants.KRAKEN_CURRENT_LIMIT.in(Amps));
@@ -102,8 +102,8 @@ public class KrakenElevator implements ElevatorIO {
         // TODO: check inversions 
         leftMotorLeaderConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-        rightMotorFollowerConfigurator.apply(rightMotorFollowerConfiguration);
-        leftMotorLeaderConfigurator.apply(leftMotorLeaderConfiguration);
+        //rightMotorFollowerConfigurator.apply(rightMotorFollowerConfiguration);
+        //leftMotorLeaderConfigurator.apply(leftMotorLeaderConfiguration);
 
         closedLoopController = new PositionVoltage(0).withSlot(0);
     }
@@ -139,9 +139,7 @@ public class KrakenElevator implements ElevatorIO {
                 intermediateSetpointState, goalState);
         closedLoopController.Position = intermediateSetpointState.position; 
         closedLoopController.Velocity = intermediateSetpointState.velocity;
-        elevatorLeftMotorLeader.setControl(velocityVoltage.withVelocity(0.1));
-        //StatusCode status = elevatorLeftMotorLeader.setControl(closedLoopController.withPosition(intermediateSetpointState.position));
-        //System.out.println(status.getName()); 
+        StatusCode status = elevatorLeftMotorLeader.setControl(closedLoopController.withPosition(intermediateSetpointState.position));
     }
 
     @Override
