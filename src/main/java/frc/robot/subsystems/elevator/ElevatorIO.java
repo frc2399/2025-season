@@ -21,5 +21,6 @@ public interface ElevatorIO {
     public void setIntermediateSetpoint(Distance position, double velocity);
     public double getEncoderVelocity();
     public double getEncoderPosition();
+    public void setSpeedManualControl(double speed);
     public void updateStates(ElevatorIOInputs states);
 }

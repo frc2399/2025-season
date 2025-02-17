@@ -172,8 +172,7 @@ public class SubsystemFactory {
     protected ElevatorSubsystem buildElevator() {
         if (robotType == RobotType.ALPHA) {
             return new ElevatorSubsystem(new AlphaElevator(ELEVATOR_ALPHA_MAX_HEIGHT));
-        } 
-        
+        }    
         if (robotType == RobotType.BETA) {
             return new ElevatorSubsystem(new KrakenElevator(ELEVATOR_BETA_MAX_HEIGHT)); 
         }

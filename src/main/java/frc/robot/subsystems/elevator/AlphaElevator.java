@@ -161,6 +161,11 @@ public class AlphaElevator implements ElevatorIO {
         return leftEncoder.getPosition();
     }
 
+    public void setSpeedManualControl(double speed)
+    {
+        //place holding method 
+    }
+
     @Override
     public void updateStates(ElevatorIOInputs states) {
         states.position = getEncoderPosition();

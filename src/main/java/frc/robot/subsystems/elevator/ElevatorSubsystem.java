@@ -42,13 +42,20 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public Command incrementGoalPosition(Distance changeInGoalPosition)
     {
-        profiledPIDEnabled = true;
-        return this.run(()-> elevatorIO.incrementGoalPosition(changeInGoalPosition));
+        return this.run(()-> {
+            profiledPIDEnabled = true;
+            elevatorIO.incrementGoalPosition(changeInGoalPosition);
+        });
     }
 
     public double getCurrentPosition()
     {
         return elevatorIO.getEncoderPosition();
+    }
+
+    public Command setSpeedManualControl(double speed)
+    {
+        return this.run(() -> elevatorIO.setSpeedManualControl(speed)); 
     }
 
 
@@ -57,7 +64,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         if (!profiledPIDEnabled) {
             elevatorIO.resetSetpointsToCurrentPosition();
         }
-        elevatorIO.calculateNextIntermediateSetpoint();
+       elevatorIO.calculateNextIntermediateSetpoint();
 
         elevatorIO.updateStates(states);
         SmartDashboard.putNumber("Elevator/position", states.position);
