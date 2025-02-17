@@ -41,7 +41,7 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
         private static final double ENCODER_ROLLER_POSITION_FACTOR = (2 * Math.PI); // radians
         private static final double ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 60.0; // radians per second
 
-        private static final double INTAKE_MOTOR_P = 0.5;
+        private static final double INTAKE_MOTOR_P = 0.125;
         private static final double INTAKE_MOTOR_I = 0.0;
         private static final double INTAKE_MOTOR_D = 0.0;
         private static final double INTAKE_MOTOR_FF = 0.1;
