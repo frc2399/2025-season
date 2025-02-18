@@ -82,7 +82,5 @@ public class RobotContainer {
     // operatorController.x().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
     // operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
     // operatorController.a().whileTrue(elevator.setPercentOutputCommand(-0.1));
-    operatorController.leftTrigger().onTrue(commandFactory.testNumber());
-    operatorController.rightTrigger().onTrue(commandFactory.indicatorChange());
   }
 }

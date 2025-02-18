@@ -18,18 +18,55 @@ public class CommandFactory {
     private final DriveSubsystem drive;
     private final ElevatorSubsystem elevator;
     private final CoralWristSubsystem coralWrist;
-    private final NetworkTableEntry ntEntry; //one for each entry we want to read (state changes)
+    //private final NetworkTableEntry ntEntry; //one for each entry we want to read (state changes)
     private final NetworkTable scoringStateTables;
     private boolean indicator;
-    private final NetworkTableEntry newEntry;
+    //private final NetworkTableEntry newEntry;
+    private final NetworkTableEntry levelEntry;
+    private final NetworkTableEntry gameModeEntry;
+    private final NetworkTableEntry leftRightEntry;
     
+    private enum RobotPosition {
+      LEFT,
+      RIGHT,
+    }
+
+    private enum ScoringLevel {
+      L_ONE,
+      L_TWO,
+      L_THREE,
+      L_FOUR
+    }
+
+    private RobotPosition robotPosition;
+    private ScoringLevel scoringLevel;
+
         public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist) {
             this.drive = drive;
             this.elevator = elevator;
             this.coralWrist = coralWrist;
             scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");
-            ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
-            newEntry = scoringStateTables.getEntry("Indicator");
+            //ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
+            //newEntry = scoringStateTables.getEntry("Indicator");
+            levelEntry = scoringStateTables.getEntry("scoringLevel");
+            gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
+            leftRightEntry = scoringStateTables.getEntry("leftRightPosition"); //or whatever I called it
+            
+            if (levelEntry.getString("None").equals("Level 1")) {
+              scoringLevel = ScoringLevel.L_ONE;
+            } else if (levelEntry.getString("None").equals("Level 2")) {
+              scoringLevel = ScoringLevel.L_TWO;
+            } else if (levelEntry.getString("None").equals("Level 3")) {
+              scoringLevel = ScoringLevel.L_THREE;
+            } else if (levelEntry.getString("None").equals("Level 4")) {
+              scoringLevel = ScoringLevel.L_FOUR;
+            }
+
+            if (leftRightEntry.getString("None").equals("left")) {
+              robotPosition = RobotPosition.LEFT;
+            } else if (leftRightEntry.getString("None").equals("right")) {
+              robotPosition = RobotPosition.RIGHT;
+            }
         }
     
         public Command turtleMode() {
@@ -38,21 +75,24 @@ public class CommandFactory {
                             coralWrist.goToSetpointCommand((Constants.SetpointConstants.CORAL_TURTLE_ANGLE).in(Degrees)));
         }
     
-        public Command testNumber() {
-            return Commands
-                .runOnce(() -> System.out.println(ntEntry.getDouble(0)));
-        }
+        //These were test functions. I'd prefer to keep them now so I can reference how I did certain commands later. 
+        //I'll eventually delete them
+        // public Command testNumber() {
+        //     return Commands
+        //         .runOnce(() -> System.out.println(ntEntry.getDouble(0)));
+        // }
     
-        public Command indicatorChange() {
-          return Commands
-            .runOnce(() -> {
-              if (indicator == true) {
-                indicator = false;
-              } else {
-                indicator = true;
-              }
-              System.out.println("Indicator is " + indicator);
-              newEntry.setBoolean(indicator);
-            });
-    }
+    //     public Command indicatorChange() {
+    //       return Commands
+    //         .runOnce(() -> {
+    //           if (indicator == true) {
+    //             indicator = false;
+    //           } else {
+    //             indicator = true;
+    //           }
+    //           System.out.println("Indicator is " + indicator);
+    //           newEntry.setBoolean(indicator);
+    //         });
+    // }
 }
+
