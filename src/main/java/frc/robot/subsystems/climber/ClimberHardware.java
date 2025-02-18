@@ -19,7 +19,7 @@ import frc.robot.Constants.MotorIdConstants;
 public class ClimberHardware implements ClimberIO {
 
   public static final class ClimberConstants{
-    private static final double CURRENT_LIMIT = 80; 
+    private static final double CURRENT_LIMIT = 120; 
       //TODO: tune!
     private static final double SENSOR_TO_MECHANISM_RATIO = 1;
     private static final Voltage FEEDFORWARD_VALUE = Volts.of(1);
