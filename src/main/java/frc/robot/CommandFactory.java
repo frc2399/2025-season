@@ -38,8 +38,14 @@ public class CommandFactory {
       L_FOUR
     }
 
+    private enum GameMode {
+      CORAL,
+      ALGAE
+    }
+
     private RobotPosition robotPosition;
     private ScoringLevel scoringLevel;
+    private GameMode gameMode;
 
         public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist) {
             this.drive = drive;
@@ -66,6 +72,12 @@ public class CommandFactory {
               robotPosition = RobotPosition.LEFT;
             } else if (leftRightEntry.getString("None").equals("right")) {
               robotPosition = RobotPosition.RIGHT;
+            }
+
+            if (gameModeEntry.getString("None").equals("coral")) {
+              gameMode = GameMode.CORAL;
+            } else if (gameModeEntry.getString("None").equals("algae")) {
+              gameMode = GameMode.ALGAE;
             }
         }
     
