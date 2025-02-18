@@ -25,8 +25,8 @@ import frc.robot.Constants.MotorIdConstants;
 public class AlgaeWristHardware implements AlgaeWristIO {
 
         private final double STATIC_FF_ALGAE = 0.0;
-        private final double GRAVITY_FF_ALGAE = 0.0;
-        private final double VELOCITY_FF_ALGAE = 0.0;
+        private final double GRAVITY_FF_ALGAE = 0.015;
+        private final double VELOCITY_FF_ALGAE = 0.50;
         private final Angle WRIST_ANGULAR_OFFSET = Degrees.of(90);
 
         private final ArmFeedforward algaeWristFeedFoward = new ArmFeedforward(STATIC_FF_ALGAE, GRAVITY_FF_ALGAE,
@@ -49,19 +49,19 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         private static final double RELATIVE_ENCODER_POSITION_FACTOR = (2 * Math.PI) / 40.0; // radians
         private static final double RELATIVE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 2400.0; // radians per second
 
-        private static final double WRIST_MOTOR_P = 0.1;
+        private static final double WRIST_MOTOR_P = 0.5;
         private static final double WRIST_MOTOR_I = 0;
         private static final double WRIST_MOTOR_D = 0;
         private static final double WRIST_MOTOR_FF = 0;
         private static final double WRIST_MOTOR_MIN_OUTPUT = -1;
         private static final double WRIST_MOTOR_MAX_OUTPUT = 1;
 
-        private static final boolean POSITION_WRAPPING_ENABLED = true;
+        private static final boolean POSITION_WRAPPING_ENABLED = false;
         private static final Angle POSITION_WRAPPING_MIN_INPUT = Degrees.of(-90);
         private static final Angle POSITION_WRAPPING_MAX_INPUT = Degrees.of(90);
 
         private static final Angle FORWARD_SOFT_LIMIT = Degrees.of(0);
-        private static final Angle REVERSE_SOFT_LIMIT = Degrees.of(-100);
+        private static final Angle REVERSE_SOFT_LIMIT = Degrees.of(-110);
         private static final boolean SOFT_LIMIT_ENABLED = true;
 
         private double goalAngle;
@@ -108,6 +108,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                 // the arm feedforward assumes horizontal = 0. ours is vertical (up) = 0, so add
                 // 90 degrees to get us from encoder position to position for arm feedforward
                 goalAngle = desiredAngle;
+                System.out.println("calling this method in setpoint command");
         }
 
         @Override

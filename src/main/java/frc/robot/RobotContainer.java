@@ -94,5 +94,11 @@ public class RobotContainer {
     operatorController.leftBumper().whileTrue(coralWrist.setWristSpeed(-0.1));
     operatorController.rightTrigger().whileTrue(algaeWrist.setWristSpeed(0.1));
     operatorController.leftTrigger().whileTrue(algaeWrist.setWristSpeed(-0.1));
+    operatorController.y()
+        .onTrue(algaeWrist.goToSetpointCommand(SetpointConstants.ALGAE_WRIST_INTAKE_ANGLE.in(Radians))
+            .withName("move algae wrist to inttake setpoint"));
+    operatorController.a()
+        .onTrue(algaeWrist.goToSetpointCommand(-SetpointConstants.ALGAE_WRIST_INTAKE_ANGLE.in(Radians))
+            .withName("move algae wrist to outtake setpoint"));
   }
 }

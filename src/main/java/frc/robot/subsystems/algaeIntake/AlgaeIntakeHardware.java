@@ -1,7 +1,6 @@
 package frc.robot.subsystems.algaeIntake;
 
 import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
@@ -18,7 +17,6 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.units.measure.Voltage;
 
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -94,7 +92,7 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
         public void updateStates(AlgaeIntakeIOStates states) {
                 states.intakeVelocity = getVelocity();
                 states.leftAppliedVoltage = algaeIntakeSparkMax.getAppliedOutput()
-                                * algaeIntakeSparkMax.getBusVoltage();                
+                                * algaeIntakeSparkMax.getBusVoltage();
                 states.leftCurrent = algaeIntakeSparkMax.getOutputCurrent();
         }
 }
