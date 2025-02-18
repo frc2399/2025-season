@@ -56,7 +56,7 @@ public class CommandFactory {
             //newEntry = scoringStateTables.getEntry("Indicator");
             levelEntry = scoringStateTables.getEntry("scoringLevel");
             gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
-            leftRightEntry = scoringStateTables.getEntry("leftRightPosition"); //or whatever I called it
+            leftRightEntry = scoringStateTables.getEntry("Position"); 
             
             if (levelEntry.getString("None").equals("Level 1")) {
               scoringLevel = ScoringLevel.L_ONE;

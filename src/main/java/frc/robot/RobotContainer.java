@@ -72,15 +72,11 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsOperator() {
-    // operatorController.rightTrigger()
-    //     .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_INTAKE_ANGLE.in(Radians))
-    //         .withName("move coral wrist to intake setpoint"));
-    // operatorController.rightBumper()
-    //     .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Radians))
-    //         .withName("move coral wrist to outtake setpoint"));
-    // operatorController.y().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_TWO_HEIGHT.in(Meters)));
-    // operatorController.x().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
-    // operatorController.b().whileTrue(elevator.setPercentOutputCommand(.1));
-    // operatorController.a().whileTrue(elevator.setPercentOutputCommand(-0.1));
+    operatorController.rightTrigger()
+        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_INTAKE_ANGLE.in(Radians))
+            .withName("move coral wrist to intake setpoint"));
+    operatorController.rightBumper()
+        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Radians))
+            .withName("move coral wrist to outtake setpoint"));
   }
 }
