@@ -3,7 +3,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.units.measure.Distance;
-import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
@@ -70,7 +69,6 @@ public class SubsystemFactory {
     private RobotType robotType;
 
     private String serialNum = System.getenv("serialnum");
-    
 
     public SubsystemFactory() {
         if (serialNum.equals(ALPHA_SERIAL_NUMBER)) {
