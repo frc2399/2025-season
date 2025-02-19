@@ -29,5 +29,8 @@ public class ElevatorPlacebo implements ElevatorIO {
     }
 
     @Override
-    public void updateStates(ElevatorIOStates states) {}
+    public void setSpeedManualControl(double speed){}
+
+    @Override
+    public void updateStates(ElevatorIOInputs states) {}
 }

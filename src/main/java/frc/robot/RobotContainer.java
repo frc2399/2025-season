@@ -58,6 +58,7 @@ public class RobotContainer {
 
         coralIntake.setDefaultCommand(coralIntake.setZero());
         coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
+        //elevator.setDefaultCommand(elevator.setSpeedManualControl(0));
   }
 
   private void configureButtonBindingsDriver() {
@@ -77,9 +78,12 @@ public class RobotContainer {
             .withName("move coral wrist to outtake setpoint"));
     operatorController.y().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_TWO_HEIGHT));
     operatorController.x().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_THREE_HEIGHT));
-    operatorController.b().whileTrue(elevator.incrementGoalPosition(Meters.of(0.001)));
-    operatorController.a().whileTrue(elevator.incrementGoalPosition(Meters.of(-0.001)));
-    operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians))
-        .withName("move coral wrist to L1 outtake setpoint"));
+    //operatorController.b().whileTrue(elevator.incrementGoalPosition(Meters.of(0.005)));
+    operatorController.b().whileTrue(elevator.setSpeedManualControl(0.1));
+    operatorController.a().whileTrue(elevator.setSpeedManualControl(-0.1));  
+    operatorController.leftBumper().onTrue(elevator.goToGoalSetpointCmd(Meters.of(0.0)));
+    //operatorController.a().whileTrue(elevator.incrementGoalPosition(Meters.of(-0.005)));
+    //operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians))
+        //.withName("move coral wrist to L1 outtake setpoint"));
   }
 }
