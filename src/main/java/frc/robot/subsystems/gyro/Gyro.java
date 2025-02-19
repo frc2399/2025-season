@@ -29,7 +29,7 @@ public class Gyro {
     }
 
     public Command setYaw(double yaw) {
-        return Commands.runOnce(() -> {io.setYaw(yaw); System.out.println("setting");});
+        return Commands.runOnce(() -> io.setYaw(yaw));
     }
 
     public StatusSignal<edu.wpi.first.units.measure.AngularVelocity> getAngularVelocity() {

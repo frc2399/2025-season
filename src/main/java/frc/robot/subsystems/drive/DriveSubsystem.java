@@ -422,8 +422,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         SmartDashboard.putNumber("Swerve/vision/yVel", alignmentSpeeds.vyMetersPerSecond);
                         SmartDashboard.putNumber("Swerve/vision/thetaVel", alignmentSpeeds.omegaRadiansPerSecond);
 
-                        // alignmentSpeeds.omegaRadiansPerSecond = 0;
-
                         // tolerances were accounted for in getDriveToPoseVelocities
                         atGoal.set((velocities.get().getX() == 0 && velocities.get().getY() == 0
                                         && velocities.get().getRotation().getRadians() == 0));
