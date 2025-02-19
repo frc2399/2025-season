@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.CommandFactory.SubsystemPositions;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
@@ -56,8 +57,8 @@ public class RobotContainer {
             DriveControlConstants.DRIVE_DEADBAND)),
         DriveControlConstants.FIELD_ORIENTED_DRIVE));
 
-        coralIntake.setDefaultCommand(coralIntake.setZero());
-        coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
+    coralIntake.setDefaultCommand(coralIntake.setZero());
+    coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
   }
 
   private void configureButtonBindingsDriver() {
@@ -73,13 +74,13 @@ public class RobotContainer {
         .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_INTAKE_ANGLE.in(Radians))
             .withName("move coral wrist to intake setpoint"));
     operatorController.rightBumper()
-        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Radians))
+        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L2_L3_OUTTAKE_ANGLE.in(Radians))
             .withName("move coral wrist to outtake setpoint"));
     operatorController.y().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_TWO_HEIGHT));
     operatorController.x().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_THREE_HEIGHT));
     operatorController.b().whileTrue(elevator.incrementGoalPosition(Meters.of(0.001)));
     operatorController.a().whileTrue(elevator.incrementGoalPosition(Meters.of(-0.001)));
-    operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians))
+    operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SubsystemPositions.INTAKE)
         .withName("move coral wrist to L1 outtake setpoint"));
   }
 }

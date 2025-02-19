@@ -23,7 +23,7 @@ public class CommandFactory {
     public Command turtleMode() {
         return Commands
                 .parallel(elevator.goToGoalSetpointCmd(Constants.SetpointConstants.ELEVATOR_TURTLE_HEIGHT),
-                        coralWrist.goToSetpointCommand((Constants.SetpointConstants.CORAL_TURTLE_ANGLE).in(Degrees)));
+                        coralWrist.goToSetpointCommand(SubsystemPositions.INTAKE));
     }
 
 }

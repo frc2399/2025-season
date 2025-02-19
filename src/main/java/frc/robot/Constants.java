@@ -29,14 +29,14 @@ public final class Constants {
     public static final int REAR_RIGHT_TURNING_CAN_ID = 42;
 
     public static final int GYRO_CAN_ID = 3;
-    
+
     // alpha
     public static final int CORAL_ALPHA_INTAKE_LEFT_CAN_ID = 7;
     public static final int CORAL_ALPHA_INTAKE_RIGHT_CAN_ID = 5;
     public static final int CORAL_ALPHA_INTAKE_WRIST_CAN_ID = 13;
     public static final int LEFT_ALPHA_ELEVATOR_MOTOR_ID = 17;
     public static final int RIGHT_ALPHA_ELEVATOR_MOTOR_ID = 15;
-  
+
     // beta
     public static final int CORAL_BETA_WRIST_CAN_ID = 46;
     public static final int CORAL_BETA_INTAKE_CAN_ID = 47;
@@ -45,7 +45,7 @@ public final class Constants {
     public static final int ALGAE_BETA_INTAKE_CAN_ID = 37;
     public static final int ALGAE_BETA_WRIST_CAN_ID = 36;
     public static final int LEFT_CLIMBER_CAN_ID = 26;
-    public static final int RIGHT_CLIMBER_CAN_ID = 27; 
+    public static final int RIGHT_CLIMBER_CAN_ID = 27;
   }
 
   public static class SensorIdConstants {
@@ -75,15 +75,19 @@ public final class Constants {
 
   public static class SetpointConstants {
     public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(35);
-    public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
+    public static final Angle CORAL_L2_L3_OUTTAKE_ANGLE = Degrees.of(-30);
     public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(35);
     public static final Angle CORAL_L1_ANGLE = Degrees.of(0);
+    public static final Angle CORAL_L4_ANGLE = Degrees.of(-50);
 
     public static final Distance ELEVATOR_TURTLE_HEIGHT = Inches.of(0);
     public static final Distance L_ONE_HEIGHT = Meters.of(0.125);
     public static final Distance L_TWO_HEIGHT = Meters.of(0.476);
     public static final Distance L_THREE_HEIGHT = Meters.of(0.849);
     public static final Distance L_FOUR_HEIGHT = Inches.of(49.5);
+
+    public static final Distance ELEVATOR_COLLISION_RANGE_BOTTOM = Meters.of(1);
+    public static final Distance ELEVATOR_COLLISION_RANGE_TOP = Meters.of(2);
   }
 
   public static class DriveControlConstants {

@@ -19,8 +19,10 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.measure.Angle;
+import frc.robot.CommandFactory.SubsystemPositions;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
+import frc.robot.Constants.SetpointConstants;
 
 public class CoralWristHardware implements CoralWristIO {
 
@@ -43,13 +45,13 @@ public class CoralWristHardware implements CoralWristIO {
 
         private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
 
-        //64:16 (4:1) gear ratio (through bore encoder on shaft) 
+        // 64:16 (4:1) gear ratio (through bore encoder on shaft)
         private static final double ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 4.0; // radians
-        //divide position factor by 60 for radians per second
+        // divide position factor by 60 for radians per second
         private static final double ABSOLUTE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 240.0; // radians per second
-        //3:1 and 5:1 gearbox on motor. 64:16 (4:1) gear ratio. 3 * 5 * 4 = 60
+        // 3:1 and 5:1 gearbox on motor. 64:16 (4:1) gear ratio. 3 * 5 * 4 = 60
         private static final double RELATIVE_ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 60; // radians
-        //divide position factor by 60 for radians per second
+        // divide position factor by 60 for radians per second
         private static final double RELATIVE_ENCODER_WRIST_VELOCITY_FACTOR = (2 * Math.PI) / 3600; // radians per second
 
         private static final boolean POSITION_WRAPPING_ENABLED = true;
@@ -96,12 +98,22 @@ public class CoralWristHardware implements CoralWristIO {
         }
 
         @Override
-        public void setGoalAngle(double desiredAngle) {
-                coralIntakeWristClosedLoopController.setReference(desiredAngle, ControlType.kPosition,
+        public void setGoalAngle(SubsystemPositions subsystemPositions) {
+                Angle desiredAngle = Radians.of(0);
+                if (subsystemPositions == SubsystemPositions.L1) {
+                        desiredAngle = SetpointConstants.CORAL_L1_ANGLE;
+                } else if (subsystemPositions == SubsystemPositions.L2 || subsystemPositions == SubsystemPositions.L3) {
+                        desiredAngle = SetpointConstants.CORAL_L2_L3_OUTTAKE_ANGLE;
+                } else if (subsystemPositions == SubsystemPositions.L4) {
+                        desiredAngle = SetpointConstants.CORAL_L4_ANGLE;
+                } else if (subsystemPositions == SubsystemPositions.INTAKE) {
+                        desiredAngle = SetpointConstants.CORAL_INTAKE_ANGLE;
+                }
+                coralIntakeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
                                 ClosedLoopSlot.kSlot0,
-                                coralWristFeedFoward.calculate(desiredAngle,
+                                coralWristFeedFoward.calculate(desiredAngle.in(Radians),
                                                 coralIntakeWristAbsoluteEncoder.getVelocity()));
-                goalAngle = desiredAngle;
+                goalAngle = desiredAngle.in(Radians);
         }
 
         // taking out motion profiling for now
