@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.RobotContainer.AlignType;
 
 public class ReefscapeVisionUtil {
-        //TODO: swap red reef by 180 (and test...)
         private static final Pose2d RED_REEF_A = new Pose2d(new Translation2d(14.538, 3.861),
                         new Rotation2d(Degrees.of(180)));
         private static final Pose2d RED_REEF_B = new Pose2d(new Translation2d(14.538, 4.191),
@@ -28,7 +27,7 @@ public class ReefscapeVisionUtil {
         private static final Pose2d RED_REEF_G = new Pose2d(new Translation2d(11.579, 4.191),
                         new Rotation2d(Degrees.of(0)));
         private static final Pose2d RED_REEF_H = new Pose2d(new Translation2d(11.579, 3.861),
-                        new Rotation2d(Degrees.of(0))); // TODO: SWAP THESE BACK TO 0!
+                        new Rotation2d(Degrees.of(0)));
         private static final Pose2d RED_REEF_I = new Pose2d(new Translation2d(12.176, 2.827),
                         new Rotation2d(Degrees.of(60)));
         private static final Pose2d RED_REEF_J = new Pose2d(new Translation2d(12.462, 2.662),
