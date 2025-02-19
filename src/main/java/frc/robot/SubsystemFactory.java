@@ -219,6 +219,9 @@ public class SubsystemFactory {
         }
         if (robotType == RobotType.BETA) {
             return new ElevatorSubsystem(new KrakenElevatorHardware(ELEVATOR_BETA_MAX_HEIGHT));
+        }
+        if (robotType == RobotType.BETA) {
+            return new ElevatorSubsystem(new KrakenElevatorHardware(ELEVATOR_BETA_MAX_HEIGHT));
         } else {
             return new ElevatorSubsystem(new ElevatorPlacebo());
         }
