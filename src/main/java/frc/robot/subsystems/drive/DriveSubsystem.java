@@ -413,11 +413,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
                         Supplier<Transform2d> velocities = DriveToPoseUtil.getDriveToPoseVelocities(
                                         () -> robotPose, goalPose);
-                        Supplier<Rotation2d> gyroYawRotationSupplier = () -> new Rotation2d(gyro.getYaw());
-                        ChassisSpeeds alignmentSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
-                                        -velocities.get().getX(), -velocities.get().getY(),
-                                        velocities.get().getRotation().getRadians(),
-                                        gyroYawRotationSupplier.get());
+                        ChassisSpeeds alignmentSpeeds = new ChassisSpeeds(
+                                        velocities.get().getX(), 
+                                        velocities.get().getY(),
+                                        velocities.get().getRotation().getRadians());
 
                         SmartDashboard.putNumber("Swerve/vision/xVel", alignmentSpeeds.vxMetersPerSecond);
                         SmartDashboard.putNumber("Swerve/vision/yVel", alignmentSpeeds.vyMetersPerSecond);

@@ -1,24 +1,18 @@
 package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.measure.Distance;
 import frc.robot.RobotContainer.AlignType;
 
 public class ReefscapeVisionUtil {
+        //TODO: swap red reef by 180 (and test...)
         private static final Pose2d RED_REEF_A = new Pose2d(new Translation2d(14.538, 3.861),
                         new Rotation2d(Degrees.of(0)));
         private static final Pose2d RED_REEF_B = new Pose2d(new Translation2d(14.538, 4.191),
