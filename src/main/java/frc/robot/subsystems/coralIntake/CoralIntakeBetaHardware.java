@@ -20,6 +20,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+
 //intake to stall
 public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
@@ -28,13 +29,10 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     // 5:1 gearbox ratio
     private static final double BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR = 2 * Math.PI / 5.0; // radians
-    private static final double BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR = 2 * Math.PI / 5.0 / 60; // radians per second
+    private static final double BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR = 2 * Math.PI / 5.0 / 60; // radians per
+                                                                                                       // second
 
-<<<<<<< HEAD
-    private static final double BETA_CORAL_INTAKE_P = 0.01;
-=======
     private static final double BETA_CORAL_INTAKE_P = 0.1;
->>>>>>> main
     private static final double BETA_CORAL_INTAKE_I = 0;
     private static final double BETA_CORAL_INTAKE_D = 0;
     private static final double BETA_CORAL_INTAKE_FF = 0;
