@@ -161,7 +161,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
                 Optional<Alliance> alliance = DriverStation.getAlliance();
                 if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
-                        isBlueAlliance = false; // TODO: THIS NEEDS TO CHANGE TO TRUE. IT IS FALSE FOR TESTING PURPOSES AS OUR TESTING REEF IS RED
+                        isBlueAlliance = true;
                 } else {
                         isBlueAlliance = false;
                 }
