@@ -6,7 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.CommandFactory.SubsystemPositions;
+import frc.robot.CommandFactory.ScoringLevel;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
@@ -71,16 +71,16 @@ public class RobotContainer {
 
   private void configureButtonBindingsOperator() {
     operatorController.rightTrigger()
-        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_INTAKE_ANGLE.in(Radians))
+        .onTrue(coralWrist.goToSetpointCommand(ScoringLevel.INTAKE)
             .withName("move coral wrist to intake setpoint"));
     operatorController.rightBumper()
-        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L2_L3_OUTTAKE_ANGLE.in(Radians))
+        .onTrue(coralWrist.goToSetpointCommand(ScoringLevel.L_TWO)
             .withName("move coral wrist to outtake setpoint"));
     operatorController.y().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_TWO_HEIGHT));
     operatorController.x().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_THREE_HEIGHT));
     operatorController.b().whileTrue(elevator.incrementGoalPosition(Meters.of(0.001)));
     operatorController.a().whileTrue(elevator.incrementGoalPosition(Meters.of(-0.001)));
-    operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SubsystemPositions.INTAKE)
+    operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(ScoringLevel.INTAKE)
         .withName("move coral wrist to L1 outtake setpoint"));
   }
 }

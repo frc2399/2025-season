@@ -3,7 +3,7 @@ package frc.robot.subsystems.coralWrist;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.CommandFactory.SubsystemPositions;
+import frc.robot.CommandFactory.ScoringLevel;
 import frc.robot.subsystems.coralWrist.CoralWristIO.CoralWristIOStates;
 
 public class CoralWristSubsystem extends SubsystemBase {
@@ -14,9 +14,9 @@ public class CoralWristSubsystem extends SubsystemBase {
         this.io = io;
     }
 
-    public Command goToSetpointCommand(SubsystemPositions subsystemPositions) {
+    public Command goToSetpointCommand(ScoringLevel scoringLevel) {
         return this.run(() -> {
-            io.setGoalAngle(subsystemPositions);
+            io.setGoalAngle(scoringLevel);
         });
     }
 
@@ -24,6 +24,10 @@ public class CoralWristSubsystem extends SubsystemBase {
         return this.run(() -> {
             io.setWristSpeed(speed);
         });
+    }
+
+    public boolean atGoal() {
+        return io.atGoal();
     }
 
     // taking out motion profiling to see if code works

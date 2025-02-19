@@ -1,11 +1,11 @@
 package frc.robot.subsystems.coralWrist;
 
-import frc.robot.CommandFactory.SubsystemPositions;
+import frc.robot.CommandFactory.ScoringLevel;
 
 public class CoralWristPlacebo implements CoralWristIO {
 
     @Override
-    public void setGoalAngle(SubsystemPositions subsystemPositions) {
+    public void setGoalAngle(ScoringLevel scoringLevel) {
     }
 
     @Override
@@ -14,6 +14,11 @@ public class CoralWristPlacebo implements CoralWristIO {
 
     @Override
     public void updateStates(CoralWristIOStates states) {
+    }
+
+    @Override
+    public boolean atGoal() {
+        return true;
     }
 
     @Override
