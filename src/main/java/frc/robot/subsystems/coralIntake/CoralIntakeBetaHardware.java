@@ -30,7 +30,11 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     private static final double BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR = 2 * Math.PI / 5.0; // radians
     private static final double BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR = 2 * Math.PI / 5.0 / 60; // radians per second
 
+<<<<<<< HEAD
     private static final double BETA_CORAL_INTAKE_P = 0.01;
+=======
+    private static final double BETA_CORAL_INTAKE_P = 0.1;
+>>>>>>> main
     private static final double BETA_CORAL_INTAKE_I = 0;
     private static final double BETA_CORAL_INTAKE_D = 0;
     private static final double BETA_CORAL_INTAKE_FF = 0;
