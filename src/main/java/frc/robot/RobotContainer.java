@@ -78,13 +78,14 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsOperator() {
-    // operatorController.rightTrigger()
-    // .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_INTAKE_ANGLE.in(Radians))
-    // .withName("move coral wrist to intake setpoint"));
-    // operatorController.rightBumper()
-    // .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Radians))
-    // .withName("move coral wrist to outtake setpoint"));
-    // operatorController.y().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_TWO_HEIGHT));
+    operatorController.rightTrigger()
+        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_INTAKE_ANGLE.in(Radians))
+            .withName("move coral wrist to intake setpoint"));
+    operatorController.leftTrigger()
+        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L4_OUTTAKE_ANGLE.in(Radians))
+            .withName("move coral wrist to outtake setpoint"));
+    // operatorController.y().onTrue(elevator.goToG
+    // oalSetpointCmd(SetpointConstants.L_TWO_HEIGHT));
     // operatorController.x().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_THREE_HEIGHT));
     // operatorController.b().whileTrue(elevator.incrementGoalPosition(Meters.of(0.001)));
     // operatorController.a().whileTrue(elevator.incrementGoalPosition(Meters.of(-0.001)));
@@ -92,13 +93,13 @@ public class RobotContainer {
     // coral wrist to L1 outtake setpoint"));
     operatorController.rightBumper().whileTrue(coralWrist.setWristSpeed(0.1));
     operatorController.leftBumper().whileTrue(coralWrist.setWristSpeed(-0.1));
-    operatorController.rightTrigger().whileTrue(algaeWrist.setWristSpeed(0.1));
-    operatorController.leftTrigger().whileTrue(algaeWrist.setWristSpeed(-0.1));
-    operatorController.y()
-        .onTrue(algaeWrist.goToSetpointCommand(SetpointConstants.ALGAE_WRIST_INTAKE_ANGLE.in(Radians))
-            .withName("move algae wrist to inttake setpoint"));
-    operatorController.a()
-        .onTrue(algaeWrist.goToSetpointCommand(-SetpointConstants.ALGAE_WRIST_INTAKE_ANGLE.in(Radians))
-            .withName("move algae wrist to outtake setpoint"));
+    // operatorController.rightTrigger().whileTrue(algaeWrist.setWristSpeed(0.1));
+    // operatorController.leftTrigger().whileTrue(algaeWrist.setWristSpeed(-0.1));
+    // operatorController.y()
+    // .onTrue(algaeWrist.goToSetpointCommand(SetpointConstants.ALGAE_WRIST_INTAKE_ANGLE.in(Radians))
+    // .withName("move algae wrist to inttake setpoint"));
+    // operatorController.a()
+    // .onTrue(algaeWrist.goToSetpointCommand(-SetpointConstants.ALGAE_WRIST_INTAKE_ANGLE.in(Radians))
+    // .withName("move algae wrist to outtake setpoint"));
   }
 }

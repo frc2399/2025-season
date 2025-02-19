@@ -25,7 +25,7 @@ public class CoralWristHardware implements CoralWristIO {
 
         private final double STATIC_FF_CORAL = 0;
         private final double GRAVITY_FF_CORAL = 0.036;
-        private final double VELOCITY_FF_CORAL = 0.5;
+        private final double VELOCITY_FF_CORAL = 0.25;
 
         private final ArmFeedforward coralWristFeedFoward = new ArmFeedforward(STATIC_FF_CORAL, GRAVITY_FF_CORAL,
                         VELOCITY_FF_CORAL);
@@ -57,9 +57,9 @@ public class CoralWristHardware implements CoralWristIO {
         private static final Angle POSITION_WRAPPING_MIN_INPUT = Degrees.of(-90);
         private static final Angle POSITION_WRAPPING_MAX_INPUT = Degrees.of(90);
 
-        private static final double WRIST_MOTOR_P = 0.5;
+        private static final double WRIST_MOTOR_P = 1;
         private static final double WRIST_MOTOR_I = 0.0;
-        private static final double WRIST_MOTOR_D = 0.0;
+        private static final double WRIST_MOTOR_D = 0.3;
         private static final double WRIST_MOTOR_FF = 0.0;
         private static final double WRIST_MOTOR_MIN_OUTPUT = -1.0;
         private static final double WRIST_MOTOR_MAX_OUTPUT = 1.0;
