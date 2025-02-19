@@ -108,7 +108,6 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                 // the arm feedforward assumes horizontal = 0. ours is vertical (up) = 0, so add
                 // 90 degrees to get us from encoder position to position for arm feedforward
                 goalAngle = desiredAngle;
-                System.out.println("calling this method in setpoint command");
         }
 
         @Override
