@@ -16,10 +16,10 @@ import frc.robot.subsystems.drive.SwerveModule;
 import frc.robot.subsystems.drive.SwerveModuleHardwareNEO;
 import frc.robot.subsystems.drive.SwerveModuleHardwareVortex;
 import frc.robot.subsystems.drive.SwerveModulePlacebo;
-import frc.robot.subsystems.elevator.AlphaElevator;
+import frc.robot.subsystems.elevator.AlphaElevatorHardware;
 import frc.robot.subsystems.elevator.ElevatorPlacebo;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.elevator.KrakenElevator;
+import frc.robot.subsystems.elevator.KrakenElevatorHardware;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.subsystems.gyro.GyroHardware;
 import frc.robot.subsystems.gyro.GyroPlacebo;
@@ -171,10 +171,10 @@ public class SubsystemFactory {
 
     protected ElevatorSubsystem buildElevator() {
         if (robotType == RobotType.ALPHA) {
-            return new ElevatorSubsystem(new AlphaElevator(ELEVATOR_ALPHA_MAX_HEIGHT));
+            return new ElevatorSubsystem(new AlphaElevatorHardware(ELEVATOR_ALPHA_MAX_HEIGHT));
         }    
         if (robotType == RobotType.BETA) {
-            return new ElevatorSubsystem(new KrakenElevator(ELEVATOR_BETA_MAX_HEIGHT)); 
+            return new ElevatorSubsystem(new KrakenElevatorHardware(ELEVATOR_BETA_MAX_HEIGHT)); 
         }
         else {
             return new ElevatorSubsystem(new ElevatorPlacebo());
