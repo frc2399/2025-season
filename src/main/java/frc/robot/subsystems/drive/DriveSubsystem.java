@@ -45,6 +45,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CommandFactory.RobotPosition;
 import frc.robot.Constants;
 import frc.robot.Constants.SpeedConstants;
 import frc.robot.RobotContainer.AlignType;
@@ -398,14 +399,14 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         // by using a supplier, the robot knows 'hey, this value might change, so i
         // should
         // check it every time i use this object' thus allowing it to change
-        public Command driveToPoseCommand(AlignType alignType) {
+        public Command driveToPoseCommand(RobotPosition robotPosition) {
                 return this.run(() -> {
                         // basically, bad things can happen if we try to update a normal boolean within
                         // a lambda and access it outside that lambda, but atomic booleans prevent these
                         // risks
                         atGoal.set(false);
 
-                        Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(alignType, () -> robotPose,
+                        Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(robotPosition, () -> robotPose,
                                         isBlueAlliance);
                         SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.get().getY());
                         SmartDashboard.putNumber("Swerve/vision/goalPosex", goalPose.get().getX());

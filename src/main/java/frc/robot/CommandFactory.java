@@ -25,7 +25,7 @@ public class CommandFactory {
     private final NetworkTableEntry gameModeEntry;
     private final NetworkTableEntry leftRightEntry;
     
-    private enum RobotPosition {
+    public enum RobotPosition {
       LEFT,
       RIGHT,
     }

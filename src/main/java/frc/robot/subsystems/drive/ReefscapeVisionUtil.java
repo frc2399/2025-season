@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.CommandFactory.RobotPosition;
 import frc.robot.RobotContainer.AlignType;
 
 public class ReefscapeVisionUtil {
@@ -76,7 +77,7 @@ public class ReefscapeVisionUtil {
         private static final List<Pose2d> RIGHT_POSES_BLUE = Arrays.asList(
                         BLUE_REEF_B, BLUE_REEF_D, BLUE_REEF_F, BLUE_REEF_H, BLUE_REEF_J, BLUE_REEF_L);
 
-        public static Supplier<Pose2d> getGoalPose(AlignType alignType, Supplier<Pose2d> robotPose,
+        public static Supplier<Pose2d> getGoalPose(RobotPosition robotPosition, Supplier<Pose2d> robotPose,
                         boolean isBlueAlliance) {
                 Pose2d goalPose;
                 if (robotPose.get() == null) {
@@ -84,17 +85,13 @@ public class ReefscapeVisionUtil {
                         return () -> nullReturn;
                 }
                 if (isBlueAlliance) {
-                        if (alignType == AlignType.CORAL_STATION) {
-                                goalPose = BLUE_CORAL_STATION;
-                        } else if (alignType == AlignType.REEF_LEFT) {
+                        if (robotPosition == RobotPosition.LEFT) {
                                 goalPose = robotPose.get().nearest(LEFT_POSES_BLUE);
                         } else {
                                 goalPose = robotPose.get().nearest(RIGHT_POSES_BLUE);
                         }
                 } else {
-                        if (alignType == AlignType.CORAL_STATION) {
-                                goalPose = RED_CORAL_STATION;
-                        } else if (alignType == AlignType.REEF_LEFT) {
+                       if (robotPosition == RobotPosition.LEFT) {
                                 goalPose = robotPose.get().nearest(LEFT_POSES_RED);
                         } else {
                                 goalPose = robotPose.get().nearest(RIGHT_POSES_RED);

@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.CommandFactory.RobotPosition;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
@@ -44,12 +45,6 @@ public class RobotContainer {
     elevator.profiledPIDEnabled = false;
   }
 
-  public enum AlignType {
-    REEF_LEFT,
-    REEF_RIGHT,
-    CORAL_STATION;
-  }
-
   public void configureDefaultCommands() {
     drive.setDefaultCommand(drive.driveCommand(
         () -> -(MathUtil.applyDeadband(
@@ -71,14 +66,14 @@ public class RobotContainer {
   private void configureButtonBindingsDriver() {
     driverController.rightBumper().whileTrue(coralIntake.intake());
     driverController.leftBumper().whileTrue(coralIntake.outtake());
-    driverController.b().onTrue(gyro.setYaw(Math.PI));
+    driverController.b().onTrue(gyro.setYaw(0));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleMode());
     driverController.rightTrigger()
-        .whileTrue(drive.driveToPoseCommand(AlignType.REEF_RIGHT))
+        .whileTrue(drive.driveToPoseCommand(RobotPosition.RIGHT))
         .onFalse(drive.disableDriveToPose());
     driverController.leftTrigger()
-        .whileTrue(drive.driveToPoseCommand(AlignType.REEF_LEFT))
+        .whileTrue(drive.driveToPoseCommand(RobotPosition.LEFT))
         .onFalse(drive.disableDriveToPose());
   }
 
