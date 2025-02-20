@@ -65,19 +65,17 @@ public class CommandFactory {
   }
 
   public Command turtleMode() {
-    return Commands
-        .parallel(elevator.goToGoalSetpointCmd(() -> ScoringLevel.INTAKE),
-            coralWrist.goToSetpointCommand(() -> ScoringLevel.INTAKE));
+    return avoidCronchCommand(() -> ScoringLevel.INTAKE);
   }
 
   public Command moveElevatorAndWrist() {
-    return Commands.either(avoidCronchCommand(),
+    return Commands.either(avoidCronchCommand(getScoringLevel()),
         Commands.parallel(elevator.goToGoalSetpointCmd(getScoringLevel()),
                           coralWrist.goToSetpointCommand(getScoringLevel())),
         () -> elevator.willCrossCronchZone(getScoringLevel()));
   }
 
-  public Command avoidCronchCommand() {
+  public Command avoidCronchCommand(Supplier<ScoringLevel> scoringLevel) {
     // if we're above cronch zone, start by setting elevator height to top of
     // collision range; if we're below, start by setting to bottom
     return Commands.either(
@@ -86,15 +84,15 @@ public class CommandFactory {
                 elevator.goToGoalSetpointCmd(() -> ScoringLevel.ELEVATOR_TOP_INTERMEDIATE_SETPOINT),
                 coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE))
                 .until(() -> coralWrist.atGoal()),
-            Commands.parallel(elevator.goToGoalSetpointCmd(getScoringLevel()),
-                              coralWrist.goToSetpointCommand(getScoringLevel()))),
+            Commands.parallel(elevator.goToGoalSetpointCmd(scoringLevel),
+                              coralWrist.goToSetpointCommand(scoringLevel))),
         Commands.sequence(
             Commands.parallel(
                 elevator.goToGoalSetpointCmd(() -> ScoringLevel.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT),
                 coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE))
                 .until(() -> coralWrist.atGoal()),
-            Commands.parallel(elevator.goToGoalSetpointCmd(getScoringLevel()),
-                              coralWrist.goToSetpointCommand(getScoringLevel()))),
+            Commands.parallel(elevator.goToGoalSetpointCmd(scoringLevel),
+                              coralWrist.goToSetpointCommand(scoringLevel))),
         () -> (elevator.getCurrentPosition() > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)));
   }
 
