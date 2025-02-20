@@ -91,7 +91,6 @@ public class RobotContainer {
 
         coralIntake.setDefaultCommand(coralIntake.setZero());
         coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
-
   }
 
   private void configureButtonBindingsDriver() {

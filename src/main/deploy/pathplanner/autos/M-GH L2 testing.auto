@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "M-GH"
+            "pathName": "M-GH L2 testing"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Elevator to L1 setpoint"
+            "name": "Elevator to L2 setpoint"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Coral wrist to L1 setpoint"
+            "name": "Coral wrist to L2 setpoint"
           }
         },
         {
