@@ -136,4 +136,4 @@ public class CommandFactory {
     // newEntry.setBoolean(indicator);
     // });
     // }
-}
+  }

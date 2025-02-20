@@ -30,9 +30,9 @@ import frc.robot.CommandFactory.ScoringLevel;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 
-public class ElevatorHardware implements ElevatorIO {
+public class AlphaElevatorHardware implements ElevatorIO {
 
-    public static final class ElevatorHardwareConstants {
+    public static final class AlphaElevatorConstants {
         private static final Distance METERS_PER_REVOLUTION = Inches.of(0.67); // (1/9)(1.92 * pi)
         private static final Distance ALLOWED_SETPOINT_ERROR = Inches.of(.25);
         private static final LinearVelocity MAX_VEL = MetersPerSecond.of(1.5);
@@ -59,7 +59,7 @@ public class ElevatorHardware implements ElevatorIO {
     public State intermediateSetpointState = new State();
     private State goalState = new State();
 
-    public ElevatorHardware(Distance maxElevatorHeight) {
+    public AlphaElevatorHardware(Distance maxElevatorHeight) {
 
         globalMotorConfig = new SparkFlexConfig();
         rightMotorConfigFollower = new SparkFlexConfig();
@@ -74,27 +74,25 @@ public class ElevatorHardware implements ElevatorIO {
         leftEncoder = elevatorLeftMotorLeader.getEncoder();
         leftEncoder.setPosition(0);
 
-        elevatorMotionProfile = new TrapezoidProfile(
-                new Constraints(ElevatorHardwareConstants.MAX_VEL.in(MetersPerSecond),
-                        ElevatorHardwareConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)));
+        elevatorMotionProfile = new TrapezoidProfile(new Constraints(AlphaElevatorConstants.MAX_VEL.in(MetersPerSecond), AlphaElevatorConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)));
 
         globalMotorConfig.encoder
-                .positionConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION.in(Meters))
-                .velocityConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION.in(Meters) / 60);
+                .positionConversionFactor(AlphaElevatorConstants.METERS_PER_REVOLUTION.in(Meters))
+                .velocityConversionFactor(AlphaElevatorConstants.METERS_PER_REVOLUTION.in(Meters) / 60);
 
         globalMotorConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .p(ElevatorHardwareConstants.P_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
-                .i(ElevatorHardwareConstants.I_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
-                .d(ElevatorHardwareConstants.D_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
+                .p(AlphaElevatorConstants.P_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
+                .i(AlphaElevatorConstants.I_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
+                .d(AlphaElevatorConstants.D_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
                 .outputRange(-1, 1)
-                .p(ElevatorHardwareConstants.P_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
-                .i(ElevatorHardwareConstants.I_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
-                .d(ElevatorHardwareConstants.D_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
+                .p(AlphaElevatorConstants.P_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
+                .i(AlphaElevatorConstants.I_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
+                .d(AlphaElevatorConstants.D_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
                 // https://docs.revrobotics.com/revlib/spark/closed-loop/closed-loop-control-getting-started#f-parameter
-                .velocityFF(ElevatorHardwareConstants.FEEDFORWARD_VALUE.in(Volts), ClosedLoopSlot.kSlot1)
-                .outputRange(ElevatorHardwareConstants.OUTPUT_RANGE_MIN_VALUE,
-                        ElevatorHardwareConstants.OUTPUT_RANGE_MAX_VALUE, ClosedLoopSlot.kSlot1);
+                .velocityFF(AlphaElevatorConstants.FEEDFORWARD_VALUE.in(Volts), ClosedLoopSlot.kSlot1)
+                .outputRange(AlphaElevatorConstants.OUTPUT_RANGE_MIN_VALUE,
+                        AlphaElevatorConstants.OUTPUT_RANGE_MAX_VALUE, ClosedLoopSlot.kSlot1);
 
         globalMotorConfig.softLimit
                 .forwardSoftLimit((maxElevatorHeight).in(Meters) - 0.02) // a little less
@@ -147,11 +145,9 @@ public class ElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public void calculateNextIntermediateSetpoint() {
-        intermediateSetpointState = elevatorMotionProfile.calculate(ElevatorHardwareConstants.kDt,
-                intermediateSetpointState, goalState);
-        leftClosedLoopController.setReference(intermediateSetpointState.position, ControlType.kPosition,
-                ClosedLoopSlot.kSlot0);
+    public void calculateNextIntermediateSetpoint() { 
+        intermediateSetpointState = elevatorMotionProfile.calculate(AlphaElevatorConstants.kDt, intermediateSetpointState, goalState);
+        leftClosedLoopController.setReference(intermediateSetpointState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
 
     @Override
@@ -164,13 +160,13 @@ public class ElevatorHardware implements ElevatorIO {
         return leftEncoder.getPosition();
     }
 
-    @Override
-    public boolean willCrossCronchZone(ScoringLevel scoringLevel) {
-        return false;
+    public void setSpeedManualControl(double speed)
+    {
+        //place holding method 
     }
 
     @Override
-    public void updateStates(ElevatorIOStates states) {
+    public void updateStates(ElevatorIOInputs states) {
         states.position = getEncoderPosition();
         states.velocity = getEncoderVelocity();
         states.appliedVoltageRight = elevatorRightMotorFollower.getAppliedOutput()

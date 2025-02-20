@@ -7,13 +7,12 @@ import static edu.wpi.first.units.Units.Meters;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.CommandFactory.ScoringLevel;
-import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOStates;;
+import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
     private final ElevatorIO elevatorIO;
-    private final ElevatorIOStates states = new ElevatorIOStates();
+    private final ElevatorIOInputs states = new ElevatorIOInputs();
     public boolean profiledPIDEnabled = false;
     private double goalSetpoint;
     private final Distance HEIGHT_TOLERANCE = Inches.of(0.5);
@@ -39,25 +38,30 @@ public class ElevatorSubsystem extends SubsystemBase {
         return (Math.abs(goalSetpoint - elevatorIO.getEncoderPosition()) <= HEIGHT_TOLERANCE.in(Meters));
     }
 
-    public Command incrementGoalPosition(Distance changeInGoalPosition) {
-        profiledPIDEnabled = true;
-        return this.run(() -> elevatorIO.incrementGoalPosition(changeInGoalPosition));
+    public Command incrementGoalPosition(Distance changeInGoalPosition)
+    {
+        return this.run(()-> {
+            profiledPIDEnabled = true;
+            elevatorIO.incrementGoalPosition(changeInGoalPosition);
+        });
     }
 
     public double getCurrentPosition() {
         return elevatorIO.getEncoderPosition();
     }
 
-    public boolean willCrossCronchZone(ScoringLevel scoringLevel) {
-        return elevatorIO.willCrossCronchZone(scoringLevel);
+    public Command setSpeedManualControl(double speed)
+    {
+        return this.run(() -> elevatorIO.setSpeedManualControl(speed)); 
     }
+
 
     @Override
     public void periodic() {
         if (!profiledPIDEnabled) {
             elevatorIO.resetSetpointsToCurrentPosition();
         }
-        elevatorIO.calculateNextIntermediateSetpoint();
+       elevatorIO.calculateNextIntermediateSetpoint();
 
         elevatorIO.updateStates(states);
         SmartDashboard.putNumber("Elevator/position", states.position);
