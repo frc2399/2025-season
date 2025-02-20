@@ -5,11 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.drive.RobotDriveBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveControlConstants;
-import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -64,9 +62,10 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsDriver() {
-    driverController.rightBumper().whileTrue(coralIntake.intake());
-    driverController.leftBumper().whileTrue(coralIntake.outtake());
-    driverController.b().onTrue(gyro.setYaw(0.0));
+    driverController.rightTrigger().whileTrue(coralIntake.intake());
+    driverController.leftTrigger().whileTrue(coralIntake.outtake());
+
+    driverController.y().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleMode());
   }
