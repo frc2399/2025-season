@@ -4,6 +4,8 @@ import edu.wpi.first.units.measure.Distance;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,33 +30,33 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorIO.setIntermediateSetpoint(Meters.of(0), 0);
     }
 
-    public Command goToGoalSetpointCmd(ScoringLevel scoringLevel) {
+    public Command goToGoalSetpointCmd(Supplier<ScoringLevel> scoringLevel) {
         return this.runOnce(() -> {
-            if (scoringLevel == ScoringLevel.INTAKE) {
+            if (scoringLevel.get() == ScoringLevel.INTAKE) {
                 elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_TURTLE_HEIGHT); // turtle mode = bottom, where intake is
                 profiledPIDEnabled = true;
                 goalSetpoint = SetpointConstants.ELEVATOR_TURTLE_HEIGHT.in(Meters); 
-            } else if (scoringLevel == ScoringLevel.L_ONE) {
+            } else if (scoringLevel.get() == ScoringLevel.L_ONE) {
                 elevatorIO.setGoalPosition(SetpointConstants.L_ONE_HEIGHT); // turtle mode = bottom, where intake is
                 profiledPIDEnabled = true;
                 goalSetpoint = SetpointConstants.L_ONE_HEIGHT.in(Meters); 
-            } else if (scoringLevel == ScoringLevel.L_TWO) {
+            } else if (scoringLevel.get() == ScoringLevel.L_TWO) {
                 elevatorIO.setGoalPosition(SetpointConstants.L_TWO_HEIGHT);
                 profiledPIDEnabled = true;
                 goalSetpoint = SetpointConstants.L_TWO_HEIGHT.in(Meters); 
-            } else if (scoringLevel == ScoringLevel.L_THREE) {
+            } else if (scoringLevel.get() == ScoringLevel.L_THREE) {
                 elevatorIO.setGoalPosition(SetpointConstants.L_THREE_HEIGHT);
                 profiledPIDEnabled = true;
                 goalSetpoint = SetpointConstants.L_THREE_HEIGHT.in(Meters); 
-            } else if (scoringLevel == ScoringLevel.L_FOUR) {
+            } else if (scoringLevel.get() == ScoringLevel.L_FOUR) {
                 elevatorIO.setGoalPosition(SetpointConstants.L_FOUR_HEIGHT);
                 profiledPIDEnabled = true;
                 goalSetpoint = SetpointConstants.L_FOUR_HEIGHT.in(Meters); 
-            } else if (scoringLevel == ScoringLevel.ELEVATOR_TOP_INTERMEDIATE_SETPOINT) {
+            } else if (scoringLevel.get() == ScoringLevel.ELEVATOR_TOP_INTERMEDIATE_SETPOINT) {
                 elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP);
                 profiledPIDEnabled = true;
                 goalSetpoint = SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters); 
-            } else if (scoringLevel == ScoringLevel.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT) {
+            } else if (scoringLevel.get() == ScoringLevel.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT) {
                 elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM);
                 profiledPIDEnabled = true;
                 goalSetpoint = SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM.in(Meters); 
@@ -84,8 +86,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         return this.run(() -> elevatorIO.setSpeedManualControl(speed)); 
     }
 
-    public boolean willCrossCronchZone(ScoringLevel scoringLevel) {
-        return elevatorIO.willCrossCronchZone(scoringLevel);
+    public boolean willCrossCronchZone(Supplier<ScoringLevel> scoringLevel) {
+        return elevatorIO.willCrossCronchZone(scoringLevel.get());
     }
 
 

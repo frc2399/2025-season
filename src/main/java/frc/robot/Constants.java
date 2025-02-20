@@ -87,7 +87,7 @@ public final class Constants {
     public static final Distance L_FOUR_HEIGHT = Inches.of(49.5);
 
     public static final Distance ELEVATOR_COLLISION_RANGE_BOTTOM = Meters.of(1);
-    public static final Distance ELEVATOR_COLLISION_RANGE_TOP = Meters.of(2);
+    public static final Distance ELEVATOR_COLLISION_RANGE_TOP = Inches.of(50);;
   }
 
   public static class DriveControlConstants {

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.coralWrist;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,9 +16,9 @@ public class CoralWristSubsystem extends SubsystemBase {
         this.io = io;
     }
 
-    public Command goToSetpointCommand(ScoringLevel scoringLevel) {
+    public Command goToSetpointCommand(Supplier<ScoringLevel> scoringLevel) {
         return this.run(() -> {
-            io.setGoalAngle(scoringLevel);
+            io.setGoalAngle(scoringLevel.get());
         });
     }
 

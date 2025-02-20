@@ -2,6 +2,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -64,14 +66,15 @@ public class CommandFactory {
 
   public Command turtleMode() {
     return Commands
-        .parallel(elevator.goToGoalSetpointCmd(ScoringLevel.INTAKE),
-            coralWrist.goToSetpointCommand(ScoringLevel.INTAKE));
+        .parallel(elevator.goToGoalSetpointCmd(() -> ScoringLevel.INTAKE),
+            coralWrist.goToSetpointCommand(() -> ScoringLevel.INTAKE));
   }
 
   public Command moveElevatorAndWrist() {
     return Commands.either(avoidCronchCommand(),
-        elevator.goToGoalSetpointCmd(scoringLevel),
-        () -> elevator.willCrossCronchZone(scoringLevel));
+        Commands.parallel(elevator.goToGoalSetpointCmd(getScoringLevel()),
+                          coralWrist.goToSetpointCommand(getScoringLevel())),
+        () -> elevator.willCrossCronchZone(getScoringLevel()));
   }
 
   public Command avoidCronchCommand() {
@@ -80,20 +83,22 @@ public class CommandFactory {
     return Commands.either(
         Commands.sequence(
             Commands.parallel(
-                elevator.goToGoalSetpointCmd(ScoringLevel.ELEVATOR_TOP_INTERMEDIATE_SETPOINT),
-                coralWrist.goToSetpointCommand(ScoringLevel.L_ONE))
+                elevator.goToGoalSetpointCmd(() -> ScoringLevel.ELEVATOR_TOP_INTERMEDIATE_SETPOINT),
+                coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE))
                 .until(() -> coralWrist.atGoal()),
-            elevator.goToGoalSetpointCmd(scoringLevel)),
+            Commands.parallel(elevator.goToGoalSetpointCmd(getScoringLevel()),
+                              coralWrist.goToSetpointCommand(getScoringLevel()))),
         Commands.sequence(
             Commands.parallel(
-                elevator.goToGoalSetpointCmd(ScoringLevel.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT),
-                coralWrist.goToSetpointCommand(ScoringLevel.L_ONE))
+                elevator.goToGoalSetpointCmd(() -> ScoringLevel.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT),
+                coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE))
                 .until(() -> coralWrist.atGoal()),
-            elevator.goToGoalSetpointCmd(scoringLevel)),
+            Commands.parallel(elevator.goToGoalSetpointCmd(getScoringLevel()),
+                              coralWrist.goToSetpointCommand(getScoringLevel()))),
         () -> (elevator.getCurrentPosition() > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)));
   }
 
-  public ScoringLevel getScoringLevel() {
+  public Supplier<ScoringLevel> getScoringLevel() {
     if (levelEntry.getString("None").equals("Level 1")) {
       scoringLevel = ScoringLevel.L_ONE;
     } else if (levelEntry.getString("None").equals("Level 2")) {
@@ -103,25 +108,25 @@ public class CommandFactory {
     } else if (levelEntry.getString("None").equals("Level 4")) {
       scoringLevel = ScoringLevel.L_FOUR;
     }
-    return scoringLevel;
+    return () -> scoringLevel;
   }
 
-  public RobotPosition getRobotPosition() {
+  public Supplier<RobotPosition> getRobotPosition() {
     if (leftRightEntry.getString("None").equals("left")) {
       robotPosition = RobotPosition.LEFT;
     } else if (leftRightEntry.getString("None").equals("right")) {
       robotPosition = RobotPosition.RIGHT;
     }
-    return robotPosition;
+    return () -> robotPosition;
   }
 
-    public GameMode getGameMode() {
+    public Supplier<GameMode> getGameMode() {
         if (gameModeEntry.getString("None").equals("coral")) {
             gameMode = GameMode.CORAL;
           } else if (gameModeEntry.getString("None").equals("algae")) {
             gameMode = GameMode.ALGAE;
           }
-        return gameMode;
+        return () -> gameMode;
     }
 
     public void setScoringLevel(String level){
