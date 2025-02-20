@@ -67,7 +67,7 @@ public class CoralWristHardware implements CoralWristIO {
         private static final Angle FORWARD_SOFT_LIMIT = Degrees.of(25);
         private static final Angle REVERSE_SOFT_LIMIT = Degrees.of(-90);
 
-        private double goalAngle;
+        private Angle goalAngle;
 
         public CoralWristHardware(double ABSOLUTE_ENCODER_POSITION_CONVERSION_FACTOR,
                         double ABSOLUTE_ENCODER_VELOCITY_CONVERSION_FACTOR,
@@ -111,10 +111,11 @@ public class CoralWristHardware implements CoralWristIO {
         }
 
         @Override
-        public void setGoalAngle(double desiredAngle) {
-                coralIntakeWristClosedLoopController.setReference(desiredAngle, ControlType.kPosition,
+        public void setGoalAngle(Angle desiredAngle) {
+                coralIntakeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
                                 ClosedLoopSlot.kSlot0,
-                                coralWristFeedFoward.calculate(desiredAngle + WRIST_ANGULAR_OFFSET.in(Radians),
+                                coralWristFeedFoward.calculate(
+                                                desiredAngle.in(Radians) + WRIST_ANGULAR_OFFSET.in(Radians),
                                                 coralIntakeWristAbsoluteEncoder.getVelocity()));
                 goalAngle = desiredAngle;
         }
@@ -138,7 +139,7 @@ public class CoralWristHardware implements CoralWristIO {
                                 * coralIntakeWristSparkFlex.getBusVoltage();
                 states.wristCurrent = coralIntakeWristSparkFlex.getOutputCurrent();
                 states.wristRelativeEncoderAngle = coralIntakeWristRelativeEncoder.getPosition();
-                states.goalAngle = goalAngle;
+                states.goalAngle = goalAngle.in(Radians);
                 states.wristAbsoluteAngle = coralIntakeWristAbsoluteEncoder.getPosition();
                 // states.trapezoidProfileGoalAngle = goalState.position;
         }

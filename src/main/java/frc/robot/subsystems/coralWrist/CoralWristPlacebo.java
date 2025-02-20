@@ -1,9 +1,11 @@
 package frc.robot.subsystems.coralWrist;
 
+import edu.wpi.first.units.measure.Angle;
+
 public class CoralWristPlacebo implements CoralWristIO {
 
     @Override
-    public void setGoalAngle(double angle) {
+    public void setGoalAngle(Angle angle) {
     }
 
     @Override

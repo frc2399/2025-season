@@ -81,10 +81,10 @@ public class RobotContainer {
 
   private void configureButtonBindingsOperator() {
     operatorController.rightTrigger()
-        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_INTAKE_ANGLE.in(Radians))
+        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_INTAKE_ANGLE)
             .withName("move coral wrist to intake setpoint"));
     operatorController.leftTrigger()
-        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L4_OUTTAKE_ANGLE.in(Radians))
+        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L4_OUTTAKE_ANGLE)
             .withName("move coral wrist to outtake setpoint"));
     operatorController.y().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_TWO_HEIGHT));
     operatorController.x().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_THREE_HEIGHT));
