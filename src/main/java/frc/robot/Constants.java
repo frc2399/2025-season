@@ -74,6 +74,7 @@ public final class Constants {
 
     public static final AngularVelocity BETA_CORAL_INTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.25);
     public static final AngularVelocity BETA_CORAL_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.15);
+    public static final AngularVelocity BETA_CORAL_HOLDING_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.1);
   }
 
   public static class SetpointConstants {
