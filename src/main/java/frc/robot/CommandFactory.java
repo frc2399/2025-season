@@ -69,27 +69,28 @@ public class CommandFactory {
   }
 
   public Command moveElevatorAndWrist() {
-    if (elevator.willCrossCronchZone(scoringLevel)) {
-      // if we're above cronch zone, start by setting elevator height to top of
-      // collision range; if we're below, start by setting to bottom
-      if (elevator.getCurrentPosition() > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)) {
-        return Commands.sequence(
+    return Commands.either(avoidCronchCommand(),
+        elevator.goToGoalSetpointCmd(scoringLevel),
+        () -> elevator.willCrossCronchZone(scoringLevel));
+  }
+
+  public Command avoidCronchCommand() {
+    // if we're above cronch zone, start by setting elevator height to top of
+    // collision range; if we're below, start by setting to bottom
+    return Commands.either(
+        Commands.sequence(
             Commands.parallel(
                 elevator.goToGoalSetpointCmd(ScoringLevel.ELEVATOR_TOP_INTERMEDIATE_SETPOINT),
                 coralWrist.goToSetpointCommand(ScoringLevel.L_ONE))
                 .until(() -> coralWrist.atGoal()),
-            elevator.goToGoalSetpointCmd(scoringLevel));
-      } else {
-        return Commands.sequence(
+            elevator.goToGoalSetpointCmd(scoringLevel)),
+        Commands.sequence(
             Commands.parallel(
                 elevator.goToGoalSetpointCmd(ScoringLevel.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT),
                 coralWrist.goToSetpointCommand(ScoringLevel.L_ONE))
                 .until(() -> coralWrist.atGoal()),
-            elevator.goToGoalSetpointCmd(scoringLevel));
-      }
-    } else {
-      return elevator.goToGoalSetpointCmd(scoringLevel);
-    }
+            elevator.goToGoalSetpointCmd(scoringLevel)),
+        () -> (elevator.getCurrentPosition() > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)));
   }
 
   public ScoringLevel getScoringLevel() {
