@@ -94,6 +94,18 @@ public class CommandFactory {
           }
         return gameMode;
     }
+
+    public void setScoringLevel(String level){
+        levelEntry.setString(level);
+    }
+
+    public void setRobotAlignmentPosition(String alignmentValue){
+        leftRightEntry.setString(alignmentValue);
+    }
+
+    public void setGameMode(String gameMode){
+        gameModeEntry.setString(gameMode);
+    }
     
         //These were test functions. I'd prefer to keep them now so I can reference how I did certain commands later. 
         //I'll eventually delete them
