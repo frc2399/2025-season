@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+<<<<<<< HEAD
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -13,6 +14,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+=======
+import edu.wpi.first.wpilibj.drive.RobotDriveBase;
+import edu.wpi.first.wpilibj2.command.Commands;
+>>>>>>> main
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SetpointConstants;
@@ -89,8 +94,9 @@ public class RobotContainer {
             DriveControlConstants.DRIVE_DEADBAND)),
         DriveControlConstants.FIELD_ORIENTED_DRIVE));
 
-        coralIntake.setDefaultCommand(coralIntake.setZero());
-        coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
+    coralIntake.setDefaultCommand(coralIntake.setZero());
+    coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
+    // elevator.setDefaultCommand(elevator.setSpeedManualControl(0));
   }
 
   private void configureButtonBindingsDriver() {
@@ -124,6 +130,7 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsOperator() {
+<<<<<<< HEAD
     operatorController.rightTrigger()
         .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_INTAKE_ANGLE.in(Radians))
             .withName("move coral wrist to intake setpoint"));
@@ -138,5 +145,22 @@ public class RobotContainer {
     operatorController.a().whileTrue(elevator.incrementGoalPosition(Meters.of(-0.001)));
     operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians))
         .withName("move coral wrist to L1 outtake setpoint"));
+=======
+    // these buttons should not be changed for local testing and should function as
+    // a replacement gamepad
+    operatorController.a().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")));
+    operatorController.b().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 2")));
+    operatorController.x().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 3")));
+    operatorController.y().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 4")));
+
+    operatorController.rightBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("right")));
+    operatorController.leftBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("left")));
+
+    operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("coral")));
+    operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("algae")));
+
+    // place local buttons below here, delete before PRing
+
+>>>>>>> main
   }
   }

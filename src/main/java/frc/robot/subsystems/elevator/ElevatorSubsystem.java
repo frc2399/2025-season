@@ -13,12 +13,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOStates;;
+import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;;
 
 public class ElevatorSubsystem extends SubsystemBase{
     
     private final ElevatorIO elevatorIO;
-    private final ElevatorIOStates states = new ElevatorIOStates();
+    private final ElevatorIOInputs states = new ElevatorIOInputs();
     public boolean profiledPIDEnabled = false;
     private double goalSetpoint; 
     private final Distance HEIGHT_TOLERANCE = Inches.of(0.5);
@@ -49,13 +49,20 @@ public class ElevatorSubsystem extends SubsystemBase{
     
     public Command incrementGoalPosition(Distance changeInGoalPosition)
     {
-        profiledPIDEnabled = true;
-        return this.run(()-> elevatorIO.incrementGoalPosition(changeInGoalPosition));
+        return this.run(()-> {
+            profiledPIDEnabled = true;
+            elevatorIO.incrementGoalPosition(changeInGoalPosition);
+        });
     }
 
     public double getCurrentPosition()
     {
         return elevatorIO.getEncoderPosition();
+    }
+
+    public Command setSpeedManualControl(double speed)
+    {
+        return this.run(() -> elevatorIO.setSpeedManualControl(speed)); 
     }
 
 
@@ -64,7 +71,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         if (!profiledPIDEnabled) {
             elevatorIO.resetSetpointsToCurrentPosition();
         }
-        elevatorIO.calculateNextIntermediateSetpoint();
+       elevatorIO.calculateNextIntermediateSetpoint();
 
         elevatorIO.updateStates(states);
         SmartDashboard.putNumber("Elevator/position", states.position);
