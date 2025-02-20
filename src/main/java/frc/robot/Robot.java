@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    robotContainer.disableSubsystems(); 
+    robotContainer.disableSubsystems();
   }
 
   @Override
