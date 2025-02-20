@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CommandFactory.ScoringLevel;
+import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -27,11 +28,30 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorIO.setIntermediateSetpoint(Meters.of(0), 0);
     }
 
-    public Command goToGoalSetpointCmd(Distance position) {
+    public Command goToGoalSetpointCmd(ScoringLevel scoringLevel) {
         return this.runOnce(() -> {
-            elevatorIO.setGoalPosition(position);
-            profiledPIDEnabled = true;
-            goalSetpoint = position.in(Meters);
+            if (scoringLevel == ScoringLevel.INTAKE) {
+                elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_TURTLE_HEIGHT); // turtle mode = bottom, where intake is
+                profiledPIDEnabled = true;
+                goalSetpoint = SetpointConstants.ELEVATOR_TURTLE_HEIGHT.in(Meters); 
+            } else if (scoringLevel == ScoringLevel.L_ONE) {
+                elevatorIO.setGoalPosition(SetpointConstants.L_ONE_HEIGHT); // turtle mode = bottom, where intake is
+                profiledPIDEnabled = true;
+                goalSetpoint = SetpointConstants.L_ONE_HEIGHT.in(Meters); 
+            } else if (scoringLevel == ScoringLevel.L_TWO) {
+                elevatorIO.setGoalPosition(SetpointConstants.L_TWO_HEIGHT);
+                profiledPIDEnabled = true;
+                goalSetpoint = SetpointConstants.L_TWO_HEIGHT.in(Meters); 
+            } else if (scoringLevel == ScoringLevel.L_THREE) {
+                elevatorIO.setGoalPosition(SetpointConstants.L_THREE_HEIGHT);
+                profiledPIDEnabled = true;
+                goalSetpoint = SetpointConstants.L_THREE_HEIGHT.in(Meters); 
+            } else if (scoringLevel == ScoringLevel.L_FOUR) {
+                elevatorIO.setGoalPosition(SetpointConstants.L_FOUR_HEIGHT);
+                profiledPIDEnabled = true;
+                goalSetpoint = SetpointConstants.L_FOUR_HEIGHT.in(Meters); 
+            }  
+            // if the enum is null, do nothing          
         });
     }
 
