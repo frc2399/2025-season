@@ -26,6 +26,10 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         return this.run(() -> io.setZero()).withName("coral intake default");
     }
 
+    public Command keepCoral() {
+        return this.run(() -> io.keepCoral()).withName("hold coral steady");
+    }
+
     @Override
     public void periodic() {
         io.updateStates(states);

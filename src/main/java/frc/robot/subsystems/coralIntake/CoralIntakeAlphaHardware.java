@@ -116,6 +116,12 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
         }
 
         @Override
+        public void keepCoral() {
+                coralIntakeLeftClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_HOLDING_SPEED.in(RPM), ControlType.kVelocity);
+                coralIntakeRightClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_HOLDING_SPEED.in(RPM), ControlType.kVelocity);
+        }
+
+        @Override
         public void updateStates(CoralIntakeIOStates states) {
                 states.velocity = getVelocity();
                 states.leftAppliedVoltage = coralIntakeLeftSparkMax.getAppliedOutput()

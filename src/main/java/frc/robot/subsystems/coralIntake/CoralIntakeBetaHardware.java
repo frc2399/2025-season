@@ -79,6 +79,11 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     }
 
     @Override
+    public void keepCoral() {
+        betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_HOLDING_SPEED.in(RPM), ControlType.kVelocity);
+    }
+
+    @Override
     public void updateStates(CoralIntakeIOStates states) {
         states.velocity = betaCoralIntakeEncoder.getVelocity();
         states.leftCurrent = betaCoralIntakeSparkFlex.getOutputCurrent();
