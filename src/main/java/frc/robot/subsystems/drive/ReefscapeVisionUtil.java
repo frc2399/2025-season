@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.CommandFactory.RobotPosition;
-import frc.robot.RobotContainer.AlignType;
 
 public class ReefscapeVisionUtil {
         private static final Pose2d RED_REEF_A = new Pose2d(new Translation2d(14.538, 3.861),
