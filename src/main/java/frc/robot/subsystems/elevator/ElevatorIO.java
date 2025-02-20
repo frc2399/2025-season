@@ -4,7 +4,7 @@ import edu.wpi.first.units.measure.Distance;
 
 public interface ElevatorIO {
 
-    static class ElevatorIOStates {
+    static class ElevatorIOInputs {
         public double position = 0.0; 
         public double velocity = 0.0;
         public double appliedVoltageRight = 0.0;
@@ -21,5 +21,6 @@ public interface ElevatorIO {
     public void setIntermediateSetpoint(Distance position, double velocity);
     public double getEncoderVelocity();
     public double getEncoderPosition();
-    public void updateStates(ElevatorIOStates states);
+    public void setSpeedManualControl(double speed);
+    public void updateStates(ElevatorIOInputs states);
 }
