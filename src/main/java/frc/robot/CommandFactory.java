@@ -115,33 +115,44 @@ public class CommandFactory {
     return robotPosition;
   }
 
-  public GameMode getGameMode() {
-    if (gameModeEntry.getString("None").equals("coral")) {
-      gameMode = GameMode.CORAL;
-    } else if (gameModeEntry.getString("None").equals("algae")) {
-      gameMode = GameMode.ALGAE;
+    public GameMode getGameMode() {
+        if (gameModeEntry.getString("None").equals("coral")) {
+            gameMode = GameMode.CORAL;
+          } else if (gameModeEntry.getString("None").equals("algae")) {
+            gameMode = GameMode.ALGAE;
+          }
+        return gameMode;
     }
-    return gameMode;
-  }
 
-  // These were test functions. I'd prefer to keep them now so I can reference how
-  // I did certain commands later.
-  // I'll eventually delete them
-  // public Command testNumber() {
-  // return Commands
-  // .runOnce(() -> System.out.println(ntEntry.getDouble(0)));
-  // }
+    public void setScoringLevel(String level){
+        levelEntry.setString(level);
+    }
 
-  // public Command indicatorChange() {
-  // return Commands
-  // .runOnce(() -> {
-  // if (indicator == true) {
-  // indicator = false;
-  // } else {
-  // indicator = true;
-  // }
-  // System.out.println("Indicator is " + indicator);
-  // newEntry.setBoolean(indicator);
-  // });
-  // }
+    public void setRobotAlignmentPosition(String alignmentValue){
+        leftRightEntry.setString(alignmentValue);
+    }
+
+    public void setGameMode(String gameMode){
+        gameModeEntry.setString(gameMode);
+    }
+    
+        //These were test functions. I'd prefer to keep them now so I can reference how I did certain commands later. 
+        //I'll eventually delete them
+        // public Command testNumber() {
+        //     return Commands
+        //         .runOnce(() -> System.out.println(ntEntry.getDouble(0)));
+        // }
+    
+    //     public Command indicatorChange() {
+    //       return Commands
+    //         .runOnce(() -> {
+    //           if (indicator == true) {
+    //             indicator = false;
+    //           } else {
+    //             indicator = true;
+    //           }
+    //           System.out.println("Indicator is " + indicator);
+    //           newEntry.setBoolean(indicator);
+    //         });
+    // }
 }
