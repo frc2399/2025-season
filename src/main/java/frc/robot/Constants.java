@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
@@ -29,14 +30,14 @@ public final class Constants {
     public static final int REAR_RIGHT_TURNING_CAN_ID = 42;
 
     public static final int GYRO_CAN_ID = 3;
-    
+
     // alpha
     public static final int CORAL_ALPHA_INTAKE_LEFT_CAN_ID = 7;
     public static final int CORAL_ALPHA_INTAKE_RIGHT_CAN_ID = 5;
     public static final int CORAL_ALPHA_INTAKE_WRIST_CAN_ID = 13;
     public static final int LEFT_ALPHA_ELEVATOR_MOTOR_ID = 17;
     public static final int RIGHT_ALPHA_ELEVATOR_MOTOR_ID = 15;
-  
+
     // beta
     public static final int CORAL_BETA_WRIST_CAN_ID = 46;
     public static final int CORAL_BETA_INTAKE_CAN_ID = 47;
@@ -45,11 +46,10 @@ public final class Constants {
     public static final int ALGAE_BETA_INTAKE_CAN_ID = 37;
     public static final int ALGAE_BETA_WRIST_CAN_ID = 36;
     public static final int LEFT_CLIMBER_CAN_ID = 26;
-    public static final int RIGHT_CLIMBER_CAN_ID = 27; 
+    public static final int RIGHT_CLIMBER_CAN_ID = 27;
   }
 
   public static class SensorIdConstants {
-
   }
 
   public static class MotorConstants {
@@ -63,20 +63,26 @@ public final class Constants {
 
   public static class SpeedConstants {
     public static final double MAIN_LOOP_FREQUENCY_HZ = 50;
+    public static final AngularVelocity ALGAE_INTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(1);
+    public static final AngularVelocity ALGAE_OUTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(-0.50);
     public static final double DRIVETRAIN_MAX_SPEED_MPS = 4.8;
     public static final double DRIVETRAIN_MAX_ANGULAR_SPEED_RPS = 2 * Math.PI;
 
     public static final AngularVelocity ALPHA_CORAL_INTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.75);
     public static final AngularVelocity ALPHA_CORAL_OUTTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(-0.50);
 
-    public static final AngularVelocity BETA_CORAL_INTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.75);
-    public static final AngularVelocity BETA_CORAL_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.5);
+    public static final AngularVelocity BETA_CORAL_INTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.25);
+    public static final AngularVelocity BETA_CORAL_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.15);
   }
 
   public static class SetpointConstants {
-    public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(35);
+
+    public static final Angle ALGAE_WRIST_INTAKE_ANGLE = Degrees.of(-100);
+    public static final Angle ALGAE_WRIST_TURTLE_ANGLE = Degrees.of(0);
+    public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(25);
     public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
-    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(35);
+    public static final Angle CORAL_L4_OUTTAKE_ANGLE = Degree.of(-50);
+    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(25);
     public static final Angle CORAL_L1_ANGLE = Degrees.of(0);
 
     public static final Distance ELEVATOR_TURTLE_HEIGHT = Inches.of(0);
