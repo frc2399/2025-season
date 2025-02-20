@@ -4,6 +4,13 @@ import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants.MotorIdConstants;
+
+import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
+import frc.robot.subsystems.algaeWrist.AlgaeWristHardware;
+import frc.robot.subsystems.algaeWrist.AlgaeWristPlacebo;
+import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakeHardware;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakePlacebo;
 import frc.robot.subsystems.coralIntake.CoralIntakeAlphaHardware;
 import frc.robot.subsystems.coralIntake.CoralIntakeBetaHardware;
 import frc.robot.subsystems.coralIntake.CoralIntakePlacebo;
@@ -11,14 +18,16 @@ import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristHardware;
 import frc.robot.subsystems.coralWrist.CoralWristPlacebo;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
+
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.SwerveModule;
 import frc.robot.subsystems.drive.SwerveModuleHardwareNEO;
 import frc.robot.subsystems.drive.SwerveModuleHardwareVortex;
 import frc.robot.subsystems.drive.SwerveModulePlacebo;
-import frc.robot.subsystems.elevator.ElevatorHardware;
+import frc.robot.subsystems.elevator.AlphaElevatorHardware;
 import frc.robot.subsystems.elevator.ElevatorPlacebo;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.elevator.KrakenElevatorHardware;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.subsystems.gyro.GyroHardware;
 import frc.robot.subsystems.gyro.GyroPlacebo;
@@ -29,12 +38,27 @@ public class SubsystemFactory {
     private static final double REAR_LEFT_CHASSIS_ANGULAR_OFFSET = Math.PI;
     private static final double REAR_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.PI / 2;
 
+    // 64:16 (4:1) gear ratio (through bore encoder on shaft)
+    private static final double BETA_CORAL_ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 3.0; // radians
+    // divide position factor by 60 for radians per second
+    private static final double BETA_CORAL_ABSOLUTE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 180.0; // radians per
+                                                                                                     // second
+    private static final boolean BETA_CORAL_WRIST_SOFT_LIMIT = true;
+
+    // 64:16 (4:1) gear ratio (through bore encoder on shaft)
+    private static final double ALPHA_CORAL_ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 4.0; // radians
+    // divide position factor by 60 for radians per second
+    private static final double ALPHA_CORAL_ABSOLUTE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 240.0; // radians per
+                                                                                                      // second
+    private static final boolean ALPHA_CORAL_WRIST_SOFT_LIMIT = false;
+
     private static final String MOZART_SERIAL_NUMBER = "030ee8c8";
     private static final String ALPHA_SERIAL_NUMBER = "03260A64";
     private static final String BETA_SERIAL_NUMBER = "030589d5";
     private static final String COMP_SERIAL_NUMBER = "";
 
     private static final Distance ELEVATOR_ALPHA_MAX_HEIGHT = Inches.of(34.25);
+    private static final Distance ELEVATOR_BETA_MAX_HEIGHT = Inches.of(50);
 
     private enum RobotType {
         MOZART,
@@ -47,7 +71,6 @@ public class SubsystemFactory {
     private RobotType robotType;
 
     private String serialNum = System.getenv("serialnum");
-    
 
     public SubsystemFactory() {
         if (serialNum.equals(ALPHA_SERIAL_NUMBER)) {
@@ -148,6 +171,23 @@ public class SubsystemFactory {
         }
     }
 
+    public AlgaeIntakeSubsystem buildAlgaeIntake() {
+        if (robotType == RobotType.BETA) {
+            return new AlgaeIntakeSubsystem(new AlgaeIntakeHardware());
+        } else {
+            return new AlgaeIntakeSubsystem(new AlgaeIntakePlacebo());
+        }
+    }
+
+    public AlgaeWristSubsystem buildAlgaeWrist() {
+        if (robotType == RobotType.BETA) {
+            return new AlgaeWristSubsystem(new AlgaeWristHardware());
+        } else {
+            return new AlgaeWristSubsystem(new AlgaeWristPlacebo());
+        }
+
+    }
+
     public CoralIntakeSubsystem buildCoralIntake() {
         if (robotType == RobotType.ALPHA) {
             return new CoralIntakeSubsystem(new CoralIntakeAlphaHardware());
@@ -161,7 +201,13 @@ public class SubsystemFactory {
 
     public CoralWristSubsystem buildCoralWrist() {
         if (robotType == RobotType.ALPHA) {
-            return new CoralWristSubsystem(new CoralWristHardware());
+            return new CoralWristSubsystem(new CoralWristHardware(ALPHA_CORAL_ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR,
+                    ALPHA_CORAL_ABSOLUTE_ENCODER_VELOCITY_FACTOR, ALPHA_CORAL_WRIST_SOFT_LIMIT,
+                    MotorIdConstants.CORAL_ALPHA_INTAKE_WRIST_CAN_ID));
+        } else if (robotType == RobotType.BETA) {
+            return new CoralWristSubsystem(new CoralWristHardware(BETA_CORAL_ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR,
+                    BETA_CORAL_ABSOLUTE_ENCODER_VELOCITY_FACTOR, BETA_CORAL_WRIST_SOFT_LIMIT,
+                    MotorIdConstants.CORAL_BETA_WRIST_CAN_ID));
         } else {
             return new CoralWristSubsystem(new CoralWristPlacebo());
         }
@@ -169,7 +215,13 @@ public class SubsystemFactory {
 
     protected ElevatorSubsystem buildElevator() {
         if (robotType == RobotType.ALPHA) {
-            return new ElevatorSubsystem(new ElevatorHardware(ELEVATOR_ALPHA_MAX_HEIGHT));
+            return new ElevatorSubsystem(new AlphaElevatorHardware(ELEVATOR_ALPHA_MAX_HEIGHT));
+        }
+        if (robotType == RobotType.BETA) {
+            return new ElevatorSubsystem(new KrakenElevatorHardware(ELEVATOR_BETA_MAX_HEIGHT));
+        }
+        if (robotType == RobotType.BETA) {
+            return new ElevatorSubsystem(new KrakenElevatorHardware(ELEVATOR_BETA_MAX_HEIGHT));
         } else {
             return new ElevatorSubsystem(new ElevatorPlacebo());
         }
