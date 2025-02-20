@@ -50,6 +50,14 @@ public class ElevatorSubsystem extends SubsystemBase {
                 elevatorIO.setGoalPosition(SetpointConstants.L_FOUR_HEIGHT);
                 profiledPIDEnabled = true;
                 goalSetpoint = SetpointConstants.L_FOUR_HEIGHT.in(Meters); 
+            } else if (scoringLevel == ScoringLevel.ELEVATOR_TOP_INTERMEDIATE_SETPOINT) {
+                elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP);
+                profiledPIDEnabled = true;
+                goalSetpoint = SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters); 
+            } else if (scoringLevel == ScoringLevel.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT) {
+                elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM);
+                profiledPIDEnabled = true;
+                goalSetpoint = SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM.in(Meters); 
             }  
             // if the enum is null, do nothing          
         });
