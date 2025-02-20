@@ -29,5 +29,8 @@ public interface ElevatorIO {
 
     public double getEncoderPosition();
     public void setSpeedManualControl(double speed);
+
+    public boolean willCrossCronchZone(ScoringLevel scoringLevel);
+
     public void updateStates(ElevatorIOInputs states);
 }

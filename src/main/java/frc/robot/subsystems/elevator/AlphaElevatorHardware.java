@@ -166,6 +166,11 @@ public class AlphaElevatorHardware implements ElevatorIO {
     }
 
     @Override
+    public boolean willCrossCronchZone(ScoringLevel scoringLevel) {
+        return false;
+    }
+
+    @Override
     public void updateStates(ElevatorIOInputs states) {
         states.position = getEncoderPosition();
         states.velocity = getEncoderVelocity();
