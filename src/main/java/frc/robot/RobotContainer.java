@@ -5,11 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SetpointConstants;
-import frc.robot.Constants.SpeedConstants;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -35,7 +33,6 @@ public class RobotContainer {
   private static final CommandXboxController operatorController = new CommandXboxController(
       DriveControlConstants.OPERATOR_CONTROLLER_PORT);
 
-
   public RobotContainer() {
     configureDefaultCommands();
     configureButtonBindingsDriver();
@@ -43,7 +40,7 @@ public class RobotContainer {
   }
 
   public void disableSubsystems() {
-    elevator.profiledPIDEnabled = false; 
+    elevator.profiledPIDEnabled = false;
   }
 
   public void configureDefaultCommands() {
@@ -58,6 +55,7 @@ public class RobotContainer {
             driverController.getRightX(),
             DriveControlConstants.DRIVE_DEADBAND)),
         DriveControlConstants.FIELD_ORIENTED_DRIVE));
+
 
         coralIntake.setDefaultCommand(coralIntake.setZero());
         coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
@@ -82,6 +80,7 @@ public class RobotContainer {
     operatorController.x().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_THREE_HEIGHT));
     operatorController.b().whileTrue(elevator.incrementGoalPosition(Meters.of(0.001)));
     operatorController.a().whileTrue(elevator.incrementGoalPosition(Meters.of(-0.001)));
-    operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians)).withName("move coral wrist to L1 outtake setpoint"));
+    operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians))
+        .withName("move coral wrist to L1 outtake setpoint"));
   }
 }

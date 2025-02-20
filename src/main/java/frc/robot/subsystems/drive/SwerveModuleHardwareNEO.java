@@ -24,20 +24,18 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.MotorConstants;
 
-public class SwerveModuleHardware implements SwerveModuleIO {
+public class SwerveModuleHardwareNEO implements SwerveModuleIO {
 
         private SparkMax drivingSparkMax;
         private SparkMax turningSparkMax;
 
-        private double desiredDrivingVelocity;
-
-        private final RelativeEncoder drivingRelativeEncoder;
-        private final SparkAbsoluteEncoder turningAbsoluteEncoder;
+        private RelativeEncoder drivingRelativeEncoder;
+        private SparkAbsoluteEncoder turningAbsoluteEncoder;
         private double driveDesiredVelocity;
         private double desiredAngle;
 
-        private final SparkClosedLoopController drivingPidController;
-        private final SparkClosedLoopController turningPidController;
+        private SparkClosedLoopController drivingPidController;
+        private SparkClosedLoopController turningPidController;
 
         private double chassisAngularOffset;
 
@@ -102,7 +100,7 @@ public class SwerveModuleHardware implements SwerveModuleIO {
         private static final SparkBaseConfig.IdleMode DRIVING_MOTOR_IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
         private static final SparkBaseConfig.IdleMode TURNING_MOTOR_IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
 
-        public SwerveModuleHardware(int drivingCanId, int turningCanId, double chassisAngularOffset, String name) {
+        public SwerveModuleHardwareNEO(int drivingCanId, int turningCanId, double chassisAngularOffset, String name) {
                 this.chassisAngularOffset = chassisAngularOffset;
                 this.name = name;
 

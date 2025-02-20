@@ -114,15 +114,15 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         /** Creates a new DriveSubsystem. */
         public DriveSubsystem(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule rearLeft,
-                        SwerveModule rearRight, Gyro gyro, Distance trackWidth) {
+                        SwerveModule rearRight, Gyro gyro, Distance trackWidth, Distance wheelBase) {
                 this.gyro = gyro;
                 this.frontLeft = frontLeft;
                 this.frontRight = frontRight;
                 this.rearLeft = rearLeft;
                 this.rearRight = rearRight;
-
+                
                 TRACK_WIDTH = trackWidth;
-                WHEEL_BASE = trackWidth;
+                WHEEL_BASE = wheelBase;
 
                 FRONT_LEFT_OFFSET = new Translation2d(WHEEL_BASE.in(Meters) / 2,
                                 TRACK_WIDTH.in(Meters) / 2);
@@ -150,8 +150,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 rearLeft.getPosition(),
                                                 rearRight.getPosition() },
                                 new Pose2d(0, 0, new Rotation2d(0))); // TODO: make these constants in the constants
-                                                                      // file rather than
-                                                                      // free-floating numbers
+                                                                         // file rather than
+                                                                         // free-floating numbers
 
         }
 
@@ -173,8 +173,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 });
 
                 Pose2d pose = getPose();
-                // can be used for sim and logging purposes
-                frontLeftField2dModule.setPose(pose.transformBy(new Transform2d(FRONT_LEFT_OFFSET,
+                field2d.setRobotPose(pose);
+
+                frontLeftField2dModule.setPose(pose.transformBy(new Transform2d(
+                                FRONT_LEFT_OFFSET,
                                 new Rotation2d(frontLeft.getTurnEncoderPosition()))));
 
                 rearLeftField2dModule.setPose(pose.transformBy(new Transform2d(
@@ -388,6 +390,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 states.angularVelocity = Units.radiansToDegrees(relativeRobotSpeeds.omegaRadiansPerSecond);
                 states.gyroAngleDegrees = Math.toDegrees(gyro.getYaw());
 
+                SmartDashboard.putNumber("drive/Pose X(m)", states.pose.getX());
+                SmartDashboard.putNumber("drive/Pose Y(m)", states.pose.getY());
                 SmartDashboard.putNumber("drive/Pose Theta(deg)", states.poseTheta);
                 SmartDashboard.putNumber("drive/Linear Velocity X(mps)", states.velocityXMPS);
                 SmartDashboard.putNumber("drive/Linear Velocity Y(mps)", states.velocityYMPS);
