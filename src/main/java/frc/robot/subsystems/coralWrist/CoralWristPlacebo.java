@@ -1,6 +1,7 @@
 package frc.robot.subsystems.coralWrist;
 
 import frc.robot.CommandFactory.ScoringLevel;
+import edu.wpi.first.units.measure.Angle;
 
 public class CoralWristPlacebo implements CoralWristIO {
 

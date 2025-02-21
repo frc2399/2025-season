@@ -9,6 +9,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.SetpointConstants;
+import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -19,6 +20,7 @@ public class CommandFactory {
   private final DriveSubsystem drive;
   private final ElevatorSubsystem elevator;
   private final CoralWristSubsystem coralWrist;
+  private final AlgaeWristSubsystem algaeWrist;
   // private final NetworkTableEntry ntEntry; //one for each entry we want to read
   // (state changes)
   private final NetworkTable scoringStateTables;
@@ -52,10 +54,11 @@ public class CommandFactory {
   private static ScoringLevel scoringLevel;
   private static GameMode gameMode;
 
-  public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist) {
+  public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist, AlgaeWristSubsystem algaeWrist) {
     this.drive = drive;
     this.elevator = elevator;
     this.coralWrist = coralWrist;
+    this.algaeWrist = algaeWrist;
     scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");
     // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
     // newEntry = scoringStateTables.getEntry("Indicator");

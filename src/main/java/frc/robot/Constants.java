@@ -4,11 +4,7 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -49,7 +45,6 @@ public final class Constants {
   }
 
   public static class SensorIdConstants {
-
   }
 
   public static class MotorConstants {
@@ -63,22 +58,29 @@ public final class Constants {
 
   public static class SpeedConstants {
     public static final double MAIN_LOOP_FREQUENCY_HZ = 50;
+    public static final AngularVelocity ALGAE_INTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(1);
+    public static final AngularVelocity ALGAE_OUTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(-0.50);
     public static final double DRIVETRAIN_MAX_SPEED_MPS = 4.8;
     public static final double DRIVETRAIN_MAX_ANGULAR_SPEED_RPS = 2 * Math.PI;
 
     public static final AngularVelocity ALPHA_CORAL_INTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.75);
     public static final AngularVelocity ALPHA_CORAL_OUTTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(-0.50);
 
-    public static final AngularVelocity BETA_CORAL_INTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.75);
-    public static final AngularVelocity BETA_CORAL_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.5);
+    public static final AngularVelocity BETA_CORAL_INTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.25);
+    public static final AngularVelocity BETA_CORAL_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.15);
   }
 
   public static class SetpointConstants {
-    public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(35);
-    public static final Angle CORAL_L2_L3_OUTTAKE_ANGLE = Degrees.of(-30);
-    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(35);
+
+    public static final Angle ALGAE_WRIST_INTAKE_ANGLE = Degrees.of(-100);
+    public static final Angle ALGAE_WRIST_TURTLE_ANGLE = Degrees.of(0);
+    public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(25);
+    public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
+    public static final Angle CORAL_L4_OUTTAKE_ANGLE = Degree.of(-50);
+    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(25);
     public static final Angle CORAL_L1_ANGLE = Degrees.of(0);
     public static final Angle CORAL_L4_ANGLE = Degrees.of(-50);
+    public static final Angle CORAL_L2_L3_OUTTAKE_ANGLE = Degrees.of(-30);
 
     public static final Distance ELEVATOR_TURTLE_HEIGHT = Inches.of(0);
     public static final Distance L_ONE_HEIGHT = Meters.of(0.125);

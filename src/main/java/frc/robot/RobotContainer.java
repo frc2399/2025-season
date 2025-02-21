@@ -5,12 +5,16 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.drive.RobotDriveBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.CommandFactory.ScoringLevel;
 import frc.robot.Constants.DriveControlConstants;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SetpointConstants;
+import frc.robot.Constants.SpeedConstants;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
+import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -26,10 +30,12 @@ public class RobotContainer {
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
   private final CoralIntakeSubsystem coralIntake = subsystemFactory.buildCoralIntake();
   private final CoralWristSubsystem coralWrist = subsystemFactory.buildCoralWrist();
+  private final AlgaeIntakeSubsystem algaeIntake = subsystemFactory.buildAlgaeIntake();
+  private final AlgaeWristSubsystem algaeWrist = subsystemFactory.buildAlgaeWrist();
   // this is public because we need to run the visionPoseEstimator periodic from
   // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
-  private CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist);
+  private CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist, algaeWrist);
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
@@ -61,19 +67,22 @@ public class RobotContainer {
 
     coralIntake.setDefaultCommand(coralIntake.setZero());
     coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
+    algaeIntake.setDefaultCommand(algaeIntake.setRollerSpeed(RPM.of(0)));
+    algaeWrist.setDefaultCommand(algaeWrist.setWristSpeed(0).withName("algae wrist default"));
     // elevator.setDefaultCommand(elevator.setSpeedManualControl(0));
   }
 
   private void configureButtonBindingsDriver() {
-    driverController.rightBumper().whileTrue(coralIntake.intake());
-    driverController.leftBumper().whileTrue(coralIntake.outtake());
-    driverController.b().onTrue(gyro.setYaw(0.0));
+    driverController.rightTrigger().whileTrue(coralIntake.intake());
+    driverController.leftTrigger().whileTrue(coralIntake.outtake());
+
+    driverController.y().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleMode());
   }
 
   private void configureButtonBindingsOperator() {
-    // these buttons should not be changed for local testing and should function as
+     // these buttons should not be changed for local testing and should function as
     // a replacement gamepad
     operatorController.a().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")));
     operatorController.b().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 2")));
@@ -88,5 +97,8 @@ public class RobotContainer {
 
     // place local buttons below here, delete before PRing
 
+
+
   }
+
 }

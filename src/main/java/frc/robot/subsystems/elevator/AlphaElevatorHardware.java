@@ -74,7 +74,8 @@ public class AlphaElevatorHardware implements ElevatorIO {
         leftEncoder = elevatorLeftMotorLeader.getEncoder();
         leftEncoder.setPosition(0);
 
-        elevatorMotionProfile = new TrapezoidProfile(new Constraints(AlphaElevatorConstants.MAX_VEL.in(MetersPerSecond), AlphaElevatorConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)));
+        elevatorMotionProfile = new TrapezoidProfile(new Constraints(AlphaElevatorConstants.MAX_VEL.in(MetersPerSecond),
+                AlphaElevatorConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)));
 
         globalMotorConfig.encoder
                 .positionConversionFactor(AlphaElevatorConstants.METERS_PER_REVOLUTION.in(Meters))
@@ -106,7 +107,7 @@ public class AlphaElevatorHardware implements ElevatorIO {
                 .apply(globalMotorConfig)
                 .inverted(false)
                 .idleMode(IdleMode.kBrake)
-                .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
+                .smartCurrentLimit((int) MotorConstants.NEO_CURRENT_LIMIT.in(Amps));
 
         rightMotorConfigFollower
                 .follow(MotorIdConstants.LEFT_ALPHA_ELEVATOR_MOTOR_ID, true)
@@ -145,9 +146,11 @@ public class AlphaElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public void calculateNextIntermediateSetpoint() { 
-        intermediateSetpointState = elevatorMotionProfile.calculate(AlphaElevatorConstants.kDt, intermediateSetpointState, goalState);
-        leftClosedLoopController.setReference(intermediateSetpointState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    public void calculateNextIntermediateSetpoint() {
+        intermediateSetpointState = elevatorMotionProfile.calculate(AlphaElevatorConstants.kDt,
+                intermediateSetpointState, goalState);
+        leftClosedLoopController.setReference(intermediateSetpointState.position, ControlType.kPosition,
+                ClosedLoopSlot.kSlot0);
     }
 
     @Override
@@ -160,9 +163,8 @@ public class AlphaElevatorHardware implements ElevatorIO {
         return leftEncoder.getPosition();
     }
 
-    public void setSpeedManualControl(double speed)
-    {
-        //place holding method 
+    public void setSpeedManualControl(double speed) {
+        // place holding method
     }
 
     @Override
