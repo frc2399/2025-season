@@ -10,6 +10,8 @@ import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import org.ejml.dense.row.SpecializedOps_DDRM;
+
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -85,6 +87,12 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     public void setZero() {
         betaCoralIntakeClosedLoop.setReference(0, ControlType.kVelocity);
         velocityGoal = 0;
+    }
+
+    @Override
+    public void keepCoral() {
+        betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_HOLDING_SPEED.in(RPM), ControlType.kVelocity);
+        velocityGoal = SpeedConstants.BETA_CORAL_HOLDING_SPEED.in(RadiansPerSecond) / 5;
     }
 
     @Override

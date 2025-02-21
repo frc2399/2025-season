@@ -18,5 +18,7 @@ public interface CoralIntakeIO {
 
     public void setZero();
 
+    public void keepCoral();
+
     public void updateStates(CoralIntakeIOStates states);
 }
