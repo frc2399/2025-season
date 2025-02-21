@@ -18,18 +18,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CommandFactory {
 
+  public Supplier<ScoringLevel> actualScoringLevel = () -> ScoringLevel.L_ONE;
+
   private final DriveSubsystem drive;
   private final ElevatorSubsystem elevator;
   private final CoralWristSubsystem coralWrist;
   private final AlgaeWristSubsystem algaeWrist;
   // private final NetworkTableEntry ntEntry; //one for each entry we want to read
   // (state changes)
-  private final NetworkTable scoringStateTables;
+  private final NetworkTable scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");
+  ;
   private boolean indicator;
   // private final NetworkTableEntry newEntry;
-  private final NetworkTableEntry levelEntry;
-  private final NetworkTableEntry gameModeEntry;
-  private final NetworkTableEntry leftRightEntry;
+  private final NetworkTableEntry levelEntry = scoringStateTables.getEntry("scoringLevel");
+  private final NetworkTableEntry gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
+  private final NetworkTableEntry leftRightEntry = scoringStateTables.getEntry("Position");
 
   private enum RobotPosition {
     LEFT,
@@ -54,17 +57,33 @@ public class CommandFactory {
   private static RobotPosition robotPosition;
   private static GameMode gameMode;
 
+  
+
+  public Supplier<ScoringLevel> getScoringLevel = () -> {
+    ScoringLevel scoringLevel;
+    if (levelEntry.getString("None").equals("Level 1")) {
+      scoringLevel = ScoringLevel.L_ONE;
+    } else if (levelEntry.getString("None").equals("Level 2")) {
+      scoringLevel = ScoringLevel.L_TWO;
+    } else if (levelEntry.getString("None").equals("Level 3")) {
+      scoringLevel = ScoringLevel.L_THREE;
+    } else if (levelEntry.getString("None").equals("Level 4")) {
+      scoringLevel = ScoringLevel.L_FOUR;
+    } else {
+      scoringLevel = ScoringLevel.L_ONE;
+    }
+    System.out.println(scoringLevel.toString());
+    return scoringLevel;
+    };
+
+
   public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist, AlgaeWristSubsystem algaeWrist) {
     this.drive = drive;
     this.elevator = elevator;
     this.coralWrist = coralWrist;
     this.algaeWrist = algaeWrist;
-    scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");
     // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
     // newEntry = scoringStateTables.getEntry("Indicator");
-    levelEntry = scoringStateTables.getEntry("scoringLevel");
-    gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
-    leftRightEntry = scoringStateTables.getEntry("Position");
   }
 
   public Command turtleMode() {
@@ -79,10 +98,10 @@ public class CommandFactory {
   //       () -> elevator.willCrossCronchZone(getScoringLevel()));
   // }
 
-  public Command moveElevatorAndWrist() {
+  public Command moveElevatorAndWrist(Supplier<ScoringLevel> sl) {
     return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
-                    elevator.goToGoalSetpointCmd(getScoringLevel()),
-                    coralWrist.goToSetpointCommand(getScoringLevel()));
+                    elevator.goToGoalSetpointCmd(sl),
+                    coralWrist.goToSetpointCommand(sl));
   }
 
   public Command avoidCronchCommand(Supplier<ScoringLevel> scoringLevel) {
@@ -106,22 +125,6 @@ public class CommandFactory {
         () -> (elevator.getCurrentPosition() > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)));
   }
 
-  public Supplier<ScoringLevel> getScoringLevel() {
-    ScoringLevel scoringLevel;
-    if (levelEntry.getString("None").equals("Level 1")) {
-      scoringLevel = ScoringLevel.L_ONE;
-    } else if (levelEntry.getString("None").equals("Level 2")) {
-      scoringLevel = ScoringLevel.L_TWO;
-    } else if (levelEntry.getString("None").equals("Level 3")) {
-      scoringLevel = ScoringLevel.L_THREE;
-    } else if (levelEntry.getString("None").equals("Level 4")) {
-      scoringLevel = ScoringLevel.L_FOUR;
-    } else {
-      scoringLevel = ScoringLevel.L_ONE;
-    }
-    return () -> scoringLevel;
-  }
-
   public Supplier<RobotPosition> getRobotPosition() {
     if (leftRightEntry.getString("None").equals("left")) {
       robotPosition = RobotPosition.LEFT;
@@ -142,7 +145,6 @@ public class CommandFactory {
 
     public void setScoringLevel(String level){
         levelEntry.setString(level);
-        SmartDashboard.putString("level", level);
     }
 
     public void setRobotAlignmentPosition(String alignmentValue){
@@ -151,6 +153,10 @@ public class CommandFactory {
 
     public void setGameMode(String gameMode){
         gameModeEntry.setString(gameMode);
+    }
+
+    public void altSetScoringLevel(ScoringLevel sl) {
+      actualScoringLevel = () -> sl;
     }
     
         //These were test functions. I'd prefer to keep them now so I can reference how I did certain commands later. 

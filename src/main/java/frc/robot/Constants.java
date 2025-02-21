@@ -81,14 +81,14 @@ public final class Constants {
     public static final Angle CORAL_L4_OUTTAKE_ANGLE = Degree.of(-50);
     public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(24);
     public static final Angle CORAL_L1_ANGLE = Degrees.of(0);
-    public static final Angle CORAL_L4_ANGLE = Degrees.of(-40);
+    public static final Angle CORAL_L4_ANGLE = Degrees.of(-30);
     public static final Angle CORAL_L2_L3_OUTTAKE_ANGLE = Degrees.of(-30);
 
     public static final Distance ELEVATOR_TURTLE_HEIGHT = Inches.of(0);
-    public static final Distance L_ONE_HEIGHT = Meters.of(0.125);
-    public static final Distance L_TWO_HEIGHT = Meters.of(0.476);
-    public static final Distance L_THREE_HEIGHT = Meters.of(0.849 + .18);
-    public static final Distance L_FOUR_HEIGHT = Inches.of(49.5);
+    public static final Distance L_ONE_HEIGHT = Inches.of(0);
+    public static final Distance L_TWO_HEIGHT = Inches.of(8.5);
+    public static final Distance L_THREE_HEIGHT = Inches.of(24);
+    public static final Distance L_FOUR_HEIGHT = Inches.of(48.5);
 
     public static final Distance ELEVATOR_COLLISION_RANGE_BOTTOM = Meters.of(0.5);
     public static final Distance ELEVATOR_COLLISION_RANGE_TOP = Inches.of(50);
