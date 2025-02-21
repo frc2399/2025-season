@@ -63,7 +63,6 @@ public class RobotContainer {
             driverController.getRightX(),
             DriveControlConstants.DRIVE_DEADBAND)),
         DriveControlConstants.FIELD_ORIENTED_DRIVE));
-
     coralIntake.setDefaultCommand(coralIntake.setZero());
     coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
     algaeIntake.setDefaultCommand(algaeIntake.setRollerSpeed(RPM.of(0)));
@@ -96,7 +95,5 @@ public class RobotContainer {
     // operatorController.a().whileTrue(elevator.incrementGoalPosition(Meters.of(-0.005)));
     // operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians))
     // .withName("move coral wrist to L1 outtake setpoint"));
-
   }
-
 }
