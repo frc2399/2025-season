@@ -93,7 +93,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private Rotation2d lastAngle = new Rotation2d();
 
         public static class DriveSubsystemStates {
-                public ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
                 public Pose2d pose = new Pose2d();
                 public double poseTheta = 0;
                 public double velocityXMPS = 0;
@@ -161,9 +160,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
 
-                SmartDashboard.putNumber("drive/relative X speeds", relativeRobotSpeeds.vxMetersPerSecond);
-                SmartDashboard.putNumber("drive/relative Y speeds", relativeRobotSpeeds.vyMetersPerSecond);
-                SmartDashboard.putNumber("drive/relative radian speeds", relativeRobotSpeeds.omegaRadiansPerSecond);
                 poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromRadians(gyro.getYaw()),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),

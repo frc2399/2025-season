@@ -25,6 +25,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     public ElevatorSubsystem(ElevatorIO elevatorIO) {
         this.elevatorIO = elevatorIO;
         elevatorIO.setIntermediateSetpoint(Meters.of(0), 0);
+        //initalize the gyro sensor
     }
 
 
