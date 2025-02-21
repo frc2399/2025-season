@@ -3,10 +3,12 @@ package frc.robot.subsystems.drive;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.robot.subsystems.drive.SwerveModuleIO.SwerveModuleIOStates;
 
 public class SwerveModule {
 
     private SwerveModuleState desiredState = new SwerveModuleState(0.0, new Rotation2d());
+    private SwerveModuleIOStates states = new SwerveModuleIOStates();
 
     private SwerveModuleIO io;
 
@@ -14,14 +16,6 @@ public class SwerveModule {
         this.io = io;
         io.setDriveEncoderPosition(0);
         desiredState.angle = new Rotation2d(getTurnEncoderPosition());
-    }
-
-    public void setDriveEncoderPosition(double position) {
-        io.setDriveEncoderPosition(position);
-    }
-
-    public double getDriveEncoderPosition() {
-        return io.getDriveEncoderPosition();
     }
 
     public double getDriveEncoderSpeedMPS() {
@@ -32,20 +26,16 @@ public class SwerveModule {
         return io.getTurnEncoderPosition();
     }
 
+    public double getDriveEncoderPosition() {
+        return io.getDriveEncoderPosition();
+    }
+
     public void resetEncoders() {
         io.setDriveEncoderPosition(0);
     }
 
-    public double getDriveBusVoltage() {
-        return io.getDriveBusVoltage();
-    }
-
-    public double getDriveOutput() {
-        return io.getDriveOutput();
-    }
-
-    public double getTurnBusVoltage() {
-        return io.getTurnBusVoltage();
+    public void updateStates() {
+        io.updateStates(states);
     }
 
     /**
@@ -91,4 +81,5 @@ public class SwerveModule {
         io.setDesiredTurnAngle(correctedDesiredState.angle.getRadians());
         desiredState = newDesiredState; // TODO: this seems weird
     }
+
 }

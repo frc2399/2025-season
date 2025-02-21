@@ -33,7 +33,7 @@ public class KrakenElevatorHardware implements ElevatorIO {
 
     public static final class KrakenElevatorConstants {
         private static final LinearVelocity MAX_VEL = MetersPerSecond.of(1.6);
-        private static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(10);
+        private static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(12);
         private static final Voltage P_VALUE = Volts.of(24.0);
         private static final Voltage I_VALUE = Volts.of(0);
         private static final Voltage D_VALUE = Volts.of(0);
