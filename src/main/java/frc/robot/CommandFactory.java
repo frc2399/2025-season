@@ -12,7 +12,6 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
 public class CommandFactory {
 
-<<<<<<< HEAD
   private final DriveSubsystem drive;
   private final ElevatorSubsystem elevator;
   private final CoralWristSubsystem coralWrist;
@@ -36,48 +35,18 @@ public class CommandFactory {
     L_THREE,
     L_FOUR
   }
-=======
-    private final DriveSubsystem drive;
-    private final ElevatorSubsystem elevator;
-    private final CoralWristSubsystem coralWrist;
-    // private final NetworkTableEntry ntEntry; //one for each entry we want to read
-    // (state changes)
-    private final NetworkTable scoringStateTables;
-    private boolean indicator;
-    // private final NetworkTableEntry newEntry;
-    private final NetworkTableEntry levelEntry;
-    private final NetworkTableEntry gameModeEntry;
-    private final NetworkTableEntry leftRightEntry;
-
-    private enum RobotPosition {
-        LEFT,
-        RIGHT,
-    }
-
-    private enum ScoringLevel {
-        L_ONE,
-        L_TWO,
-        L_THREE,
-        L_FOUR
-    }
-
-    private enum GameMode {
-        CORAL,
-        ALGAE
-    }
->>>>>>> main
 
   private enum GameMode {
     CORAL,
     ALGAE
   }
 
-<<<<<<< HEAD
   private static RobotPosition robotPosition;
   private static ScoringLevel scoringLevel;
   private static GameMode gameMode;
 
-  public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist) {
+  public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist,
+      AlgaeWristSubsystem algaeWrist) {
     this.drive = drive;
     this.elevator = elevator;
     this.coralWrist = coralWrist;
@@ -92,7 +61,7 @@ public class CommandFactory {
   public Command turtleMode() {
     return Commands
         .parallel(elevator.goToGoalSetpointCmd(Constants.SetpointConstants.ELEVATOR_TURTLE_HEIGHT),
-            coralWrist.goToSetpointCommand((Constants.SetpointConstants.CORAL_TURTLE_ANGLE).in(Degrees)));
+            coralWrist.goToSetpointCommand((Constants.SetpointConstants.CORAL_TURTLE_ANGLE)));
   }
 
   public ScoringLevel getScoringLevel() {
@@ -104,89 +73,28 @@ public class CommandFactory {
       scoringLevel = ScoringLevel.L_THREE;
     } else if (levelEntry.getString("None").equals("Level 4")) {
       scoringLevel = ScoringLevel.L_FOUR;
-=======
-    public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist,
-            AlgaeWristSubsystem algaeWrist) {
-        this.drive = drive;
-        this.elevator = elevator;
-        this.coralWrist = coralWrist;
-        scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");
-        // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
-        // newEntry = scoringStateTables.getEntry("Indicator");
-        levelEntry = scoringStateTables.getEntry("scoringLevel");
-        gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
-        leftRightEntry = scoringStateTables.getEntry("Position");
-    }
-
-    public Command turtleMode() {
-        return Commands
-                .parallel(elevator.goToGoalSetpointCmd(Constants.SetpointConstants.ELEVATOR_TURTLE_HEIGHT),
-                        coralWrist.goToSetpointCommand((Constants.SetpointConstants.CORAL_TURTLE_ANGLE)));
-    }
-
-    public ScoringLevel getScoringLevel() {
-        if (levelEntry.getString("None").equals("Level 1")) {
-            scoringLevel = ScoringLevel.L_ONE;
-        } else if (levelEntry.getString("None").equals("Level 2")) {
-            scoringLevel = ScoringLevel.L_TWO;
-        } else if (levelEntry.getString("None").equals("Level 3")) {
-            scoringLevel = ScoringLevel.L_THREE;
-        } else if (levelEntry.getString("None").equals("Level 4")) {
-            scoringLevel = ScoringLevel.L_FOUR;
-        }
-        return scoringLevel;
-    }
-
-    public RobotPosition getRobotPosition() {
-        if (leftRightEntry.getString("None").equals("left")) {
-            robotPosition = RobotPosition.LEFT;
-        } else if (leftRightEntry.getString("None").equals("right")) {
-            robotPosition = RobotPosition.RIGHT;
-        }
-        return robotPosition;
-    }
-
-    public GameMode getGameMode() {
-        if (gameModeEntry.getString("None").equals("coral")) {
-            gameMode = GameMode.CORAL;
-        } else if (gameModeEntry.getString("None").equals("algae")) {
-            gameMode = GameMode.ALGAE;
-        }
-        return gameMode;
->>>>>>> main
     }
     return scoringLevel;
   }
 
-<<<<<<< HEAD
   public RobotPosition getRobotPosition() {
     if (leftRightEntry.getString("None").equals("left")) {
       robotPosition = RobotPosition.LEFT;
     } else if (leftRightEntry.getString("None").equals("right")) {
       robotPosition = RobotPosition.RIGHT;
-=======
-    public void setScoringLevel(String level) {
-        levelEntry.setString(level);
->>>>>>> main
     }
     return robotPosition;
   }
 
-<<<<<<< HEAD
   public GameMode getGameMode() {
     if (gameModeEntry.getString("None").equals("coral")) {
       gameMode = GameMode.CORAL;
     } else if (gameModeEntry.getString("None").equals("algae")) {
       gameMode = GameMode.ALGAE;
-=======
-    public void setRobotAlignmentPosition(String alignmentValue) {
-        leftRightEntry.setString(alignmentValue);
->>>>>>> main
     }
     return gameMode;
   }
 
-<<<<<<< HEAD
   public void setScoringLevel(String level) {
     levelEntry.setString(level);
   }
@@ -219,30 +127,4 @@ public class CommandFactory {
   // newEntry.setBoolean(indicator);
   // });
   // }
-=======
-    public void setGameMode(String gameMode) {
-        gameModeEntry.setString(gameMode);
-    }
-
-    // These were test functions. I'd prefer to keep them now so I can reference how
-    // I did certain commands later.
-    // I'll eventually delete them
-    // public Command testNumber() {
-    // return Commands
-    // .runOnce(() -> System.out.println(ntEntry.getDouble(0)));
-    // }
-
-    // public Command indicatorChange() {
-    // return Commands
-    // .runOnce(() -> {
-    // if (indicator == true) {
-    // indicator = false;
-    // } else {
-    // indicator = true;
-    // }
-    // System.out.println("Indicator is " + indicator);
-    // newEntry.setBoolean(indicator);
-    // });
-    // }
->>>>>>> main
 }

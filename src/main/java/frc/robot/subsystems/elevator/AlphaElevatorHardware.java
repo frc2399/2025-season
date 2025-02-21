@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -21,8 +22,6 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.math.util.Units;
-import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -78,32 +77,8 @@ public class AlphaElevatorHardware implements ElevatorIO {
                 AlphaElevatorConstants.MAX_ACCEL.in(MetersPerSecondPerSecond)));
 
         globalMotorConfig.encoder
-<<<<<<< HEAD:src/main/java/frc/robot/subsystems/elevator/ElevatorHardware.java
-            .positionConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION.in(Meters))
-            .velocityConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION.in(Meters) / 60);
-            
-        globalMotorConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .p(ElevatorHardwareConstants.P_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
-            .i(ElevatorHardwareConstants.I_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
-            .d(ElevatorHardwareConstants.D_VALUE.in(Volts), ClosedLoopSlot.kSlot0)
-            .outputRange(-1, 1)
-            .p(ElevatorHardwareConstants.P_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
-            .i(ElevatorHardwareConstants.I_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
-            .d(ElevatorHardwareConstants.D_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
-            //https://docs.revrobotics.com/revlib/spark/closed-loop/closed-loop-control-getting-started#f-parameter
-            .velocityFF(ElevatorHardwareConstants.FEEDFORWARD_VALUE.in(Volts), ClosedLoopSlot.kSlot1) 
-            .outputRange(ElevatorHardwareConstants.OUTPUT_RANGE_MIN_VALUE, ElevatorHardwareConstants.OUTPUT_RANGE_MAX_VALUE, ClosedLoopSlot.kSlot1);
-     
-        globalMotorConfig.softLimit
-            .forwardSoftLimit((maxElevatorHeight).in(Meters) - 0.02) //a little less than max height for safety
-            .forwardSoftLimitEnabled(true)
-            .reverseSoftLimit(0)
-            .reverseSoftLimitEnabled(false);
-=======
                 .positionConversionFactor(AlphaElevatorConstants.METERS_PER_REVOLUTION.in(Meters))
                 .velocityConversionFactor(AlphaElevatorConstants.METERS_PER_REVOLUTION.in(Meters) / 60);
->>>>>>> main:src/main/java/frc/robot/subsystems/elevator/AlphaElevatorHardware.java
 
         globalMotorConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -131,7 +106,7 @@ public class AlphaElevatorHardware implements ElevatorIO {
                 .apply(globalMotorConfig)
                 .inverted(false)
                 .idleMode(IdleMode.kBrake)
-                .smartCurrentLimit((int) MotorConstants.NEO_CURRENT_LIMIT.in(Amps));
+                .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
 
         rightMotorConfigFollower
                 .follow(MotorIdConstants.LEFT_ALPHA_ELEVATOR_MOTOR_ID, true)

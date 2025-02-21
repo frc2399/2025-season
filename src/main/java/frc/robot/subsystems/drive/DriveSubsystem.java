@@ -19,13 +19,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
-<<<<<<< HEAD
-=======
-import static edu.wpi.first.units.Units.Meters;
-
-import java.util.function.DoubleSupplier;
-
->>>>>>> main
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;

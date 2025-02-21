@@ -226,8 +226,5 @@ public class SubsystemFactory {
             return new ElevatorSubsystem(new ElevatorPlacebo());
         }
     }
-<<<<<<< HEAD
-=======
 
->>>>>>> main
 }
