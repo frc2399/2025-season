@@ -70,10 +70,10 @@ public class CommandFactory {
 
   public Command turtleMode() {
     return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
-    Commands.waitUntil(() -> coralWrist.atGoal()),
+            Commands.waitUntil(() -> coralWrist.atGoal()),
             elevator.goToGoalSetpointCmd(getScoringLevel()),
             Commands.waitUntil(() -> elevator.atGoal()),
-            coralWrist.goToSetpointCommand(getScoringLevel()));
+            coralWrist.goToSetpointCommand(() -> ScoringLevel.INTAKE));
   }
 
   // public Command moveElevatorAndWrist() {

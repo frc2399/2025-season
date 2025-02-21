@@ -76,10 +76,10 @@ public final class Constants {
 
     public static final Angle ALGAE_WRIST_INTAKE_ANGLE = Degrees.of(-100);
     public static final Angle ALGAE_WRIST_TURTLE_ANGLE = Degrees.of(0);
-    public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(25);
+    public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(24);
     public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
     public static final Angle CORAL_L4_OUTTAKE_ANGLE = Degree.of(-50);
-    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(25);
+    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(24);
     public static final Angle CORAL_L1_ANGLE = Degrees.of(0);
     public static final Angle CORAL_L4_ANGLE = Degrees.of(-50);
     public static final Angle CORAL_L2_L3_OUTTAKE_ANGLE = Degrees.of(-30);
