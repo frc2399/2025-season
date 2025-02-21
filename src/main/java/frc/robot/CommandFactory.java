@@ -107,24 +107,10 @@ public class CommandFactory {
         gameModeEntry.setString(gameMode);
     }
 
-    // These were test functions. I'd prefer to keep them now so I can reference how
-    // I did certain commands later.
-    // I'll eventually delete them
-    // public Command testNumber() {
-    // return Commands
-    // .runOnce(() -> System.out.println(ntEntry.getDouble(0)));
-    // }
-
-    // public Command indicatorChange() {
-    // return Commands
-    // .runOnce(() -> {
-    // if (indicator == true) {
-    // indicator = false;
-    // } else {
-    // indicator = true;
-    // }
-    // System.out.println("Indicator is " + indicator);
-    // newEntry.setBoolean(indicator);
-    // });
-    // }
+    public Command printStates() {
+      return Commands. 
+          runOnce(() -> {
+            System.out.println(getGameMode() + " " + getRobotPosition() + " " + getScoringLevel());
+          });
+    }
 }

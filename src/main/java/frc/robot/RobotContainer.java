@@ -93,6 +93,7 @@ public class RobotContainer {
     operatorController.b().whileTrue(elevator.setSpeedManualControl(0.1));
     operatorController.a().whileTrue(elevator.setSpeedManualControl(-0.1));
     operatorController.leftBumper().onTrue(elevator.goToGoalSetpointCmd(Meters.of(0.0)));
+    operatorController.leftTrigger().onTrue(commandFactory.printStates());
     // operatorController.a().whileTrue(elevator.incrementGoalPosition(Meters.of(-0.005)));
     // operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians))
     // .withName("move coral wrist to L1 outtake setpoint"));
