@@ -1,5 +1,7 @@
 package frc.robot.subsystems.coralWrist;
 
+import java.util.function.Supplier;
+
 import frc.robot.CommandFactory.ScoringLevel;
 
 public interface CoralWristIO {
@@ -13,7 +15,7 @@ public interface CoralWristIO {
         public double goalAngle = 0.0;
     }
 
-    public void setGoalAngle(ScoringLevel scoringLevel);
+    public void setGoalAngle(Supplier<ScoringLevel> scoringLevel);
 
     // taking out motion profiling to see if code works
     // public void setGoalStateTrapezoid(Angle angle);

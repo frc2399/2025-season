@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 
+import java.util.function.Supplier;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -55,7 +57,7 @@ public class CoralWristHardware implements CoralWristIO {
   // divide position factor by 60 for radians per second
   private static final double RELATIVE_ENCODER_WRIST_VELOCITY_FACTOR = (2 * Math.PI) / 3600; // radians per second
 
-  private static final boolean POSITION_WRAPPING_ENABLED = true;
+  private static final boolean POSITION_WRAPPING_ENABLED = false;
   private static final Angle POSITION_WRAPPING_MIN_INPUT = Degrees.of(-90);
   private static final Angle POSITION_WRAPPING_MAX_INPUT = Degrees.of(90);
 
@@ -111,18 +113,18 @@ public class CoralWristHardware implements CoralWristIO {
   }
 
   @Override
-  public void setGoalAngle(ScoringLevel scoringLevel) {
+  public void setGoalAngle(Supplier<ScoringLevel> scoringLevel) {
     Angle desiredAngle = Radians.of(0);
-    if (scoringLevel == ScoringLevel.L_ONE) {
+    if (scoringLevel.get() == ScoringLevel.L_ONE) {
       desiredAngle = SetpointConstants.CORAL_L1_ANGLE;
       System.out.println("l1");
-    } else if (scoringLevel == ScoringLevel.L_TWO || scoringLevel == ScoringLevel.L_THREE) {
+    } else if (scoringLevel.get() == ScoringLevel.L_TWO || scoringLevel.get() == ScoringLevel.L_THREE) {
       desiredAngle = SetpointConstants.CORAL_L2_L3_OUTTAKE_ANGLE;
       System.out.println("l2/3");
-    } else if (scoringLevel == ScoringLevel.L_FOUR) {
+    } else if (scoringLevel.get() == ScoringLevel.L_FOUR) {
       System.out.println("l4");
       desiredAngle = SetpointConstants.CORAL_L4_ANGLE;
-    } else if (scoringLevel == ScoringLevel.INTAKE) {
+    } else if (scoringLevel.get() == ScoringLevel.INTAKE) {
       System.out.println("intake");
       desiredAngle = SetpointConstants.CORAL_INTAKE_ANGLE;
     }

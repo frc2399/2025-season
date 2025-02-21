@@ -18,7 +18,7 @@ public class CoralWristSubsystem extends SubsystemBase {
 
     public Command goToSetpointCommand(Supplier<ScoringLevel> scoringLevel) {
         return this.runOnce(() -> {
-            io.setGoalAngle(scoringLevel.get());
+            io.setGoalAngle(scoringLevel);
         });
     }
 

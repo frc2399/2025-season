@@ -52,7 +52,6 @@ public class CommandFactory {
   }
 
   private static RobotPosition robotPosition;
-  private static ScoringLevel scoringLevel;
   private static GameMode gameMode;
 
   public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist, AlgaeWristSubsystem algaeWrist) {
@@ -70,10 +69,7 @@ public class CommandFactory {
 
   public Command turtleMode() {
     return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
-            Commands.waitUntil(() -> coralWrist.atGoal()),
-            elevator.goToGoalSetpointCmd(getScoringLevel()),
-            Commands.waitUntil(() -> elevator.atGoal()),
-            coralWrist.goToSetpointCommand(() -> ScoringLevel.INTAKE));
+            elevator.goToGoalSetpointCmd(() -> ScoringLevel.INTAKE));
   }
 
   // public Command moveElevatorAndWrist() {
@@ -85,7 +81,6 @@ public class CommandFactory {
 
   public Command moveElevatorAndWrist() {
     return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
-            Commands.waitUntil(() -> coralWrist.atGoal()),
                     elevator.goToGoalSetpointCmd(getScoringLevel()),
                     coralWrist.goToSetpointCommand(getScoringLevel()));
   }
@@ -112,6 +107,7 @@ public class CommandFactory {
   }
 
   public Supplier<ScoringLevel> getScoringLevel() {
+    ScoringLevel scoringLevel;
     if (levelEntry.getString("None").equals("Level 1")) {
       scoringLevel = ScoringLevel.L_ONE;
     } else if (levelEntry.getString("None").equals("Level 2")) {
@@ -120,6 +116,8 @@ public class CommandFactory {
       scoringLevel = ScoringLevel.L_THREE;
     } else if (levelEntry.getString("None").equals("Level 4")) {
       scoringLevel = ScoringLevel.L_FOUR;
+    } else {
+      scoringLevel = ScoringLevel.L_ONE;
     }
     return () -> scoringLevel;
   }

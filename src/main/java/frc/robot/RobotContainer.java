@@ -65,9 +65,7 @@ public class RobotContainer {
             DriveControlConstants.DRIVE_DEADBAND)),
         DriveControlConstants.FIELD_ORIENTED_DRIVE));
     coralIntake.setDefaultCommand(coralIntake.setZero());
-    coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
     algaeIntake.setDefaultCommand(algaeIntake.setRollerSpeed(RPM.of(0)));
-    algaeWrist.setDefaultCommand(algaeWrist.setWristSpeed(0).withName("algae wrist default"));
     // elevator.setDefaultCommand(elevator.setSpeedManualControl(0));
   }
 
@@ -79,6 +77,7 @@ public class RobotContainer {
     driverController.y().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleMode());
+    driverController.b().onTrue(coralWrist.goToSetpointCommand(() -> ScoringLevel.INTAKE));
   }
 
   private void configureButtonBindingsOperator() {
