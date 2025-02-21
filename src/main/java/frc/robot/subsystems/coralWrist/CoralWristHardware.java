@@ -69,7 +69,7 @@ public class CoralWristHardware implements CoralWristIO {
   private static final Angle FORWARD_SOFT_LIMIT = Degrees.of(25);
   private static final Angle REVERSE_SOFT_LIMIT = Degrees.of(-90);
 
-  private Angle goalAngle;
+  private Angle goalAngle = Radians.of(0);
   private static final Angle WRIST_ANGLE_TOLERANCE = Degrees.of(1);
 
   public CoralWristHardware(double ABSOLUTE_ENCODER_POSITION_CONVERSION_FACTOR,
@@ -115,11 +115,15 @@ public class CoralWristHardware implements CoralWristIO {
     Angle desiredAngle = Radians.of(0);
     if (scoringLevel == ScoringLevel.L_ONE) {
       desiredAngle = SetpointConstants.CORAL_L1_ANGLE;
+      System.out.println("l1");
     } else if (scoringLevel == ScoringLevel.L_TWO || scoringLevel == ScoringLevel.L_THREE) {
       desiredAngle = SetpointConstants.CORAL_L2_L3_OUTTAKE_ANGLE;
+      System.out.println("l2/3");
     } else if (scoringLevel == ScoringLevel.L_FOUR) {
+      System.out.println("l4");
       desiredAngle = SetpointConstants.CORAL_L4_ANGLE;
     } else if (scoringLevel == ScoringLevel.INTAKE) {
+      System.out.println("intake");
       desiredAngle = SetpointConstants.CORAL_INTAKE_ANGLE;
     }
     coralIntakeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,

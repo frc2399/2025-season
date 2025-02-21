@@ -75,6 +75,7 @@ public class RobotContainer {
   private void configureButtonBindingsDriver() {
     driverController.rightTrigger().whileTrue(coralIntake.intake());
     driverController.leftTrigger().whileTrue(coralIntake.outtake());
+    driverController.rightBumper().onTrue(commandFactory.moveElevatorAndWrist());
 
     driverController.y().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());

@@ -14,6 +14,7 @@ import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CommandFactory {
 
@@ -68,14 +69,25 @@ public class CommandFactory {
   }
 
   public Command turtleMode() {
-    return avoidCronchCommand(() -> ScoringLevel.INTAKE);
+    return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
+    Commands.waitUntil(() -> coralWrist.atGoal()),
+            elevator.goToGoalSetpointCmd(getScoringLevel()),
+            Commands.waitUntil(() -> elevator.atGoal()),
+            coralWrist.goToSetpointCommand(getScoringLevel()));
   }
 
+  // public Command moveElevatorAndWrist() {
+  //   return Commands.either(avoidCronchCommand(getScoringLevel()),
+  //       Commands.parallel(elevator.goToGoalSetpointCmd(getScoringLevel()),
+  //                         coralWrist.goToSetpointCommand(getScoringLevel())),
+  //       () -> elevator.willCrossCronchZone(getScoringLevel()));
+  // }
+
   public Command moveElevatorAndWrist() {
-    return Commands.either(avoidCronchCommand(getScoringLevel()),
-        Commands.parallel(elevator.goToGoalSetpointCmd(getScoringLevel()),
-                          coralWrist.goToSetpointCommand(getScoringLevel())),
-        () -> elevator.willCrossCronchZone(getScoringLevel()));
+    return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
+            Commands.waitUntil(() -> coralWrist.atGoal()),
+                    elevator.goToGoalSetpointCmd(getScoringLevel()),
+                    coralWrist.goToSetpointCommand(getScoringLevel()));
   }
 
   public Command avoidCronchCommand(Supplier<ScoringLevel> scoringLevel) {
@@ -132,6 +144,7 @@ public class CommandFactory {
 
     public void setScoringLevel(String level){
         levelEntry.setString(level);
+        SmartDashboard.putString("level", level);
     }
 
     public void setRobotAlignmentPosition(String alignmentValue){

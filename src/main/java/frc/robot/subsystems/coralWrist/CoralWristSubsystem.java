@@ -29,6 +29,7 @@ public class CoralWristSubsystem extends SubsystemBase {
     }
 
     public boolean atGoal() {
+        System.out.println("check at goal");
         return io.atGoal();
     }
 
