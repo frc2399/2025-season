@@ -19,6 +19,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
+<<<<<<< HEAD
+=======
+import static edu.wpi.first.units.Units.Meters;
+
+import java.util.function.DoubleSupplier;
+
+>>>>>>> main
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -98,7 +105,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private FieldObject2d frontRightField2dModule = field2d.getObject("front right module");
         private FieldObject2d rearRightField2dModule = field2d.getObject("rear right module");
 
-        private ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
+        private ChassisSpeeds relativeRobotSpeeds;
 
         private Rotation2d lastAngle = new Rotation2d();
 
