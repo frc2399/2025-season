@@ -14,7 +14,6 @@ import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CommandFactory {
 
@@ -26,13 +25,21 @@ public class CommandFactory {
   private final AlgaeWristSubsystem algaeWrist;
   // private final NetworkTableEntry ntEntry; //one for each entry we want to read
   // (state changes)
-  private final NetworkTable scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");
-  ;
-  private boolean indicator;
+  private final NetworkTable scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");;
   // private final NetworkTableEntry newEntry;
   private final NetworkTableEntry levelEntry = scoringStateTables.getEntry("scoringLevel");
   private final NetworkTableEntry gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
   private final NetworkTableEntry leftRightEntry = scoringStateTables.getEntry("Position");
+
+  public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist,
+      AlgaeWristSubsystem algaeWrist) {
+    this.drive = drive;
+    this.elevator = elevator;
+    this.coralWrist = coralWrist;
+    this.algaeWrist = algaeWrist;
+    // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
+    // newEntry = scoringStateTables.getEntry("Indicator");
+  }
 
   private enum RobotPosition {
     LEFT,
@@ -57,8 +64,6 @@ public class CommandFactory {
   private static RobotPosition robotPosition;
   private static GameMode gameMode;
 
-  
-
   public Supplier<ScoringLevel> getScoringLevel = () -> {
     ScoringLevel scoringLevel;
     if (levelEntry.getString("None").equals("Level 1")) {
@@ -72,36 +77,25 @@ public class CommandFactory {
     } else {
       scoringLevel = ScoringLevel.L_ONE;
     }
-    System.out.println(scoringLevel.toString());
     return scoringLevel;
-    };
-
-
-  public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist, AlgaeWristSubsystem algaeWrist) {
-    this.drive = drive;
-    this.elevator = elevator;
-    this.coralWrist = coralWrist;
-    this.algaeWrist = algaeWrist;
-    // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
-    // newEntry = scoringStateTables.getEntry("Indicator");
-  }
+  };
 
   public Command turtleMode() {
     return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
-            elevator.goToGoalSetpointCmd(() -> ScoringLevel.INTAKE));
+        elevator.goToGoalSetpointCmd(() -> ScoringLevel.INTAKE));
   }
 
   // public Command moveElevatorAndWrist() {
-  //   return Commands.either(avoidCronchCommand(getScoringLevel()),
-  //       Commands.parallel(elevator.goToGoalSetpointCmd(getScoringLevel()),
-  //                         coralWrist.goToSetpointCommand(getScoringLevel())),
-  //       () -> elevator.willCrossCronchZone(getScoringLevel()));
+  // return Commands.either(avoidCronchCommand(getScoringLevel()),
+  // Commands.parallel(elevator.goToGoalSetpointCmd(getScoringLevel()),
+  // coralWrist.goToSetpointCommand(getScoringLevel())),
+  // () -> elevator.willCrossCronchZone(getScoringLevel()));
   // }
 
   public Command moveElevatorAndWrist(Supplier<ScoringLevel> sl) {
     return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
-                    elevator.goToGoalSetpointCmd(sl),
-                    coralWrist.goToSetpointCommand(sl));
+        elevator.goToGoalSetpointCmd(sl),
+        coralWrist.goToSetpointCommand(sl));
   }
 
   public Command avoidCronchCommand(Supplier<ScoringLevel> scoringLevel) {
@@ -114,14 +108,14 @@ public class CommandFactory {
                 coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE))
                 .until(() -> coralWrist.atGoal()),
             Commands.parallel(elevator.goToGoalSetpointCmd(scoringLevel),
-                              coralWrist.goToSetpointCommand(scoringLevel))),
+                coralWrist.goToSetpointCommand(scoringLevel))),
         Commands.sequence(
             Commands.parallel(
                 elevator.goToGoalSetpointCmd(() -> ScoringLevel.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT),
                 coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE))
                 .until(() -> coralWrist.atGoal()),
             Commands.parallel(elevator.goToGoalSetpointCmd(scoringLevel),
-                              coralWrist.goToSetpointCommand(scoringLevel))),
+                coralWrist.goToSetpointCommand(scoringLevel))),
         () -> (elevator.getCurrentPosition() > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)));
   }
 
@@ -134,48 +128,28 @@ public class CommandFactory {
     return () -> robotPosition;
   }
 
-    public Supplier<GameMode> getGameMode() {
-        if (gameModeEntry.getString("None").equals("coral")) {
-            gameMode = GameMode.CORAL;
-          } else if (gameModeEntry.getString("None").equals("algae")) {
-            gameMode = GameMode.ALGAE;
-          }
-        return () -> gameMode;
+  public Supplier<GameMode> getGameMode() {
+    if (gameModeEntry.getString("None").equals("coral")) {
+      gameMode = GameMode.CORAL;
+    } else if (gameModeEntry.getString("None").equals("algae")) {
+      gameMode = GameMode.ALGAE;
     }
+    return () -> gameMode;
+  }
 
-    public void setScoringLevel(String level){
-        levelEntry.setString(level);
-    }
+  public void setScoringLevel(String level) {
+    levelEntry.setString(level);
+  }
 
-    public void setRobotAlignmentPosition(String alignmentValue){
-        leftRightEntry.setString(alignmentValue);
-    }
+  public void setRobotAlignmentPosition(String alignmentValue) {
+    leftRightEntry.setString(alignmentValue);
+  }
 
-    public void setGameMode(String gameMode){
-        gameModeEntry.setString(gameMode);
-    }
+  public void setGameMode(String gameMode) {
+    gameModeEntry.setString(gameMode);
+  }
 
-    public void altSetScoringLevel(ScoringLevel sl) {
-      actualScoringLevel = () -> sl;
-    }
-    
-        //These were test functions. I'd prefer to keep them now so I can reference how I did certain commands later. 
-        //I'll eventually delete them
-        // public Command testNumber() {
-        //     return Commands
-        //         .runOnce(() -> System.out.println(ntEntry.getDouble(0)));
-        // }
-    
-    //     public Command indicatorChange() {
-    //       return Commands
-    //         .runOnce(() -> {
-    //           if (indicator == true) {
-    //             indicator = false;
-    //           } else {
-    //             indicator = true;
-    //           }
-    //           System.out.println("Indicator is " + indicator);
-    //           newEntry.setBoolean(indicator);
-    //         });
-    // }
+  public void altSetScoringLevel(ScoringLevel sl) {
+    actualScoringLevel = () -> sl;
+  }
 }

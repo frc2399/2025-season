@@ -189,12 +189,8 @@ public class KrakenElevatorHardware implements ElevatorIO {
         // if currently above the cronch range and our goal is below, or if currently
         // below cronch range and our goal is above, return true
         if (currentPosition > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)) {
-            System.out.println("el over");
-            System.out.println(goalPosition < SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters));
             return (goalPosition < SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters));
         } else if (currentPosition < SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM.in(Meters)) {
-            System.out.println("el under");
-            System.out.println(goalPosition > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters));
             return (goalPosition > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters));
         } else {
             return true;
