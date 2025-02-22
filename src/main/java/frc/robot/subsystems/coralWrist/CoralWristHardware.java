@@ -114,11 +114,11 @@ public class CoralWristHardware implements CoralWristIO {
   public void setGoalAngle(Supplier<ScoringLevel> scoringLevel) {
     Angle desiredAngle = Radians.of(0);
     if (scoringLevel.get() == ScoringLevel.L_ONE) {
-      desiredAngle = SetpointConstants.CORAL_L1_ANGLE;
+      desiredAngle = SetpointConstants.CORAL_L1_OUTTAKE_ANGLE;
     } else if (scoringLevel.get() == ScoringLevel.L_TWO || scoringLevel.get() == ScoringLevel.L_THREE) {
       desiredAngle = SetpointConstants.CORAL_L2_L3_OUTTAKE_ANGLE;
     } else if (scoringLevel.get() == ScoringLevel.L_FOUR) {
-      desiredAngle = SetpointConstants.CORAL_L4_ANGLE;
+      desiredAngle = SetpointConstants.CORAL_L4_OUTTAKE_ANGLE;
     } else if (scoringLevel.get() == ScoringLevel.INTAKE) {
       desiredAngle = SetpointConstants.CORAL_INTAKE_ANGLE;
     } else if (scoringLevel.get() == ScoringLevel.TURTLE) {
