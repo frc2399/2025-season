@@ -80,8 +80,11 @@ public class RobotContainer {
     // these buttons should not be changed for local testing and should function as
     // a replacement gamepad
 
-    operatorController.rightBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("right")));
-    operatorController.leftBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("left")));
+    // operatorController.rightBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("right")));
+    // operatorController.leftBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("left")));
+
+    operatorController.rightBumper().onTrue(elevator.incrementGoalPosition(Meters.of(0.001)));
+    operatorController.leftBumper().onTrue(elevator.incrementGoalPosition(Meters.of(-0.001)));
 
     operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("coral")));
     operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("algae")));
