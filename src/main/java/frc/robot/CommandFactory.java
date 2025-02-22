@@ -52,6 +52,7 @@ public class CommandFactory {
     L_THREE,
     L_FOUR,
     INTAKE,
+    TURTLE,
     ELEVATOR_TOP_INTERMEDIATE_SETPOINT,
     ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT
   }
@@ -81,7 +82,9 @@ public class CommandFactory {
   };
 
   public Command turtleMode() {
-    return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
+    return Commands.sequence(
+        Commands.parallel(coralWrist.goToSetpointCommand(() -> ScoringLevel.TURTLE),
+            algaeWrist.goToSetpointCommand(() -> ScoringLevel.TURTLE)),
         elevator.goToGoalSetpointCmd(() -> ScoringLevel.INTAKE));
   }
 
@@ -92,10 +95,16 @@ public class CommandFactory {
   // () -> elevator.willCrossCronchZone(getScoringLevel()));
   // }
 
-  public Command moveElevatorAndWrist(Supplier<ScoringLevel> sl) {
-    return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
-        elevator.goToGoalSetpointCmd(sl),
-        coralWrist.goToSetpointCommand(sl));
+  public Command moveElevatorAndCoralWrist(Supplier<ScoringLevel> scoringLevel) {
+    return Commands.sequence(coralWrist.goToSetpointCommand(scoringLevel),
+        elevator.goToGoalSetpointCmd(scoringLevel),
+        coralWrist.goToSetpointCommand(scoringLevel));
+  }
+
+  public Command moveElevatorAndAlgaeWrist(Supplier<ScoringLevel> scoringLevel) {
+    return Commands.sequence(algaeWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
+        elevator.goToGoalSetpointCmd(scoringLevel),
+        algaeWrist.goToSetpointCommand(scoringLevel));
   }
 
   public Command avoidCronchCommand(Supplier<ScoringLevel> scoringLevel) {

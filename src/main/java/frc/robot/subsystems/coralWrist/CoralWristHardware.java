@@ -10,8 +10,6 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -123,6 +121,8 @@ public class CoralWristHardware implements CoralWristIO {
       desiredAngle = SetpointConstants.CORAL_L4_ANGLE;
     } else if (scoringLevel.get() == ScoringLevel.INTAKE) {
       desiredAngle = SetpointConstants.CORAL_INTAKE_ANGLE;
+    } else if (scoringLevel.get() == ScoringLevel.TURTLE) {
+      desiredAngle = SetpointConstants.CORAL_TURTLE_ANGLE;
     }
     coralIntakeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
         ClosedLoopSlot.kSlot0,
