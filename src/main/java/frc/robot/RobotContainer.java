@@ -8,7 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.CommandFactory.GameMode;
-import frc.robot.CommandFactory.ScoringLevel;
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
@@ -71,29 +71,27 @@ public class RobotContainer {
     driverController.rightTrigger().whileTrue(commandFactory.intakeBasedOnMode(()-> commandFactory.gameMode));
     driverController.leftTrigger().whileTrue(commandFactory.outtakeBasedOnMode(()->commandFactory.gameMode));
 
-    driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode(() ->commandFactory.gameMode));
+    driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
 
     driverController.y().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleMode());
-    driverController.b().onTrue(coralWrist.goToSetpointCommand(() -> ScoringLevel.INTAKE));
+    driverController.b().onTrue(coralWrist.goToSetpointCommand(() -> Setpoint.INTAKE));
   }
 
   private void configureButtonBindingsOperator() {
     // these buttons should not be changed for local testing and should function as
     // a replacement gamepad
-    operatorController.a().onTrue(Commands.runOnce(() -> commandFactory.scoringLevel = ScoringLevel.L_ONE));
-    operatorController.b().onTrue(Commands.runOnce(() -> commandFactory.scoringLevel = ScoringLevel.L_TWO));
-    operatorController.x().onTrue(Commands.runOnce(() -> commandFactory.scoringLevel = ScoringLevel.L_THREE));
-    operatorController.y().onTrue(Commands.runOnce(() -> commandFactory.scoringLevel = ScoringLevel.L_FOUR));
+    operatorController.a().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level One")));
+    operatorController.b().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level Two")));
+    operatorController.x().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level Three")));
+    operatorController.y().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level Four")));
 
     operatorController.rightBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("right")));
     operatorController.leftBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("left")));
 
-    // operatorController.rightTrigger().onTrue(Commands.runOnce(() ->
-    // commandFactory.setGameMode("coral")));
-    operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.gameMode = GameMode.ALGAE));
-    operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.gameMode = GameMode.CORAL));
+    operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("algae")));
+    operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("coral")));
 
     // place local buttons below here, delete before PRing
 

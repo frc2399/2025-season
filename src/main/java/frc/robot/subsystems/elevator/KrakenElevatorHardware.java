@@ -27,7 +27,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.CommandFactory.ScoringLevel;
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.MotorIdConstants;
 import frc.robot.Constants.SetpointConstants;
 
@@ -171,20 +171,20 @@ public class KrakenElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public boolean willCrossCronchZone(Supplier<ScoringLevel> scoringLevel) {
+    public boolean willCrossCronchZone(Supplier<Setpoint> setpoint) {
         double currentPosition = getEncoderPosition();
         // if the enum is null somehow, nothing will move so will not cross cronch
         // (default value)
         double goalPosition = currentPosition;
-        if (scoringLevel.get() == ScoringLevel.INTAKE || scoringLevel.get() == ScoringLevel.TURTLE) {
+        if (setpoint.get() == Setpoint.INTAKE || setpoint.get() == Setpoint.TURTLE) {
             goalPosition = SetpointConstants.ELEVATOR_TURTLE_HEIGHT.in(Meters); // turtle mode = bottom, where intake is
-        } else if (scoringLevel.get() == ScoringLevel.L_ONE) {
+        } else if (setpoint.get() == Setpoint.L_ONE) {
             goalPosition = SetpointConstants.L_ONE_CORAL_HEIGHT.in(Meters);
-        } else if (scoringLevel.get() == ScoringLevel.L_TWO) {
+        } else if (setpoint.get() == Setpoint.L_TWO) {
             goalPosition = SetpointConstants.L_TWO_CORAL_HEIGHT.in(Meters);
-        } else if (scoringLevel.get() == ScoringLevel.L_THREE) {
+        } else if (setpoint.get() == Setpoint.L_THREE) {
             goalPosition = SetpointConstants.L_THREE_CORAL_HEIGHT.in(Meters);
-        } else if (scoringLevel.get() == ScoringLevel.L_FOUR) {
+        } else if (setpoint.get() == Setpoint.L_FOUR) {
             goalPosition = SetpointConstants.L_FOUR_CORAL_HEIGHT.in(Meters);
         }
 

@@ -19,7 +19,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.measure.Angle;
-import frc.robot.CommandFactory.ScoringLevel;
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.SetpointConstants;
 
@@ -111,17 +111,17 @@ public class CoralWristHardware implements CoralWristIO {
   }
 
   @Override
-  public void setGoalAngle(ScoringLevel scoringLevel) {
+  public void setGoalAngle(Setpoint setpoint) {
     Angle desiredAngle = Radians.of(0);
-    if (scoringLevel == ScoringLevel.L_ONE) {
+    if (setpoint == Setpoint.L_ONE) {
       desiredAngle = SetpointConstants.CORAL_L1_OUTTAKE_ANGLE;
-    } else if (scoringLevel == ScoringLevel.L_TWO || scoringLevel == ScoringLevel.L_THREE) {
+    } else if (setpoint == Setpoint.L_TWO || setpoint == Setpoint.L_THREE) {
       desiredAngle = SetpointConstants.CORAL_L2_L3_OUTTAKE_ANGLE;
-    } else if (scoringLevel == ScoringLevel.L_FOUR) {
+    } else if (setpoint == Setpoint.L_FOUR) {
       desiredAngle = SetpointConstants.CORAL_L4_OUTTAKE_ANGLE;
-    } else if (scoringLevel == ScoringLevel.INTAKE) {
+    } else if (setpoint == Setpoint.INTAKE) {
       desiredAngle = SetpointConstants.CORAL_INTAKE_ANGLE;
-    } else if (scoringLevel == ScoringLevel.TURTLE) {
+    } else if (setpoint == Setpoint.TURTLE) {
       desiredAngle = SetpointConstants.CORAL_TURTLE_ANGLE;
     }
     coralIntakeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,

@@ -3,7 +3,7 @@ package frc.robot.subsystems.elevator;
 import java.util.function.Supplier;
 
 import edu.wpi.first.units.measure.Distance;
-import frc.robot.CommandFactory.ScoringLevel;
+import frc.robot.CommandFactory.Setpoint;
 
 public interface ElevatorIO {
 
@@ -32,7 +32,7 @@ public interface ElevatorIO {
     public double getEncoderPosition();
     public void setSpeedManualControl(double speed);
 
-    public boolean willCrossCronchZone(Supplier<ScoringLevel> scoringLevel);
+    public boolean willCrossCronchZone(Supplier<Setpoint> setpoint);
 
     public void updateStates(ElevatorIOInputs states);
 }
