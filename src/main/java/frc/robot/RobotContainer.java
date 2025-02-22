@@ -68,7 +68,7 @@ public class RobotContainer {
   private void configureButtonBindingsDriver() {
     driverController.rightTrigger().whileTrue(coralIntake.intake());
     driverController.leftTrigger().whileTrue(coralIntake.outtake());
-   // driverController.rightBumper().onTrue(commandFactory.moveElevatorAndWrist());
+    driverController.rightBumper().onTrue(commandFactory.moveElevatorAndWrist());
 
     driverController.y().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
@@ -79,10 +79,10 @@ public class RobotContainer {
   private void configureButtonBindingsOperator() {
      // these buttons should not be changed for local testing and should function as
     // a replacement gamepad
-    operatorController.a().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_ONE)); //l1
-    operatorController.b().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_TWO)); //l2
-    operatorController.x().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_THREE)); //l3
-    operatorController.y().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_FOUR)); //l4
+    operatorController.a().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1"))); //l1
+    operatorController.b().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 2"))); //l2
+    operatorController.x().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 3"))); //l3
+    operatorController.y().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 3"))); //l4 but for alpha l3
 
     operatorController.rightBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("right")));
     operatorController.leftBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("left")));

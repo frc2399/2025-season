@@ -72,7 +72,7 @@ public class CoralWristHardware implements CoralWristIO {
   private static final Angle REVERSE_SOFT_LIMIT = Degrees.of(-90);
 
   private Angle goalAngle = Radians.of(0);
-  private static final Angle WRIST_ANGLE_TOLERANCE = Degrees.of(1);
+  private static final Angle WRIST_ANGLE_TOLERANCE = Radians.of(.05);
 
   public CoralWristHardware(double ABSOLUTE_ENCODER_POSITION_CONVERSION_FACTOR,
       double ABSOLUTE_ENCODER_VELOCITY_CONVERSION_FACTOR,
@@ -113,19 +113,15 @@ public class CoralWristHardware implements CoralWristIO {
   }
 
   @Override
-  public void setGoalAngle(Supplier<ScoringLevel> scoringLevel) {
+  public void setGoalAngle(ScoringLevel scoringLevel) {
     Angle desiredAngle = Radians.of(0);
-    if (scoringLevel.get() == ScoringLevel.L_ONE) {
+    if (scoringLevel == ScoringLevel.L_ONE) {
       desiredAngle = SetpointConstants.CORAL_L1_ANGLE;
-      System.out.println("l1");
-    } else if (scoringLevel.get() == ScoringLevel.L_TWO || scoringLevel.get() == ScoringLevel.L_THREE) {
+    } else if (scoringLevel == ScoringLevel.L_TWO || scoringLevel == ScoringLevel.L_THREE) {
       desiredAngle = SetpointConstants.CORAL_L2_L3_OUTTAKE_ANGLE;
-      System.out.println("l2/3");
-    } else if (scoringLevel.get() == ScoringLevel.L_FOUR) {
-      System.out.println("l4");
+    } else if (scoringLevel == ScoringLevel.L_FOUR) {
       desiredAngle = SetpointConstants.CORAL_L4_ANGLE;
-    } else if (scoringLevel.get() == ScoringLevel.INTAKE) {
-      System.out.println("intake");
+    } else if (scoringLevel == ScoringLevel.INTAKE) {
       desiredAngle = SetpointConstants.CORAL_INTAKE_ANGLE;
     }
     coralIntakeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,

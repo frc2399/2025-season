@@ -87,7 +87,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean willCrossCronchZone(Supplier<ScoringLevel> scoringLevel) {
-        return elevatorIO.willCrossCronchZone(scoringLevel.get());
+        return elevatorIO.willCrossCronchZone(scoringLevel);
     }
 
 

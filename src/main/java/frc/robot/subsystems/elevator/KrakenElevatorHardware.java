@@ -7,6 +7,8 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
@@ -169,35 +171,31 @@ public class KrakenElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public boolean willCrossCronchZone(ScoringLevel scoringLevel) {
+    public boolean willCrossCronchZone(Supplier<ScoringLevel> scoringLevel) {
         double currentPosition = getEncoderPosition();
         // if the enum is null somehow, nothing will move so will not cross cronch
         // (default value)
         double goalPosition = currentPosition;
-        if (scoringLevel == ScoringLevel.INTAKE) {
+        if (scoringLevel.get() == ScoringLevel.INTAKE) {
             goalPosition = SetpointConstants.ELEVATOR_TURTLE_HEIGHT.in(Meters); // turtle mode = bottom, where intake is
-        } else if (scoringLevel == ScoringLevel.L_ONE) {
+        } else if (scoringLevel.get() == ScoringLevel.L_ONE) {
             goalPosition = SetpointConstants.L_ONE_HEIGHT.in(Meters);
-        } else if (scoringLevel == ScoringLevel.L_TWO) {
+        } else if (scoringLevel.get() == ScoringLevel.L_TWO) {
             goalPosition = SetpointConstants.L_TWO_HEIGHT.in(Meters);
-        } else if (scoringLevel == ScoringLevel.L_THREE) {
+        } else if (scoringLevel.get() == ScoringLevel.L_THREE) {
             goalPosition = SetpointConstants.L_THREE_HEIGHT.in(Meters);
-        } else if (scoringLevel == ScoringLevel.L_FOUR) {
+        } else if (scoringLevel.get() == ScoringLevel.L_FOUR) {
             goalPosition = SetpointConstants.L_FOUR_HEIGHT.in(Meters);
         }
 
         // if currently above the cronch range and our goal is below, or if currently
         // below cronch range and our goal is above, return true
         if (currentPosition > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)) {
-            System.out.println("el over");
-            System.out.println(goalPosition < SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters));
             return (goalPosition < SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters));
         } else if (currentPosition < SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM.in(Meters)) {
-            System.out.println("el under");
-            System.out.println(goalPosition > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters));
             return (goalPosition > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters));
         } else {
-            return true;
+            return false;
         }
     }
 

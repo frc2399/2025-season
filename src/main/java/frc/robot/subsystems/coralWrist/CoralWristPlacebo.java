@@ -9,7 +9,7 @@ import edu.wpi.first.units.measure.Angle;
 public class CoralWristPlacebo implements CoralWristIO {
 
     @Override
-    public void setGoalAngle(Supplier<ScoringLevel> scoringLevel) {
+    public void setGoalAngle(ScoringLevel scoringLevel) {
     }
 
     @Override

@@ -15,7 +15,7 @@ public interface CoralWristIO {
         public double goalAngle = 0.0;
     }
 
-    public void setGoalAngle(Supplier<ScoringLevel> scoringLevel);
+    public void setGoalAngle(ScoringLevel scoringLevel);
 
     // taking out motion profiling to see if code works
     // public void setGoalStateTrapezoid(Angle angle);
