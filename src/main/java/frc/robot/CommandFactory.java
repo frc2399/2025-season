@@ -59,6 +59,7 @@ public class CommandFactory {
     L_THREE,
     L_FOUR,
     INTAKE,
+    TURTLE,
     ELEVATOR_TOP_INTERMEDIATE_SETPOINT,
     ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT
   }
@@ -89,21 +90,31 @@ public class CommandFactory {
   // };
 
   public Command turtleMode() {
-    return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
-        elevator.goToGoalSetpointCmd(() -> ScoringLevel.INTAKE));
+    return Commands.sequence(
+        Commands.parallel(coralWrist.goToSetpointCommand(() -> ScoringLevel.TURTLE),
+            algaeWrist.goToSetpointCommand(() -> ScoringLevel.TURTLE)),
+        elevator.goToGoalSetpointCmd(() -> ScoringLevel.INTAKE, () -> GameMode.CORAL));
   }
 
-  // public Command moveElevatorAndWrist() {
-  // return Commands.either(avoidCronchCommand(getScoringLevel()),
-  // Commands.parallel(elevator.goToGoalSetpointCmd(getScoringLevel()),
-  // coralWrist.goToSetpointCommand(getScoringLevel())),
-  // () -> elevator.willCrossCronchZone(getScoringLevel()));
-  // }
 
-  public Command moveElevatorAndWrist(Supplier<ScoringLevel> sl) {
-    return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
-        elevator.goToGoalSetpointCmd(sl),
-        coralWrist.goToSetpointCommand(sl));
+public Command elevatorBasedOnMode(Supplier<GameMode> gameMode){
+  if (gameMode.get() == GameMode.CORAL){
+    return moveElevatorAndCoralWrist(scoringLevel);
+  }
+  else if (gameMode.get() == GameMode.ALGAE){
+    return moveElevatorAndAlgaeWrist(scoringLevel);
+  }
+  return Commands.none();
+}
+
+  public Command moveElevatorAndCoralWrist(Supplier<ScoringLevel> scoringLevel) {
+    return Commands.sequence(coralWrist.goToSetpointCommand(scoringLevel),
+        elevator.goToGoalSetpointCmd(scoringLevel, () -> GameMode.CORAL));
+  }
+
+  public Command moveElevatorAndAlgaeWrist(Supplier<ScoringLevel> scoringLevel) {
+    return Commands.sequence(algaeWrist.goToSetpointCommand(scoringLevel),
+        elevator.goToGoalSetpointCmd(scoringLevel, () -> GameMode.ALGAE));
   }
 
   public Command intakeBasedOnMode(Supplier<GameMode> gameMode){
@@ -124,27 +135,6 @@ public class CommandFactory {
       return algaeIntake.outtake();
     }
     return Commands.none();
-  }
-
-  public Command avoidCronchCommand(Supplier<ScoringLevel> scoringLevel) {
-    // if we're above cronch zone, start by setting elevator height to top of
-    // collision range; if we're below, start by setting to bottom
-    return Commands.either(
-        Commands.sequence(
-            Commands.parallel(
-                elevator.goToGoalSetpointCmd(() -> ScoringLevel.ELEVATOR_TOP_INTERMEDIATE_SETPOINT),
-                coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE))
-                .until(() -> coralWrist.atGoal()),
-            Commands.parallel(elevator.goToGoalSetpointCmd(scoringLevel),
-                coralWrist.goToSetpointCommand(scoringLevel))),
-        Commands.sequence(
-            Commands.parallel(
-                elevator.goToGoalSetpointCmd(() -> ScoringLevel.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT),
-                coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE))
-                .until(() -> coralWrist.atGoal()),
-            Commands.parallel(elevator.goToGoalSetpointCmd(scoringLevel),
-                coralWrist.goToSetpointCommand(scoringLevel))),
-        () -> (elevator.getCurrentPosition() > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)));
   }
 
   // public RobotPosition getRobotPosition() {
