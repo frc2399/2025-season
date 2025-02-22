@@ -96,7 +96,7 @@ public class CommandFactory {
   // }
 
   public Command moveElevatorAndCoralWrist(Supplier<ScoringLevel> scoringLevel) {
-    return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
+    return Commands.sequence(coralWrist.goToSetpointCommand(scoringLevel),
         elevator.goToGoalSetpointCmd(scoringLevel),
         coralWrist.goToSetpointCommand(scoringLevel));
   }
