@@ -161,9 +161,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
 
-                SmartDashboard.putNumber("drive/relative X speeds", relativeRobotSpeeds.vxMetersPerSecond);
-                SmartDashboard.putNumber("drive/relative Y speeds", relativeRobotSpeeds.vyMetersPerSecond);
-                SmartDashboard.putNumber("drive/relative radian speeds", relativeRobotSpeeds.omegaRadiansPerSecond);
+                // SmartDashboard.putNumber("drive/relative X speeds", relativeRobotSpeeds.vxMetersPerSecond);
+                // SmartDashboard.putNumber("drive/relative Y speeds", relativeRobotSpeeds.vyMetersPerSecond);
+                // SmartDashboard.putNumber("drive/relative radian speeds", relativeRobotSpeeds.omegaRadiansPerSecond);
                 poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromRadians(gyro.getYaw()),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
@@ -207,7 +207,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         gyro.setYaw(lastAngle.getRadians());
                 }
 
-                logAndUpdateDriveSubsystemStates();
+            //    logAndUpdateDriveSubsystemStates();
 
                 frontLeft.updateStates();
                 frontRight.updateStates();

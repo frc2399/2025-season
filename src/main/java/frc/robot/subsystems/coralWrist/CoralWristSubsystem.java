@@ -1,9 +1,11 @@
 package frc.robot.subsystems.coralWrist;
 
-import edu.wpi.first.units.measure.Angle;
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CommandFactory.ScoringLevel;
 import frc.robot.subsystems.coralWrist.CoralWristIO.CoralWristIOStates;
 
 public class CoralWristSubsystem extends SubsystemBase {
@@ -14,9 +16,9 @@ public class CoralWristSubsystem extends SubsystemBase {
         this.io = io;
     }
 
-    public Command goToSetpointCommand(Angle angle) {
-        return this.run(() -> {
-            io.setGoalAngle(angle);
+    public Command goToSetpointCommand(Supplier<ScoringLevel> scoringLevel) {
+        return this.runOnce(() -> {
+            io.setGoalAngle(scoringLevel);
         });
     }
 
@@ -24,6 +26,11 @@ public class CoralWristSubsystem extends SubsystemBase {
         return this.run(() -> {
             io.setWristSpeed(speed);
         });
+    }
+
+    public boolean atGoal() {
+        System.out.println("check at goal");
+        return io.atGoal();
     }
 
     // taking out motion profiling to see if code works
