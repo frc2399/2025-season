@@ -95,7 +95,7 @@ public class RobotContainer {
     // operatorController.rightTrigger().onTrue(Commands.runOnce(() ->
     // commandFactory.setGameMode("coral")));
     operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode(GameMode.ALGAE)));
-    operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode(GameMode.CORAL)));
+    operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode(GameMode.CORAL)));
 
     // place local buttons below here, delete before PRing
 

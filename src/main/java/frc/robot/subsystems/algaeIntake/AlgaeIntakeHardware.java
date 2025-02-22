@@ -81,10 +81,11 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
         public double getVelocity() {
                 return algaeIntakeEncoder.getVelocity();
         }
-
+        @Override
         public void intake() {
                 setRollerSpeed(SpeedConstants.ALPHA_ALGAE_INTAKE_SPEED);                
         }
+        @Override 
         public void outtake() {
                 setRollerSpeed(SpeedConstants.ALPHA_ALGAE_OUTTAKE_SPEED);
         }

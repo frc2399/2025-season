@@ -48,7 +48,7 @@ public class CommandFactory {
     // newEntry = scoringStateTables.getEntry("Indicator");
   }
 
-  private enum RobotPosition {
+  public enum RobotPosition {
     LEFT,
     RIGHT,
   }
