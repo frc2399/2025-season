@@ -16,6 +16,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import static edu.wpi.first.units.Units.RPM;
 import edu.wpi.first.units.measure.Time;
 
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -23,6 +24,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
+import frc.robot.Constants.SpeedConstants;
+import static edu.wpi.first.units.Units.RPM;
 
 public class AlgaeIntakeHardware implements AlgaeIntakeIO {
         private final SparkMax algaeIntakeSparkMax;
@@ -72,11 +75,19 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
         }
 
         public void setRollerSpeed(AngularVelocity speed) {
-                algaeIntakeClosedLoopController.setReference(speed.in(RadiansPerSecond), ControlType.kVelocity);
+                algaeIntakeClosedLoopController.setReference(speed.in(RPM), ControlType.kVelocity);
         }
 
         public double getVelocity() {
                 return algaeIntakeEncoder.getVelocity();
+        }
+        @Override
+        public void intake() {
+                setRollerSpeed(SpeedConstants.ALPHA_ALGAE_INTAKE_SPEED);                
+        }
+        @Override 
+        public void outtake() {
+                setRollerSpeed(SpeedConstants.ALPHA_ALGAE_OUTTAKE_SPEED);
         }
 
         public double getCurrent() {
