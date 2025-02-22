@@ -11,10 +11,12 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -32,12 +34,12 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         private final ArmFeedforward algaeWristFeedFoward = new ArmFeedforward(STATIC_FF_ALGAE, GRAVITY_FF_ALGAE,
                         VELOCITY_FF_ALGAE);
 
-        private final SparkMax algaeWristSparkMax;
+        private final SparkFlex algaeWristSparkMax;
 
         private final SparkClosedLoopController algaeWristClosedLoopController;
         private final AbsoluteEncoder algaeWristAbsoluteEncoder;
         private final RelativeEncoder algaeWristRelativeEncoder;
-        private static final SparkMaxConfig wristSparkMaxConfig = new SparkMaxConfig();
+        private static final SparkFlexConfig wristSparkMaxConfig = new SparkFlexConfig();
         private static final boolean MOTOR_INVERTED = false;
 
         private static final boolean ABSOLUTE_ENCODER_INVERTED = false;
@@ -87,7 +89,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                                 .reverseSoftLimit(REVERSE_SOFT_LIMIT.in(Radians))
                                 .reverseSoftLimitEnabled(SOFT_LIMIT_ENABLED);
 
-                algaeWristSparkMax = new SparkMax(MotorIdConstants.ALGAE_BETA_WRIST_CAN_ID, MotorType.kBrushless);
+                algaeWristSparkMax = new SparkFlex(MotorIdConstants.ALGAE_BETA_WRIST_CAN_ID, MotorType.kBrushless);
 
                 algaeWristSparkMax.configure(wristSparkMaxConfig, ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);

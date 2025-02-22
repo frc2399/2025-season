@@ -21,12 +21,12 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.CommandFactory.ScoringLevel;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 
@@ -165,6 +165,11 @@ public class AlphaElevatorHardware implements ElevatorIO {
 
     public void setSpeedManualControl(double speed) {
         // place holding method
+    }
+
+    @Override
+    public boolean willCrossCronchZone(ScoringLevel scoringLevel) {
+        return false;
     }
 
     @Override
