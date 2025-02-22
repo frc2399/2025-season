@@ -17,7 +17,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class CommandFactory {
 
-  public Supplier<ScoringLevel> actualScoringLevel = () -> ScoringLevel.L_ONE;
+
 
   private final DriveSubsystem drive;
   private final ElevatorSubsystem elevator;
@@ -61,9 +61,9 @@ public class CommandFactory {
     ALGAE
   }
 
-  private Supplier<RobotPosition> robotPosition;
-  private Supplier<GameMode> gameMode;
-  private Supplier<ScoringLevel> scoringLevel;
+  public Supplier<RobotPosition> robotPosition;
+  public Supplier<GameMode> gameMode;
+  public Supplier<ScoringLevel> scoringLevel;
 
   public Supplier<ScoringLevel> getScoringLevel = () -> {
     ScoringLevel scoringLevel;
@@ -146,7 +146,7 @@ public class CommandFactory {
     gameMode = () -> newGameMode;
   }
 
-  public void setScoringPosition(ScoringLevel newScoringLevel) {
+  public void setScoringLevel(ScoringLevel newScoringLevel) {
      scoringLevel= () -> newScoringLevel;
   }
 
@@ -158,8 +158,4 @@ public class CommandFactory {
     leftRightEntry.setString(alignmentValue);
   }
 
-
-  public void altSetScoringLevel(ScoringLevel sl) {
-    actualScoringLevel = () -> sl;
-  }
 }

@@ -69,31 +69,29 @@ public class RobotContainer {
   private void configureButtonBindingsDriver() {
     driverController.rightTrigger().whileTrue(coralIntake.intake());
     driverController.leftTrigger().whileTrue(coralIntake.outtake());
-   // driverController.rightBumper().onTrue(commandFactory.moveElevatorAndWrist());
+    driverController.rightBumper().onTrue(commandFactory.moveElevatorAndWrist(commandFactory.scoringLevel));
+
+    
 
     driverController.y().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleMode());
     driverController.b().onTrue(coralWrist.goToSetpointCommand(() -> ScoringLevel.INTAKE));
+
   }
 
   private void configureButtonBindingsOperator() {
      // these buttons should not be changed for local testing and should function as
     // a replacement gamepad
-    operatorController.a().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_ONE)); //l1
-    operatorController.b().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_TWO)); //l2
-    operatorController.x().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_THREE)); //l3
-    operatorController.y().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_FOUR)); //l4
-
+    // operatorController.a().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_ONE)); //l1
+    // operatorController.b().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_TWO)); //l2
+    // operatorController.x().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_THREE)); //l3
+    // operatorController.y().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_FOUR)); //l4
 
     operatorController.a().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel(ScoringLevel.L_ONE)));
     operatorController.b().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel(ScoringLevel.L_TWO)));
-    operatorController.x().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel(ScoringLevel.L_ONE)));
-    operatorController.y().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel(ScoringLevel.L_ONE)));
-
-    
-      
-  
+    operatorController.x().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel(ScoringLevel.L_THREE)));
+    operatorController.y().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel(ScoringLevel.L_FOUR)));
 
     operatorController.rightBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("right")));
     operatorController.leftBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("left")));
