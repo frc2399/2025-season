@@ -74,6 +74,7 @@ public class RobotContainer {
     driverController.y().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleMode());
+    driverController.b().onTrue(coralWrist.goToSetpointCommand(() -> ScoringLevel.INTAKE));
     // driverController.b().onTrue(coralWrist.goToSetpointCommand(() ->
     // ScoringLevel.INTAKE));
   }
