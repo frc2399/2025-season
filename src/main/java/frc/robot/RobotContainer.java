@@ -32,7 +32,8 @@ public class RobotContainer {
   // this is public because we need to run the visionPoseEstimator periodic from
   // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
-  private CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist, algaeWrist, algaeIntake, coralIntake);
+  private CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist, algaeWrist, algaeIntake,
+      coralIntake);
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
@@ -67,11 +68,10 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsDriver() {
-    driverController.rightTrigger().whileTrue(coralIntake.intake());
-    driverController.leftTrigger().whileTrue(coralIntake.outtake());
-    driverController.rightBumper().onTrue(commandFactory.moveElevatorAndWrist(commandFactory.scoringLevel));
+    driverController.rightTrigger().whileTrue(commandFactory.intakeBasedOnMode(commandFactory.gameMode));
+    driverController.leftTrigger().whileTrue(commandFactory.outtakeBasedOnMode(commandFactory.gameMode));
 
-    
+    driverController.rightBumper().onTrue(commandFactory.moveElevatorAndWrist(commandFactory.scoringLevel));
 
     driverController.y().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
@@ -80,14 +80,17 @@ public class RobotContainer {
 
   }
 
-
   private void configureButtonBindingsOperator() {
-     // these buttons should not be changed for local testing and should function as
+    // these buttons should not be changed for local testing and should function as
     // a replacement gamepad
-    // operatorController.a().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_ONE)); //l1
-    // operatorController.b().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_TWO)); //l2
-    // operatorController.x().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_THREE)); //l3
-    // operatorController.y().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_FOUR)); //l4
+    // operatorController.a().onTrue(commandFactory.moveElevatorAndWrist(() ->
+    // ScoringLevel.L_ONE)); //l1
+    // operatorController.b().onTrue(commandFactory.moveElevatorAndWrist(() ->
+    // ScoringLevel.L_TWO)); //l2
+    // operatorController.x().onTrue(commandFactory.moveElevatorAndWrist(() ->
+    // ScoringLevel.L_THREE)); //l3
+    // operatorController.y().onTrue(commandFactory.moveElevatorAndWrist(() ->
+    // ScoringLevel.L_FOUR)); //l4
 
     operatorController.a().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel(ScoringLevel.L_ONE)));
     operatorController.b().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel(ScoringLevel.L_TWO)));
@@ -97,14 +100,12 @@ public class RobotContainer {
     operatorController.rightBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("right")));
     operatorController.leftBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("left")));
 
-    // operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("coral")));
+    // operatorController.rightTrigger().onTrue(Commands.runOnce(() ->
+    // commandFactory.setGameMode("coral")));
     operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode(GameMode.ALGAE)));
     operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode(GameMode.CORAL)));
 
-
     // place local buttons below here, delete before PRing
-
-
 
   }
 }
