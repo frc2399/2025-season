@@ -16,7 +16,6 @@ import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CommandFactory {
 
@@ -29,11 +28,20 @@ public class CommandFactory {
   // private final NetworkTableEntry ntEntry; //one for each entry we want to read
   // (state changes)
   private final NetworkTable scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");;
-  private boolean indicator;
   // private final NetworkTableEntry newEntry;
   private final NetworkTableEntry levelEntry = scoringStateTables.getEntry("scoringLevel");
   private final NetworkTableEntry gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
   private final NetworkTableEntry leftRightEntry = scoringStateTables.getEntry("Position");
+
+  public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist,
+      AlgaeWristSubsystem algaeWrist) {
+    this.drive = drive;
+    this.elevator = elevator;
+    this.coralWrist = coralWrist;
+    this.algaeWrist = algaeWrist;
+    // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
+    // newEntry = scoringStateTables.getEntry("Indicator");
+  }
 
   private enum RobotPosition {
     LEFT,
@@ -57,16 +65,6 @@ public class CommandFactory {
 
   private static RobotPosition robotPosition;
   private static GameMode gameMode;
-
-  public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist,
-      AlgaeWristSubsystem algaeWrist) {
-    this.drive = drive;
-    this.elevator = elevator;
-    this.coralWrist = coralWrist;
-    this.algaeWrist = algaeWrist;
-    // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
-    // newEntry = scoringStateTables.getEntry("Indicator");
-  }
 
   public Command turtleMode() {
     return avoidCronchCommand(() -> ScoringLevel.INTAKE);
@@ -147,25 +145,4 @@ public class CommandFactory {
   public void setGameMode(String gameMode) {
     gameModeEntry.setString(gameMode);
   }
-
-  // These were test functions. I'd prefer to keep them now so I can reference how
-  // I did certain commands later.
-  // I'll eventually delete them
-  // public Command testNumber() {
-  // return Commands
-  // .runOnce(() -> System.out.println(ntEntry.getDouble(0)));
-  // }
-
-  // public Command indicatorChange() {
-  // return Commands
-  // .runOnce(() -> {
-  // if (indicator == true) {
-  // indicator = false;
-  // } else {
-  // indicator = true;
-  // }
-  // System.out.println("Indicator is " + indicator);
-  // newEntry.setBoolean(indicator);
-  // });
-  // }
 }
