@@ -106,30 +106,6 @@ public class CommandFactory {
         algaeWrist.goToSetpointCommand(scoringLevel));
   }
 
-  // public Command avoidCronchCommand(Supplier<ScoringLevel> scoringLevel) {
-  // // if we're above cronch zone, start by setting elevator height to top of
-  // // collision range; if we're below, start by setting to bottom
-  // return Commands.either(
-  // Commands.sequence(
-  // Commands.parallel(
-  // elevator.goToGoalSetpointCmd(() ->
-  // ScoringLevel.ELEVATOR_TOP_INTERMEDIATE_SETPOINT),
-  // coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE))
-  // .until(() -> coralWrist.atGoal()),
-  // Commands.parallel(elevator.goToGoalSetpointCmd(scoringLevel),
-  // coralWrist.goToSetpointCommand(scoringLevel))),
-  // Commands.sequence(
-  // Commands.parallel(
-  // elevator.goToGoalSetpointCmd(() ->
-  // ScoringLevel.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT),
-  // coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE))
-  // .until(() -> coralWrist.atGoal()),
-  // Commands.parallel(elevator.goToGoalSetpointCmd(scoringLevel),
-  // coralWrist.goToSetpointCommand(scoringLevel))),
-  // () -> (elevator.getCurrentPosition() >
-  // SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)));
-  // }
-
   public Supplier<RobotPosition> getRobotPosition() {
     if (leftRightEntry.getString("None").equals("left")) {
       robotPosition = RobotPosition.LEFT;
