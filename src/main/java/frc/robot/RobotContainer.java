@@ -83,13 +83,13 @@ public class RobotContainer {
     // a replacement gamepad
 
     operatorController.a()
-        .onTrue(commandFactory.moveElevatorAndCoralWrist(() -> ScoringLevel.L_ONE, () -> GameMode.CORAL));
+        .onTrue(commandFactory.moveElevatorAndCoralWrist(() -> ScoringLevel.L_ONE));
     operatorController.b()
-        .onTrue(commandFactory.moveElevatorAndCoralWrist(() -> ScoringLevel.L_TWO, () -> GameMode.CORAL));
+        .onTrue(commandFactory.moveElevatorAndCoralWrist(() -> ScoringLevel.L_TWO));
     operatorController.x()
-        .onTrue(commandFactory.moveElevatorAndCoralWrist(() -> ScoringLevel.L_THREE, () -> GameMode.CORAL));
+        .onTrue(commandFactory.moveElevatorAndCoralWrist(() -> ScoringLevel.L_THREE));
     operatorController.y()
-        .onTrue(commandFactory.moveElevatorAndCoralWrist(() -> ScoringLevel.L_FOUR, () -> GameMode.CORAL));
+        .onTrue(commandFactory.moveElevatorAndCoralWrist(() -> ScoringLevel.L_FOUR));
 
     operatorController.rightBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("right")));
     operatorController.leftBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("left")));

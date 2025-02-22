@@ -95,12 +95,12 @@ public class CommandFactory {
   // () -> elevator.willCrossCronchZone(getScoringLevel()));
   // }
 
-  public Command moveElevatorAndCoralWrist(Supplier<ScoringLevel> scoringLevel, Supplier<GameMode> gameMode) {
+  public Command moveElevatorAndCoralWrist(Supplier<ScoringLevel> scoringLevel) {
     return Commands.sequence(coralWrist.goToSetpointCommand(scoringLevel),
         elevator.goToGoalSetpointCmd(scoringLevel, () -> GameMode.CORAL));
   }
 
-  public Command moveElevatorAndAlgaeWrist(Supplier<ScoringLevel> scoringLevel, Supplier<GameMode> gameMode) {
+  public Command moveElevatorAndAlgaeWrist(Supplier<ScoringLevel> scoringLevel) {
     return Commands.sequence(algaeWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
         elevator.goToGoalSetpointCmd(scoringLevel, () -> GameMode.ALGAE),
         algaeWrist.goToSetpointCommand(scoringLevel));
