@@ -56,7 +56,7 @@ public class CommandFactory {
     ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT
   }
 
-  private enum GameMode {
+  public enum GameMode {
     CORAL,
     ALGAE
   }
@@ -82,7 +82,7 @@ public class CommandFactory {
 
   public Command turtleMode() {
     return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
-        elevator.goToGoalSetpointCmd(() -> ScoringLevel.INTAKE));
+        elevator.goToGoalSetpointCmd(() -> ScoringLevel.INTAKE, () -> GameMode.CORAL));
   }
 
   // public Command moveElevatorAndWrist() {
@@ -94,30 +94,33 @@ public class CommandFactory {
 
   public Command moveElevatorAndWrist(Supplier<ScoringLevel> sl) {
     return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
-        elevator.goToGoalSetpointCmd(sl),
+        elevator.goToGoalSetpointCmd(sl, () -> GameMode.CORAL),
         coralWrist.goToSetpointCommand(sl));
   }
 
-  public Command avoidCronchCommand(Supplier<ScoringLevel> scoringLevel) {
-    // if we're above cronch zone, start by setting elevator height to top of
-    // collision range; if we're below, start by setting to bottom
-    return Commands.either(
-        Commands.sequence(
-            Commands.parallel(
-                elevator.goToGoalSetpointCmd(() -> ScoringLevel.ELEVATOR_TOP_INTERMEDIATE_SETPOINT),
-                coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE))
-                .until(() -> coralWrist.atGoal()),
-            Commands.parallel(elevator.goToGoalSetpointCmd(scoringLevel),
-                coralWrist.goToSetpointCommand(scoringLevel))),
-        Commands.sequence(
-            Commands.parallel(
-                elevator.goToGoalSetpointCmd(() -> ScoringLevel.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT),
-                coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE))
-                .until(() -> coralWrist.atGoal()),
-            Commands.parallel(elevator.goToGoalSetpointCmd(scoringLevel),
-                coralWrist.goToSetpointCommand(scoringLevel))),
-        () -> (elevator.getCurrentPosition() > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)));
-  }
+  // public Command avoidCronchCommand(Supplier<ScoringLevel> scoringLevel) {
+  // // if we're above cronch zone, start by setting elevator height to top of
+  // // collision range; if we're below, start by setting to bottom
+  // return Commands.either(
+  // Commands.sequence(
+  // Commands.parallel(
+  // elevator.goToGoalSetpointCmd(() ->
+  // ScoringLevel.ELEVATOR_TOP_INTERMEDIATE_SETPOINT),
+  // coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE))
+  // .until(() -> coralWrist.atGoal()),
+  // Commands.parallel(elevator.goToGoalSetpointCmd(scoringLevel),
+  // coralWrist.goToSetpointCommand(scoringLevel))),
+  // Commands.sequence(
+  // Commands.parallel(
+  // elevator.goToGoalSetpointCmd(() ->
+  // ScoringLevel.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT),
+  // coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE))
+  // .until(() -> coralWrist.atGoal()),
+  // Commands.parallel(elevator.goToGoalSetpointCmd(scoringLevel),
+  // coralWrist.goToSetpointCommand(scoringLevel))),
+  // () -> (elevator.getCurrentPosition() >
+  // SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)));
+  // }
 
   public Supplier<RobotPosition> getRobotPosition() {
     if (leftRightEntry.getString("None").equals("left")) {
