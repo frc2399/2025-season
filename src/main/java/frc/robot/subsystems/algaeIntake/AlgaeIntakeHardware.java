@@ -23,6 +23,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
+import frc.robot.Constants.SpeedConstants;
+import static edu.wpi.first.units.Units.RPM;
 
 public class AlgaeIntakeHardware implements AlgaeIntakeIO {
         private final SparkMax algaeIntakeSparkMax;
@@ -77,6 +79,14 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
 
         public double getVelocity() {
                 return algaeIntakeEncoder.getVelocity();
+        }
+
+        public void intake() {
+                algaeIntakeClosedLoopController.setReference(SpeedConstants.ALPHA_ALGAE_INTAKE_SPEED.in(RPM), ControlType.kVelocity);
+                
+        }
+        public void outtake() {
+                algaeIntakeClosedLoopController.setReference(SpeedConstants.ALPHA_ALGAE_OUTTAKE_SPEED.in(RPM), ControlType.kVelocity);
         }
 
         public double getCurrent() {

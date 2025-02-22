@@ -9,7 +9,9 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.SetpointConstants;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
+import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -23,6 +25,9 @@ public class CommandFactory {
   private final ElevatorSubsystem elevator;
   private final CoralWristSubsystem coralWrist;
   private final AlgaeWristSubsystem algaeWrist;
+  private final AlgaeIntakeSubsystem algaeIntake;
+  private final CoralIntakeSubsystem coralIntake;
+
   // private final NetworkTableEntry ntEntry; //one for each entry we want to read
   // (state changes)
   private final NetworkTable scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");;
@@ -32,11 +37,13 @@ public class CommandFactory {
   private final NetworkTableEntry leftRightEntry = scoringStateTables.getEntry("Position");
 
   public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist,
-      AlgaeWristSubsystem algaeWrist) {
+      AlgaeWristSubsystem algaeWrist, AlgaeIntakeSubsystem algaeIntake, CoralIntakeSubsystem coralIntake) {
     this.drive = drive;
     this.elevator = elevator;
     this.coralWrist = coralWrist;
     this.algaeWrist = algaeWrist;
+    this.algaeIntake = algaeIntake;
+    this.coralIntake = coralIntake;
     // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
     // newEntry = scoringStateTables.getEntry("Indicator");
   }
@@ -65,21 +72,21 @@ public class CommandFactory {
   public Supplier<GameMode> gameMode;
   public Supplier<ScoringLevel> scoringLevel;
 
-  public Supplier<ScoringLevel> getScoringLevel = () -> {
-    ScoringLevel scoringLevel;
-    if (levelEntry.getString("None").equals("Level 1")) {
-      scoringLevel = ScoringLevel.L_ONE;
-    } else if (levelEntry.getString("None").equals("Level 2")) {
-      scoringLevel = ScoringLevel.L_TWO;
-    } else if (levelEntry.getString("None").equals("Level 3")) {
-      scoringLevel = ScoringLevel.L_THREE;
-    } else if (levelEntry.getString("None").equals("Level 4")) {
-      scoringLevel = ScoringLevel.L_FOUR;
-    } else {
-      scoringLevel = ScoringLevel.L_ONE;
-    }
-    return scoringLevel;
-  };
+  // public Supplier<ScoringLevel> getScoringLevel = () -> {
+  //   ScoringLevel scoringLevel;
+  //   if (levelEntry.getString("None").equals("Level 1")) {
+  //     scoringLevel = ScoringLevel.L_ONE;
+  //   } else if (levelEntry.getString("None").equals("Level 2")) {
+  //     scoringLevel = ScoringLevel.L_TWO;
+  //   } else if (levelEntry.getString("None").equals("Level 3")) {
+  //     scoringLevel = ScoringLevel.L_THREE;
+  //   } else if (levelEntry.getString("None").equals("Level 4")) {
+  //     scoringLevel = ScoringLevel.L_FOUR;
+  //   } else {
+  //     scoringLevel = ScoringLevel.L_ONE;
+  //   }
+  //   return scoringLevel;
+  // };
 
   public Command turtleMode() {
     return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
@@ -97,6 +104,26 @@ public class CommandFactory {
     return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
         elevator.goToGoalSetpointCmd(sl),
         coralWrist.goToSetpointCommand(sl));
+  }
+
+  public Command intakeBasedOnMode(Supplier<GameMode> gameMode){
+    if (gameMode.get() == GameMode.CORAL){
+      return coralIntake.intake();
+    }
+    else if (gameMode.get() == GameMode.ALGAE){
+      return algaeIntake.intake();
+    }
+    return Commands.none();
+  }
+
+  public Command outtakeBasedOnMode(Supplier<GameMode> gameMode){
+    if (gameMode.get() == GameMode.CORAL){
+      return coralIntake.outtake();
+    }
+    else if (gameMode.get() == GameMode.ALGAE){
+      return algaeIntake.outtake();
+    }
+    return Commands.none();
   }
 
   public Command avoidCronchCommand(Supplier<ScoringLevel> scoringLevel) {
@@ -137,6 +164,8 @@ public class CommandFactory {
   // }
   // return () -> gameMode;
   // }
+
+
 
   public void setRobotPosition(RobotPosition newRobotPosition) {
     robotPosition = () -> newRobotPosition;

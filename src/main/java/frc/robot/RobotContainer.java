@@ -32,7 +32,7 @@ public class RobotContainer {
   // this is public because we need to run the visionPoseEstimator periodic from
   // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
-  private CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist, algaeWrist);
+  private CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist, algaeWrist, algaeIntake, coralIntake);
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
@@ -79,6 +79,7 @@ public class RobotContainer {
     driverController.b().onTrue(coralWrist.goToSetpointCommand(() -> ScoringLevel.INTAKE));
 
   }
+
 
   private void configureButtonBindingsOperator() {
      // these buttons should not be changed for local testing and should function as
