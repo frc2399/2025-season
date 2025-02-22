@@ -4,8 +4,6 @@ import frc.robot.CommandFactory.ScoringLevel;
 
 import java.util.function.Supplier;
 
-import edu.wpi.first.units.measure.Angle;
-
 public class CoralWristPlacebo implements CoralWristIO {
 
     @Override
