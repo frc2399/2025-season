@@ -16,6 +16,7 @@ import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CommandFactory {
 
@@ -69,9 +70,9 @@ public class CommandFactory {
     ALGAE
   }
 
-  public Supplier<RobotPosition> robotPosition;
-  public Supplier<GameMode> gameMode;
-  public Supplier<ScoringLevel> scoringLevel;
+  public RobotPosition robotPosition;
+  public GameMode gameMode;
+  public ScoringLevel scoringLevel;
 
   // public Supplier<ScoringLevel> getScoringLevel = () -> {
   //   ScoringLevel scoringLevel;
@@ -98,11 +99,12 @@ public class CommandFactory {
 
 
 public Command elevatorBasedOnMode(Supplier<GameMode> gameMode){
-  if (gameMode.get() == GameMode.CORAL){
-    return moveElevatorAndCoralWrist(scoringLevel);
+  if(gameMode.get() == GameMode.CORAL){
+    return moveElevatorAndCoralWrist(()-> scoringLevel);
+    
   }
   else if (gameMode.get() == GameMode.ALGAE){
-    return moveElevatorAndAlgaeWrist(scoringLevel);
+    return moveElevatorAndAlgaeWrist(()-> scoringLevel);
   }
   return Commands.none();
 }
@@ -157,18 +159,7 @@ public Command elevatorBasedOnMode(Supplier<GameMode> gameMode){
 
 
 
-  public void setRobotPosition(RobotPosition newRobotPosition) {
-    robotPosition = () -> newRobotPosition;
-  }
-
-  public void setGameMode(GameMode newGameMode) {
-    gameMode = () -> newGameMode;
-  }
-
-  public void setScoringLevel(ScoringLevel newScoringLevel) {
-     scoringLevel= () -> newScoringLevel;
-  }
-
+  
   // public void setScoringLevel(String level) {
   //   levelEntry.setString(level);
   // }
