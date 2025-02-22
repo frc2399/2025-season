@@ -127,14 +127,14 @@ public class CoralWristHardware implements CoralWristIO {
     coralIntakeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
         ClosedLoopSlot.kSlot0,
         coralWristFeedFoward.calculate(desiredAngle.in(Radians),
-            coralIntakeWristAbsoluteEncoder.getVelocity()));
+            coralIntakeWristRelativeEncoder.getVelocity()));
     goalAngle = desiredAngle;
   }
 
   @Override
   public void setWristSpeed(double speed) {
     coralIntakeWristSparkFlex.set(speed
-        + coralWristFeedFoward.calculate(coralIntakeWristAbsoluteEncoder.getPosition()
+        + coralWristFeedFoward.calculate(coralIntakeWristRelativeEncoder.getPosition()
             + WRIST_ANGULAR_OFFSET.in(Radians), speed));
   }
 
