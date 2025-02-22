@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.CommandFactory.GameMode;
 import frc.robot.CommandFactory.ScoringLevel;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
@@ -68,16 +69,18 @@ public class RobotContainer {
   private void configureButtonBindingsDriver() {
     driverController.rightTrigger().whileTrue(coralIntake.intake());
     driverController.leftTrigger().whileTrue(coralIntake.outtake());
-    driverController.rightBumper().onTrue(commandFactory.moveElevatorAndWrist());
+    driverController.rightBumper().onTrue(commandFactory.moveElevatorAndCoralWrist());
 
     driverController.y().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleMode());
     driverController.b().onTrue(coralWrist.goToSetpointCommand(() -> ScoringLevel.INTAKE));
+    // driverController.b().onTrue(coralWrist.goToSetpointCommand(() ->
+    // ScoringLevel.INTAKE));
   }
 
   private void configureButtonBindingsOperator() {
-     // these buttons should not be changed for local testing and should function as
+    // these buttons should not be changed for local testing and should function as
     // a replacement gamepad
     operatorController.a().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1"))); //l1
     operatorController.b().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 2"))); //l2
@@ -91,8 +94,6 @@ public class RobotContainer {
     operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("algae")));
 
     // place local buttons below here, delete before PRing
-
-
 
   }
 }

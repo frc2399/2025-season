@@ -54,11 +54,12 @@ public class CommandFactory {
     L_THREE,
     L_FOUR,
     INTAKE,
+    TURTLE,
     ELEVATOR_TOP_INTERMEDIATE_SETPOINT,
     ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT
   }
 
-  private enum GameMode {
+  public enum GameMode {
     CORAL,
     ALGAE
   }
@@ -67,14 +68,20 @@ public class CommandFactory {
   private static GameMode gameMode;
 
   public Command turtleMode() {
-    return avoidCronchCommand(() -> ScoringLevel.INTAKE);
+    return avoidCronchCommand(() -> ScoringLevel.TURTLE);
   }
 
-  public Command moveElevatorAndWrist() {
+  public Command moveElevatorAndCoralWrist() {
     return Commands.either(avoidCronchCommand(() -> getScoringLevel()),
-        Commands.parallel(elevator.goToGoalSetpointCmd(() -> getScoringLevel()),
+        Commands.parallel(elevator.goToGoalSetpointCmd(() -> getScoringLevel(), () -> getGameMode()),
             coralWrist.goToSetpointCommand(() -> getScoringLevel())),
         () -> elevator.willCrossCronchZone(() -> getScoringLevel()));
+  }
+
+  public Command moveElevatorAndAlgaeWrist(ScoringLevel scoringLevel) {
+    return Commands.sequence(algaeWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
+        elevator.goToGoalSetpointCmd(() -> scoringLevel, () -> GameMode.ALGAE),
+        algaeWrist.goToSetpointCommand(() -> scoringLevel));
   }
 
   public Command avoidCronchCommand(Supplier<ScoringLevel> scoringLevel) {
@@ -83,18 +90,18 @@ public class CommandFactory {
     return Commands.either(
         Commands.sequence(
             Commands.parallel(
-                elevator.goToGoalSetpointCmd(() -> ScoringLevel.ELEVATOR_TOP_INTERMEDIATE_SETPOINT),
+                elevator.goToGoalSetpointCmd(() -> ScoringLevel.ELEVATOR_TOP_INTERMEDIATE_SETPOINT, () -> getGameMode()),
                 coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE)),
             Commands.waitUntil(() -> coralWrist.atGoal()),
-            elevator.goToGoalSetpointCmd(scoringLevel),
+            elevator.goToGoalSetpointCmd(scoringLevel, () -> getGameMode()),
             Commands.waitUntil(() -> elevator.atGoal()),
             coralWrist.goToSetpointCommand(scoringLevel)),
         Commands.sequence(
             Commands.parallel(
-                elevator.goToGoalSetpointCmd(() -> ScoringLevel.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT),
+                elevator.goToGoalSetpointCmd(() -> ScoringLevel.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT, () -> getGameMode()),
                 coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE)),
             Commands.waitUntil(() -> coralWrist.atGoal()),
-            elevator.goToGoalSetpointCmd(scoringLevel),
+            elevator.goToGoalSetpointCmd(scoringLevel, () -> getGameMode()),
             Commands.waitUntil(() -> elevator.atGoal()),
             coralWrist.goToSetpointCommand(scoringLevel)),
         () -> (elevator.getCurrentPosition() > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)));
@@ -116,22 +123,22 @@ public class CommandFactory {
     return scoringLevel;
   };
 
-  public Supplier<RobotPosition> getRobotPosition() {
+  public RobotPosition getRobotPosition() {
     if (leftRightEntry.getString("None").equals("left")) {
       robotPosition = RobotPosition.LEFT;
     } else if (leftRightEntry.getString("None").equals("right")) {
       robotPosition = RobotPosition.RIGHT;
     }
-    return () -> robotPosition;
+    return robotPosition;
   }
 
-  public Supplier<GameMode> getGameMode() {
+  public GameMode getGameMode() {
     if (gameModeEntry.getString("None").equals("coral")) {
       gameMode = GameMode.CORAL;
     } else if (gameModeEntry.getString("None").equals("algae")) {
       gameMode = GameMode.ALGAE;
     }
-    return () -> gameMode;
+    return gameMode;
   }
 
   public void setScoringLevel(String level) {

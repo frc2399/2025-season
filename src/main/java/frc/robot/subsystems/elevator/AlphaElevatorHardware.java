@@ -171,16 +171,16 @@ public class AlphaElevatorHardware implements ElevatorIO {
         // if the enum is null somehow, nothing will move so will not cross cronch
         // (default value)
         double goalPosition = currentPosition;
-        if (scoringLevel.get() == ScoringLevel.INTAKE) {
+        if (scoringLevel.get() == ScoringLevel.INTAKE || scoringLevel.get() == ScoringLevel.TURTLE) {
             goalPosition = SetpointConstants.ELEVATOR_TURTLE_HEIGHT.in(Meters); // turtle mode = bottom, where intake is
         } else if (scoringLevel.get() == ScoringLevel.L_ONE) {
-            goalPosition = SetpointConstants.L_ONE_HEIGHT.in(Meters);
+            goalPosition = SetpointConstants.L_ONE_CORAL_HEIGHT.in(Meters);
         } else if (scoringLevel.get() == ScoringLevel.L_TWO) {
-            goalPosition = SetpointConstants.L_TWO_HEIGHT.in(Meters);
+            goalPosition = SetpointConstants.L_TWO_CORAL_HEIGHT.in(Meters);
         } else if (scoringLevel.get() == ScoringLevel.L_THREE) {
-            goalPosition = SetpointConstants.L_THREE_HEIGHT.in(Meters);
+            goalPosition = SetpointConstants.L_THREE_CORAL_HEIGHT.in(Meters);
         } else if (scoringLevel.get() == ScoringLevel.L_FOUR) {
-            goalPosition = SetpointConstants.L_FOUR_HEIGHT.in(Meters);
+            goalPosition = SetpointConstants.L_FOUR_CORAL_HEIGHT.in(Meters);
         }
 
         // if currently above the cronch range and our goal is below, or if currently
