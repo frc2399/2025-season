@@ -121,6 +121,8 @@ public class CoralWristHardware implements CoralWristIO {
       desiredAngle = SetpointConstants.CORAL_L4_ANGLE;
     } else if (scoringLevel.get() == ScoringLevel.INTAKE) {
       desiredAngle = SetpointConstants.CORAL_INTAKE_ANGLE;
+    } else if (scoringLevel.get() == ScoringLevel.TURTLE) {
+      desiredAngle = SetpointConstants.CORAL_TURTLE_ANGLE;
     }
     coralIntakeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
         ClosedLoopSlot.kSlot0,

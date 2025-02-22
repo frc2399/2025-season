@@ -83,7 +83,7 @@ public class CommandFactory {
 
   public Command turtleMode() {
     return Commands.sequence(
-        Commands.parallel(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
+        Commands.parallel(coralWrist.goToSetpointCommand(() -> ScoringLevel.TURTLE),
             algaeWrist.goToSetpointCommand(() -> ScoringLevel.TURTLE)),
         elevator.goToGoalSetpointCmd(() -> ScoringLevel.INTAKE));
   }
