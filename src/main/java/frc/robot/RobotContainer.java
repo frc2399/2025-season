@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.CommandFactory.GameMode;
 import frc.robot.CommandFactory.ScoringLevel;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
@@ -84,11 +85,23 @@ public class RobotContainer {
     operatorController.x().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_THREE)); //l3
     operatorController.y().onTrue(commandFactory.moveElevatorAndWrist(() -> ScoringLevel.L_FOUR)); //l4
 
+
+    operatorController.a().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel(ScoringLevel.L_ONE)));
+    operatorController.b().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel(ScoringLevel.L_TWO)));
+    operatorController.x().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel(ScoringLevel.L_ONE)));
+    operatorController.y().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel(ScoringLevel.L_ONE)));
+
+    
+      
+  
+
     operatorController.rightBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("right")));
     operatorController.leftBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("left")));
 
-    operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("coral")));
-    operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("algae")));
+    // operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("coral")));
+    operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode(GameMode.ALGAE)));
+    operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode(GameMode.CORAL)));
+
 
     // place local buttons below here, delete before PRing
 

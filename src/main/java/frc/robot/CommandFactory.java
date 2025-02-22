@@ -56,13 +56,14 @@ public class CommandFactory {
     ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT
   }
 
-  private enum GameMode {
+  public enum GameMode {
     CORAL,
     ALGAE
   }
 
-  private static RobotPosition robotPosition;
-  private static GameMode gameMode;
+  private Supplier<RobotPosition> robotPosition;
+  private Supplier<GameMode> gameMode;
+  private Supplier<ScoringLevel> scoringLevel;
 
   public Supplier<ScoringLevel> getScoringLevel = () -> {
     ScoringLevel scoringLevel;
@@ -119,35 +120,44 @@ public class CommandFactory {
         () -> (elevator.getCurrentPosition() > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)));
   }
 
-  public Supplier<RobotPosition> getRobotPosition() {
-    if (leftRightEntry.getString("None").equals("left")) {
-      robotPosition = RobotPosition.LEFT;
-    } else if (leftRightEntry.getString("None").equals("right")) {
-      robotPosition = RobotPosition.RIGHT;
-    }
-    return () -> robotPosition;
+  // public RobotPosition getRobotPosition() {
+  // if (leftRightEntry.getString("None").equals("left")) {
+  // robotPosition = RobotPosition.LEFT;
+  // } else if (leftRightEntry.getString("None").equals("right")) {
+  // robotPosition = RobotPosition.RIGHT;
+  // }
+  // return () -> robotPosition;
+  // }
+
+  // public Supplier<GameMode> getGameMode() {
+  // if (gameModeEntry.getString("None").equals("coral")) {
+  // gameMode = GameMode.CORAL;
+  // } else if (gameModeEntry.getString("None").equals("algae")) {
+  // gameMode = GameMode.ALGAE;
+  // }
+  // return () -> gameMode;
+  // }
+
+  public void setRobotPosition(RobotPosition newRobotPosition) {
+    robotPosition = () -> newRobotPosition;
   }
 
-  public Supplier<GameMode> getGameMode() {
-    if (gameModeEntry.getString("None").equals("coral")) {
-      gameMode = GameMode.CORAL;
-    } else if (gameModeEntry.getString("None").equals("algae")) {
-      gameMode = GameMode.ALGAE;
-    }
-    return () -> gameMode;
+  public void setGameMode(GameMode newGameMode) {
+    gameMode = () -> newGameMode;
   }
 
-  public void setScoringLevel(String level) {
-    levelEntry.setString(level);
+  public void setScoringPosition(ScoringLevel newScoringLevel) {
+     scoringLevel= () -> newScoringLevel;
   }
+
+  // public void setScoringLevel(String level) {
+  //   levelEntry.setString(level);
+  // }
 
   public void setRobotAlignmentPosition(String alignmentValue) {
     leftRightEntry.setString(alignmentValue);
   }
 
-  public void setGameMode(String gameMode) {
-    gameModeEntry.setString(gameMode);
-  }
 
   public void altSetScoringLevel(ScoringLevel sl) {
     actualScoringLevel = () -> sl;
