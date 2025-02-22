@@ -67,7 +67,7 @@ public class CoralWristHardware implements CoralWristIO {
         private static final Angle FORWARD_SOFT_LIMIT = Degrees.of(25);
         private static final Angle REVERSE_SOFT_LIMIT = Degrees.of(-90);
 
-        private Angle goalAngle;
+        private Angle goalAngle = Degrees.of(0);
 
         public CoralWristHardware(double ABSOLUTE_ENCODER_POSITION_CONVERSION_FACTOR,
                         double ABSOLUTE_ENCODER_VELOCITY_CONVERSION_FACTOR,
