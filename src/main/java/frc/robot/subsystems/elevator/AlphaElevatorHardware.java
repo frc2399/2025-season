@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -107,7 +108,7 @@ public class AlphaElevatorHardware implements ElevatorIO {
                 .apply(globalMotorConfig)
                 .inverted(false)
                 .idleMode(IdleMode.kBrake)
-                .smartCurrentLimit((int) MotorConstants.NEO_CURRENT_LIMIT.in(Amps));
+                .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
 
         rightMotorConfigFollower
                 .follow(MotorIdConstants.LEFT_ALPHA_ELEVATOR_MOTOR_ID, true)

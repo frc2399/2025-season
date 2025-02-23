@@ -4,6 +4,14 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.util.PathPlannerLogging;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
@@ -25,11 +33,7 @@ import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.util.PathPlannerLogging;
-import frc.robot.vision.*;
-import static edu.wpi.first.units.Units.*;
+import frc.robot.vision.VisionPoseEstimator;
 
 public class RobotContainer {
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
@@ -43,6 +47,7 @@ public class RobotContainer {
   private final CoralWristSubsystem coralWrist = subsystemFactory.buildCoralWrist();
   private final AlgaeIntakeSubsystem algaeIntake = subsystemFactory.buildAlgaeIntake();
   private final AlgaeWristSubsystem algaeWrist = subsystemFactory.buildAlgaeWrist();
+
   // this is public because we need to run the visionPoseEstimator periodic from
   // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
@@ -96,6 +101,7 @@ public class RobotContainer {
         DriveControlConstants.FIELD_ORIENTED_DRIVE));
     coralIntake.setDefaultCommand(coralIntake.setZero());
     algaeIntake.setDefaultCommand(algaeIntake.setRollerSpeed(RPM.of(0)));
+    coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
     // elevator.setDefaultCommand(elevator.setSpeedManualControl(0));
   }
 
