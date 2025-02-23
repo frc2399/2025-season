@@ -61,43 +61,6 @@ public class CommandFactory {
     ALGAE
   }
 
-  public Supplier<ScoringLevel> getScoringLevel = () -> {
-    ScoringLevel scoringLevel;
-    if (levelEntry.getString("None").equals("Level 1")) {
-      scoringLevel = ScoringLevel.L_ONE;
-    } else if (levelEntry.getString("None").equals("Level 2")) {
-      scoringLevel = ScoringLevel.L_TWO;
-    } else if (levelEntry.getString("None").equals("Level 3")) {
-      scoringLevel = ScoringLevel.L_THREE;
-    } else if (levelEntry.getString("None").equals("Level 4")) {
-      scoringLevel = ScoringLevel.L_FOUR;
-    } else {
-      scoringLevel = ScoringLevel.L_ONE;
-    }
-    return scoringLevel;
-  };
-
-  public Supplier<RobotPosition> getRobotPosition = () -> {
-    RobotPosition robotPosition;
-    if (leftRightEntry.getString("None").equals("left")) {
-      robotPosition = RobotPosition.LEFT;
-    } else {
-      robotPosition = RobotPosition.RIGHT;
-    }
-    return robotPosition;
-  };
-
-  public Supplier<GameMode> getGameMode = () -> {
-    GameMode gameMode;
-    if (gameModeEntry.getString("None").equals("coral")) {
-      gameMode = GameMode.CORAL;
-    } else {
-      gameMode = GameMode.ALGAE;
-    }
-    return gameMode;
-  };
-
-  //testing purposes
   public ScoringLevel getScoringLevel() {
     ScoringLevel scoringLevel;
     if (levelEntry.getString("None").equals("Level 1")) {
@@ -114,7 +77,6 @@ public class CommandFactory {
       return scoringLevel;
   }
 
-  //testing purposes
   public GameMode getGameMode() {
     GameMode gameMode;
     if (gameModeEntry.getString("None").equals("coral")) {
@@ -178,19 +140,5 @@ public class CommandFactory {
 
   public void altSetScoringLevel(ScoringLevel sl) {
     actualScoringLevel = () -> sl;
-  }
-
-  public Command printStatesNew() {
-    return Commands. 
-        runOnce(() -> {
-          System.out.println(getGameMode + " " + getRobotPosition + " " + getScoringLevel);
-        });
-  }
-
-  public Command printStates() {
-    return Commands. 
-        runOnce(() -> {
-          System.out.println(getGameMode() + " " + getScoringLevel());
-        });
   }
 }

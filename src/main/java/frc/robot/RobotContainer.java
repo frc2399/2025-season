@@ -87,11 +87,8 @@ public class RobotContainer {
     operatorController.rightBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("right")));
     operatorController.leftBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("left")));
 
-    //operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("coral")));
-    //operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("algae")));
-
-    operatorController.leftTrigger().onTrue(commandFactory.printStates());
-    operatorController.rightTrigger().onTrue(commandFactory.printStatesNew());
+    operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("coral")));
+    operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("algae")));
 
     // place local buttons below here, delete before PRing
 
