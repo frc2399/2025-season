@@ -1,8 +1,11 @@
 package frc.robot.subsystems.algaeWrist;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.subsystems.algaeWrist.AlgaeWristIO.AlgaeWristIOStates;
 
 public class AlgaeWristSubsystem extends SubsystemBase {
@@ -14,9 +17,9 @@ public class AlgaeWristSubsystem extends SubsystemBase {
         this.io = io;
     }
 
-    public Command goToSetpointCommand(double angle) {
-        return this.run(() -> {
-            io.setGoalAngle(angle);
+    public Command goToSetpointCommand(Supplier<Setpoint> setpoint) {
+        return this.runOnce(() -> {
+            io.setGoalAngle(setpoint.get());
         });
     }
 

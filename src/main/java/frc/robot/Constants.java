@@ -67,31 +67,37 @@ public final class Constants {
     public static final AngularVelocity ALPHA_CORAL_OUTTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(-0.50);
     public static final AngularVelocity ALPHA_CORAL_HOLDING_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.15);
 
+    public static final AngularVelocity BETA_ALGAE_INTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.75);
+    public static final AngularVelocity BETA_ALGAE_OUTTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(-0.50);
+
     public static final AngularVelocity BETA_CORAL_INTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.25);
     public static final AngularVelocity BETA_CORAL_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.15);
     public static final AngularVelocity BETA_CORAL_HOLDING_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.1);
   }
 
+
   public static class SetpointConstants {
 
-    public static final Angle ALGAE_WRIST_INTAKE_ANGLE = Degrees.of(-100);
+    public static final Angle ALGAE_WRIST_INTAKE_ANGLE = Degrees.of(-90);
+    public static final Angle ALGAE_REEF_REMOVER_ANGLE = Degrees.of(-100);
     public static final Angle ALGAE_WRIST_TURTLE_ANGLE = Degrees.of(0);
+
     public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(24);
     public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
-    public static final Angle CORAL_L4_OUTTAKE_ANGLE = Degree.of(-50);
-    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(24);
-    public static final Angle CORAL_L1_ANGLE = Degrees.of(0);
-    public static final Angle CORAL_L4_ANGLE = Degrees.of(-30);
+    public static final Angle CORAL_L1_OUTTAKE_ANGLE = Degrees.of(0);
     public static final Angle CORAL_L2_L3_OUTTAKE_ANGLE = Degrees.of(-30);
+    public static final Angle CORAL_L4_OUTTAKE_ANGLE = Degree.of(-15);
+    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(0);
 
     public static final Distance ELEVATOR_TURTLE_HEIGHT = Inches.of(0);
-    public static final Distance L_ONE_HEIGHT = Inches.of(0);
-    public static final Distance L_TWO_HEIGHT = Inches.of(8.5);
-    public static final Distance L_THREE_HEIGHT = Inches.of(24);
-    public static final Distance L_FOUR_HEIGHT = Inches.of(48.5);
+    public static final Distance L_ONE_CORAL_HEIGHT = Inches.of(0);
+    public static final Distance L_TWO_CORAL_HEIGHT = Inches.of(10);
+    public static final Distance L_THREE_CORAL_HEIGHT = Inches.of(26);
+    public static final Distance L_FOUR_CORAL_HEIGHT = Inches.of(48.5);
 
-    public static final Distance ELEVATOR_COLLISION_RANGE_BOTTOM = Meters.of(0.5);
-    public static final Distance ELEVATOR_COLLISION_RANGE_TOP = Inches.of(50);
+    public static final Distance L_ONE_ALGAE_HEIGHT = Inches.of(5);
+    public static final Distance L_TWO_ALGAE_HEIGHT = Inches.of(14.5);
+    public static final Distance L_THREE_ALGAE_HEIGHT = Inches.of(30);
   }
 
   public static class DriveControlConstants {

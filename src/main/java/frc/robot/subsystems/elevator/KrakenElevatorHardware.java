@@ -7,6 +7,8 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
@@ -25,7 +27,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.CommandFactory.ScoringLevel;
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.MotorIdConstants;
 import frc.robot.Constants.SetpointConstants;
 
@@ -39,16 +41,11 @@ public class KrakenElevatorHardware implements ElevatorIO {
         private static final Voltage D_VALUE = Volts.of(0);
         private static final Voltage FEEDFORWARD_VALUE = Volts.of(1.0 / 917);
         private static final Voltage ARBITRARY_FF_GRAVITY_COMPENSATION = Volts.of(.25); // TODO: calculate on beta
-        private static final Distance ELEVATOR_SENSOR_TO_MECHANISM_RATIO = Inches.of(2700. / 1.27);// Inches.of(1.35);
-                                                                                                   // //
-                                                                                                   // Inches.of(1.76).times(Math.PI
-                                                                                                   // * 2.0 * 1./15.);
-                                                                                                   // // gear ratio *
-                                                                                                   // sprocket
-                                                                                                   // circumference * 2
-                                                                                                   // bc elevator moves
-                                                                                                   // 2 inches per inch
-                                                                                                   // of chain
+        private static final Distance ELEVATOR_SENSOR_TO_MECHANISM_RATIO = Meters.of(53.40295);
+        // (1 rot input/15 rot output) -> maxplanetary_conversion
+        // (1.76 * pi inches) -> sprocket_conversion
+        // (2) -> elevator_travel -> elevator travels 2 inches per inch of chain
+        // 1 / (maxplanetary_conversion * sprocket_conversion * elevator_travel * inch_to_meter)
         private static final Distance ELEVATOR_ROTOR_TO_SENSOR_RATIO = Inches.of(1);
         private static final double kDt = 0.02;
         private static final Current KRAKEN_CURRENT_LIMIT = Amps.of(80);
@@ -87,7 +84,7 @@ public class KrakenElevatorHardware implements ElevatorIO {
         globalMotorConfiguration.Slot0.kD = (KrakenElevatorConstants.D_VALUE).in(Volts);
 
         globalMotorConfiguration.SoftwareLimitSwitch
-                .withForwardSoftLimitThreshold(maxElevatorHeight.in(Meters) - 0.01);
+                .withForwardSoftLimitThreshold(maxElevatorHeight.in(Meters));
         globalMotorConfiguration.SoftwareLimitSwitch.withForwardSoftLimitEnable(true);
         globalMotorConfiguration.SoftwareLimitSwitch.withReverseSoftLimitThreshold(0);
         globalMotorConfiguration.SoftwareLimitSwitch.withReverseSoftLimitEnable(true);
@@ -166,35 +163,6 @@ public class KrakenElevatorHardware implements ElevatorIO {
     @Override
     public void setSpeedManualControl(double speed) {
         elevatorLeftMotorLeader.setControl(new DutyCycleOut(speed));
-    }
-
-    @Override
-    public boolean willCrossCronchZone(ScoringLevel scoringLevel) {
-        double currentPosition = getEncoderPosition();
-        // if the enum is null somehow, nothing will move so will not cross cronch
-        // (default value)
-        double goalPosition = currentPosition;
-        if (scoringLevel == ScoringLevel.INTAKE) {
-            goalPosition = SetpointConstants.ELEVATOR_TURTLE_HEIGHT.in(Meters); // turtle mode = bottom, where intake is
-        } else if (scoringLevel == ScoringLevel.L_ONE) {
-            goalPosition = SetpointConstants.L_ONE_HEIGHT.in(Meters);
-        } else if (scoringLevel == ScoringLevel.L_TWO) {
-            goalPosition = SetpointConstants.L_TWO_HEIGHT.in(Meters);
-        } else if (scoringLevel == ScoringLevel.L_THREE) {
-            goalPosition = SetpointConstants.L_THREE_HEIGHT.in(Meters);
-        } else if (scoringLevel == ScoringLevel.L_FOUR) {
-            goalPosition = SetpointConstants.L_FOUR_HEIGHT.in(Meters);
-        }
-
-        // if currently above the cronch range and our goal is below, or if currently
-        // below cronch range and our goal is above, return true
-        if (currentPosition > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)) {
-            return (goalPosition < SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters));
-        } else if (currentPosition < SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM.in(Meters)) {
-            return (goalPosition > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters));
-        } else {
-            return true;
-        }
     }
 
     @Override
