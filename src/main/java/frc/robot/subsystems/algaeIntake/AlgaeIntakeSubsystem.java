@@ -14,6 +14,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
 
     private final AlgaeIntakeIOStates states = new AlgaeIntakeIOStates();
     private AlgaeIntakeIO io;
+    public boolean hasAlgae = false;
 
     public AlgaeIntakeSubsystem(AlgaeIntakeIO io) {
         this.io = io;
@@ -28,6 +29,11 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
          this.runOnce(() -> io.setRollerSpeed(RPM.of(0))),
         () -> io.isStalling());
     }
+
+    public boolean setHasAlgae(boolean intooked) {
+        hasAlgae = intooked;
+        return hasAlgae;
+      }
 
     @Override
     public void periodic() {

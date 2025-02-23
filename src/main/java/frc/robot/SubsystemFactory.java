@@ -9,6 +9,7 @@ import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristHardware;
 import frc.robot.subsystems.algaeWrist.AlgaeWristPlacebo;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
+import frc.robot.subsystems.LED.LEDSubsystem;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeHardware;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakePlacebo;
 import frc.robot.subsystems.coralIntake.CoralIntakeAlphaHardware;
@@ -132,26 +133,26 @@ public class SubsystemFactory {
             return new DriveSubsystem(frontLeft, frontRight, rearLeft, rearRight, gyro,
                     Constants.DriveControlConstants.BETA_XTRACK_WIDTH,
                     Constants.DriveControlConstants.BETA_YTRACK_WIDTH);
-        } else if (robotType == RobotType.MOZART) {
-            frontLeft = new SwerveModule(new SwerveModuleHardwareNEO(
-                    MotorIdConstants.FRONT_LEFT_DRIVING_CAN_ID,
-                    MotorIdConstants.FRONT_LEFT_TURNING_CAN_ID,
-                    FRONT_LEFT_CHASSIS_ANGULAR_OFFSET, "front left"));
-            frontRight = new SwerveModule(new SwerveModuleHardwareNEO(
-                    MotorIdConstants.FRONT_RIGHT_DRIVING_CAN_ID,
-                    MotorIdConstants.FRONT_RIGHT_TURNING_CAN_ID,
-                    FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET, "front right"));
-            rearLeft = new SwerveModule(new SwerveModuleHardwareNEO(
-                    MotorIdConstants.REAR_LEFT_DRIVING_CAN_ID,
-                    MotorIdConstants.REAR_LEFT_TURNING_CAN_ID,
-                    REAR_LEFT_CHASSIS_ANGULAR_OFFSET, "rear left"));
-            rearRight = new SwerveModule(new SwerveModuleHardwareNEO(
-                    MotorIdConstants.REAR_RIGHT_DRIVING_CAN_ID,
-                    MotorIdConstants.REAR_RIGHT_TURNING_CAN_ID,
-                    REAR_RIGHT_CHASSIS_ANGULAR_OFFSET, "rear right"));
-            return new DriveSubsystem(frontLeft, frontRight, rearLeft, rearRight, gyro,
-                    Constants.DriveControlConstants.MOZART_TRACK_WIDTH,
-                    Constants.DriveControlConstants.MOZART_TRACK_WIDTH);
+        // } else if (robotType == RobotType.MOZART) {
+        //     frontLeft = new SwerveModule(new SwerveModuleHardwareNEO(
+        //             MotorIdConstants.FRONT_LEFT_DRIVING_CAN_ID,
+        //             MotorIdConstants.FRONT_LEFT_TURNING_CAN_ID,
+        //             FRONT_LEFT_CHASSIS_ANGULAR_OFFSET, "front left"));
+        //     frontRight = new SwerveModule(new SwerveModuleHardwareNEO(
+        //             MotorIdConstants.FRONT_RIGHT_DRIVING_CAN_ID,
+        //             MotorIdConstants.FRONT_RIGHT_TURNING_CAN_ID,
+        //             FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET, "front right"));
+        //     rearLeft = new SwerveModule(new SwerveModuleHardwareNEO(
+        //             MotorIdConstants.REAR_LEFT_DRIVING_CAN_ID,
+        //             MotorIdConstants.REAR_LEFT_TURNING_CAN_ID,
+        //             REAR_LEFT_CHASSIS_ANGULAR_OFFSET, "rear left"));
+        //     rearRight = new SwerveModule(new SwerveModuleHardwareNEO(
+        //             MotorIdConstants.REAR_RIGHT_DRIVING_CAN_ID,
+        //             MotorIdConstants.REAR_RIGHT_TURNING_CAN_ID,
+        //             REAR_RIGHT_CHASSIS_ANGULAR_OFFSET, "rear right"));
+        //     return new DriveSubsystem(frontLeft, frontRight, rearLeft, rearRight, gyro,
+        //             Constants.DriveControlConstants.MOZART_TRACK_WIDTH,
+        //             Constants.DriveControlConstants.MOZART_TRACK_WIDTH);
         } else {
             frontLeft = new SwerveModule(new SwerveModulePlacebo());
             frontRight = new SwerveModule(new SwerveModulePlacebo());
@@ -226,5 +227,4 @@ public class SubsystemFactory {
             return new ElevatorSubsystem(new ElevatorPlacebo());
         }
     }
-
 }

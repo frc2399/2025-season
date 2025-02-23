@@ -8,6 +8,7 @@ import frc.robot.subsystems.coralIntake.CoralIntakeIO.CoralIntakeIOStates;
 public class CoralIntakeSubsystem extends SubsystemBase {
     private final CoralIntakeIOStates states = new CoralIntakeIOStates();
     private CoralIntakeIO io;
+    public boolean hasCoral = false;
 
     public CoralIntakeSubsystem(CoralIntakeIO io) {
         this.io = io;
@@ -28,6 +29,11 @@ public class CoralIntakeSubsystem extends SubsystemBase {
     public Command keepCoral() {
         return this.run(() -> io.keepCoral()).withName("hold coral steady");
     }
+
+    public boolean setHasCoral(boolean intooked) {
+        hasCoral = intooked;
+        return hasCoral;
+      }
 
     @Override
     public void periodic() {
