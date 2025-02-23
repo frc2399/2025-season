@@ -143,4 +143,12 @@ public class CommandFactory {
   public void altSetScoringLevel(ScoringLevel sl) {
     actualScoringLevel = () -> sl;
   }
+
+  public void setAlgaeState(Boolean hasAlgae) {
+    algaeEntry.setBoolean(hasAlgae);
+  }
+
+  public void setCoralState(Boolean hasCoral) {
+    coralEntry.setBoolean(hasCoral);
+  }
 }
