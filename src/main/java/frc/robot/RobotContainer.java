@@ -131,11 +131,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("Coral wrist to L2 setpoint", coralWrist.goToSetpointCommand(() -> Setpoint.L_TWO).withTimeout(1));
     NamedCommands.registerCommand("Coral wrist to L3 setpoint", coralWrist.goToSetpointCommand(() -> Setpoint.L_THREE).withTimeout(1));
     NamedCommands.registerCommand("Coral wrist to L4 setpoint", coralWrist.goToSetpointCommand(() -> Setpoint.L_FOUR).withTimeout(1));
-    NamedCommands.registerCommand("Outtake coral", coralIntake.outtake().andThen(Commands.waitSeconds(1)));
-    NamedCommands.registerCommand("Elevator and coral wrist to L1 setpoint", commandFactory.moveElevatorAndCoralWrist(() -> Setpoint.L_ONE));
-    NamedCommands.registerCommand("Elevator and coral wrist to L2 setpoint", commandFactory.moveElevatorAndCoralWrist(() -> Setpoint.L_TWO));
-    NamedCommands.registerCommand("Elevator and coral wrist to L3 setpoint", commandFactory.moveElevatorAndCoralWrist(() -> Setpoint.L_THREE));
-    NamedCommands.registerCommand("Elevator and coral wrist to L4 setpoint", commandFactory.moveElevatorAndCoralWrist(() -> Setpoint.L_FOUR));
+    NamedCommands.registerCommand("Outtake coral", coralIntake.outtake().withTimeout(0.5).andThen(Commands.waitSeconds(1)));
+    NamedCommands.registerCommand("Elevator and coral wrist to L1 setpoint", commandFactory.moveElevatorAndCoralWrist(() -> Setpoint.L_ONE).withTimeout(0.5));
+    NamedCommands.registerCommand("Elevator and coral wrist to L2 setpoint", commandFactory.moveElevatorAndCoralWrist(() -> Setpoint.L_TWO).withTimeout(1));
+    NamedCommands.registerCommand("Elevator and coral wrist to L3 setpoint", commandFactory.moveElevatorAndCoralWrist(() -> Setpoint.L_THREE).withTimeout(1));
+    NamedCommands.registerCommand("Elevator and coral wrist to L4 setpoint", commandFactory.moveElevatorAndCoralWrist(() -> Setpoint.L_FOUR).withTimeout(1));
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Autos/Selector", autoChooser);
