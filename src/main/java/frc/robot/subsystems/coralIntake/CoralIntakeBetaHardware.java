@@ -39,7 +39,7 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     private static final double BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR = 2 * Math.PI / 5.0 / 60; // radians per
                                                                                                        // second
 
-    private static final double BETA_CORAL_INTAKE_P = 0.025;
+    private static final double BETA_CORAL_INTAKE_P = 0.01;
     private static final double BETA_CORAL_INTAKE_I = 0;
     private static final double BETA_CORAL_INTAKE_D = 0;
     private static final double BETA_CORAL_INTAKE_FF = 0;
@@ -96,12 +96,6 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     public void setZero() {
         betaCoralIntakeClosedLoop.setReference(0, ControlType.kVelocity);
         velocityGoal = 0;
-    }
-
-    @Override
-    public void keepCoral() {
-        betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_HOLDING_SPEED.in(RPM), ControlType.kVelocity);
-        velocityGoal = SpeedConstants.BETA_CORAL_HOLDING_SPEED.in(RadiansPerSecond) / 5;
     }
 
     @Override
