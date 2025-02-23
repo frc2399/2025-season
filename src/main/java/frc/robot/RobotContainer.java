@@ -148,10 +148,10 @@ public class RobotContainer {
   private void configureButtonBindingsOperator() {
     // these buttons should not be changed for local testing and should function as
     // a replacement gamepad
-    operatorController.a().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level One")));
-    operatorController.b().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level Two")));
-    operatorController.x().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level Three")));
-    operatorController.y().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level Four")));
+    operatorController.a().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")));
+    operatorController.b().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 2")));
+    operatorController.x().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 3")));
+    operatorController.y().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 4")));
 
     operatorController.rightBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("right")));
     operatorController.leftBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("left")));

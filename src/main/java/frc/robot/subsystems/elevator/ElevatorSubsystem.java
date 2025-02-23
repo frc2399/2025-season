@@ -37,6 +37,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public Command goToGoalSetpointCmd(Supplier<Setpoint> setpoint, Supplier<GameMode> gameMode) {
         return this.runOnce(() -> {
+            SmartDashboard.putString("centralizedCommands/setpoint", setpoint.get().toString());
             if (gameMode.get() == GameMode.CORAL) {
                 if (setpoint.get() == Setpoint.INTAKE) {
                     elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_TURTLE_HEIGHT); // turtle mode = bottom, where
@@ -59,15 +60,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                     elevatorIO.setGoalPosition(SetpointConstants.L_FOUR_CORAL_HEIGHT);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.L_FOUR_CORAL_HEIGHT.in(Meters);
-                } else if (setpoint.get() == Setpoint.ELEVATOR_TOP_CRONCH_ZONE_INTERMEDIATE_SETPOINT) {
-                    elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP);
-                    profiledPIDEnabled = true;
-                    goalSetpoint = SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters);
-                } else if (setpoint.get() == Setpoint.ELEVATOR_BOTTOM_CRONCH_ZONE_INTERMEDIATE_SETPOINT) {
-                    elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM);
-                    profiledPIDEnabled = true;
-                    goalSetpoint = SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM.in(Meters);
-                }
+                } 
             } else if (gameMode.get() == GameMode.ALGAE) {
                 if (setpoint.get() == Setpoint.INTAKE) {
                     elevatorIO.setGoalPosition(SetpointConstants.L_ONE_ALGAE_HEIGHT);
@@ -85,15 +78,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                     elevatorIO.setGoalPosition(SetpointConstants.L_THREE_ALGAE_HEIGHT);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.L_THREE_ALGAE_HEIGHT.in(Meters);
-                } else if (setpoint.get() == Setpoint.ELEVATOR_TOP_CRONCH_ZONE_INTERMEDIATE_SETPOINT) {
-                    elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP);
-                    profiledPIDEnabled = true;
-                    goalSetpoint = SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters);
-                } else if (setpoint.get() == Setpoint.ELEVATOR_BOTTOM_CRONCH_ZONE_INTERMEDIATE_SETPOINT) {
-                    elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM);
-                    profiledPIDEnabled = true;
-                    goalSetpoint = SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM.in(Meters);
-                }
+                } 
             } // if either enum is null, do nothing
         });
     }
@@ -119,11 +104,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public Command setSpeedManualControl(double speed) {
         return this.run(() -> elevatorIO.setSpeedManualControl(speed));
     }
-
-    public boolean willCrossCronchZone(Supplier<Setpoint> setpoint) {
-        return elevatorIO.willCrossCronchZone(setpoint);
-    }
-
+    
     @Override
     public void periodic() {
         if (!profiledPIDEnabled) {
