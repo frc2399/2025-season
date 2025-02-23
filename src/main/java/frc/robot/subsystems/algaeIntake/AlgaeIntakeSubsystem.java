@@ -33,14 +33,14 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     public Command intakeToStall() {
         return this.run(
           () -> {
-            {
+            
                 if(io.isStalling() || hasAlgae){
                     io.setRollerSpeed(RPM.of(0));
                     hasAlgae = true;
                 }
                 else{
                     io.setRollerSpeed(Constants.SpeedConstants.ALGAE_INTAKE_SPEED);
-                }}
+                }
           }
         );
     }

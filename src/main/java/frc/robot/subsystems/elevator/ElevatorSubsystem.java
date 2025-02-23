@@ -33,16 +33,15 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public Command goToGoalSetpointCmd(Supplier<Setpoint> setpoint, Supplier<GameMode> gameMode) {
-        if (gameMode.get() == GameMode.CORAL) {
-            return this.runOnce(() -> {
+        return this.runOnce(() -> {
+            if (gameMode.get() == GameMode.CORAL) {
                 if (setpoint.get() == Setpoint.INTAKE) {
                     elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_TURTLE_HEIGHT); // turtle mode = bottom, where
                                                                                           // intake is
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.ELEVATOR_TURTLE_HEIGHT.in(Meters);
                 } else if (setpoint.get() == Setpoint.L_ONE) {
-                    elevatorIO.setGoalPosition(SetpointConstants.L_ONE_CORAL_HEIGHT); // turtle mode = bottom, where
-                                                                                      // intake is
+                    elevatorIO.setGoalPosition(SetpointConstants.L_ONE_CORAL_HEIGHT);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.L_ONE_CORAL_HEIGHT.in(Meters);
                 } else if (setpoint.get() == Setpoint.L_TWO) {
@@ -66,17 +65,13 @@ public class ElevatorSubsystem extends SubsystemBase {
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM.in(Meters);
                 }
-            });
-        } else if (gameMode.get() == GameMode.ALGAE) {
-            return this.runOnce(() -> {
+            } else if (gameMode.get() == GameMode.ALGAE) {
                 if (setpoint.get() == Setpoint.INTAKE) {
-                    elevatorIO.setGoalPosition(SetpointConstants.L_ONE_ALGAE_HEIGHT); // turtle mode = bottom, where
-                                                                                      // intake is
+                    elevatorIO.setGoalPosition(SetpointConstants.L_ONE_ALGAE_HEIGHT);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.ELEVATOR_TURTLE_HEIGHT.in(Meters);
                 } else if (setpoint.get() == Setpoint.L_ONE) {
-                    elevatorIO.setGoalPosition(SetpointConstants.L_ONE_ALGAE_HEIGHT); // turtle mode = bottom, where
-                                                                                      // intake is
+                    elevatorIO.setGoalPosition(SetpointConstants.L_ONE_ALGAE_HEIGHT);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.L_ONE_ALGAE_HEIGHT.in(Meters);
                 } else if (setpoint.get() == Setpoint.L_TWO) {
@@ -96,12 +91,8 @@ public class ElevatorSubsystem extends SubsystemBase {
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM.in(Meters);
                 }
-            });
-        }
-        {
-            return Commands.none();
-        }
-        // if the enum is null, do nothing
+            } // if either enum is null, do nothing
+        });
     }
 
     public boolean atGoal() {

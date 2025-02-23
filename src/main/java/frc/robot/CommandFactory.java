@@ -97,7 +97,6 @@ public Command moveElevatorAndCoralWrist(Supplier<Setpoint> setpoint) {
           () -> elevator.willCrossCronchZone(setpoint));
   }
 
-
   public Command moveElevatorAndAlgaeWrist(Supplier<Setpoint> setpoint) {
     return Commands.sequence(
       coralWrist.goToSetpointCommand(() -> Setpoint.L_ONE), 
