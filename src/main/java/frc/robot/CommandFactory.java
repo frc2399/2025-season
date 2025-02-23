@@ -58,9 +58,7 @@ public class CommandFactory {
     L_THREE,
     L_FOUR,
     INTAKE,
-    TURTLE,
-    ELEVATOR_TOP_CRONCH_ZONE_INTERMEDIATE_SETPOINT,
-    ELEVATOR_BOTTOM_CRONCH_ZONE_INTERMEDIATE_SETPOINT
+    TURTLE
   }
 
   public enum GameMode {
@@ -81,24 +79,26 @@ public class CommandFactory {
 
   public Command elevatorBasedOnMode() {
     return Commands.either(
-      moveElevatorAndAlgaeWrist(() -> getSetpoint()), 
-      moveElevatorAndCoralWrist(() -> getSetpoint()), 
+      moveElevatorAndAlgaeWrist(), 
+      moveElevatorAndCoralWrist(), 
       () -> (getGameMode() == GameMode.ALGAE));
   }
 
-public Command moveElevatorAndCoralWrist(Supplier<Setpoint> setpoint) {
-    return Commands.either(avoidCronchCommand(setpoint),
-        Commands.parallel(
-          elevator.goToGoalSetpointCmd(setpoint, () -> GameMode.CORAL),
-          coralWrist.goToSetpointCommand(setpoint)),
-          () -> elevator.willCrossCronchZone(setpoint));
+public Command moveElevatorAndCoralWrist() {
+    return Commands.sequence(
+        coralWrist.goToSetpointCommand(() -> Setpoint.L_ONE), 
+        Commands.waitUntil(() -> coralWrist.atGoal()),
+        elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.CORAL),
+        Commands.waitUntil(() -> elevator.atGoal()),
+        coralWrist.goToSetpointCommand(() -> getSetpoint()));
   }
 
-  public Command moveElevatorAndAlgaeWrist(Supplier<Setpoint> setpoint) {
+  public Command moveElevatorAndAlgaeWrist() {
     return Commands.sequence(
       coralWrist.goToSetpointCommand(() -> Setpoint.L_ONE), 
-      algaeWrist.goToSetpointCommand(setpoint),
-      elevator.goToGoalSetpointCmd(setpoint, () -> GameMode.ALGAE));
+      Commands.waitUntil(() -> coralWrist.atGoal()),
+      algaeWrist.goToSetpointCommand(() -> getSetpoint()),
+      elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.ALGAE));
   }
 
   public Command intakeBasedOnMode(Supplier<GameMode> gameMode) {
@@ -114,29 +114,6 @@ public Command moveElevatorAndCoralWrist(Supplier<Setpoint> setpoint) {
       coralIntake.outtake(),
       () -> (getGameMode() == GameMode.ALGAE));
   }
-
-  public Command avoidCronchCommand(Supplier<Setpoint> setpoint) {
-    // if we're above cronch zone, start by setting elevator height to top of
-    // collision range; if we're below, start by setting to bottom
-    return Commands.either(
-        Commands.sequence(
-            Commands.parallel(
-                elevator.goToGoalSetpointCmd(() -> Setpoint.ELEVATOR_TOP_CRONCH_ZONE_INTERMEDIATE_SETPOINT, () -> GameMode.CORAL),
-                coralWrist.goToSetpointCommand(() -> Setpoint.L_ONE)),
-            Commands.waitUntil(() -> coralWrist.atGoal()),
-            elevator.goToGoalSetpointCmd(setpoint, () -> GameMode.CORAL),
-            Commands.waitUntil(() -> elevator.atGoal()),
-            coralWrist.goToSetpointCommand(setpoint)),
-        Commands.sequence(
-            Commands.parallel(
-                elevator.goToGoalSetpointCmd(() -> Setpoint.ELEVATOR_BOTTOM_CRONCH_ZONE_INTERMEDIATE_SETPOINT, () -> GameMode.CORAL),
-                coralWrist.goToSetpointCommand(() -> Setpoint.L_ONE)),
-            Commands.waitUntil(() -> coralWrist.atGoal()),
-            elevator.goToGoalSetpointCmd(setpoint, () -> GameMode.CORAL),
-            Commands.waitUntil(() -> elevator.atGoal()),
-            coralWrist.goToSetpointCommand(setpoint)),
-        () -> (elevator.getCurrentPosition() > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)));
-  }  
 
   public Setpoint getSetpoint() {
     Setpoint setpoint;
