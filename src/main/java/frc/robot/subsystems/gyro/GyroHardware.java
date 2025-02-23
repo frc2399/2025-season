@@ -40,6 +40,6 @@ public class GyroHardware implements GyroIO {
     }
 
     public boolean hasFault() {
-        return pigeon.getFault_Hardware(true).getValue();
+        return !pigeon.getFault_Hardware(true).getValue();
     }
 }
