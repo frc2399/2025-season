@@ -19,6 +19,11 @@ public class CoralIntakePlacebo implements CoralIntakeIO {
     }
 
     @Override
+    public boolean isStalling() {
+        return true;
+    }
+
+    @Override
     public void updateStates(CoralIntakeIOStates states) {
     }
 }

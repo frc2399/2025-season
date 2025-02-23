@@ -2,7 +2,7 @@ package frc.robot.subsystems.algaeWrist;
 
 import java.util.function.Supplier;
 
-import frc.robot.CommandFactory.ScoringLevel;
+import frc.robot.CommandFactory.Setpoint;
 
 public interface AlgaeWristIO {
 
@@ -15,7 +15,7 @@ public interface AlgaeWristIO {
         public double goalAngle = 0.0;
     }
 
-    public void setGoalAngle(Supplier<ScoringLevel> scoringLevel);
+    public void setGoalAngle(Setpoint setpoint);
 
     public void setWristSpeed(double speed);
 

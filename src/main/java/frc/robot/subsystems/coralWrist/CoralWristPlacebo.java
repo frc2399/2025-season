@@ -1,13 +1,13 @@
 package frc.robot.subsystems.coralWrist;
 
-import frc.robot.CommandFactory.ScoringLevel;
+import frc.robot.CommandFactory.Setpoint;
 
 import java.util.function.Supplier;
 
 public class CoralWristPlacebo implements CoralWristIO {
 
     @Override
-    public void setGoalAngle(Supplier<ScoringLevel> scoringLevel) {
+    public void setGoalAngle(Setpoint setpoint) {
     }
 
     @Override
