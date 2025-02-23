@@ -2,12 +2,12 @@ package frc.robot.subsystems.algaeWrist;
 
 import java.util.function.Supplier;
 
-import frc.robot.CommandFactory.ScoringLevel;
+import frc.robot.CommandFactory.Setpoint;
 
 public class AlgaeWristPlacebo implements AlgaeWristIO {
 
     @Override
-    public void setGoalAngle(Supplier<ScoringLevel> scoringLevel) {
+    public void setGoalAngle(Setpoint setpoint) {
     }
 
     @Override

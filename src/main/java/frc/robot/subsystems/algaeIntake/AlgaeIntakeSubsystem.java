@@ -14,20 +14,37 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
 
     private final AlgaeIntakeIOStates states = new AlgaeIntakeIOStates();
     private AlgaeIntakeIO io;
+    public boolean hasAlgae = false;
 
     public AlgaeIntakeSubsystem(AlgaeIntakeIO io) {
         this.io = io;
     }
+    public Command intake() {
+        return this.run(() -> io.intake()).withName("run algae intake");
+    }
 
+    public Command outtake() {
+        return this.run(() -> io.outtake()).withName("run algae outtake");
+    }
     public Command setRollerSpeed(AngularVelocity speed) {
         return this.run(() -> io.setRollerSpeed(speed));
     }
 
     public Command intakeToStall() {
-        return Commands.either(this.runOnce(() -> io.setRollerSpeed(Constants.SpeedConstants.ALGAE_INTAKE_SPEED)),
-         this.runOnce(() -> io.setRollerSpeed(RPM.of(0))),
-        () -> io.isStalling());
+        return this.run(
+          () -> {
+            
+                if(io.isStalling() || hasAlgae){
+                    io.setRollerSpeed(RPM.of(0));
+                    hasAlgae = true;
+                }
+                else{
+                    io.setRollerSpeed(Constants.SpeedConstants.ALGAE_INTAKE_SPEED);
+                }
+          }
+        );
     }
+    
 
     @Override
     public void periodic() {

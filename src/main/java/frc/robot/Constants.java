@@ -67,10 +67,14 @@ public final class Constants {
     public static final AngularVelocity ALPHA_CORAL_OUTTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(-0.50);
     public static final AngularVelocity ALPHA_CORAL_HOLDING_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.15);
 
+    public static final AngularVelocity BETA_ALGAE_INTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.75);
+    public static final AngularVelocity BETA_ALGAE_OUTTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(-0.50);
+
     public static final AngularVelocity BETA_CORAL_INTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.25);
     public static final AngularVelocity BETA_CORAL_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.15);
     public static final AngularVelocity BETA_CORAL_HOLDING_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.1);
   }
+
 
   public static class SetpointConstants {
 
@@ -95,8 +99,8 @@ public final class Constants {
     public static final Distance L_TWO_ALGAE_HEIGHT = Inches.of(14.5);
     public static final Distance L_THREE_ALGAE_HEIGHT = Inches.of(30);
 
-    public static final Distance ELEVATOR_COLLISION_RANGE_BOTTOM = Meters.of(0.5);
-    public static final Distance ELEVATOR_COLLISION_RANGE_TOP = Inches.of(50);
+    public static final Distance ELEVATOR_COLLISION_RANGE_BOTTOM = Inches.of(1); // 0.5 m
+    public static final Distance ELEVATOR_COLLISION_RANGE_TOP = Inches.of(6); // 50 in
   }
 
   public static class DriveControlConstants {

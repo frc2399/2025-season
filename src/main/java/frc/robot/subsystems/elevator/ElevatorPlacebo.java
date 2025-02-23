@@ -1,7 +1,9 @@
 package frc.robot.subsystems.elevator;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.units.measure.Distance;
-import frc.robot.CommandFactory.ScoringLevel;
+import frc.robot.CommandFactory.Setpoint;
 
 public class ElevatorPlacebo implements ElevatorIO {
 
@@ -38,7 +40,7 @@ public class ElevatorPlacebo implements ElevatorIO {
     public void setSpeedManualControl(double speed){}
 
     @Override
-    public boolean willCrossCronchZone(ScoringLevel scoringLevel) {
+    public boolean willCrossCronchZone(Supplier<Setpoint> setpoint) {
         return false;
     }
 
