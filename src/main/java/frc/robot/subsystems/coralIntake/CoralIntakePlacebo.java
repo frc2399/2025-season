@@ -1,17 +1,22 @@
 package frc.robot.subsystems.coralIntake;
 
-import edu.wpi.first.units.measure.AngularVelocity;
-
 public class CoralIntakePlacebo implements CoralIntakeIO {
 
     @Override
-    public void intake() {}
+    public void intake() {
+    }
 
     @Override
-    public void outtake() {}
+    public void outtake() {
+    }
 
     @Override
-    public void setZero() {}
+    public void setZero() {
+    }
+
+    @Override
+    public void keepCoral() {
+    }
 
     @Override
     public void updateStates(CoralIntakeIOStates states) {

@@ -1,10 +1,9 @@
 package frc.robot.subsystems.coralIntake;
 
-import edu.wpi.first.units.measure.AngularVelocity;
-
 public interface CoralIntakeIO {
     static class CoralIntakeIOStates {
         public double velocity = 0.0;
+        public double goalVelocity = 0.0;
         public double leftCurrent = 0.0;
         public double rightCurrent = 0.0;
         public double leftAppliedVoltage = 0.0;
@@ -16,6 +15,8 @@ public interface CoralIntakeIO {
     public void outtake();
 
     public void setZero();
+
+    public void keepCoral();
 
     public void updateStates(CoralIntakeIOStates states);
 }
