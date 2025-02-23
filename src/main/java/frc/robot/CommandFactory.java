@@ -61,9 +61,6 @@ public class CommandFactory {
     ALGAE
   }
 
-  private static RobotPosition robotPosition;
-  private static GameMode gameMode;
-
   public Supplier<ScoringLevel> getScoringLevel = () -> {
     ScoringLevel scoringLevel;
     if (levelEntry.getString("None").equals("Level 1")) {
@@ -79,6 +76,54 @@ public class CommandFactory {
     }
     return scoringLevel;
   };
+
+  public Supplier<RobotPosition> getRobotPosition = () -> {
+    RobotPosition robotPosition;
+    if (leftRightEntry.getString("None").equals("left")) {
+      robotPosition = RobotPosition.LEFT;
+    } else {
+      robotPosition = RobotPosition.RIGHT;
+    }
+    return robotPosition;
+  };
+
+  public Supplier<GameMode> getGameMode = () -> {
+    GameMode gameMode;
+    if (gameModeEntry.getString("None").equals("coral")) {
+      gameMode = GameMode.CORAL;
+    } else {
+      gameMode = GameMode.ALGAE;
+    }
+    return gameMode;
+  };
+
+  //testing purposes
+  public ScoringLevel getScoringLevel() {
+    ScoringLevel scoringLevel;
+    if (levelEntry.getString("None").equals("Level 1")) {
+        scoringLevel = ScoringLevel.L_ONE;
+      } else if (levelEntry.getString("None").equals("Level 2")) {
+        scoringLevel = ScoringLevel.L_TWO;
+      } else if (levelEntry.getString("None").equals("Level 3")) {
+        scoringLevel = ScoringLevel.L_THREE;
+      } else if (levelEntry.getString("None").equals("Level 4")) {
+        scoringLevel = ScoringLevel.L_FOUR;
+      } else {
+        scoringLevel = ScoringLevel.L_ONE;
+      }
+      return scoringLevel;
+  }
+
+  //testing purposes
+  public GameMode getGameMode() {
+    GameMode gameMode;
+    if (gameModeEntry.getString("None").equals("coral")) {
+        gameMode = GameMode.CORAL;
+    } else {
+        gameMode = GameMode.ALGAE;
+    }
+    return gameMode;
+}
 
   public Command turtleMode() {
     return Commands.sequence(coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE),
@@ -119,24 +164,6 @@ public class CommandFactory {
         () -> (elevator.getCurrentPosition() > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)));
   }
 
-  public Supplier<RobotPosition> getRobotPosition() {
-    if (leftRightEntry.getString("None").equals("left")) {
-      robotPosition = RobotPosition.LEFT;
-    } else if (leftRightEntry.getString("None").equals("right")) {
-      robotPosition = RobotPosition.RIGHT;
-    }
-    return () -> robotPosition;
-  }
-
-  public Supplier<GameMode> getGameMode() {
-    if (gameModeEntry.getString("None").equals("coral")) {
-      gameMode = GameMode.CORAL;
-    } else if (gameModeEntry.getString("None").equals("algae")) {
-      gameMode = GameMode.ALGAE;
-    }
-    return () -> gameMode;
-  }
-
   public void setScoringLevel(String level) {
     levelEntry.setString(level);
   }
@@ -151,5 +178,19 @@ public class CommandFactory {
 
   public void altSetScoringLevel(ScoringLevel sl) {
     actualScoringLevel = () -> sl;
+  }
+
+  public Command printStatesNew() {
+    return Commands. 
+        runOnce(() -> {
+          System.out.println(getGameMode + " " + getRobotPosition + " " + getScoringLevel);
+        });
+  }
+
+  public Command printStates() {
+    return Commands. 
+        runOnce(() -> {
+          System.out.println(getGameMode() + " " + getScoringLevel());
+        });
   }
 }
