@@ -98,9 +98,6 @@ public final class Constants {
     public static final Distance L_ONE_ALGAE_HEIGHT = Inches.of(5);
     public static final Distance L_TWO_ALGAE_HEIGHT = Inches.of(14.5);
     public static final Distance L_THREE_ALGAE_HEIGHT = Inches.of(30);
-
-    public static final Distance ELEVATOR_COLLISION_RANGE_BOTTOM = Inches.of(1); // 0.5 m
-    public static final Distance ELEVATOR_COLLISION_RANGE_TOP = Inches.of(6); // 50 in
   }
 
   public static class DriveControlConstants {

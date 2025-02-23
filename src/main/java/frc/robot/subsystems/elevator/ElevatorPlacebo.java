@@ -40,10 +40,5 @@ public class ElevatorPlacebo implements ElevatorIO {
     public void setSpeedManualControl(double speed){}
 
     @Override
-    public boolean willCrossCronchZone(Supplier<Setpoint> setpoint) {
-        return false;
-    }
-
-    @Override
     public void updateStates(ElevatorIOInputs states) {}
 }

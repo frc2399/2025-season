@@ -32,7 +32,5 @@ public interface ElevatorIO {
     public double getEncoderPosition();
     public void setSpeedManualControl(double speed);
 
-    public boolean willCrossCronchZone(Supplier<Setpoint> setpoint);
-
     public void updateStates(ElevatorIOInputs states);
 }

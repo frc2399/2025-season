@@ -19,6 +19,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.SetpointConstants;
@@ -124,6 +125,7 @@ public class CoralWristHardware implements CoralWristIO {
     } else if (setpoint == Setpoint.TURTLE) {
       desiredAngle = SetpointConstants.CORAL_TURTLE_ANGLE;
     }
+    SmartDashboard.putString("centralizedCommands/CWsetpoint", setpoint.toString());
     coralIntakeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
         ClosedLoopSlot.kSlot0,
         coralWristFeedFoward.calculate(desiredAngle.in(Radians),
@@ -152,6 +154,7 @@ public class CoralWristHardware implements CoralWristIO {
 
   @Override
   public boolean atGoal() {
+    System.out.println("check at goal");
     return (Math.abs(coralIntakeWristRelativeEncoder.getPosition() - goalAngle.in(Radians)) < WRIST_ANGLE_TOLERANCE
         .in(Radians));
   }
