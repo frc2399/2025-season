@@ -11,21 +11,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Score coral on L2"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "J2-CS"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake coral"
           }
         },
         {
@@ -35,33 +23,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Score coral on L1"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "K1-CS"
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "intake coral"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "CS-L1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score coral on L1"
           }
         }
       ]

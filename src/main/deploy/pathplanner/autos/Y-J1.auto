@@ -13,13 +13,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Elevator to L1 setpoint"
+            "name": "call game mode coral"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Coral wrist to L1 setpoint"
+            "name": "call scoring level 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Move elevator and coral wrist"
           }
         },
         {

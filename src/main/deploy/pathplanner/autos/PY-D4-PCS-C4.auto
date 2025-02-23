@@ -11,33 +11,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Score coral on L4"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "D4-PCS"
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "intake coral"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "PCS-C4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score coral on L4"
           }
         }
       ]

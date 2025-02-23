@@ -11,33 +11,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Score coral on L2"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "J2-CS"
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "intake coral"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "CS-L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score coral on L4"
           }
         }
       ]
