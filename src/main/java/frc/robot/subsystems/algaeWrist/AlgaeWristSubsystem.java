@@ -19,7 +19,7 @@ public class AlgaeWristSubsystem extends SubsystemBase {
 
     public Command goToSetpointCommand(Supplier<Setpoint> setpoint) {
         return this.runOnce(() -> {
-            io.setGoalAngle(setpoint);
+            io.setGoalAngle(setpoint.get());
         });
     }
 

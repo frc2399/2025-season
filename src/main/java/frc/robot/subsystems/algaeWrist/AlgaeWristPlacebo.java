@@ -7,7 +7,7 @@ import frc.robot.CommandFactory.Setpoint;
 public class AlgaeWristPlacebo implements AlgaeWristIO {
 
     @Override
-    public void setGoalAngle(Supplier<Setpoint> setpoint) {
+    public void setGoalAngle(Setpoint setpoint) {
     }
 
     @Override
