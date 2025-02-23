@@ -45,7 +45,6 @@ public class KrakenElevatorHardware implements ElevatorIO {
         // (2) -> elevator_travel -> elevator travels 2 inches per inch of chain
         // (1/39.37) -> inch_to_meter
         // 1 / (maxplanetary_conversion * sprocket_conversion * elevator_travel * inch_to_meter)
-                                                                                              
         private static final Distance ELEVATOR_ROTOR_TO_SENSOR_RATIO = Inches.of(1);
         private static final double kDt = 0.02;
         private static final Current KRAKEN_CURRENT_LIMIT = Amps.of(80);
