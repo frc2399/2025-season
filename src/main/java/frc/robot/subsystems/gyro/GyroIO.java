@@ -17,4 +17,6 @@ public interface GyroIO {
 
     public StatusSignal<edu.wpi.first.units.measure.AngularVelocity> getAngularVelocity();
 
+    public boolean hasFault();
+
 }

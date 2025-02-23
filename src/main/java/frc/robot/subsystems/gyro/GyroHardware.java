@@ -38,4 +38,8 @@ public class GyroHardware implements GyroIO {
     public StatusSignal<edu.wpi.first.units.measure.AngularVelocity> getAngularVelocity() {
         return pigeon.getAngularVelocityZDevice();
     }
+
+    public boolean hasFault() {
+        return pigeon.getFault_Hardware(true).getValue();
+    }
 }
