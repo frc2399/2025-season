@@ -10,6 +10,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.CommandFactory.GameMode;
 import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
@@ -81,22 +82,6 @@ public class CommandFactory {
         elevator.goToGoalSetpointCmd(() -> Setpoint.INTAKE, () -> GameMode.CORAL));
   }
 
-  public Setpoint getSetpoint() {
-    Setpoint setpoint;
-    if (levelEntry.getString("None").equals("Level 1")) {
-      setpoint = Setpoint.L_ONE;
-    } else if (levelEntry.getString("None").equals("Level 2")) {
-      setpoint = Setpoint.L_TWO;
-    } else if (levelEntry.getString("None").equals("Level 3")) {
-      setpoint = Setpoint.L_THREE;
-    } else if (levelEntry.getString("None").equals("Level 4")) {
-      setpoint = Setpoint.L_FOUR;
-    } else {
-      setpoint = Setpoint.L_ONE;
-    }
-    return setpoint;
-  };
-
   public Command elevatorBasedOnMode() {
     return Commands.either(
       moveElevatorAndAlgaeWrist(() -> getSetpoint()), 
@@ -104,14 +89,20 @@ public class CommandFactory {
       () -> (getGameMode() == GameMode.ALGAE));
   }
 
-  public Command moveElevatorAndCoralWrist(Supplier<Setpoint> setpoint) {
-    return Commands.sequence(coralWrist.goToSetpointCommand(setpoint),
-        elevator.goToGoalSetpointCmd(setpoint, () -> GameMode.CORAL));
+public Command moveElevatorAndCoralWrist(Supplier<Setpoint> setpoint) {
+    return Commands.either(avoidCronchCommand(setpoint),
+        Commands.parallel(
+          elevator.goToGoalSetpointCmd(setpoint, () -> GameMode.CORAL),
+          coralWrist.goToSetpointCommand(setpoint)),
+          () -> elevator.willCrossCronchZone(setpoint));
   }
 
+
   public Command moveElevatorAndAlgaeWrist(Supplier<Setpoint> setpoint) {
-    return Commands.sequence(algaeWrist.goToSetpointCommand(setpoint),
-        elevator.goToGoalSetpointCmd(setpoint, () -> GameMode.ALGAE));
+    return Commands.sequence(
+      coralWrist.goToSetpointCommand(() -> Setpoint.L_ONE), 
+      algaeWrist.goToSetpointCommand(setpoint),
+      elevator.goToGoalSetpointCmd(setpoint, () -> GameMode.ALGAE));
   }
 
   public Command intakeBasedOnMode(Supplier<GameMode> gameMode) {
@@ -151,6 +142,24 @@ public class CommandFactory {
         () -> (elevator.getCurrentPosition() > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)));
   }
 
+  
+
+  public Setpoint getSetpoint() {
+    Setpoint setpoint;
+    if (levelEntry.getString("None").equals("Level 1")) {
+      setpoint = Setpoint.L_ONE;
+    } else if (levelEntry.getString("None").equals("Level 2")) {
+      setpoint = Setpoint.L_TWO;
+    } else if (levelEntry.getString("None").equals("Level 3")) {
+      setpoint = Setpoint.L_THREE;
+    } else if (levelEntry.getString("None").equals("Level 4")) {
+      setpoint = Setpoint.L_FOUR;
+    } else {
+      setpoint = Setpoint.L_ONE;
+    }
+    SmartDashboard.putString("networktablesData/setpoint", setpoint.toString());
+    return setpoint;
+  };
 
   public RobotPosition getRobotPosition() {
     if (leftRightEntry.getString("None").equals("left")) {
@@ -158,6 +167,7 @@ public class CommandFactory {
     } else if (leftRightEntry.getString("None").equals("right")) {
       robotPosition = RobotPosition.RIGHT;
     }
+    SmartDashboard.putString("networktablesData/robotPosition", robotPosition.toString());
     return robotPosition;
   }
 
@@ -167,6 +177,7 @@ public class CommandFactory {
     } else if (gameModeEntry.getString("None").equals("algae")) {
       gameMode = GameMode.ALGAE;
     }
+    SmartDashboard.putString("networktablesData/gameMode", gameMode.toString());
     return gameMode;
   }
 

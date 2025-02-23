@@ -49,8 +49,8 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
 
         private static final boolean POSITION_WRAPPING_ENABLED = true;
 
-        private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(10);
-        private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(1);
+        private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(15);
+        private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(0.5);
 
         private static final Debouncer algaeIntakeDebouncer = new Debouncer(ALGAE_INTAKE_STALL_TIME.in(Seconds));
 

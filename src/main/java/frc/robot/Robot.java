@@ -57,7 +57,6 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     robotContainer.visionPoseEstimator.periodic();
     CommandScheduler.getInstance().run();
-    SmartDashboard.putString("gameMode", robotContainer.commandFactory.gameMode.toString());
   }
 
   @Override
