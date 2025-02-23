@@ -63,6 +63,10 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
+    CommandScheduler.getInstance().onCommandInitialize(cmd -> DataLogManager.log(cmd.getName() + ":Init"));
+    CommandScheduler.getInstance().onCommandInterrupt((interrupted, interrupting) -> DataLogManager
+        .log(interrupted.getName() + "Interrupted by " + interrupting.get().getName()));
+    CommandScheduler.getInstance().onCommandFinish(cmd -> DataLogManager.log(cmd.getName() + ":End"));
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
