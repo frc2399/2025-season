@@ -39,11 +39,10 @@ public class KrakenElevatorHardware implements ElevatorIO {
         private static final Voltage D_VALUE = Volts.of(0);
         private static final Voltage FEEDFORWARD_VALUE = Volts.of(1.0 / 917);
         private static final Voltage ARBITRARY_FF_GRAVITY_COMPENSATION = Volts.of(.25); // TODO: calculate on beta
-        private static final Distance ELEVATOR_SENSOR_TO_MECHANISM_RATIO = Meters.of(53.40295);
+        private static final Distance ELEVATOR_SENSOR_TO_MECHANISM_RATIO = Inches.of(1.356434);
         // (1 rot input/15 rot output) -> maxplanetary_conversion
         // (1.76 * pi inches) -> sprocket_conversion
         // (2) -> elevator_travel -> elevator travels 2 inches per inch of chain
-        // (1/39.37) -> inch_to_meter
         // 1 / (maxplanetary_conversion * sprocket_conversion * elevator_travel * inch_to_meter)
         private static final Distance ELEVATOR_ROTOR_TO_SENSOR_RATIO = Inches.of(1);
         private static final double kDt = 0.02;
