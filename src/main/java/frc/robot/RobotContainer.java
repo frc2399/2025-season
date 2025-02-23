@@ -128,9 +128,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Elevator to L3 setpoint", elevator.goToGoalSetpointCmd(() -> ScoringLevel.L_THREE, () -> GameMode.CORAL).andThen(elevator.atGoalCommand()));
     NamedCommands.registerCommand("Elevator to L4 setpoint", elevator.goToGoalSetpointCmd(() -> ScoringLevel.L_FOUR, () -> GameMode.CORAL).andThen(elevator.atGoalCommand()));
     NamedCommands.registerCommand("Coral wrist to L1 setpoint", coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE).withTimeout(1));
-    NamedCommands.registerCommand("Coral wrist to L2 setpoint", coralWrist.goToSetpointCommand(() -> ScoringLevel.L_TWO));
-    NamedCommands.registerCommand("Coral wrist to L3 setpoint", coralWrist.goToSetpointCommand(() -> ScoringLevel.L_THREE));
-    NamedCommands.registerCommand("Coral wrist to L4 setpoint", coralWrist.goToSetpointCommand(() -> ScoringLevel.L_FOUR));
+    NamedCommands.registerCommand("Coral wrist to L2 setpoint", coralWrist.goToSetpointCommand(() -> ScoringLevel.L_TWO).withTimeout(1));
+    NamedCommands.registerCommand("Coral wrist to L3 setpoint", coralWrist.goToSetpointCommand(() -> ScoringLevel.L_THREE).withTimeout(1));
+    NamedCommands.registerCommand("Coral wrist to L4 setpoint", coralWrist.goToSetpointCommand(() -> ScoringLevel.L_FOUR).withTimeout(1));
     NamedCommands.registerCommand("Outtake coral", coralIntake.outtake().andThen(Commands.waitSeconds(1)));
 
     autoChooser = AutoBuilder.buildAutoChooser();
