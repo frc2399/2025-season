@@ -27,6 +27,8 @@ public class CommandFactory {
   // (state changes)
   private final NetworkTable scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");;
   // private final NetworkTableEntry newEntry;
+  private final NetworkTableEntry algaeEntry = scoringStateTables.getEntry("hasAlgae");
+  private final NetworkTableEntry coralEntry = scoringStateTables.getEntry("hasCoral");
   private final NetworkTableEntry levelEntry = scoringStateTables.getEntry("scoringLevel");
   private final NetworkTableEntry gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
   private final NetworkTableEntry leftRightEntry = scoringStateTables.getEntry("Position");
