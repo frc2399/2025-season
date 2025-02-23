@@ -112,8 +112,6 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                         desiredAngle = SetpointConstants.ALGAE_WRIST_INTAKE_ANGLE;
                 } else if (setpoint == Setpoint.L_TWO || setpoint == Setpoint.L_THREE) {
                         desiredAngle = SetpointConstants.ALGAE_REEF_REMOVER_ANGLE;
-                } else if (setpoint == Setpoint.INTAKE) {
-                        desiredAngle = SetpointConstants.ALGAE_WRIST_INTAKE_ANGLE;
                 } else if (setpoint == Setpoint.TURTLE) {
                         desiredAngle = SetpointConstants.ALGAE_WRIST_TURTLE_ANGLE;
                 }
