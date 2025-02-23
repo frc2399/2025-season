@@ -1,7 +1,6 @@
 package frc.robot.subsystems.algaeIntake;
 
 import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.RelativeEncoder;
@@ -25,7 +24,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 import frc.robot.Constants.SpeedConstants;
-import static edu.wpi.first.units.Units.RPM;
 
 public class AlgaeIntakeHardware implements AlgaeIntakeIO {
         private final SparkMax algaeIntakeSparkMax;
@@ -81,10 +79,12 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
         public double getVelocity() {
                 return algaeIntakeEncoder.getVelocity();
         }
+
         @Override
         public void intake() {
                 setRollerSpeed(SpeedConstants.BETA_ALGAE_INTAKE_SPEED);                
         }
+
         @Override 
         public void outtake() {
                 setRollerSpeed(SpeedConstants.BETA_ALGAE_OUTTAKE_SPEED);

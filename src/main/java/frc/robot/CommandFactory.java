@@ -4,13 +4,10 @@ import static edu.wpi.first.units.Units.Meters;
 
 import java.util.function.Supplier;
 
-import javax.xml.crypto.AlgorithmMethod;
-
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.CommandFactory.GameMode;
 import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
@@ -139,9 +136,7 @@ public Command moveElevatorAndCoralWrist(Supplier<Setpoint> setpoint) {
             Commands.waitUntil(() -> elevator.atGoal()),
             coralWrist.goToSetpointCommand(setpoint)),
         () -> (elevator.getCurrentPosition() > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)));
-  }
-
-  
+  }  
 
   public Setpoint getSetpoint() {
     Setpoint setpoint;
@@ -191,5 +186,4 @@ public Command moveElevatorAndCoralWrist(Supplier<Setpoint> setpoint) {
   public void setRobotAlignmentPosition(String alignmentValue) {
     leftRightEntry.setString(alignmentValue);
   }
-
 }
