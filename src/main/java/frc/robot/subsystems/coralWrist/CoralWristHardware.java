@@ -4,8 +4,6 @@ import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 
-import java.util.function.Supplier;
-
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -161,5 +159,4 @@ public class CoralWristHardware implements CoralWristIO {
     // setpointState = wristTrapezoidProfile.calculate(0.02,
     // setpointState, goalState);
   }
-
 }
