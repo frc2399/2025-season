@@ -120,10 +120,10 @@ public class CoralWristHardware implements CoralWristIO {
       desiredAngle = SetpointConstants.CORAL_L2_L3_OUTTAKE_ANGLE;
     } else if (setpoint == Setpoint.L_FOUR) {
       desiredAngle = SetpointConstants.CORAL_L4_OUTTAKE_ANGLE;
-    } else if (setpoint == Setpoint.INTAKE) {
-      desiredAngle = SetpointConstants.CORAL_INTAKE_ANGLE;
     } else if (setpoint == Setpoint.TURTLE) {
       desiredAngle = SetpointConstants.CORAL_TURTLE_ANGLE;
+    } else if (setpoint == Setpoint.ZERO) {
+      desiredAngle = Radians.of(0);
     }
     SmartDashboard.putString("centralizedCommands/CWsetpoint", setpoint.toString());
     coralIntakeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,

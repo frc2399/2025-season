@@ -80,12 +80,12 @@ public final class Constants {
     public static final Angle ALGAE_REEF_REMOVER_ANGLE = Degrees.of(-100);
     public static final Angle ALGAE_WRIST_TURTLE_ANGLE = Degrees.of(0);
 
-    public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(24);
+    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(24);
     public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
-    public static final Angle CORAL_L1_OUTTAKE_ANGLE = Degrees.of(0);
+    public static final Angle CORAL_ZERO_ANGLE = Degrees.of(0);
+    public static final Angle CORAL_L1_OUTTAKE_ANGLE = Degrees.of(-15);
     public static final Angle CORAL_L2_L3_OUTTAKE_ANGLE = Degrees.of(-30);
     public static final Angle CORAL_L4_OUTTAKE_ANGLE = Degree.of(-15);
-    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(0);
 
     public static final Distance ELEVATOR_TURTLE_HEIGHT = Inches.of(0);
     public static final Distance L_ONE_CORAL_HEIGHT = Inches.of(0);
@@ -94,8 +94,11 @@ public final class Constants {
     public static final Distance L_FOUR_CORAL_HEIGHT = Inches.of(48.5);
 
     public static final Distance L_ONE_ALGAE_HEIGHT = Inches.of(5);
-    public static final Distance L_TWO_ALGAE_HEIGHT = Inches.of(14.5);
-    public static final Distance L_THREE_ALGAE_HEIGHT = Inches.of(30);
+    public static final Distance L_TWO_ALGAE_HEIGHT = Inches.of(31.5); //measured value was 29 but recieved the value 31.5 from design
+    public static final Distance L_THREE_ALGAE_HEIGHT = Inches.of(46.75);
+
+    public static final Distance ELEVATOR_COLLISION_RANGE_BOTTOM = Inches.of(1); // 0.5 m
+    public static final Distance ELEVATOR_COLLISION_RANGE_TOP = Inches.of(6); // 50 in
   }
 
   public static class DriveControlConstants {
