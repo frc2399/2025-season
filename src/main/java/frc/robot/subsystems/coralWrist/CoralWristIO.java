@@ -1,7 +1,5 @@
 package frc.robot.subsystems.coralWrist;
 
-import java.util.function.Supplier;
-
 import frc.robot.CommandFactory.Setpoint;
 
 public interface CoralWristIO {

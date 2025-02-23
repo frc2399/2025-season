@@ -121,13 +121,11 @@ public class KrakenElevatorHardware implements ElevatorIO {
 
         goalState.velocity = 0;
         intermediateSetpointState.velocity = 0;
-
     }
 
     @Override
     public void setGoalPosition(Distance newGoalPosition) {
         goalState.position = newGoalPosition.in(Meters);
-
     }
 
     @Override

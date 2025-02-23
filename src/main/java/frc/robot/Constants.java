@@ -114,7 +114,5 @@ public final class Constants {
     // replace if needed
     public static final Distance BETA_XTRACK_WIDTH = Inches.of(23.807);
     public static final Distance BETA_YTRACK_WIDTH = Inches.of(27.190);
-
   }
-
 }

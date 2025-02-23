@@ -4,8 +4,6 @@ import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 
-import java.util.function.Supplier;
-
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -102,7 +100,6 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                 algaeWristRelativeEncoder.setPosition(algaeWristAbsoluteEncoder.getPosition());
 
                 algaeWristClosedLoopController = algaeWristSparkMax.getClosedLoopController();
-
         }
 
         @Override
@@ -145,5 +142,4 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         @Override
         public void periodic() {
         }
-
 }
