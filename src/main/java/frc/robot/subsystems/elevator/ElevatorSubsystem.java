@@ -34,7 +34,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public Command goToGoalSetpointCmd(Supplier<Setpoint> setpoint, Supplier<GameMode> gameMode) {
         return this.runOnce(() -> {
-            SmartDashboard.putString("centralizedCommands/gameMode", gameMode.get().toString());
             SmartDashboard.putString("centralizedCommands/setpoint", setpoint.get().toString());
             if (gameMode.get() == GameMode.CORAL) {
                 if (setpoint.get() == Setpoint.INTAKE) {

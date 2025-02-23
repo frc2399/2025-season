@@ -154,7 +154,6 @@ public class CoralWristHardware implements CoralWristIO {
 
   @Override
   public boolean atGoal() {
-    System.out.println("check at goal");
     return (Math.abs(coralIntakeWristRelativeEncoder.getPosition() - goalAngle.in(Radians)) < WRIST_ANGLE_TOLERANCE
         .in(Radians));
   }

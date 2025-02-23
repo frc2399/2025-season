@@ -117,7 +117,6 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                 } else if (setpoint == Setpoint.TURTLE) {
                         desiredAngle = SetpointConstants.ALGAE_WRIST_TURTLE_ANGLE;
                 }
-                SmartDashboard.putString("centralizedCommands/AWsetpoint", setpoint.toString());
                 algaeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
                                 ClosedLoopSlot.kSlot0,
                                 algaeWristFeedFoward.calculate(
