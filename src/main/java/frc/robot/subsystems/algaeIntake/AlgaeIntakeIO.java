@@ -8,10 +8,12 @@ public interface AlgaeIntakeIO {
         public double intakeVelocity = 0.0;
         public double leftCurrent = 0.0;
         public double leftAppliedVoltage = 0.0;
+
     }
 
     public void setRollerSpeed(AngularVelocity speed);
-
+    public void intake();
+    public void outtake();
     public void updateStates(AlgaeIntakeIOStates states);
 
     public boolean isStalling();

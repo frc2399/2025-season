@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CommandFactory.GameMode;
-import frc.robot.CommandFactory.ScoringLevel;
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;;
 
@@ -35,76 +35,67 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorIO.setIntermediateSetpoint(Meters.of(0), 0);
     }
 
-    public Command goToGoalSetpointCmd(Supplier<ScoringLevel> scoringLevel, Supplier<GameMode> gameMode) {
-        if (gameMode.get() == GameMode.CORAL) {
-            return this.runOnce(() -> {
-                if (scoringLevel.get() == ScoringLevel.INTAKE) {
+    public Command goToGoalSetpointCmd(Supplier<Setpoint> setpoint, Supplier<GameMode> gameMode) {
+        return this.runOnce(() -> {
+            if (gameMode.get() == GameMode.CORAL) {
+                if (setpoint.get() == Setpoint.INTAKE) {
                     elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_TURTLE_HEIGHT); // turtle mode = bottom, where
                                                                                           // intake is
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.ELEVATOR_TURTLE_HEIGHT.in(Meters);
-                } else if (scoringLevel.get() == ScoringLevel.L_ONE) {
-                    elevatorIO.setGoalPosition(SetpointConstants.L_ONE_CORAL_HEIGHT); // turtle mode = bottom, where
-                                                                                      // intake is
+                } else if (setpoint.get() == Setpoint.L_ONE) {
+                    elevatorIO.setGoalPosition(SetpointConstants.L_ONE_CORAL_HEIGHT);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.L_ONE_CORAL_HEIGHT.in(Meters);
-                } else if (scoringLevel.get() == ScoringLevel.L_TWO) {
+                } else if (setpoint.get() == Setpoint.L_TWO) {
                     elevatorIO.setGoalPosition(SetpointConstants.L_TWO_CORAL_HEIGHT);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.L_TWO_CORAL_HEIGHT.in(Meters);
-                } else if (scoringLevel.get() == ScoringLevel.L_THREE) {
+                } else if (setpoint.get() == Setpoint.L_THREE) {
                     elevatorIO.setGoalPosition(SetpointConstants.L_THREE_CORAL_HEIGHT);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.L_THREE_CORAL_HEIGHT.in(Meters);
-                } else if (scoringLevel.get() == ScoringLevel.L_FOUR) {
+                } else if (setpoint.get() == Setpoint.L_FOUR) {
                     elevatorIO.setGoalPosition(SetpointConstants.L_FOUR_CORAL_HEIGHT);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.L_FOUR_CORAL_HEIGHT.in(Meters);
-                } else if (scoringLevel.get() == ScoringLevel.ELEVATOR_TOP_INTERMEDIATE_SETPOINT) {
+                } else if (setpoint.get() == Setpoint.ELEVATOR_TOP_CRONCH_ZONE_INTERMEDIATE_SETPOINT) {
                     elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters);
-                } else if (scoringLevel.get() == ScoringLevel.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT) {
+                } else if (setpoint.get() == Setpoint.ELEVATOR_BOTTOM_CRONCH_ZONE_INTERMEDIATE_SETPOINT) {
                     elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM.in(Meters);
                 }
-            });
-        } else if (gameMode.get() == GameMode.ALGAE) {
-            return this.runOnce(() -> {
-                if (scoringLevel.get() == ScoringLevel.INTAKE) {
-                    elevatorIO.setGoalPosition(SetpointConstants.L_ONE_ALGAE_HEIGHT); // turtle mode = bottom, where
-                                                                                      // intake is
+            } else if (gameMode.get() == GameMode.ALGAE) {
+                if (setpoint.get() == Setpoint.INTAKE) {
+                    elevatorIO.setGoalPosition(SetpointConstants.L_ONE_ALGAE_HEIGHT);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.ELEVATOR_TURTLE_HEIGHT.in(Meters);
-                } else if (scoringLevel.get() == ScoringLevel.L_ONE) {
-                    elevatorIO.setGoalPosition(SetpointConstants.L_ONE_ALGAE_HEIGHT); // turtle mode = bottom, where
-                                                                                      // intake is
+                } else if (setpoint.get() == Setpoint.L_ONE) {
+                    elevatorIO.setGoalPosition(SetpointConstants.L_ONE_ALGAE_HEIGHT);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.L_ONE_ALGAE_HEIGHT.in(Meters);
-                } else if (scoringLevel.get() == ScoringLevel.L_TWO) {
+                } else if (setpoint.get() == Setpoint.L_TWO) {
                     elevatorIO.setGoalPosition(SetpointConstants.L_TWO_ALGAE_HEIGHT);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.L_TWO_CORAL_HEIGHT.in(Meters);
-                } else if (scoringLevel.get() == ScoringLevel.L_THREE) {
+                } else if (setpoint.get() == Setpoint.L_THREE) {
                     elevatorIO.setGoalPosition(SetpointConstants.L_THREE_ALGAE_HEIGHT);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.L_THREE_ALGAE_HEIGHT.in(Meters);
-                } else if (scoringLevel.get() == ScoringLevel.ELEVATOR_TOP_INTERMEDIATE_SETPOINT) {
+                } else if (setpoint.get() == Setpoint.ELEVATOR_TOP_CRONCH_ZONE_INTERMEDIATE_SETPOINT) {
                     elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters);
-                } else if (scoringLevel.get() == ScoringLevel.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT) {
+                } else if (setpoint.get() == Setpoint.ELEVATOR_BOTTOM_CRONCH_ZONE_INTERMEDIATE_SETPOINT) {
                     elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM.in(Meters);
                 }
-            });
-        }
-        {
-            return Commands.none();
-        }
-        // if the enum is null, do nothing
+            } // if either enum is null, do nothing
+        });
     }
 
     public boolean atGoal() {
@@ -129,8 +120,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         return this.run(() -> elevatorIO.setSpeedManualControl(speed));
     }
 
-    public boolean willCrossCronchZone(Supplier<ScoringLevel> scoringLevel) {
-        return elevatorIO.willCrossCronchZone(scoringLevel.get());
+    public boolean willCrossCronchZone(Supplier<Setpoint> setpoint) {
+        return elevatorIO.willCrossCronchZone(setpoint);
     }
 
     @Override

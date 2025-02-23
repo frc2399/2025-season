@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
@@ -22,14 +23,17 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import static edu.wpi.first.units.Units.*;
+
+import java.util.function.Supplier;
+
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.CommandFactory.ScoringLevel;
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
+import frc.robot.Constants.SetpointConstants;
 
 public class AlphaElevatorHardware implements ElevatorIO {
 
@@ -169,8 +173,32 @@ public class AlphaElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public boolean willCrossCronchZone(ScoringLevel scoringLevel) {
-        return false;
+    public boolean willCrossCronchZone(Supplier<Setpoint> setpoint) {
+        double currentPosition = getEncoderPosition();
+        // if the enum is null somehow, nothing will move so will not cross cronch
+        // (default value)
+        double goalPosition = currentPosition;
+        if (setpoint.get() == Setpoint.INTAKE || setpoint.get() == Setpoint.TURTLE) {
+            goalPosition = SetpointConstants.ELEVATOR_TURTLE_HEIGHT.in(Meters); // turtle mode = bottom, where intake is
+        } else if (setpoint.get() == Setpoint.L_ONE) {
+            goalPosition = SetpointConstants.L_ONE_CORAL_HEIGHT.in(Meters);
+        } else if (setpoint.get() == Setpoint.L_TWO) {
+            goalPosition = SetpointConstants.L_TWO_CORAL_HEIGHT.in(Meters);
+        } else if (setpoint.get() == Setpoint.L_THREE) {
+            goalPosition = SetpointConstants.L_THREE_CORAL_HEIGHT.in(Meters);
+        } else if (setpoint.get() == Setpoint.L_FOUR) {
+            goalPosition = SetpointConstants.L_FOUR_CORAL_HEIGHT.in(Meters);
+        }
+
+        // if currently above the cronch range and our goal is below, or if currently
+        // below cronch range and our goal is above, return true
+        if (currentPosition > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters)) {
+            return (goalPosition < SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters));
+        } else if (currentPosition < SetpointConstants.ELEVATOR_COLLISION_RANGE_BOTTOM.in(Meters)) {
+            return (goalPosition > SetpointConstants.ELEVATOR_COLLISION_RANGE_TOP.in(Meters));
+        } else {
+            return false;
+        } //if we are in the cronch zone, we assume our coral wrist is not in the way...
     }
 
     @Override

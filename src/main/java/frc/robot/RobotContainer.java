@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.CommandFactory.GameMode;
-import frc.robot.CommandFactory.ScoringLevel;
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
@@ -51,7 +51,8 @@ public class RobotContainer {
   // this is public because we need to run the visionPoseEstimator periodic from
   // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
-  private CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist, algaeWrist);
+  public CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist, algaeWrist, algaeIntake,
+      coralIntake);
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
@@ -106,16 +107,15 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsDriver() {
-    driverController.rightTrigger().whileTrue(coralIntake.intake());
-    driverController.leftTrigger().whileTrue(coralIntake.outtake());
-    // driverController.rightBumper().onTrue(commandFactory.moveElevatorAndWrist());
+    driverController.rightTrigger().whileTrue(commandFactory.intakeBasedOnMode(()-> commandFactory.gameMode));
+    driverController.leftTrigger().whileTrue(commandFactory.outtakeBasedOnMode(()->commandFactory.gameMode));
+
+    driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
 
     driverController.y().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleMode());
-    driverController.b().onTrue(coralWrist.goToSetpointCommand(() -> ScoringLevel.INTAKE));
-    // driverController.b().onTrue(coralWrist.goToSetpointCommand(() ->
-    // ScoringLevel.INTAKE));
+    driverController.b().onTrue(coralWrist.goToSetpointCommand(() -> Setpoint.INTAKE));
   }
 
   private void setUpAuton() {
@@ -123,15 +123,19 @@ public class RobotContainer {
     NamedCommands.registerCommand("Score coral on L1", Commands.print("coral scored on L1"));
     NamedCommands.registerCommand("Score coral on L2", Commands.print("coral scored on L2"));
     NamedCommands.registerCommand("Score coral on L4", Commands.print("coral scored on L4"));
-    NamedCommands.registerCommand("Elevator to L1 setpoint", elevator.goToGoalSetpointCmd(() -> ScoringLevel.L_ONE, () -> GameMode.CORAL).andThen(elevator.atGoalCommand()));
-    NamedCommands.registerCommand("Elevator to L2 setpoint", elevator.goToGoalSetpointCmd(() -> ScoringLevel.L_TWO, () -> GameMode.CORAL).andThen(elevator.atGoalCommand()));
-    NamedCommands.registerCommand("Elevator to L3 setpoint", elevator.goToGoalSetpointCmd(() -> ScoringLevel.L_THREE, () -> GameMode.CORAL).andThen(elevator.atGoalCommand()));
-    NamedCommands.registerCommand("Elevator to L4 setpoint", elevator.goToGoalSetpointCmd(() -> ScoringLevel.L_FOUR, () -> GameMode.CORAL).andThen(elevator.atGoalCommand()));
-    NamedCommands.registerCommand("Coral wrist to L1 setpoint", coralWrist.goToSetpointCommand(() -> ScoringLevel.L_ONE).withTimeout(1));
-    NamedCommands.registerCommand("Coral wrist to L2 setpoint", coralWrist.goToSetpointCommand(() -> ScoringLevel.L_TWO).withTimeout(1));
-    NamedCommands.registerCommand("Coral wrist to L3 setpoint", coralWrist.goToSetpointCommand(() -> ScoringLevel.L_THREE).withTimeout(1));
-    NamedCommands.registerCommand("Coral wrist to L4 setpoint", coralWrist.goToSetpointCommand(() -> ScoringLevel.L_FOUR).withTimeout(1));
+    NamedCommands.registerCommand("Elevator to L1 setpoint", elevator.goToGoalSetpointCmd(() -> Setpoint.L_ONE, () -> GameMode.CORAL).andThen(elevator.atGoalCommand()));
+    NamedCommands.registerCommand("Elevator to L2 setpoint", elevator.goToGoalSetpointCmd(() -> Setpoint.L_TWO, () -> GameMode.CORAL).andThen(elevator.atGoalCommand()));
+    NamedCommands.registerCommand("Elevator to L3 setpoint", elevator.goToGoalSetpointCmd(() -> Setpoint.L_THREE, () -> GameMode.CORAL).andThen(elevator.atGoalCommand()));
+    NamedCommands.registerCommand("Elevator to L4 setpoint", elevator.goToGoalSetpointCmd(() -> Setpoint.L_FOUR, () -> GameMode.CORAL).andThen(elevator.atGoalCommand()));
+    NamedCommands.registerCommand("Coral wrist to L1 setpoint", coralWrist.goToSetpointCommand(() -> Setpoint.L_ONE).withTimeout(1));
+    NamedCommands.registerCommand("Coral wrist to L2 setpoint", coralWrist.goToSetpointCommand(() -> Setpoint.L_TWO).withTimeout(1));
+    NamedCommands.registerCommand("Coral wrist to L3 setpoint", coralWrist.goToSetpointCommand(() -> Setpoint.L_THREE).withTimeout(1));
+    NamedCommands.registerCommand("Coral wrist to L4 setpoint", coralWrist.goToSetpointCommand(() -> Setpoint.L_FOUR).withTimeout(1));
     NamedCommands.registerCommand("Outtake coral", coralIntake.outtake().andThen(Commands.waitSeconds(1)));
+    NamedCommands.registerCommand("Elevator and coral wrist to L1 setpoint", commandFactory.moveElevatorAndCoralWrist(() -> Setpoint.L_ONE));
+    NamedCommands.registerCommand("Elevator and coral wrist to L2 setpoint", commandFactory.moveElevatorAndCoralWrist(() -> Setpoint.L_TWO));
+    NamedCommands.registerCommand("Elevator and coral wrist to L3 setpoint", commandFactory.moveElevatorAndCoralWrist(() -> Setpoint.L_THREE));
+    NamedCommands.registerCommand("Elevator and coral wrist to L4 setpoint", commandFactory.moveElevatorAndCoralWrist(() -> Setpoint.L_FOUR));
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Autos/Selector", autoChooser);
@@ -144,21 +148,16 @@ public class RobotContainer {
   private void configureButtonBindingsOperator() {
     // these buttons should not be changed for local testing and should function as
     // a replacement gamepad
-
-    operatorController.a()
-        .onTrue(commandFactory.moveElevatorAndCoralWrist(() -> ScoringLevel.L_ONE));
-    operatorController.b()
-        .onTrue(commandFactory.moveElevatorAndCoralWrist(() -> ScoringLevel.L_TWO));
-    operatorController.x()
-        .onTrue(commandFactory.moveElevatorAndCoralWrist(() -> ScoringLevel.L_THREE));
-    operatorController.y()
-        .onTrue(commandFactory.moveElevatorAndCoralWrist(() -> ScoringLevel.L_FOUR));
+    operatorController.a().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level One")));
+    operatorController.b().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level Two")));
+    operatorController.x().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level Three")));
+    operatorController.y().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level Four")));
 
     operatorController.rightBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("right")));
     operatorController.leftBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("left")));
 
-    operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("coral")));
     operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("algae")));
+    operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("coral")));
 
     // place local buttons below here, delete before PRing
 

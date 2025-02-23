@@ -13,13 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Elevator to L1 setpoint"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Coral wrist to L1 setpoint"
+            "name": "Elevator and coral wrist to L1 setpoint"
           }
         },
         {

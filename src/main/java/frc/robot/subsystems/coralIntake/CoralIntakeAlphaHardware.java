@@ -8,7 +8,10 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Time;
 
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -16,6 +19,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Seconds;
 
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
@@ -49,6 +53,10 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
         private static final double INTAKE_MOTOR_MAX_OUTPUT = 1.0;
 
         private static final boolean POSITION_WRAPPING_ENABLED_SIDE_MOTORS = true;
+
+        private static final Time ALPHA_CORAL_DEBOUNCER_TIME = Seconds.of(0.5);
+        private static final Current CORAL_INTAKE_STALL_THRESHOLD = Amps.of(15);
+        private static final Debouncer CORAL_ALPHA_DEBOUNCER = new Debouncer(ALPHA_CORAL_DEBOUNCER_TIME.in(Seconds));
 
         public CoralIntakeAlphaHardware() {
                 leftSparkMaxConfig.inverted(LEFT_MOTOR_INVERTED).idleMode(IDLE_MODE)
@@ -120,6 +128,11 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
         public void keepCoral() {
                 coralIntakeLeftClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_HOLDING_SPEED.in(RPM), ControlType.kVelocity);
                 coralIntakeRightClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_HOLDING_SPEED.in(RPM), ControlType.kVelocity);
+        }
+
+        @Override
+        public boolean isStalling() {
+                return (CORAL_ALPHA_DEBOUNCER.calculate(getCurrent() > CORAL_INTAKE_STALL_THRESHOLD.in(Amps)));
         }
 
         @Override

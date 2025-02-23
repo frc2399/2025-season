@@ -1,7 +1,6 @@
 package frc.robot.subsystems.algaeIntake;
 
 import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.RelativeEncoder;
@@ -16,6 +15,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import static edu.wpi.first.units.Units.RPM;
 import edu.wpi.first.units.measure.Time;
 
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -23,6 +23,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
+import frc.robot.Constants.SpeedConstants;
 
 public class AlgaeIntakeHardware implements AlgaeIntakeIO {
         private final SparkMax algaeIntakeSparkMax;
@@ -46,8 +47,8 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
 
         private static final boolean POSITION_WRAPPING_ENABLED = true;
 
-        private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(10);
-        private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(1);
+        private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(15);
+        private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(0.5);
 
         private static final Debouncer algaeIntakeDebouncer = new Debouncer(ALGAE_INTAKE_STALL_TIME.in(Seconds));
 
@@ -72,11 +73,21 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
         }
 
         public void setRollerSpeed(AngularVelocity speed) {
-                algaeIntakeClosedLoopController.setReference(speed.in(RadiansPerSecond), ControlType.kVelocity);
+                algaeIntakeClosedLoopController.setReference(speed.in(RPM), ControlType.kVelocity);
         }
 
         public double getVelocity() {
                 return algaeIntakeEncoder.getVelocity();
+        }
+
+        @Override
+        public void intake() {
+                setRollerSpeed(SpeedConstants.BETA_ALGAE_INTAKE_SPEED);                
+        }
+
+        @Override 
+        public void outtake() {
+                setRollerSpeed(SpeedConstants.BETA_ALGAE_OUTTAKE_SPEED);
         }
 
         public double getCurrent() {
