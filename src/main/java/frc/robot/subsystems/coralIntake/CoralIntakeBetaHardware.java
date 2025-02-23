@@ -9,6 +9,7 @@ import frc.robot.Constants.SpeedConstants;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
 
 import org.ejml.dense.row.SpecializedOps_DDRM;
 
@@ -20,6 +21,10 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
+
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Time;
 
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
@@ -50,6 +55,10 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     private final SparkFlex betaCoralIntakeSparkFlex;
 
     private double velocityGoal = 0;
+
+        private static final Time BETA_CORAL_DEBOUNCER_TIME = Seconds.of(0.5);
+        private static final Current CORAL_INTAKE_STALL_THRESHOLD = Amps.of(15);
+        private static final Debouncer CORAL_BETA_DEBOUNCER = new Debouncer(BETA_CORAL_DEBOUNCER_TIME.in(Seconds));
 
     public CoralIntakeBetaHardware() {
         betaCoralIntakeConfig.inverted(BETA_CORAL_INTAKE_MOTOR_INVERTED).idleMode(BETA_CORAL_INTAKE_IDLE_MODE)
@@ -93,6 +102,11 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     public void keepCoral() {
         betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_HOLDING_SPEED.in(RPM), ControlType.kVelocity);
         velocityGoal = SpeedConstants.BETA_CORAL_HOLDING_SPEED.in(RadiansPerSecond) / 5;
+    }
+
+    @Override
+    public boolean isStalling() {
+        return CORAL_BETA_DEBOUNCER.calculate(betaCoralIntakeSparkFlex.getOutputCurrent() > CORAL_INTAKE_STALL_THRESHOLD.in(Amps));
     }
 
     @Override

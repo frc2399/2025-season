@@ -19,7 +19,8 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.measure.Angle;
-import frc.robot.CommandFactory.ScoringLevel;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.SetpointConstants;
 
@@ -70,7 +71,7 @@ public class CoralWristHardware implements CoralWristIO {
   private static final Angle REVERSE_SOFT_LIMIT = Degrees.of(-90);
 
   private Angle goalAngle = Radians.of(0);
-  private static final Angle WRIST_ANGLE_TOLERANCE = Degrees.of(1);
+  private static final Angle WRIST_ANGLE_TOLERANCE = Radians.of(.05);
 
   public CoralWristHardware(double ABSOLUTE_ENCODER_POSITION_CONVERSION_FACTOR,
       double ABSOLUTE_ENCODER_VELOCITY_CONVERSION_FACTOR,
@@ -111,19 +112,20 @@ public class CoralWristHardware implements CoralWristIO {
   }
 
   @Override
-  public void setGoalAngle(Supplier<ScoringLevel> scoringLevel) {
+  public void setGoalAngle(Setpoint setpoint) {
     Angle desiredAngle = Radians.of(0);
-    if (scoringLevel.get() == ScoringLevel.L_ONE) {
+    if (setpoint == Setpoint.L_ONE) {
       desiredAngle = SetpointConstants.CORAL_L1_OUTTAKE_ANGLE;
-    } else if (scoringLevel.get() == ScoringLevel.L_TWO || scoringLevel.get() == ScoringLevel.L_THREE) {
+    } else if (setpoint == Setpoint.L_TWO || setpoint == Setpoint.L_THREE) {
       desiredAngle = SetpointConstants.CORAL_L2_L3_OUTTAKE_ANGLE;
-    } else if (scoringLevel.get() == ScoringLevel.L_FOUR) {
+    } else if (setpoint == Setpoint.L_FOUR) {
       desiredAngle = SetpointConstants.CORAL_L4_OUTTAKE_ANGLE;
-    } else if (scoringLevel.get() == ScoringLevel.INTAKE) {
-      desiredAngle = SetpointConstants.CORAL_INTAKE_ANGLE;
-    } else if (scoringLevel.get() == ScoringLevel.TURTLE) {
+    } else if (setpoint == Setpoint.TURTLE) {
       desiredAngle = SetpointConstants.CORAL_TURTLE_ANGLE;
+    } else if (setpoint == Setpoint.ZERO) {
+      desiredAngle = Radians.of(0);
     }
+    SmartDashboard.putString("centralizedCommands/CWsetpoint", setpoint.toString());
     coralIntakeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
         ClosedLoopSlot.kSlot0,
         coralWristFeedFoward.calculate(desiredAngle.in(Radians),

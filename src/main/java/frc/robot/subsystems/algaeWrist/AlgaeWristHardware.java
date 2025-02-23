@@ -21,7 +21,8 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.measure.Angle;
-import frc.robot.CommandFactory.ScoringLevel;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 import frc.robot.Constants.SetpointConstants;
@@ -105,15 +106,13 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         }
 
         @Override
-        public void setGoalAngle(Supplier<ScoringLevel> scoringLevel) {
+        public void setGoalAngle(Setpoint setpoint) {
                 Angle desiredAngle = Radians.of(0);
-                if (scoringLevel.get() == ScoringLevel.L_ONE) {
+                if (setpoint == Setpoint.L_ONE) {
                         desiredAngle = SetpointConstants.ALGAE_WRIST_INTAKE_ANGLE;
-                } else if (scoringLevel.get() == ScoringLevel.L_TWO || scoringLevel.get() == ScoringLevel.L_THREE) {
+                } else if (setpoint == Setpoint.L_TWO || setpoint == Setpoint.L_THREE) {
                         desiredAngle = SetpointConstants.ALGAE_REEF_REMOVER_ANGLE;
-                } else if (scoringLevel.get() == ScoringLevel.INTAKE) {
-                        desiredAngle = SetpointConstants.ALGAE_WRIST_INTAKE_ANGLE;
-                } else if (scoringLevel.get() == ScoringLevel.TURTLE) {
+                } else if (setpoint == Setpoint.TURTLE) {
                         desiredAngle = SetpointConstants.ALGAE_WRIST_TURTLE_ANGLE;
                 }
                 algaeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
