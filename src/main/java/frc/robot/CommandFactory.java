@@ -62,8 +62,8 @@ public class CommandFactory {
     L_FOUR,
     INTAKE,
     TURTLE,
-    ELEVATOR_TOP_INTERMEDIATE_SETPOINT,
-    ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT
+    ELEVATOR_TOP_CRONCH_ZONE_INTERMEDIATE_SETPOINT,
+    ELEVATOR_BOTTOM_CRONCH_ZONE_INTERMEDIATE_SETPOINT
   }
 
   public enum GameMode {
@@ -124,7 +124,7 @@ public Command moveElevatorAndCoralWrist(Supplier<Setpoint> setpoint) {
     return Commands.either(
         Commands.sequence(
             Commands.parallel(
-                elevator.goToGoalSetpointCmd(() -> Setpoint.ELEVATOR_TOP_INTERMEDIATE_SETPOINT, () -> GameMode.CORAL),
+                elevator.goToGoalSetpointCmd(() -> Setpoint.ELEVATOR_TOP_CRONCH_ZONE_INTERMEDIATE_SETPOINT, () -> GameMode.CORAL),
                 coralWrist.goToSetpointCommand(() -> Setpoint.L_ONE)),
             Commands.waitUntil(() -> coralWrist.atGoal()),
             elevator.goToGoalSetpointCmd(setpoint, () -> GameMode.CORAL),
@@ -132,7 +132,7 @@ public Command moveElevatorAndCoralWrist(Supplier<Setpoint> setpoint) {
             coralWrist.goToSetpointCommand(setpoint)),
         Commands.sequence(
             Commands.parallel(
-                elevator.goToGoalSetpointCmd(() -> Setpoint.ELEVATOR_BOTTOM_INTERMEDIATE_SETPOINT, () -> GameMode.CORAL),
+                elevator.goToGoalSetpointCmd(() -> Setpoint.ELEVATOR_BOTTOM_CRONCH_ZONE_INTERMEDIATE_SETPOINT, () -> GameMode.CORAL),
                 coralWrist.goToSetpointCommand(() -> Setpoint.L_ONE)),
             Commands.waitUntil(() -> coralWrist.atGoal()),
             elevator.goToGoalSetpointCmd(setpoint, () -> GameMode.CORAL),
