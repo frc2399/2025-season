@@ -29,10 +29,8 @@ public class CommandFactory {
 
   // private final NetworkTableEntry ntEntry; //one for each entry we want to read
   // (state changes)
-  private final NetworkTable scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");;
+  public static final NetworkTable scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");
   // private final NetworkTableEntry newEntry;
-  private final NetworkTableEntry algaeEntry = scoringStateTables.getEntry("hasAlgae");
-  private final NetworkTableEntry coralEntry = scoringStateTables.getEntry("hasCoral");
   private final NetworkTableEntry levelEntry = scoringStateTables.getEntry("scoringLevel");
   private final NetworkTableEntry gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
   private final NetworkTableEntry leftRightEntry = scoringStateTables.getEntry("Position");
@@ -186,13 +184,5 @@ public class CommandFactory {
 
   public void setRobotAlignmentPosition(String alignmentValue) {
     leftRightEntry.setString(alignmentValue);
-  }
-
-  public void setAlgaeState(Boolean hasAlgae) {
-    algaeEntry.setBoolean(hasAlgae);
-  }
-
-  public void setCoralState(Boolean hasCoral) {
-    coralEntry.setBoolean(hasCoral);
   }
 }
