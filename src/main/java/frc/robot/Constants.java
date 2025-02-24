@@ -96,7 +96,7 @@ public final class Constants {
     public static final Distance L_FOUR_CORAL_HEIGHT = Inches.of(48.5);
 
     public static final Distance L_ONE_ALGAE_HEIGHT = Inches.of(5);
-    public static final Distance L_TWO_ALGAE_HEIGHT = Inches.of(31.5); //measured value was 29 but recieved the value 31.5 from design
+    public static final Distance L_TWO_ALGAE_HEIGHT = Inches.of(29); 
     public static final Distance L_THREE_ALGAE_HEIGHT = Inches.of(46.75);
 
     public static final Distance ELEVATOR_COLLISION_RANGE_BOTTOM = Inches.of(1); // 0.5 m
