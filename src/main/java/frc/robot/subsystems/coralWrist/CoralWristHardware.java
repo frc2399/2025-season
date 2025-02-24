@@ -48,7 +48,7 @@ public class CoralWristHardware implements CoralWristIO {
   // 64:16 (4:1) gear ratio (through bore encoder on shaft)
   private final double ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR; // radians
   // divide position factor by 60 for radians per second
-  private final double ABSOLUTE_ENCODER_VELOCITY_FACTOR; // radians per second
+  private final double ABSOLUTE_ENCODER_WRIST_VELOCITY_FACTOR; // radians per second
   // 3:1 and 5:1 gearbox on motor. 64:16 (4:1) gear ratio. 3 * 5 * 4 = 60
   private static final double RELATIVE_ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 60; // radians
   // divide position factor by 60 for radians per second
@@ -76,13 +76,13 @@ public class CoralWristHardware implements CoralWristIO {
       boolean SOFT_LIMIT_ENABLED, int CAN_ID) {
 
     ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR = ABSOLUTE_ENCODER_POSITION_CONVERSION_FACTOR;
-    ABSOLUTE_ENCODER_VELOCITY_FACTOR = ABSOLUTE_ENCODER_VELOCITY_CONVERSION_FACTOR;
+    ABSOLUTE_ENCODER_WRIST_VELOCITY_FACTOR = ABSOLUTE_ENCODER_VELOCITY_CONVERSION_FACTOR;
 
     wristSparkFlexConfig.inverted(WRIST_MOTOR_INVERTED).idleMode(IDLE_MODE)
         .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
 
     wristSparkFlexConfig.absoluteEncoder.positionConversionFactor(ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR)
-        .velocityConversionFactor(ABSOLUTE_ENCODER_VELOCITY_FACTOR)
+        .velocityConversionFactor(ABSOLUTE_ENCODER_WRIST_VELOCITY_FACTOR)
         .inverted(ABSOLUTE_ENCODER_INVERTED).zeroCentered(true);
 
     wristSparkFlexConfig.encoder.positionConversionFactor(RELATIVE_ENCODER_WRIST_POSITION_FACTOR)
