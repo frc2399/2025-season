@@ -43,6 +43,8 @@ public class CommandFactory {
     this.algaeWrist = algaeWrist;
     this.algaeIntake = algaeIntake;
     this.coralIntake = coralIntake;
+    setGameMode("coral");
+    setScoringLevel("Level 1");
     // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
     // newEntry = scoringStateTables.getEntry("Indicator");
   }
