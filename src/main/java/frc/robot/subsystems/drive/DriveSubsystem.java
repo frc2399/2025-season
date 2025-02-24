@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.drive;
 
-import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 
 import java.util.function.DoubleSupplier;
@@ -152,7 +151,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 new Pose2d(0, 0, new Rotation2d(0))); // TODO: make these constants in the constants
                                                                          // file rather than
                                                                          // free-floating numbers
-
         }
 
         @Override
@@ -213,7 +211,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 frontRight.updateStates();
                 rearLeft.updateStates();
                 rearRight.updateStates();
-
         }
 
         /** Returns the currently-estimated pose of the robot. */
@@ -224,7 +221,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         /** Returns the current odometry rotation. */
         public Rotation2d getRotation() {
                 return getPose().getRotation();
-
         }
 
         /** Resets the odometry to the specified pose. */
@@ -324,7 +320,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 rearLeft.setDesiredState(swerveModuleStates[2]);
                 rearRight.setDesiredState(swerveModuleStates[3]);
                 swerveModuleDesiredStatePublisher.set(swerveModuleStates);
-
         }
 
         private void configurePathPlannerLogging() {
@@ -398,7 +393,5 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 SmartDashboard.putNumber("drive/Total Velocity(mps)", states.totalVelocity);
                 SmartDashboard.putNumber("drive/Angular Velocity(deg per sec)", states.angularVelocity);
                 SmartDashboard.putNumber("drive/Gyro Angle(deg)", states.gyroAngleDegrees);
-
         }
-
 }
