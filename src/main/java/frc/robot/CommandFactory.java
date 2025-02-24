@@ -68,36 +68,9 @@ public class CommandFactory {
     ALGAE
   }
 
-  private enum GamePieceReal {
-    HAS_CORAL,
-    HAS_ALGAE,
-    NO_CORAL,
-    NO_ALGAE
-  }
-
   public RobotPosition robotPosition;
   public GameMode gameMode;
   public Setpoint setpoint;
-
-  public GamePieceReal getAlgaeGamePieceState() {
-    GamePieceReal gamePiece;
-    if (algaeEntry.getBoolean(false)) {
-      gamePiece = GamePieceReal.HAS_ALGAE;
-    } else {
-      gamePiece = GamePieceReal.NO_ALGAE;
-    }
-    return gamePiece;
-  }
-
-  public GamePieceReal getCoralGamePieceState() {
-    GamePieceReal gamePiece;
-    if (coralEntry.getBoolean(false)) {
-      gamePiece = GamePieceReal.HAS_CORAL;
-    } else {
-      gamePiece = GamePieceReal.NO_CORAL;
-    }
-    return gamePiece;
-  }
 
   public Setpoint getScoringLevel() {
     Setpoint scoringLevel;
