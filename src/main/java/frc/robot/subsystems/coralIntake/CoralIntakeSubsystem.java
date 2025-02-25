@@ -29,10 +29,6 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         return this.run(() -> io.setZero()).withName("coral intake default");
     }
 
-    public Command keepCoral() {
-        return this.run(() -> io.keepCoral()).withName("hold coral steady");
-    }
-
     public Command intakeToStall() {
         return this.run(() -> {
             if (io.isStalling() || hasCoral) {
