@@ -166,7 +166,6 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
     public void setDesiredTurnAngle(double angle) {
         turningPidController.setReference(angle, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         this.desiredAngle = angle;
-
     };
 
     public double getDriveBusVoltage() {
@@ -193,8 +192,6 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
         return chassisAngularOffset;
     }
 
-
-
     public void updateStates(SwerveModuleIOStates states) {
                 states.desiredAngle = Units.radiansToDegrees(this.desiredAngle);
                 states.turnAngle = Units.radiansToDegrees(turningAbsoluteEncoder.getPosition());
@@ -218,6 +215,5 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
                 SmartDashboard.putNumber("Swerve/module " + name + "/turn voltage(volt)", states.turnVoltage);
                 SmartDashboard.putNumber("Swerve/module " + name + "/drive current(amps)", states.driveCurrent);
                 SmartDashboard.putNumber("Swerve/module " + name + "/turn current(amps)", states.turnCurrent);
-
         }
 }

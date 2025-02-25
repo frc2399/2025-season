@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.CommandFactory.GameMode;
 import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
@@ -76,16 +75,15 @@ public class RobotContainer {
     driverController.y().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleMode());
-    driverController.b().onTrue(coralWrist.goToSetpointCommand(() -> Setpoint.INTAKE));
   }
 
   private void configureButtonBindingsOperator() {
     // these buttons should not be changed for local testing and should function as
     // a replacement gamepad
-    operatorController.a().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level One")));
-    operatorController.b().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level Two")));
-    operatorController.x().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level Three")));
-    operatorController.y().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level Four")));
+    operatorController.a().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")));
+    operatorController.b().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 2")));
+    operatorController.x().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 3")));
+    operatorController.y().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 4")));
 
     operatorController.rightBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("right")));
     operatorController.leftBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("left")));

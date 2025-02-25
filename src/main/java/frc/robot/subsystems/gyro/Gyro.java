@@ -35,5 +35,4 @@ public class Gyro {
     public StatusSignal<edu.wpi.first.units.measure.AngularVelocity> getAngularVelocity() {
         return io.getAngularVelocity();
     }
-
 }
