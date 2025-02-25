@@ -37,12 +37,16 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         return this.run(() -> {
             if (io.isStalling() || hasCoral) {
                 io.setZero();
-                hasCoral = true;
+                setCoralEntry(true);
             } else {
                 io.intake();
             }
-            coralEntry.setBoolean(hasCoral);
         });
+    }
+
+    public void setCoralEntry(Boolean coralState) {
+        coralEntry.setBoolean(coralState);
+        hasCoral = coralState;
     }
 
     @Override
@@ -54,6 +58,5 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("coralIntake/rightCurrent", states.rightCurrent);
         SmartDashboard.putNumber("coralIntake/leftAppliedVoltage", states.leftAppliedVoltage);
         SmartDashboard.putNumber("coralIntake/rightAppliedVoltage", states.rightAppliedVoltage);
-        hasCoral = coralEntry.getBoolean(hasCoral);
     }
 }
