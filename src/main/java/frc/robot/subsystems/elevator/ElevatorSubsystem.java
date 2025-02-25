@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CommandFactory.GameMode;
 import frc.robot.CommandFactory.Setpoint;
@@ -34,9 +33,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public Command goToGoalSetpointCmd(Supplier<Setpoint> setpoint, Supplier<GameMode> gameMode) {
         return this.runOnce(() -> {
-            SmartDashboard.putString("centralizedCommands/setpoint", setpoint.get().toString());
             if (gameMode.get() == GameMode.CORAL) {
-                if (setpoint.get() == Setpoint.INTAKE) {
+                if (setpoint.get() == Setpoint.TURTLE) {
                     elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_TURTLE_HEIGHT); // turtle mode = bottom, where
                                                                                           // intake is
                     profiledPIDEnabled = true;
@@ -59,7 +57,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                     goalSetpoint = SetpointConstants.L_FOUR_CORAL_HEIGHT.in(Meters);
                 } 
             } else if (gameMode.get() == GameMode.ALGAE) {
-                if (setpoint.get() == Setpoint.INTAKE) {
+                if (setpoint.get() == Setpoint.TURTLE) {
                     elevatorIO.setGoalPosition(SetpointConstants.L_ONE_ALGAE_HEIGHT);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.ELEVATOR_TURTLE_HEIGHT.in(Meters);
@@ -116,5 +114,4 @@ public class ElevatorSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Elevator/intermediate setpoint position", states.intermediateSetpointPosition);
         SmartDashboard.putBoolean("Elevator/profiled PID enabled", profiledPIDEnabled);
     }
-
 }

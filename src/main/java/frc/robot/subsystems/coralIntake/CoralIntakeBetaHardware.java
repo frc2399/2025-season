@@ -11,8 +11,6 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
-import org.ejml.dense.row.SpecializedOps_DDRM;
-
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -56,9 +54,9 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     private double velocityGoal = 0;
 
-        private static final Time BETA_CORAL_DEBOUNCER_TIME = Seconds.of(0.5);
-        private static final Current CORAL_INTAKE_STALL_THRESHOLD = Amps.of(15);
-        private static final Debouncer CORAL_BETA_DEBOUNCER = new Debouncer(BETA_CORAL_DEBOUNCER_TIME.in(Seconds));
+    private static final Time BETA_CORAL_DEBOUNCER_TIME = Seconds.of(0.5);
+    private static final Current CORAL_INTAKE_STALL_THRESHOLD = Amps.of(15);
+    private static final Debouncer CORAL_BETA_DEBOUNCER = new Debouncer(BETA_CORAL_DEBOUNCER_TIME.in(Seconds));
 
     public CoralIntakeBetaHardware() {
         betaCoralIntakeConfig.inverted(BETA_CORAL_INTAKE_MOTOR_INVERTED).idleMode(BETA_CORAL_INTAKE_IDLE_MODE)
@@ -106,7 +104,8 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     @Override
     public boolean isStalling() {
-        return CORAL_BETA_DEBOUNCER.calculate(betaCoralIntakeSparkFlex.getOutputCurrent() > CORAL_INTAKE_STALL_THRESHOLD.in(Amps));
+        return CORAL_BETA_DEBOUNCER
+                .calculate(betaCoralIntakeSparkFlex.getOutputCurrent() > CORAL_INTAKE_STALL_THRESHOLD.in(Amps));
     }
 
     @Override
