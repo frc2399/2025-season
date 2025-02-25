@@ -20,10 +20,11 @@ public class GyroHardware implements GyroIO {
     public GyroHardware() {
         pigeon = new Pigeon2(Constants.MotorIdConstants.GYRO_CAN_ID, "rio");
         // these three lines disable all status signal readings off the pigeon except
-        // for the two we need (the two directly below). this reduces CAN network
+        // for the three we need (the three directly below). this reduces CAN network
         // utilization
         pigeon.getYaw().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
         pigeon.getAngularVelocityZDevice().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
+        pigeon.getFault_Hardware().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
         pigeon.optimizeBusUtilization();
     }
 
@@ -40,6 +41,6 @@ public class GyroHardware implements GyroIO {
     }
 
     public boolean hasFault() {
-        return !pigeon.getFault_Hardware(true).getValue();
+        return pigeon.getFault_Hardware(true).getValue();
     }
 }

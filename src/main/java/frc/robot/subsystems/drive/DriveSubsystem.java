@@ -153,13 +153,12 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 rearLeft.getPosition(),
                                                 rearRight.getPosition() },
                                 new Pose2d(0, 0, new Rotation2d(0))); // TODO: make these constants in the constants
-<
-                                                                      // file rather than
-                                                                      // free-floating numbers
 
+                // file rather than
+                // free-floating numbers
 
-                                                                         // file rather than
-                                                                         // free-floating numbers
+                // file rather than
+                // free-floating numbers
 
         }
 
@@ -218,7 +217,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         gyro.setYaw(lastAngle.getRadians());
                 }
 
-                // logAndUpdateDriveSubsystemStates();
+                logAndUpdateDriveSubsystemStates();
 
                 frontLeft.updateStates();
                 frontRight.updateStates();

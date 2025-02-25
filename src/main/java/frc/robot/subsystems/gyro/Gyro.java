@@ -36,9 +36,8 @@ public class Gyro {
         return io.getAngularVelocity();
     }
 
-
     public boolean hasFault() {
         return io.hasFault();
     }
 
-
+}
