@@ -43,6 +43,8 @@ public class CommandFactory {
     this.algaeWrist = algaeWrist;
     this.algaeIntake = algaeIntake;
     this.coralIntake = coralIntake;
+    setGameMode("coral");
+    setScoringLevel("Level 1");
     // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
     // newEntry = scoringStateTables.getEntry("Indicator");
   }
@@ -57,8 +59,8 @@ public class CommandFactory {
     L_TWO,
     L_THREE,
     L_FOUR,
-    INTAKE,
-    TURTLE
+    TURTLE,
+    ZERO
   }
 
   public enum GameMode {
@@ -72,47 +74,51 @@ public class CommandFactory {
 
   public Command turtleMode() {
     return Commands.sequence(
-        Commands.parallel(coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE),
-            algaeWrist.goToSetpointCommand(() -> Setpoint.TURTLE)),
-        elevator.goToGoalSetpointCmd(() -> Setpoint.INTAKE, () -> GameMode.CORAL));
+        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+        Commands.waitUntil(() -> coralWrist.atGoal()),
+        Commands.parallel(
+            algaeWrist.goToSetpointCommand(() -> Setpoint.TURTLE),
+            elevator.goToGoalSetpointCmd(() -> Setpoint.TURTLE, () -> GameMode.CORAL)),
+        Commands.waitUntil(() -> elevator.atGoal()),
+        coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
   }
 
   public Command elevatorBasedOnMode() {
     return Commands.either(
-      moveElevatorAndAlgaeWrist(), 
-      moveElevatorAndCoralWrist(), 
-      () -> (getGameMode() == GameMode.ALGAE));
+        moveElevatorAndAlgaeWrist(),
+        moveElevatorAndCoralWrist(),
+        () -> (getGameMode() == GameMode.ALGAE));
   }
 
-public Command moveElevatorAndCoralWrist() {
+  public Command moveElevatorAndCoralWrist() {
     return Commands.sequence(
-        coralWrist.goToSetpointCommand(() -> Setpoint.L_ONE), 
+        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
         Commands.waitUntil(() -> coralWrist.atGoal()),
-        elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.CORAL),
-        Commands.waitUntil(() -> elevator.atGoal()),
-        coralWrist.goToSetpointCommand(() -> getSetpoint()));
+        Commands.parallel(
+            elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.CORAL),
+            coralWrist.goToSetpointCommand(() -> getSetpoint())));
   }
 
   public Command moveElevatorAndAlgaeWrist() {
     return Commands.sequence(
-      coralWrist.goToSetpointCommand(() -> Setpoint.L_ONE), 
-      Commands.waitUntil(() -> coralWrist.atGoal()),
-      algaeWrist.goToSetpointCommand(() -> getSetpoint()),
-      elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.ALGAE));
+        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+        Commands.waitUntil(() -> coralWrist.atGoal()),
+        algaeWrist.goToSetpointCommand(() -> getSetpoint()),
+        elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.ALGAE));
   }
 
   public Command intakeBasedOnMode(Supplier<GameMode> gameMode) {
     return Commands.either(
-      algaeIntake.intake(), 
-      coralIntake.intake(), 
-      () -> (getGameMode() == GameMode.ALGAE));
+        algaeIntake.intake(),
+        coralIntake.intake(),
+        () -> (getGameMode() == GameMode.ALGAE));
   }
 
   public Command outtakeBasedOnMode(Supplier<GameMode> gameMode) {
     return Commands.either(
-      algaeIntake.outtake(),
-      coralIntake.outtake(),
-      () -> (getGameMode() == GameMode.ALGAE));
+        algaeIntake.outtake(),
+        coralIntake.outtake(),
+        () -> (getGameMode() == GameMode.ALGAE));
   }
 
   public Setpoint getSetpoint() {
