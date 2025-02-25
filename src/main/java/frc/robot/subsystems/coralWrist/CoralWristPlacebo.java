@@ -2,8 +2,6 @@ package frc.robot.subsystems.coralWrist;
 
 import frc.robot.CommandFactory.Setpoint;
 
-import java.util.function.Supplier;
-
 public class CoralWristPlacebo implements CoralWristIO {
 
     @Override
