@@ -22,7 +22,6 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     public Command intake() {
         return this.run(() -> io.intake()).withName("run algae intake");
     }
-
     public Command outtake() {
         return this.run(() -> io.outtake()).withName("run algae outtake");
     }
