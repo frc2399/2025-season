@@ -151,13 +151,11 @@ public class SwerveModuleHardwareNEO implements SwerveModuleIO {
         public void setDesiredDriveSpeedMPS(double speed) {
                 drivingPidController.setReference(speed, ControlType.kVelocity);
                 this.driveDesiredVelocity = speed;
-
         };
 
         public void setDesiredTurnAngle(double angle) {
                 turningPidController.setReference(angle, ControlType.kPosition);
                 this.desiredAngle = angle;
-
         };
 
         public double getChassisAngularOffset() {
@@ -199,7 +197,5 @@ public class SwerveModuleHardwareNEO implements SwerveModuleIO {
                 SmartDashboard.putNumber("Swerve/module " + name + "/turn voltage(volt)", states.turnVoltage);
                 SmartDashboard.putNumber("Swerve/module " + name + "/drive current(amps)", states.driveCurrent);
                 SmartDashboard.putNumber("Swerve/module " + name + "/turn current(amps)", states.turnCurrent);
-
         }
-
 }

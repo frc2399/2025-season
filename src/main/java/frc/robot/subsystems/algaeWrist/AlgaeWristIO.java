@@ -1,5 +1,7 @@
 package frc.robot.subsystems.algaeWrist;
 
+import frc.robot.CommandFactory.Setpoint;
+
 public interface AlgaeWristIO {
 
     static class AlgaeWristIOStates {
@@ -11,7 +13,7 @@ public interface AlgaeWristIO {
         public double goalAngle = 0.0;
     }
 
-    public void setGoalAngle(double angle);
+    public void setGoalAngle(Setpoint setpoint);
 
     public void setWristSpeed(double speed);
 

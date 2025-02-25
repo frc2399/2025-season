@@ -1,6 +1,6 @@
 package frc.robot.subsystems.coralWrist;
 
-import edu.wpi.first.units.measure.Angle;
+import frc.robot.CommandFactory.Setpoint;
 
 public interface CoralWristIO {
     static class CoralWristIOStates {
@@ -13,7 +13,7 @@ public interface CoralWristIO {
         public double goalAngle = 0.0;
     }
 
-    public void setGoalAngle(Angle angle);
+    public void setGoalAngle(Setpoint setpoint);
 
     // taking out motion profiling to see if code works
     // public void setGoalStateTrapezoid(Angle angle);
@@ -21,6 +21,8 @@ public interface CoralWristIO {
     public void setWristSpeed(double speed);
 
     public void updateStates(CoralWristIOStates states);
+
+    public boolean atGoal();
 
     public void periodic();
 }

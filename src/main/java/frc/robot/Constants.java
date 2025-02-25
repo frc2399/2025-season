@@ -5,11 +5,6 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -71,25 +66,39 @@ public final class Constants {
     public static final AngularVelocity ALPHA_CORAL_INTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.75);
     public static final AngularVelocity ALPHA_CORAL_OUTTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(-0.50);
 
+    public static final AngularVelocity BETA_ALGAE_INTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.75);
+    public static final AngularVelocity BETA_ALGAE_OUTTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(-0.50);
+
     public static final AngularVelocity BETA_CORAL_INTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.25);
     public static final AngularVelocity BETA_CORAL_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.15);
   }
 
+
   public static class SetpointConstants {
 
-    public static final Angle ALGAE_WRIST_INTAKE_ANGLE = Degrees.of(-100);
+    public static final Angle ALGAE_WRIST_INTAKE_ANGLE = Degrees.of(-90);
+    public static final Angle ALGAE_REEF_REMOVER_ANGLE = Degrees.of(-100);
     public static final Angle ALGAE_WRIST_TURTLE_ANGLE = Degrees.of(0);
-    public static final Angle CORAL_INTAKE_ANGLE = Degrees.of(25);
+
+    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(24);
     public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
-    public static final Angle CORAL_L4_OUTTAKE_ANGLE = Degree.of(-50);
-    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(25);
-    public static final Angle CORAL_L1_ANGLE = Degrees.of(0);
+    public static final Angle CORAL_ZERO_ANGLE = Degrees.of(0);
+    public static final Angle CORAL_L1_OUTTAKE_ANGLE = Degrees.of(-15);
+    public static final Angle CORAL_L2_L3_OUTTAKE_ANGLE = Degrees.of(-30);
+    public static final Angle CORAL_L4_OUTTAKE_ANGLE = Degree.of(-15);
 
     public static final Distance ELEVATOR_TURTLE_HEIGHT = Inches.of(0);
-    public static final Distance L_ONE_HEIGHT = Meters.of(0.125);
-    public static final Distance L_TWO_HEIGHT = Meters.of(0.476);
-    public static final Distance L_THREE_HEIGHT = Meters.of(0.849);
-    public static final Distance L_FOUR_HEIGHT = Inches.of(49.5);
+    public static final Distance L_ONE_CORAL_HEIGHT = Inches.of(0);
+    public static final Distance L_TWO_CORAL_HEIGHT = Inches.of(10);
+    public static final Distance L_THREE_CORAL_HEIGHT = Inches.of(26);
+    public static final Distance L_FOUR_CORAL_HEIGHT = Inches.of(48.5);
+
+    public static final Distance L_ONE_ALGAE_HEIGHT = Inches.of(5);
+    public static final Distance L_TWO_ALGAE_HEIGHT = Inches.of(29); 
+    public static final Distance L_THREE_ALGAE_HEIGHT = Inches.of(46.75);
+
+    public static final Distance ELEVATOR_COLLISION_RANGE_BOTTOM = Inches.of(1); // 0.5 m
+    public static final Distance ELEVATOR_COLLISION_RANGE_TOP = Inches.of(6); // 50 in
   }
 
   public static class DriveControlConstants {
@@ -103,7 +112,5 @@ public final class Constants {
     // replace if needed
     public static final Distance BETA_XTRACK_WIDTH = Inches.of(23.807);
     public static final Distance BETA_YTRACK_WIDTH = Inches.of(27.190);
-
   }
-
 }

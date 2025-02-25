@@ -11,16 +11,19 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
+import frc.robot.Constants.SetpointConstants;
 
 public class AlgaeWristHardware implements AlgaeWristIO {
 
@@ -32,19 +35,19 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         private final ArmFeedforward algaeWristFeedFoward = new ArmFeedforward(STATIC_FF_ALGAE, GRAVITY_FF_ALGAE,
                         VELOCITY_FF_ALGAE);
 
-        private final SparkMax algaeWristSparkMax;
+        private final SparkFlex algaeWristSparkMax;
 
         private final SparkClosedLoopController algaeWristClosedLoopController;
         private final AbsoluteEncoder algaeWristAbsoluteEncoder;
         private final RelativeEncoder algaeWristRelativeEncoder;
-        private static final SparkMaxConfig wristSparkMaxConfig = new SparkMaxConfig();
+        private static final SparkFlexConfig wristSparkMaxConfig = new SparkFlexConfig();
         private static final boolean MOTOR_INVERTED = false;
 
         private static final boolean ABSOLUTE_ENCODER_INVERTED = false;
 
         private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
 
-        private static final double ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 2.0;
+        private static final double ABSOLUTE_ENCODER_POSITION_FACTOR = (2 * Math.PI) / 2.0;
         private static final double ABSOLUTE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 2 / 60.0;
         private static final double RELATIVE_ENCODER_POSITION_FACTOR = (2 * Math.PI) / 40.0; // radians
         private static final double RELATIVE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 2400.0; // radians per second
@@ -64,12 +67,12 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         private static final Angle REVERSE_SOFT_LIMIT = Degrees.of(-110);
         private static final boolean SOFT_LIMIT_ENABLED = true;
 
-        private double goalAngle;
+        private Angle goalAngle = Radians.of(0);
 
         public AlgaeWristHardware() {
                 wristSparkMaxConfig.inverted(MOTOR_INVERTED).idleMode(IDLE_MODE)
                                 .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
-                wristSparkMaxConfig.absoluteEncoder.positionConversionFactor(ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR)
+                wristSparkMaxConfig.absoluteEncoder.positionConversionFactor(ABSOLUTE_ENCODER_POSITION_FACTOR)
                                 .velocityConversionFactor(ABSOLUTE_ENCODER_VELOCITY_FACTOR)
                                 .inverted(ABSOLUTE_ENCODER_INVERTED).zeroCentered(true);
                 wristSparkMaxConfig.encoder.positionConversionFactor(RELATIVE_ENCODER_POSITION_FACTOR)
@@ -87,7 +90,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                                 .reverseSoftLimit(REVERSE_SOFT_LIMIT.in(Radians))
                                 .reverseSoftLimitEnabled(SOFT_LIMIT_ENABLED);
 
-                algaeWristSparkMax = new SparkMax(MotorIdConstants.ALGAE_BETA_WRIST_CAN_ID, MotorType.kBrushless);
+                algaeWristSparkMax = new SparkFlex(MotorIdConstants.ALGAE_BETA_WRIST_CAN_ID, MotorType.kBrushless);
 
                 algaeWristSparkMax.configure(wristSparkMaxConfig, ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);
@@ -97,13 +100,22 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                 algaeWristRelativeEncoder.setPosition(algaeWristAbsoluteEncoder.getPosition());
 
                 algaeWristClosedLoopController = algaeWristSparkMax.getClosedLoopController();
-
         }
 
         @Override
-        public void setGoalAngle(double desiredAngle) {
-                algaeWristClosedLoopController.setReference(desiredAngle, ControlType.kPosition, ClosedLoopSlot.kSlot0,
-                                algaeWristFeedFoward.calculate(desiredAngle + WRIST_ANGULAR_OFFSET.in(Radians),
+        public void setGoalAngle(Setpoint setpoint) {
+                Angle desiredAngle = Radians.of(0);
+                if (setpoint == Setpoint.L_ONE) {
+                        desiredAngle = SetpointConstants.ALGAE_WRIST_INTAKE_ANGLE;
+                } else if (setpoint == Setpoint.L_TWO || setpoint == Setpoint.L_THREE) {
+                        desiredAngle = SetpointConstants.ALGAE_REEF_REMOVER_ANGLE;
+                } else if (setpoint == Setpoint.TURTLE) {
+                        desiredAngle = SetpointConstants.ALGAE_WRIST_TURTLE_ANGLE;
+                }
+                algaeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
+                                ClosedLoopSlot.kSlot0,
+                                algaeWristFeedFoward.calculate(
+                                                desiredAngle.in(Radians) + WRIST_ANGULAR_OFFSET.in(Radians),
                                                 algaeWristAbsoluteEncoder.getVelocity()));
                 // the arm feedforward assumes horizontal = 0. ours is vertical (up) = 0, so add
                 // 90 degrees to get us from encoder position to position for arm feedforward
@@ -113,7 +125,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         @Override
         public void setWristSpeed(double speed) {
                 algaeWristSparkMax.set(speed
-                                + algaeWristFeedFoward.calculate(algaeWristAbsoluteEncoder.getPosition()
+                                + algaeWristFeedFoward.calculate(algaeWristRelativeEncoder.getPosition()
                                                 + WRIST_ANGULAR_OFFSET.in(Radians), speed));
         }
 
@@ -124,11 +136,10 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                 states.wristCurrent = algaeWristSparkMax.getOutputCurrent();
                 states.wristRelativeEncoderAngle = algaeWristRelativeEncoder.getPosition();
                 states.wristAbsoluteEncoderAngle = algaeWristAbsoluteEncoder.getPosition();
-                states.goalAngle = goalAngle;
+                states.goalAngle = goalAngle.in(Radians);
         }
 
         @Override
         public void periodic() {
         }
-
 }

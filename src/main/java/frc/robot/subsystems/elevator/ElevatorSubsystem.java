@@ -4,23 +4,27 @@ import edu.wpi.first.units.measure.Distance;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
-import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CommandFactory.GameMode;
+import frc.robot.CommandFactory.Setpoint;
+import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;;
 
-public class ElevatorSubsystem extends SubsystemBase{
-    
+public class ElevatorSubsystem extends SubsystemBase {
+
     private final ElevatorIO elevatorIO;
     private final ElevatorIOInputs states = new ElevatorIOInputs();
     public boolean profiledPIDEnabled = false;
-    private double goalSetpoint; 
+    private double goalSetpoint;
     private final Distance HEIGHT_TOLERANCE = Inches.of(0.5);
-    private double JOYSTICK_INPUT_TO_CHANGE_IN_POSITION_CONVERSION_FACTOR = 0.002; 
+    private double JOYSTICK_INPUT_TO_CHANGE_IN_POSITION_CONVERSION_FACTOR = 0.002;
 
-    public static final class ElevatorConstants {}
+    public static final class ElevatorConstants {
+    }
 
     public ElevatorSubsystem(ElevatorIO elevatorIO) {
         this.elevatorIO = elevatorIO;
@@ -28,44 +32,78 @@ public class ElevatorSubsystem extends SubsystemBase{
         //initalize the gyro sensor
     }
 
-
-    public Command goToGoalSetpointCmd(Distance position) {
+    public Command goToGoalSetpointCmd(Supplier<Setpoint> setpoint, Supplier<GameMode> gameMode) {
         return this.runOnce(() -> {
-            elevatorIO.setGoalPosition(position); 
-            profiledPIDEnabled = true;
-            goalSetpoint = position.in(Meters); 
+            if (gameMode.get() == GameMode.CORAL) {
+                if (setpoint.get() == Setpoint.TURTLE) {
+                    elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_TURTLE_HEIGHT); // turtle mode = bottom, where
+                                                                                          // intake is
+                    profiledPIDEnabled = true;
+                    goalSetpoint = SetpointConstants.ELEVATOR_TURTLE_HEIGHT.in(Meters);
+                } else if (setpoint.get() == Setpoint.L_ONE) {
+                    elevatorIO.setGoalPosition(SetpointConstants.L_ONE_CORAL_HEIGHT);
+                    profiledPIDEnabled = true;
+                    goalSetpoint = SetpointConstants.L_ONE_CORAL_HEIGHT.in(Meters);
+                } else if (setpoint.get() == Setpoint.L_TWO) {
+                    elevatorIO.setGoalPosition(SetpointConstants.L_TWO_CORAL_HEIGHT);
+                    profiledPIDEnabled = true;
+                    goalSetpoint = SetpointConstants.L_TWO_CORAL_HEIGHT.in(Meters);
+                } else if (setpoint.get() == Setpoint.L_THREE) {
+                    elevatorIO.setGoalPosition(SetpointConstants.L_THREE_CORAL_HEIGHT);
+                    profiledPIDEnabled = true;
+                    goalSetpoint = SetpointConstants.L_THREE_CORAL_HEIGHT.in(Meters);
+                } else if (setpoint.get() == Setpoint.L_FOUR) {
+                    elevatorIO.setGoalPosition(SetpointConstants.L_FOUR_CORAL_HEIGHT);
+                    profiledPIDEnabled = true;
+                    goalSetpoint = SetpointConstants.L_FOUR_CORAL_HEIGHT.in(Meters);
+                } 
+            } else if (gameMode.get() == GameMode.ALGAE) {
+                if (setpoint.get() == Setpoint.TURTLE) {
+                    elevatorIO.setGoalPosition(SetpointConstants.L_ONE_ALGAE_HEIGHT);
+                    profiledPIDEnabled = true;
+                    goalSetpoint = SetpointConstants.ELEVATOR_TURTLE_HEIGHT.in(Meters);
+                } else if (setpoint.get() == Setpoint.L_ONE) {
+                    elevatorIO.setGoalPosition(SetpointConstants.L_ONE_ALGAE_HEIGHT);
+                    profiledPIDEnabled = true;
+                    goalSetpoint = SetpointConstants.L_ONE_ALGAE_HEIGHT.in(Meters);
+                } else if (setpoint.get() == Setpoint.L_TWO) {
+                    elevatorIO.setGoalPosition(SetpointConstants.L_TWO_ALGAE_HEIGHT);
+                    profiledPIDEnabled = true;
+                    goalSetpoint = SetpointConstants.L_TWO_CORAL_HEIGHT.in(Meters);
+                } else if (setpoint.get() == Setpoint.L_THREE) {
+                    elevatorIO.setGoalPosition(SetpointConstants.L_THREE_ALGAE_HEIGHT);
+                    profiledPIDEnabled = true;
+                    goalSetpoint = SetpointConstants.L_THREE_ALGAE_HEIGHT.in(Meters);
+                } 
+            } // if either enum is null, do nothing
         });
     }
 
-    public boolean atGoal(){
+    public boolean atGoal() {
         return (Math.abs(goalSetpoint - elevatorIO.getEncoderPosition()) <= HEIGHT_TOLERANCE.in(Meters));
     }
 
-    public Command incrementGoalPosition(Distance changeInGoalPosition)
-    {
-        return this.run(()-> {
+    public Command incrementGoalPosition(Distance changeInGoalPosition) {
+        return this.run(() -> {
             profiledPIDEnabled = true;
             elevatorIO.incrementGoalPosition(changeInGoalPosition);
         });
     }
 
-    public double getCurrentPosition()
-    {
+    public double getCurrentPosition() {
         return elevatorIO.getEncoderPosition();
     }
 
-    public Command setSpeedManualControl(double speed)
-    {
-        return this.run(() -> elevatorIO.setSpeedManualControl(speed)); 
+    public Command setSpeedManualControl(double speed) {
+        return this.run(() -> elevatorIO.setSpeedManualControl(speed));
     }
-
-
+    
     @Override
     public void periodic() {
         if (!profiledPIDEnabled) {
             elevatorIO.resetSetpointsToCurrentPosition();
         }
-       elevatorIO.calculateNextIntermediateSetpoint();
+        elevatorIO.calculateNextIntermediateSetpoint();
 
         elevatorIO.updateStates(states);
         SmartDashboard.putNumber("Elevator/position", states.position);
@@ -75,8 +113,6 @@ public class ElevatorSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Elevator/goalStatePosition", states.goalPosition);
         SmartDashboard.putNumber("Elevator/output current", states.current);
         SmartDashboard.putNumber("Elevator/intermediate setpoint position", states.intermediateSetpointPosition);
-        SmartDashboard.putBoolean("Elevator/profiled PID enabled", profiledPIDEnabled); 
+        SmartDashboard.putBoolean("Elevator/profiled PID enabled", profiledPIDEnabled);
     }
-
 }
- 
