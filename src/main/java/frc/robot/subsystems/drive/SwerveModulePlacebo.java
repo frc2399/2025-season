@@ -1,46 +1,40 @@
 package frc.robot.subsystems.drive;
 
 public class SwerveModulePlacebo implements SwerveModuleIO {
-
-    public void setDriveEncoderPosition(double position) {}
-
-    public double getDriveEncoderPosition() {
-        return 0.0;
+    @Override
+    public void setDriveEncoderPosition(double position) {
     }
 
-    public void setDesiredDriveSpeedMPS(double speed) {}
-
-    public double getDriveEncoderSpeedMPS() {
-        return 0.0;
-    }
-
+    @Override
     public double getTurnEncoderPosition() {
         return 0.0;
     }
 
-    public void setDesiredTurnAngle(double angle) {}
+    @Override
+    public void setDesiredDriveSpeedMPS(double speed) {
+    }
 
-    public double getDriveBusVoltage() {
+    @Override
+    public double getDriveEncoderSpeedMPS() {
         return 0.0;
     }
 
-    public double getDriveOutput() {
+    @Override
+    public void setDesiredTurnAngle(double angle) {
+    }
+
+    @Override
+    public double getDriveEncoderPosition() {
         return 0.0;
     }
 
-    public double getTurnBusVoltage() {
-        return 0.0;
-    }
-
-    public double getTurnOutput() {
-        return 0.0;
-    }
-
+    @Override
     public double getChassisAngularOffset() {
         return 0.0;
     }
 
-    public String getName() {
-        return "";
+    @Override
+    public void updateStates(SwerveModuleIOStates states) {
+
     }
 }

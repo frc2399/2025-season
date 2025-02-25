@@ -1,118 +1,172 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
+
+import java.util.function.Supplier;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.SetpointConstants;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
+import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
+import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CommandFactory {
 
-    private final DriveSubsystem drive;
-    private final ElevatorSubsystem elevator;
-    private final CoralWristSubsystem coralWrist;
-    //private final NetworkTableEntry ntEntry; //one for each entry we want to read (state changes)
-    private final NetworkTable scoringStateTables;
-    private boolean indicator;
-    //private final NetworkTableEntry newEntry;
-    private final NetworkTableEntry levelEntry ;
-    private final NetworkTableEntry gameModeEntry;
-    private final NetworkTableEntry leftRightEntry;
-    
-    public enum RobotPosition {
-      LEFT,
-      RIGHT,
-    }
+  private final DriveSubsystem drive;
+  private final ElevatorSubsystem elevator;
+  private final CoralWristSubsystem coralWrist;
+  private final AlgaeWristSubsystem algaeWrist;
+  private final AlgaeIntakeSubsystem algaeIntake;
+  private final CoralIntakeSubsystem coralIntake;
 
-    private enum ScoringLevel {
-      L_ONE,
-      L_TWO,
-      L_THREE,
-      L_FOUR
-    }
+  // private final NetworkTableEntry ntEntry; //one for each entry we want to read
+  // (state changes)
+  private final NetworkTable scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");;
+  // private final NetworkTableEntry newEntry;
+  private final NetworkTableEntry levelEntry = scoringStateTables.getEntry("scoringLevel");
+  private final NetworkTableEntry gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
+  private final NetworkTableEntry leftRightEntry = scoringStateTables.getEntry("Position");
 
-    private enum GameMode {
-      CORAL,
-      ALGAE
-    }
+  public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist,
+      AlgaeWristSubsystem algaeWrist, AlgaeIntakeSubsystem algaeIntake, CoralIntakeSubsystem coralIntake) {
+    this.drive = drive;
+    this.elevator = elevator;
+    this.coralWrist = coralWrist;
+    this.algaeWrist = algaeWrist;
+    this.algaeIntake = algaeIntake;
+    this.coralIntake = coralIntake;
+    setGameMode("coral");
+    setScoringLevel("Level 1");
+    // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
+    // newEntry = scoringStateTables.getEntry("Indicator");
+  }
 
-    private static RobotPosition robotPosition;
-    private static ScoringLevel scoringLevel;
-    private static GameMode gameMode;
+  public enum RobotPosition {
+    LEFT,
+    RIGHT,
+  }
 
-    public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist) {
-        this.drive = drive;
-        this.elevator = elevator;
-        this.coralWrist = coralWrist;
-        scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");
-        //ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
-        //newEntry = scoringStateTables.getEntry("Indicator");
-        levelEntry = scoringStateTables.getEntry("scoringLevel");
-        gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
-        leftRightEntry = scoringStateTables.getEntry("Position"); 
-    }
-    
-    public Command turtleMode() {
-        return Commands
-                .parallel(elevator.goToGoalSetpointCmd(Constants.SetpointConstants.ELEVATOR_TURTLE_HEIGHT),
-                        coralWrist.goToSetpointCommand((Constants.SetpointConstants.CORAL_TURTLE_ANGLE).in(Degrees)));
-        }
+  public enum Setpoint {
+    L_ONE,
+    L_TWO,
+    L_THREE,
+    L_FOUR,
+    TURTLE,
+    ZERO
+  }
 
-    public ScoringLevel getScoringLevel() {    
-        if (levelEntry.getString("None").equals("Level 1")) {
-            scoringLevel = ScoringLevel.L_ONE;
-          } else if (levelEntry.getString("None").equals("Level 2")) {
-            scoringLevel = ScoringLevel.L_TWO;
-          } else if (levelEntry.getString("None").equals("Level 3")) {
-            scoringLevel = ScoringLevel.L_THREE;
-          } else if (levelEntry.getString("None").equals("Level 4")) {
-            scoringLevel = ScoringLevel.L_FOUR;
-          }
-        return scoringLevel;
-    }
+  public enum GameMode {
+    CORAL,
+    ALGAE
+  }
 
-    public RobotPosition getRobotPosition() {
-        if (leftRightEntry.getString("None").equals("left")) {
-            robotPosition = RobotPosition.LEFT;
-          } else if (leftRightEntry.getString("None").equals("right")) {
-            robotPosition = RobotPosition.RIGHT;
-          }
-        return robotPosition;
-    }
+  public RobotPosition robotPosition;
+  public GameMode gameMode;
+  public Setpoint setpoint;
 
-    public GameMode getGameMode() {
-        if (gameModeEntry.getString("None").equals("coral")) {
-            gameMode = GameMode.CORAL;
-          } else if (gameModeEntry.getString("None").equals("algae")) {
-            gameMode = GameMode.ALGAE;
-          }
-        return gameMode;
+  public Command turtleMode() {
+    return Commands.sequence(
+        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+        Commands.waitUntil(() -> coralWrist.atGoal()),
+        Commands.parallel(
+            algaeWrist.goToSetpointCommand(() -> Setpoint.TURTLE),
+            elevator.goToGoalSetpointCmd(() -> Setpoint.TURTLE, () -> GameMode.CORAL)),
+        Commands.waitUntil(() -> elevator.atGoal()),
+        coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
+  }
+
+  public Command elevatorBasedOnMode() {
+    return Commands.either(
+        moveElevatorAndAlgaeWrist(),
+        moveElevatorAndCoralWrist(),
+        () -> (getGameMode() == GameMode.ALGAE));
+  }
+
+  public Command moveElevatorAndCoralWrist() {
+    return Commands.sequence(
+        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+        Commands.waitUntil(() -> coralWrist.atGoal()),
+        Commands.parallel(
+            elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.CORAL),
+            coralWrist.goToSetpointCommand(() -> getSetpoint())));
+  }
+
+  public Command moveElevatorAndAlgaeWrist() {
+    return Commands.sequence(
+        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+        Commands.waitUntil(() -> coralWrist.atGoal()),
+        algaeWrist.goToSetpointCommand(() -> getSetpoint()),
+        elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.ALGAE));
+  }
+
+  public Command intakeBasedOnMode(Supplier<GameMode> gameMode) {
+    return Commands.either(
+        algaeIntake.intake(),
+        coralIntake.intake(),
+        () -> (getGameMode() == GameMode.ALGAE));
+  }
+
+  public Command outtakeBasedOnMode(Supplier<GameMode> gameMode) {
+    return Commands.either(
+        algaeIntake.outtake(),
+        coralIntake.outtake(),
+        () -> (getGameMode() == GameMode.ALGAE));
+  }
+
+  public Setpoint getSetpoint() {
+    Setpoint setpoint;
+    if (levelEntry.getString("None").equals("Level 1")) {
+      setpoint = Setpoint.L_ONE;
+    } else if (levelEntry.getString("None").equals("Level 2")) {
+      setpoint = Setpoint.L_TWO;
+    } else if (levelEntry.getString("None").equals("Level 3")) {
+      setpoint = Setpoint.L_THREE;
+    } else if (levelEntry.getString("None").equals("Level 4")) {
+      setpoint = Setpoint.L_FOUR;
+    } else {
+      setpoint = Setpoint.L_ONE;
     }
-    
-        //These were test functions. I'd prefer to keep them now so I can reference how I did certain commands later. 
-        //I'll eventually delete them
-        // public Command testNumber() {
-        //     return Commands
-        //         .runOnce(() -> System.out.println(ntEntry.getDouble(0)));
-        // }
-    
-    //     public Command indicatorChange() {
-    //       return Commands
-    //         .runOnce(() -> {
-    //           if (indicator == true) {
-    //             indicator = false;
-    //           } else {
-    //             indicator = true;
-    //           }
-    //           System.out.println("Indicator is " + indicator);
-    //           newEntry.setBoolean(indicator);
-    //         });
-    // }
+    SmartDashboard.putString("networktablesData/setpoint", setpoint.toString());
+    return setpoint;
+  };
+
+  public RobotPosition getRobotPosition() {
+    if (leftRightEntry.getString("None").equals("left")) {
+      robotPosition = RobotPosition.LEFT;
+    } else if (leftRightEntry.getString("None").equals("right")) {
+      robotPosition = RobotPosition.RIGHT;
+    }
+    SmartDashboard.putString("networktablesData/robotPosition", robotPosition.toString());
+    return robotPosition;
+  }
+
+  public GameMode getGameMode() {
+    if (gameModeEntry.getString("None").equals("coral")) {
+      gameMode = GameMode.CORAL;
+    } else if (gameModeEntry.getString("None").equals("algae")) {
+      gameMode = GameMode.ALGAE;
+    }
+    SmartDashboard.putString("networktablesData/gameMode", gameMode.toString());
+    return gameMode;
+  }
+
+  public void setGameMode(String level) {
+    gameModeEntry.setString(level);
+  }
+
+  public void setScoringLevel(String level) {
+    levelEntry.setString(level);
+  }
+
+  public void setRobotAlignmentPosition(String alignmentValue) {
+    leftRightEntry.setString(alignmentValue);
+  }
 }
-

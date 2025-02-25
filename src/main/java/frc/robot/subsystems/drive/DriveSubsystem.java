@@ -4,9 +4,10 @@
 
 package frc.robot.subsystems.drive;
 
-import java.util.Optional;
-import java.util.function.BooleanSupplier;
+import static edu.wpi.first.units.Units.Meters;
+
 import java.util.function.DoubleSupplier;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
@@ -18,11 +19,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
-
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -32,6 +28,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -43,7 +40,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CommandFactory.RobotPosition;
 import frc.robot.Constants;
@@ -57,8 +53,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private AtomicBoolean atGoal = new AtomicBoolean(true);
         private boolean isBlueAlliance;
 
-        private double velocityXMPS;
-        private double velocityYMPS;
+        
+        private DriveSubsystemStates states = new DriveSubsystemStates();
 
         // correction PID
         private double DRIVE_P = 1.1;
@@ -94,7 +90,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         private final SwerveDriveKinematics DRIVE_KINEMATICS;
 
-        // Slew rate filter variables for controlling lateral acceleration
+        private double currentRotationRate = 0.0;
         private double desiredAngle = 0;
         private Gyro gyro;
 
@@ -104,9 +100,21 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private FieldObject2d frontRightField2dModule = field2d.getObject("front right module");
         private FieldObject2d rearRightField2dModule = field2d.getObject("rear right module");
 
-        private ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
+        private ChassisSpeeds relativeRobotSpeeds;
 
         private Rotation2d lastAngle = new Rotation2d();
+
+        public static class DriveSubsystemStates {
+                public ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
+                public Pose2d pose = new Pose2d();
+                public double poseTheta = 0;
+                public double velocityXMPS = 0;
+                public double velocityYMPS = 0;
+                public double totalVelocity = 0;
+                public double gyroAngleDegrees = 0;
+                public double angularVelocity = 0;
+                public double driveEncoderPos = 0.0;
+        }
 
         StructArrayPublisher<SwerveModuleState> swerveModuleStatePublisher = NetworkTableInstance.getDefault()
                         .getStructArrayTopic("/SmartDashboard/Swerve/Current Modules States", SwerveModuleState.struct)
@@ -173,6 +181,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // This will get the simulated sensor readings that we set
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
+
+                // SmartDashboard.putNumber("drive/relative X speeds", relativeRobotSpeeds.vxMetersPerSecond);
+                // SmartDashboard.putNumber("drive/relative Y speeds", relativeRobotSpeeds.vyMetersPerSecond);
+                // SmartDashboard.putNumber("drive/relative radian speeds", relativeRobotSpeeds.omegaRadiansPerSecond);
                 poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromRadians(gyro.getYaw()),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
@@ -219,6 +231,13 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         lastAngle = lastAngle.plus(Rotation2d.fromRadians(angleChange));
                         gyro.setYaw(lastAngle.getRadians());
                 }
+
+            //    logAndUpdateDriveSubsystemStates();
+
+                frontLeft.updateStates();
+                frontRight.updateStates();
+                rearLeft.updateStates();
+                rearRight.updateStates();
         }
 
         /** Returns the currently-estimated pose of the robot. */
@@ -229,7 +248,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         /** Returns the current odometry rotation. */
         public Rotation2d getRotation() {
                 return getPose().getRotation();
-
         }
 
         /** Resets the odometry to the specified pose. */
@@ -268,7 +286,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 desiredAngle = 0;
                         }
 
-                        double newRotRate = getHeadingCorrectionRotRate(currentAngle, Math.pow(rotRate.getAsDouble(), 5),
+                        double newRotRate = getHeadingCorrectionRotRate(currentAngle,
+                                        Math.pow(rotRate.getAsDouble(), 5),
                                         polarXSpeed, polarYSpeed);
 
                         // Convert the commanded speeds into the correct units for the drivetrain
@@ -286,11 +305,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 rotRateDelivered);
                         }
 
-                        SmartDashboard.putNumber("Swerve/velocity",
-                                        Math.sqrt(
-                                                        Math.pow(relativeRobotSpeeds.vxMetersPerSecond, 2)
-                                                                        + Math.pow(relativeRobotSpeeds.vyMetersPerSecond,
-                                                                                        2)));
+                        SmartDashboard.putNumber("x speed delivered", xSpeedDelivered);
+                        SmartDashboard.putNumber("y speed delivered", ySpeedDelivered);
 
                         var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(relativeRobotSpeeds);
                         SwerveDriveKinematics.desaturateWheelSpeeds(
@@ -331,7 +347,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 rearLeft.setDesiredState(swerveModuleStates[2]);
                 rearRight.setDesiredState(swerveModuleStates[3]);
                 swerveModuleDesiredStatePublisher.set(swerveModuleStates);
-
         }
 
         private void configurePathPlannerLogging() {
@@ -377,9 +392,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         @Override
         public double getLinearSpeed() {
-                velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
-                velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
-                return Math.sqrt((Math.pow(velocityXMPS, 2) + Math.pow(velocityYMPS, 2)));
+                double velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
+                double velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
+                return Math.hypot(velocityXMPS, velocityYMPS);
         }
 
         @Override
@@ -398,14 +413,14 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         // by using a supplier, the robot knows 'hey, this value might change, so i
         // should
         // check it every time i use this object' thus allowing it to change
-        public Command driveToPoseCommand(RobotPosition robotPosition) {
+        public Command driveToPoseCommand(Supplier<RobotPosition> robotPosition) {
                 return this.run(() -> {
                         // basically, bad things can happen if we try to update a normal boolean within
                         // a lambda and access it outside that lambda, but atomic booleans prevent these
                         // risks
                         atGoal.set(false);
 
-                        Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(robotPosition, () -> robotPose,
+                        Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(robotPosition.get(), () -> robotPose,
                                         isBlueAlliance);
                         SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.get().getY());
                         SmartDashboard.putNumber("Swerve/vision/goalPosex", goalPose.get().getX());
@@ -436,5 +451,24 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
                         rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
                         rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));});
+        }
+
+        private void logAndUpdateDriveSubsystemStates() {
+                states.pose = getPose();
+                states.poseTheta = states.pose.getRotation().getDegrees();
+                states.velocityXMPS = getRobotRelativeSpeeds().vxMetersPerSecond;
+                states.velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
+                states.totalVelocity = Math.hypot(states.velocityXMPS, states.velocityYMPS);
+                states.angularVelocity = Units.radiansToDegrees(relativeRobotSpeeds.omegaRadiansPerSecond);
+                states.gyroAngleDegrees = Math.toDegrees(gyro.getYaw());
+
+                SmartDashboard.putNumber("drive/Pose X(m)", states.pose.getX());
+                SmartDashboard.putNumber("drive/Pose Y(m)", states.pose.getY());
+                SmartDashboard.putNumber("drive/Pose Theta(deg)", states.poseTheta);
+                SmartDashboard.putNumber("drive/Linear Velocity X(mps)", states.velocityXMPS);
+                SmartDashboard.putNumber("drive/Linear Velocity Y(mps)", states.velocityYMPS);
+                SmartDashboard.putNumber("drive/Total Velocity(mps)", states.totalVelocity);
+                SmartDashboard.putNumber("drive/Angular Velocity(deg per sec)", states.angularVelocity);
+                SmartDashboard.putNumber("drive/Gyro Angle(deg)", states.gyroAngleDegrees);
         }
 }

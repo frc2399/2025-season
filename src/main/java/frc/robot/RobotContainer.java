@@ -5,10 +5,12 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.CommandFactory.RobotPosition;
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.DriveControlConstants;
-import frc.robot.Constants.SetpointConstants;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
+import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -24,10 +26,13 @@ public class RobotContainer {
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
   private final CoralIntakeSubsystem coralIntake = subsystemFactory.buildCoralIntake();
   private final CoralWristSubsystem coralWrist = subsystemFactory.buildCoralWrist();
+  private final AlgaeIntakeSubsystem algaeIntake = subsystemFactory.buildAlgaeIntake();
+  private final AlgaeWristSubsystem algaeWrist = subsystemFactory.buildAlgaeWrist();
   // this is public because we need to run the visionPoseEstimator periodic from
   // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
-  private CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist);
+  public CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist, algaeWrist, algaeIntake,
+      coralIntake);
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
@@ -57,41 +62,38 @@ public class RobotContainer {
             driverController.getRightX(),
             DriveControlConstants.DRIVE_DEADBAND)),
         DriveControlConstants.FIELD_ORIENTED_DRIVE));
-
-        coralIntake.setDefaultCommand(coralIntake.setZero());
-        coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
-        //elevator.setDefaultCommand(elevator.setSpeedManualControl(0));
+    coralIntake.setDefaultCommand(coralIntake.setZero());
+    algaeIntake.setDefaultCommand(algaeIntake.setRollerSpeed(RPM.of(0)));
+    // elevator.setDefaultCommand(elevator.setSpeedManualControl(0));
   }
 
   private void configureButtonBindingsDriver() {
-    driverController.rightBumper().whileTrue(coralIntake.intake());
-    driverController.leftBumper().whileTrue(coralIntake.outtake());
-    driverController.b().onTrue(gyro.setYaw(0));
+    driverController.rightTrigger().whileTrue(commandFactory.intakeBasedOnMode(()-> commandFactory.gameMode));
+    driverController.leftTrigger().whileTrue(commandFactory.outtakeBasedOnMode(()->commandFactory.gameMode));
+
+    driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
+    driverController.leftBumper().onTrue(drive.driveToPoseCommand(() -> commandFactory.getRobotPosition()));
+
+    driverController.y().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleMode());
-    driverController.rightTrigger()
-        .whileTrue(drive.driveToPoseCommand(RobotPosition.RIGHT))
-        .onFalse(drive.disableDriveToPose());
-    driverController.leftTrigger()
-        .whileTrue(drive.driveToPoseCommand(RobotPosition.LEFT))
-        .onFalse(drive.disableDriveToPose());
   }
 
   private void configureButtonBindingsOperator() {
-    operatorController.rightTrigger()
-        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_INTAKE_ANGLE.in(Radians))
-            .withName("move coral wrist to intake setpoint"));
-    operatorController.rightBumper()
-        .onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_OUTTAKE_ANGLE.in(Radians))
-            .withName("move coral wrist to outtake setpoint"));
-    operatorController.y().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_TWO_HEIGHT));
-    operatorController.x().onTrue(elevator.goToGoalSetpointCmd(SetpointConstants.L_THREE_HEIGHT));
-    //operatorController.b().whileTrue(elevator.incrementGoalPosition(Meters.of(0.005)));
-    operatorController.b().whileTrue(elevator.setSpeedManualControl(0.1));
-    operatorController.a().whileTrue(elevator.setSpeedManualControl(-0.1));  
-    operatorController.leftBumper().onTrue(elevator.goToGoalSetpointCmd(Meters.of(0.0)));
-    //operatorController.a().whileTrue(elevator.incrementGoalPosition(Meters.of(-0.005)));
-    //operatorController.leftBumper().onTrue(coralWrist.goToSetpointCommand(SetpointConstants.CORAL_L1_ANGLE.in(Radians))
-        //.withName("move coral wrist to L1 outtake setpoint"));
+    // these buttons should not be changed for local testing and should function as
+    // a replacement gamepad
+    operatorController.a().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")));
+    operatorController.b().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 2")));
+    operatorController.x().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 3")));
+    operatorController.y().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 4")));
+
+    operatorController.rightBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("right")));
+    operatorController.leftBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("left")));
+
+    operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("algae")));
+    operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("coral")));
+
+    // place local buttons below here, delete before PRing
+
   }
 }
