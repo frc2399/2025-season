@@ -16,7 +16,7 @@ public interface CoralIntakeIO {
 
     public void setZero();
 
-    public void keepCoral();
+    public void outtakeL1();
 
     public boolean isStalling();
 

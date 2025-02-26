@@ -121,5 +121,4 @@ public class ElevatorSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Elevator/intermediate setpoint position", states.intermediateSetpointPosition);
         SmartDashboard.putBoolean("Elevator/profiled PID enabled", profiledPIDEnabled);
     }
-
 }

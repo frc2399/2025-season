@@ -43,6 +43,8 @@ public class CommandFactory {
     this.algaeWrist = algaeWrist;
     this.algaeIntake = algaeIntake;
     this.coralIntake = coralIntake;
+    setGameMode("coral");
+    setScoringLevel("Level 1");
     // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
     // newEntry = scoringStateTables.getEntry("Indicator");
   }
@@ -115,7 +117,8 @@ public class CommandFactory {
   public Command outtakeBasedOnMode(Supplier<GameMode> gameMode) {
     return Commands.either(
         algaeIntake.outtake(),
-        coralIntake.outtake(),
+        coralIntake.outtakeL1(),
+        //coralIntake.outtake(),
         () -> (getGameMode() == GameMode.ALGAE));
   }
 

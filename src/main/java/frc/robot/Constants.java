@@ -65,14 +65,13 @@ public final class Constants {
 
     public static final AngularVelocity ALPHA_CORAL_INTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.75);
     public static final AngularVelocity ALPHA_CORAL_OUTTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(-0.50);
-    public static final AngularVelocity ALPHA_CORAL_HOLDING_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.15);
 
     public static final AngularVelocity BETA_ALGAE_INTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.75);
     public static final AngularVelocity BETA_ALGAE_OUTTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(-0.50);
 
     public static final AngularVelocity BETA_CORAL_INTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.25);
     public static final AngularVelocity BETA_CORAL_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.002);
-    public static final AngularVelocity BETA_CORAL_HOLDING_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.1);
+    public static final AngularVelocity BETA_CORAL_L1_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.0002);
   }
 
 
@@ -97,7 +96,7 @@ public final class Constants {
     public static final Distance L_FOUR_CORAL_HEIGHT = Inches.of(48.5);
 
     public static final Distance L_ONE_ALGAE_HEIGHT = Inches.of(5);
-    public static final Distance L_TWO_ALGAE_HEIGHT = Inches.of(31.5); //measured value was 29 but recieved the value 31.5 from design
+    public static final Distance L_TWO_ALGAE_HEIGHT = Inches.of(29); 
     public static final Distance L_THREE_ALGAE_HEIGHT = Inches.of(46.75);
 
     public static final Distance ELEVATOR_COLLISION_RANGE_BOTTOM = Inches.of(1); // 0.5 m
@@ -115,7 +114,5 @@ public final class Constants {
     // replace if needed
     public static final Distance BETA_XTRACK_WIDTH = Inches.of(23.807);
     public static final Distance BETA_YTRACK_WIDTH = Inches.of(27.190);
-
   }
-
 }

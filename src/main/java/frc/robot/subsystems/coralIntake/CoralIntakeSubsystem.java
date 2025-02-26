@@ -1,5 +1,6 @@
 package frc.robot.subsystems.coralIntake;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,8 +27,8 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         return this.run(() -> io.setZero()).withName("coral intake default");
     }
 
-    public Command keepCoral() {
-        return this.run(() -> io.keepCoral()).withName("hold coral steady");
+    public Command outtakeL1() {
+        return this.run(() -> io.outtakeL1()).withName("run coral outtake L1");
     }
 
     public Command intakeToStall() {

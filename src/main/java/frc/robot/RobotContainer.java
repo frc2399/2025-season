@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.CommandFactory.GameMode;
 import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SetpointConstants;

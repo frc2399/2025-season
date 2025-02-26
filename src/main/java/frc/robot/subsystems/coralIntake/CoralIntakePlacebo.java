@@ -15,12 +15,12 @@ public class CoralIntakePlacebo implements CoralIntakeIO {
     }
 
     @Override
-    public void keepCoral() {
+    public boolean isStalling() {
+        return true;
     }
 
     @Override
-    public boolean isStalling() {
-        return true;
+    public void outtakeL1() {
     }
 
     @Override

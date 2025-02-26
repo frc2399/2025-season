@@ -46,8 +46,10 @@ public class CoralWristSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("coralWrist/wristAppliedVoltage",
                 states.wristAppliedVoltage);
         SmartDashboard.putNumber("coralWrist/wristCurrent", states.wristCurrent);
-        SmartDashboard.putNumber("coralWrist/wristEncoderAngleInDegrees",
+        SmartDashboard.putNumber("coralWrist/wristRelativeEncoderAngleInDegrees",
                 states.wristRelativeEncoderAngle * 180 / Math.PI);
+        SmartDashboard.putNumber("coralWrist/wristAbsoluteEncoderAngleInDegrees",
+                states.wristAbsoluteAngle * 180 / Math.PI);
         SmartDashboard.putNumber("coralWrist/goalAngle", states.goalAngle);
     }
 }
