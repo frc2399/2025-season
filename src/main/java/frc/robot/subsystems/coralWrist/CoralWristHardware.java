@@ -145,7 +145,7 @@ public class CoralWristHardware implements CoralWristIO {
         * coralIntakeWristSparkFlex.getBusVoltage();
     states.wristCurrent = coralIntakeWristSparkFlex.getOutputCurrent();
     states.wristRelativeEncoderAngle = coralIntakeWristRelativeEncoder.getPosition();
-    states.goalAngle = goalAngle.in(Radians);
+    states.goalAngle = goalAngle.in(Degrees);
     states.wristAbsoluteAngle = coralIntakeWristAbsoluteEncoder.getPosition();
     // states.trapezoidProfileGoalAngle = goalState.position;
   }
