@@ -11,6 +11,8 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
@@ -19,8 +21,7 @@ import frc.robot.Constants.MotorIdConstants;
 public class ClimberHardware implements ClimberIO {
 
   public static final class ClimberConstants{
-    private static final double CURRENT_LIMIT = 120; 
-      //TODO: tune!
+    //use motor current limit in constants 
     private static final double SENSOR_TO_MECHANISM_RATIO = 1;
     private static final Voltage FEEDFORWARD_VALUE = Volts.of(1);
     private static final Voltage ARBITRARY_FF_GRAVITY_COMPENSATION = Volts.of(1);
@@ -30,8 +31,8 @@ public class ClimberHardware implements ClimberIO {
     private static final Angle MAX_ANGLE = Degrees.of(90);
   } 
 
-    final TalonFX leftClimber = new TalonFX(MotorIdConstants.LEFT_CLIMBER_CAN_ID);
-    final TalonFX rightClimber  = new TalonFX(MotorIdConstants.RIGHT_CLIMBER_CAN_ID);
+    final SparkFlex leftClimber = new SparkFlex(MotorIdConstants.LEFT_CLIMBER_CAN_ID, MotorType.kBrushless);
+    final SparkFlex rightClimber  = new SparkFlex(MotorIdConstants.RIGHT_CLIMBER_CAN_ID, MotorType.kBrushless);
     final TalonFXConfigurator leftConfigurator = leftClimber.getConfigurator();  
     final TalonFXConfigurator rightConfigurator = rightClimber.getConfigurator(); 
     final TalonFXConfiguration leftConfiguration = new TalonFXConfiguration();
