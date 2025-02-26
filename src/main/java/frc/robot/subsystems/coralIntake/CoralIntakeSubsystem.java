@@ -19,7 +19,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
     }
 
     public Command outtake() {
-        return this.run(() -> io.outtake()).withName("run coral outtake");
+        return this.run(() -> {io.outtake(); hasCoral= false;}).withName("run algae outtake");
     }
 
     public Command setZero() {
