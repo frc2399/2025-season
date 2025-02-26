@@ -94,7 +94,7 @@ public class CommandFactory {
     return Commands.sequence(
         coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
         Commands.waitUntil(() -> coralWrist.atGoal()),
-        elevator.goToGoalSetpointCmd(() -> Setpoint.L_ONE, () -> GameMode.CORAL),
+        elevator.goToGoalSetpointCmd(() -> Setpoint.L_ONE, () -> GameMode.ALGAE),
         Commands.waitUntil(() -> elevator.atGoal()),
         coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
   }
