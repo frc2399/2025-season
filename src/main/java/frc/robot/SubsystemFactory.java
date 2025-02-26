@@ -18,7 +18,7 @@ import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristHardware;
 import frc.robot.subsystems.coralWrist.CoralWristPlacebo;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
-
+import frc.robot.subsystems.coralWrist.CoralWristPlacebo;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.SwerveModule;
 import frc.robot.subsystems.drive.SwerveModuleHardwareNEO;
@@ -199,9 +199,7 @@ public class SubsystemFactory {
 
     public CoralWristSubsystem buildCoralWrist() {
         if (robotType == RobotType.ALPHA) {
-            return new CoralWristSubsystem(new CoralWristHardware(ALPHA_CORAL_ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR,
-                    ALPHA_CORAL_ABSOLUTE_ENCODER_VELOCITY_FACTOR, ALPHA_CORAL_WRIST_SOFT_LIMIT,
-                    MotorIdConstants.CORAL_ALPHA_INTAKE_WRIST_CAN_ID));
+            return new CoralWristSubsystem(new CoralWristPlacebo());
         } else if (robotType == RobotType.BETA) {
             return new CoralWristSubsystem(new CoralWristHardware(BETA_CORAL_ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR,
                     BETA_CORAL_ABSOLUTE_ENCODER_VELOCITY_FACTOR, BETA_CORAL_WRIST_SOFT_LIMIT,
