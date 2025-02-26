@@ -19,7 +19,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
     }
 
     public Command outtake() {
-        return this.run(() -> io.outtake()).withName("run coral outtake");
+        return this.run(() -> {io.outtake(); hasCoral = false;}).withName("run coral outtake");
     }
 
     public Command setZero() {
@@ -50,5 +50,6 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("coralIntake/rightCurrent", states.rightCurrent);
         SmartDashboard.putNumber("coralIntake/leftAppliedVoltage", states.leftAppliedVoltage);
         SmartDashboard.putNumber("coralIntake/rightAppliedVoltage", states.rightAppliedVoltage);
+        SmartDashboard.putBoolean("coralIntake/isStalling", io.isStalling());
     }
 }
