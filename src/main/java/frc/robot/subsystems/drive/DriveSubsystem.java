@@ -173,7 +173,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // SmartDashboard.putNumber("drive/relative radian speeds",
                 // relativeRobotSpeeds.omegaRadiansPerSecond);
                 poseEstimator.updateWithTime(Timer.getFPGATimestamp(),
-                                Rotation2d.fromRadians(gyro.getYaw().in(Degrees)),
+                                Rotation2d.fromRadians(gyro.getYaw().in(Radians)),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
                                                 frontRight.getPosition(),
@@ -237,7 +237,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         /** Resets the odometry to the specified pose. */
         public void resetOdometry(Pose2d pose) {
                 poseEstimator.resetPosition(
-                                Rotation2d.fromRadians(gyro.getYaw().in(Degrees)),
+                                Rotation2d.fromRadians(gyro.getYaw().in(Radians)),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
                                                 frontRight.getPosition(),
@@ -259,7 +259,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         public Command driveCommand(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotRate,
                         Boolean fieldRelative) {
                 return this.run(() -> {
-                        double currentAngle = gyro.getYaw().in(Degrees);
+                        double currentAngle = gyro.getYaw().in(Radians);
                         double r = Math.hypot(xSpeed.getAsDouble(), ySpeed.getAsDouble());
                         double polarAngle = Math.atan2(ySpeed.getAsDouble(), xSpeed.getAsDouble());
                         double polarXSpeed = r * Math.cos(polarAngle);
@@ -283,7 +283,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 relativeRobotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered,
                                                 ySpeedDelivered,
                                                 rotRateDelivered,
-                                                Rotation2d.fromRadians(gyro.getYaw().in(Degrees)));
+                                                Rotation2d.fromRadians(gyro.getYaw().in(Radians)));
                         } else {
                                 relativeRobotSpeeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered,
                                                 rotRateDelivered);
