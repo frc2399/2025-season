@@ -22,7 +22,12 @@ public class CoralIntakeSubsystem extends SubsystemBase {
     }
 
     public Command outtake() {
-        return this.run(() -> io.outtake()).withName("run coral outtake");
+        return this.run(() -> {
+            io.outtake();
+            if (hasCoral) {
+                setCoralEntry(false);
+            }
+        });
     }
 
     public Command setZero() {

@@ -25,7 +25,12 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
         return this.run(() -> io.intake()).withName("run algae intake");
     }
     public Command outtake() {
-        return this.run(() -> io.outtake()).withName("run algae outtake");
+        return this.run(() -> {
+            io.outtake();
+            if (hasAlgae) {
+                setAlgaeEntry(false);
+            }
+        });
     }
     public Command setRollerSpeed(AngularVelocity speed) {
         return this.run(() -> io.setRollerSpeed(speed));
@@ -34,7 +39,6 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     public Command intakeToStall() {
         return this.run(
           () -> {
-            
                 if(io.isStalling() || hasAlgae){
                     io.setRollerSpeed(RPM.of(0));
                     setAlgaeEntry(true);
