@@ -122,8 +122,9 @@ public class CommandFactory {
         Commands.waitUntil(() -> coralWrist.atGoal()),
         Commands.parallel(
             elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.CORAL),
-            coralIntake.passiveIntakeCommand(),
-            coralWrist.goToSetpointCommand(() -> getSetpoint())));
+            coralWrist.goToSetpointCommand(() -> getSetpoint()),
+            Commands.run(
+              () -> coralIntake.passiveIntakeCommand()).until(() -> elevator.atGoal())));
   }
 
   public Command moveElevatorAndAlgaeWrist() {
@@ -131,9 +132,10 @@ public class CommandFactory {
         coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
         Commands.waitUntil(() -> coralWrist.atGoal()), 
         Commands.parallel(
-          algaeIntake.passiveIntakeCommand(),
           algaeWrist.goToSetpointCommand(() -> getSetpoint()),
-          elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.ALGAE)));
+          elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.ALGAE),
+          Commands.run(
+            () -> algaeIntake.passiveIntakeCommand()).until(() -> elevator.atGoal())));
   }
 
   public Command intakeBasedOnMode(Supplier<GameMode> gameMode) {
