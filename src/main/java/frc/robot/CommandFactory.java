@@ -108,7 +108,9 @@ public class CommandFactory {
 
   public Command moveElevatorAndCoralWrist() {
     return Commands.sequence(
-        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+      Commands.parallel(
+            algaeWrist.goToSetpointCommand(() -> Setpoint.TURTLE),
+            coralWrist.goToSetpointCommand(() -> Setpoint.ZERO)),
         Commands.waitUntil(() -> coralWrist.atGoal()),
         Commands.parallel(
             elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.CORAL),
@@ -117,10 +119,8 @@ public class CommandFactory {
 
   public Command moveElevatorAndAlgaeWrist() {
     return Commands.sequence(
-        Commands.parallel(
-            algaeWrist.goToSetpointCommand(() -> Setpoint.TURTLE),
-            coralWrist.goToSetpointCommand(() -> Setpoint.ZERO)),
-        Commands.waitUntil(() -> coralWrist.atGoal()),
+      coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+      Commands.waitUntil(() -> coralWrist.atGoal()),
         algaeWrist.goToSetpointCommand(() -> getSetpoint()),
         elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.ALGAE));
   }
