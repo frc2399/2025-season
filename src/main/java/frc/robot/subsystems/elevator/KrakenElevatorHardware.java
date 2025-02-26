@@ -116,17 +116,17 @@ public class KrakenElevatorHardware implements ElevatorIO {
         closedLoopController = new PositionVoltage(0).withSlot(0);
 
         //limiting kraken utilization
-        elevatorLeftMotorLeader.optimizeBusUtilization();
-        elevatorLeftMotorLeader.getPosition().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
-        elevatorLeftMotorLeader.getVelocity().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
-        elevatorLeftMotorLeader.getClosedLoopOutput().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
+        //elevatorLeftMotorLeader.optimizeBusUtilization();
+        //elevatorLeftMotorLeader.getPosition().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
+        //elevatorLeftMotorLeader.getVelocity().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
+        //elevatorLeftMotorLeader.getClosedLoopOutput().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
         elevatorLeftMotorLeader.getSupplyVoltage().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
         elevatorLeftMotorLeader.getSupplyCurrent().setUpdateFrequency(Constants.SpeedConstants.LOGGING_FREQUENCY_HZ);
 
-        elevatorRightMotorFollower.optimizeBusUtilization();
-        elevatorRightMotorFollower.getPosition().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
-        elevatorRightMotorFollower.getVelocity().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
-        elevatorRightMotorFollower.getClosedLoopOutput().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
+        //elevatorRightMotorFollower.optimizeBusUtilization();
+        //elevatorRightMotorFollower.getPosition().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
+        //elevatorRightMotorFollower.getVelocity().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
+        //elevatorRightMotorFollower.getClosedLoopOutput().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
         elevatorRightMotorFollower.getSupplyVoltage().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
         elevatorRightMotorFollower.getSupplyCurrent().setUpdateFrequency(Constants.SpeedConstants.LOGGING_FREQUENCY_HZ);
 
