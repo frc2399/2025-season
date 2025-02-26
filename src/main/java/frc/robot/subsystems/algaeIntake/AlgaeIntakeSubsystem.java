@@ -55,6 +55,12 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
         hasAlgae = algaeState;
     }
 
+    public Command passiveIntakeCommand() {
+        return this.runOnce(() -> {
+            io.passiveIntake();
+        });
+    }
+
     @Override
     public void periodic() {
         io.updateStates(states);

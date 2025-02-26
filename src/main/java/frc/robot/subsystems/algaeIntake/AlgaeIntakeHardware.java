@@ -100,6 +100,13 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
         }
 
         @Override
+        public void passiveIntake() {
+            if (!isStalling()) {
+                algaeIntakeClosedLoopController.setReference(SpeedConstants.BETA_ALGAE_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
+            }
+        }
+
+        @Override
         public void updateStates(AlgaeIntakeIOStates states) {
                 states.intakeVelocity = getVelocity();
                 states.leftAppliedVoltage = algaeIntakeSparkMax.getAppliedOutput()

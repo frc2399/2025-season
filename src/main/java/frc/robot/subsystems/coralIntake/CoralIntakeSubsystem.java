@@ -45,6 +45,12 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         });
     }
 
+    public Command passiveIntakeCommand() {
+        return this.runOnce(() -> { 
+            io.passiveIntake();
+        });
+    }
+
     public void setCoralEntry(Boolean coralState) {
         coralEntry.setBoolean(coralState);
         hasCoral = coralState;

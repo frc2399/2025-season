@@ -18,5 +18,7 @@ public interface CoralIntakeIO {
 
     public boolean isStalling();
 
+    public void passiveIntake();
+
     public void updateStates(CoralIntakeIOStates states);
 }
