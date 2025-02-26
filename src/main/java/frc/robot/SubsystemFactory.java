@@ -185,7 +185,6 @@ public class SubsystemFactory {
         } else {
             return new AlgaeWristSubsystem(new AlgaeWristPlacebo());
         }
-
     }
 
     public CoralIntakeSubsystem buildCoralIntake() {
@@ -196,7 +195,6 @@ public class SubsystemFactory {
         } else {
             return new CoralIntakeSubsystem(new CoralIntakePlacebo());
         }
-
     }
 
     public CoralWristSubsystem buildCoralWrist() {
@@ -226,5 +224,4 @@ public class SubsystemFactory {
             return new ElevatorSubsystem(new ElevatorPlacebo());
         }
     }
-
 }

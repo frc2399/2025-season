@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CommandFactory.GameMode;
 import frc.robot.CommandFactory.Setpoint;
@@ -115,5 +114,4 @@ public class ElevatorSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Elevator/intermediate setpoint position", states.intermediateSetpointPosition);
         SmartDashboard.putBoolean("Elevator/profiled PID enabled", profiledPIDEnabled);
     }
-
 }
