@@ -18,9 +18,9 @@ public class Gyro {
         if (ally.get() == Alliance.Red) {
             io.setYaw(Math.toRadians(0));
         } else if (ally.get() == Alliance.Blue) {
-            io.setYaw(Math.toRadians(180.0));
+            io.setYaw(180.0);
         } else {
-            io.setYaw(Math.toRadians(0.0));
+            io.setYaw(0.0);
         }
     }
 
@@ -35,5 +35,4 @@ public class Gyro {
     public StatusSignal<edu.wpi.first.units.measure.AngularVelocity> getAngularVelocity() {
         return io.getAngularVelocity();
     }
-
 }

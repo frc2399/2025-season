@@ -1,5 +1,6 @@
 package frc.robot.subsystems.climber;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -11,11 +12,17 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 
 public class ClimberHardware implements ClimberIO {
@@ -29,35 +36,37 @@ public class ClimberHardware implements ClimberIO {
     private static final Voltage I_VALUE = Volts.of(0);
     private static final Voltage D_VALUE = Volts.of(0);
     private static final Angle MAX_ANGLE = Degrees.of(90);
+
+    private static final boolean LEFT_CLIMBER_INVERTED = false;
+    private static final boolean RIGHT_CLIMBER_INVERTED = false;
+
+    private static final SparkBaseConfig.IdleMode CLIMBER_IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
+
   } 
 
     final SparkFlex leftClimber = new SparkFlex(MotorIdConstants.LEFT_CLIMBER_CAN_ID, MotorType.kBrushless);
     final SparkFlex rightClimber  = new SparkFlex(MotorIdConstants.RIGHT_CLIMBER_CAN_ID, MotorType.kBrushless);
-    final TalonFXConfigurator leftConfigurator = leftClimber.getConfigurator();  
-    final TalonFXConfigurator rightConfigurator = rightClimber.getConfigurator(); 
-    final TalonFXConfiguration leftConfiguration = new TalonFXConfiguration();
-    final TalonFXConfiguration rightConfiguration = new TalonFXConfiguration(); 
-    final TalonFXConfiguration globalMotorConfiguration = new TalonFXConfiguration();
+    final SparkFlexConfig leftClimberConfig = new SparkFlexConfig();
+    final SparkFlexConfig rightClimberConfig = new SparkFlexConfig();
     private PositionVoltage climberPIDPositionControl;
     private double goalAngle; 
 
     public ClimberHardware(){
 
-        leftConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; 
-        leftConfiguration.CurrentLimits.withStatorCurrentLimit(ClimberConstants.CURRENT_LIMIT);
-        leftConfiguration.Feedback.withSensorToMechanismRatio(ClimberConstants.SENSOR_TO_MECHANISM_RATIO);
+        leftClimberConfig.inverted(ClimberConstants.LEFT_CLIMBER_INVERTED).idleMode(ClimberConstants.CLIMBER_IDLE_MODE)
+                .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
+        leftClimberConfig.encoder.positionConversionFactor(); //TODO: add conversion factor 
+                
 
-        //rightMotorConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; 
-        rightConfiguration.CurrentLimits.withStatorCurrentLimit(ClimberConstants.CURRENT_LIMIT);
-        rightConfiguration.Feedback.withSensorToMechanismRatio(ClimberConstants.SENSOR_TO_MECHANISM_RATIO);
+        rightClimberConfig.inverted(ClimberConstants.RIGHT_CLIMBER_INVERTED).idleMode(ClimberConstants.CLIMBER_IDLE_MODE)
+                .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
+        rightClimberConfig.encoder.positionConversionFactor();
 
-        rightConfigurator.apply(rightConfiguration); 
-        leftConfigurator.apply(leftConfiguration); 
+        rightClimberConfig.follow(leftClimber.getDeviceId(), true);
 
-        rightClimber.setNeutralMode(NeutralModeValue.Brake);
-        leftClimber.setNeutralMode(NeutralModeValue.Brake);
+        leftClimber.configure(leftClimberConfig, ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+        rightClimber.configure(rightClimberConfig, ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
 
-        rightClimber.setControl(new Follower(leftClimber.getDeviceID(), true));
 
 
         globalMotorConfiguration.Slot0.kS = (ClimberConstants.FEEDFORWARD_VALUE).in(Volts);
