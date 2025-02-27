@@ -21,6 +21,7 @@ import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Seconds;
 
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 import frc.robot.Constants.SpeedConstants;
@@ -115,6 +116,12 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
         public void outtake() {
                 coralIntakeLeftClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_OUTTAKE_SPEED.in(RPM), ControlType.kVelocity);
                 coralIntakeRightClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_OUTTAKE_SPEED.in(RPM), ControlType.kVelocity);
+        }
+
+        @Override
+        public void setOuttakeSpeed(Setpoint setpoint) {
+           coralIntakeLeftClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_OUTTAKE_SPEED.in(RPM), ControlType.kVelocity);
+           coralIntakeRightClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_OUTTAKE_SPEED.in(RPM), ControlType.kVelocity);
         }
 
         @Override

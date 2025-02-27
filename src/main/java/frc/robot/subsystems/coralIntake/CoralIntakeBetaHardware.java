@@ -4,7 +4,9 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
+import frc.robot.Constants.SetpointConstants;
 import frc.robot.Constants.SpeedConstants;
+import frc.robot.CommandFactory.Setpoint;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
@@ -89,6 +91,20 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
         betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_OUTTAKE_SPEED.in(RPM), ControlType.kVelocity);
         velocityGoal = SpeedConstants.BETA_CORAL_OUTTAKE_SPEED.in(RadiansPerSecond) / 5;
     }
+
+    @Override
+    public void setOuttakeSpeed(Setpoint setpoint) {
+        double desiredVelocity = 0;
+        if (setpoint == Setpoint.L_ONE) {
+            desiredVelocity = SpeedConstants.BETA_CORAL_L1_OUTTAKE_SPEED.in(RadiansPerSecond) / 5;    
+        } else {
+             desiredVelocity = SpeedConstants.BETA_CORAL_OUTTAKE_SPEED.in(RadiansPerSecond) / 5;   
+        }
+
+        betaCoralIntakeClosedLoop.setReference(desiredVelocity, ControlType.kVelocity);
+        velocityGoal = desiredVelocity;
+    } 
+
 
     @Override
     public void setZero() {
