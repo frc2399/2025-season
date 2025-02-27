@@ -101,7 +101,6 @@ public class RobotContainer {
         DriveControlConstants.FIELD_ORIENTED_DRIVE));
     coralIntake.setDefaultCommand(coralIntake.setZero());
     algaeIntake.setDefaultCommand(algaeIntake.setRollerSpeed(RPM.of(0)));
-    coralWrist.setDefaultCommand(coralWrist.setWristSpeed(0).withName("coral Wrist default"));
     // elevator.setDefaultCommand(elevator.setSpeedManualControl(0));
   }
 
