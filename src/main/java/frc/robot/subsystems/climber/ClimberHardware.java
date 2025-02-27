@@ -19,6 +19,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
@@ -30,6 +31,10 @@ public class ClimberHardware implements ClimberIO {
   public static final class ClimberConstants{
     //use motor current limit in constants 
     private static final double SENSOR_TO_MECHANISM_RATIO = 1;
+    private static final double kP = 1.0;
+    private static final double kI = 0.0;
+    private static final double kD = 0.0;
+    private static final double kFF = 0.0;
     private static final Voltage FEEDFORWARD_VALUE = Volts.of(1);
     private static final Voltage ARBITRARY_FF_GRAVITY_COMPENSATION = Volts.of(1);
     private static final Voltage P_VALUE = Volts.of(1);
@@ -56,12 +61,13 @@ public class ClimberHardware implements ClimberIO {
         leftClimberConfig.inverted(ClimberConstants.LEFT_CLIMBER_INVERTED).idleMode(ClimberConstants.CLIMBER_IDLE_MODE)
                 .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
         leftClimberConfig.encoder.positionConversionFactor(); //TODO: add conversion factor 
+        leftClimberConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .pidf()
                 
 
         rightClimberConfig.inverted(ClimberConstants.RIGHT_CLIMBER_INVERTED).idleMode(ClimberConstants.CLIMBER_IDLE_MODE)
                 .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
         rightClimberConfig.encoder.positionConversionFactor();
-
         rightClimberConfig.follow(leftClimber.getDeviceId(), true);
 
         leftClimber.configure(leftClimberConfig, ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
