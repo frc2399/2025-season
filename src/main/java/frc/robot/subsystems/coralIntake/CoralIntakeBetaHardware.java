@@ -86,11 +86,11 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
         velocityGoal = SpeedConstants.BETA_CORAL_INTAKE_SPEED.in(RadiansPerSecond) / 5;
     }
 
-    @Override
-    public void outtake() {
-        betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_OUTTAKE_SPEED.in(RPM), ControlType.kVelocity);
-        velocityGoal = SpeedConstants.BETA_CORAL_OUTTAKE_SPEED.in(RadiansPerSecond) / 5;
-    }
+//     @Override
+//     public void outtake() {
+//         betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_OUTTAKE_SPEED.in(RPM), ControlType.kVelocity);
+//         velocityGoal = SpeedConstants.BETA_CORAL_OUTTAKE_SPEED.in(RadiansPerSecond) / 5;
+//     }
 
     @Override
     public void setOuttakeSpeed(Setpoint setpoint) {
