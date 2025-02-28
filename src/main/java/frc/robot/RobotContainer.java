@@ -71,7 +71,7 @@ public class RobotContainer {
 
     driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
 
-    driverController.y().onTrue(gyro.setYaw(0.0));
+    driverController.y().onTrue(gyro.setYaw(Degrees.of(0.0)));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleBasedOnMode());
   }
