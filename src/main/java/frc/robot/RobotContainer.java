@@ -45,6 +45,7 @@ public class RobotContainer {
   }
 
   public void disableSubsystems() {
+    drive.disableDriveToPose();
     elevator.profiledPIDEnabled = false;
   }
 
@@ -70,6 +71,7 @@ public class RobotContainer {
     driverController.leftTrigger().whileTrue(commandFactory.outtakeBasedOnMode(() -> commandFactory.gameMode));
 
     driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
+    driverController.leftBumper().onTrue(drive.driveToPoseCommand(() -> commandFactory.getRobotPosition())).onFalse(drive.disableDriveToPose());
 
     driverController.y().onTrue(gyro.setYaw(Degrees.of(0.0)));
     driverController.x().whileTrue(drive.setX());
