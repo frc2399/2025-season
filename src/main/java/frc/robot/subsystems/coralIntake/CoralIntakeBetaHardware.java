@@ -4,7 +4,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
-import frc.robot.Constants.SetpointConstants;
 import frc.robot.Constants.SpeedConstants;
 import frc.robot.CommandFactory.Setpoint;
 

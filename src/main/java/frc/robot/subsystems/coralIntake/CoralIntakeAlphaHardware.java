@@ -12,6 +12,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -19,6 +20,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import frc.robot.CommandFactory.Setpoint;
@@ -46,7 +48,7 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
         private static final double ENCODER_ROLLER_POSITION_FACTOR = (2 * Math.PI); // radians
         private static final double ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 60.0; // radians per second
 
-        private static final double INTAKE_MOTOR_P = 0.5;
+        private static final double INTAKE_MOTOR_P = 0.0005;
         private static final double INTAKE_MOTOR_I = 0.0;
         private static final double INTAKE_MOTOR_D = 0.0;
         private static final double INTAKE_MOTOR_FF = 0.1;
@@ -120,9 +122,19 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
 
         @Override
         public void setOuttakeSpeed(Setpoint setpoint) {
-           coralIntakeLeftClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_OUTTAKE_SPEED.in(RPM), ControlType.kVelocity);
-           coralIntakeRightClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_OUTTAKE_SPEED.in(RPM), ControlType.kVelocity);
-        }
+                double desiredVelocity = 0;
+                if (setpoint == Setpoint.L_ONE) {
+                    desiredVelocity = SpeedConstants.ALPHA_CORAL_L1_OUTTAKE_SPEED.in(RPM);
+                    coralIntakeLeftClosedLoopController.setReference(desiredVelocity, ControlType.kVelocity);
+                    coralIntakeRightClosedLoopController.setReference(desiredVelocity, ControlType.kVelocity);   
+                } else {
+                     desiredVelocity = SpeedConstants.ALPHA_CORAL_OUTTAKE_SPEED.in(RPM);
+                     coralIntakeLeftClosedLoopController.setReference(desiredVelocity, ControlType.kVelocity);
+                     coralIntakeRightClosedLoopController.setReference(desiredVelocity, ControlType.kVelocity);  
+                }
+
+                SmartDashboard.putNumber("coralIntake/desiredVelocity", desiredVelocity);
+            }
 
         @Override
         public void setZero() {
