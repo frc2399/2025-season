@@ -1,4 +1,6 @@
 package frc.robot.subsystems.coralIntake;
+import java.util.function.Supplier;
+import frc.robot.CommandFactory.Setpoint;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,8 +21,8 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         return this.run(() -> io.intake()).withName("run coral intake");
     }
 
-    public Command outtake() {
-        return this.run(() -> io.outtake()).withName("run coral outtake");
+    public Command setOuttakeSpeed(Supplier<Setpoint> setpoint) {
+        return this.run(() -> io.setOuttakeSpeed(setpoint.get())).withName("change outtaking speed for each scoring level");
     }
 
     public Command setZero() {

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.coralIntake;
 
+import frc.robot.CommandFactory.Setpoint;
+
 public class CoralIntakePlacebo implements CoralIntakeIO {
 
     @Override
@@ -7,7 +9,7 @@ public class CoralIntakePlacebo implements CoralIntakeIO {
     }
 
     @Override
-    public void outtake() {
+    public void setOuttakeSpeed(Setpoint setpoint) {
     }
 
     @Override
