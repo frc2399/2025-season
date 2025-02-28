@@ -72,13 +72,29 @@ public class CommandFactory {
   public GameMode gameMode;
   public Setpoint setpoint;
 
-  public Command turtleMode() {
+  public Command turtleBasedOnMode() {
+    return Commands.either(
+        algaeTurtleMode(),
+        coralTurtleMode(),
+        () -> (getGameMode() == GameMode.ALGAE));
+  }
+
+  public Command coralTurtleMode() {
     return Commands.sequence(
         coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
         Commands.waitUntil(() -> coralWrist.atGoal()),
         Commands.parallel(
             algaeWrist.goToSetpointCommand(() -> Setpoint.TURTLE),
             elevator.goToGoalSetpointCmd(() -> Setpoint.TURTLE, () -> GameMode.CORAL)),
+        Commands.waitUntil(() -> elevator.atGoal()),
+        coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
+  }
+
+  public Command algaeTurtleMode() {
+    return Commands.sequence(
+        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+        Commands.waitUntil(() -> coralWrist.atGoal()),
+        elevator.goToGoalSetpointCmd(() -> Setpoint.L_ONE, () -> GameMode.ALGAE),
         Commands.waitUntil(() -> elevator.atGoal()),
         coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
   }
@@ -92,7 +108,9 @@ public class CommandFactory {
 
   public Command moveElevatorAndCoralWrist() {
     return Commands.sequence(
-        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+      Commands.parallel(
+            algaeWrist.goToSetpointCommand(() -> Setpoint.TURTLE),
+            coralWrist.goToSetpointCommand(() -> Setpoint.ZERO)),
         Commands.waitUntil(() -> coralWrist.atGoal()),
         Commands.parallel(
             elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.CORAL),
@@ -101,8 +119,8 @@ public class CommandFactory {
 
   public Command moveElevatorAndAlgaeWrist() {
     return Commands.sequence(
-        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
-        Commands.waitUntil(() -> coralWrist.atGoal()),
+      coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+      Commands.waitUntil(() -> coralWrist.atGoal()),
         algaeWrist.goToSetpointCommand(() -> getSetpoint()),
         elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.ALGAE));
   }
