@@ -76,7 +76,6 @@ public final class Constants {
     public static final AngularVelocity BETA_CORAL_PASSIVE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.0005);
   }
 
-
   public static class SetpointConstants {
 
     public static final Angle ALGAE_WRIST_INTAKE_ANGLE = Degrees.of(-90);
@@ -96,8 +95,8 @@ public final class Constants {
     public static final Distance L_THREE_CORAL_HEIGHT = Inches.of(26);
     public static final Distance L_FOUR_CORAL_HEIGHT = Inches.of(48.5);
 
-    public static final Distance L_ONE_ALGAE_HEIGHT = Inches.of(5);
-    public static final Distance L_TWO_ALGAE_HEIGHT = Inches.of(29); 
+    public static final Distance L_ONE_ALGAE_HEIGHT = Inches.of(10);
+    public static final Distance L_TWO_ALGAE_HEIGHT = Inches.of(29);
     public static final Distance L_THREE_ALGAE_HEIGHT = Inches.of(46.75);
 
     public static final Distance ELEVATOR_COLLISION_RANGE_BOTTOM = Inches.of(1); // 0.5 m
