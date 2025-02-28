@@ -1,16 +1,14 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Meters;
-
 import java.util.function.Supplier;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
+import frc.robot.subsystems.coralIntake.CoralIntakeAlphaHardware;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -74,13 +72,29 @@ public class CommandFactory {
   public GameMode gameMode;
   public Setpoint setpoint;
 
-  public Command turtleMode() {
+  public Command turtleBasedOnMode() {
+    return Commands.either(
+        algaeTurtleMode(),
+        coralTurtleMode(),
+        () -> (getGameMode() == GameMode.ALGAE));
+  }
+
+  public Command coralTurtleMode() {
     return Commands.sequence(
         coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
         Commands.waitUntil(() -> coralWrist.atGoal()),
         Commands.parallel(
             algaeWrist.goToSetpointCommand(() -> Setpoint.TURTLE),
             elevator.goToGoalSetpointCmd(() -> Setpoint.TURTLE, () -> GameMode.CORAL)),
+        Commands.waitUntil(() -> elevator.atGoal()),
+        coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
+  }
+
+  public Command algaeTurtleMode() {
+    return Commands.sequence(
+        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+        Commands.waitUntil(() -> coralWrist.atGoal()),
+        elevator.goToGoalSetpointCmd(() -> Setpoint.L_ONE, () -> GameMode.ALGAE),
         Commands.waitUntil(() -> elevator.atGoal()),
         coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
   }
@@ -94,7 +108,9 @@ public class CommandFactory {
 
   public Command moveElevatorAndCoralWrist() {
     return Commands.sequence(
-        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+      Commands.parallel(
+            algaeWrist.goToSetpointCommand(() -> Setpoint.TURTLE),
+            coralWrist.goToSetpointCommand(() -> Setpoint.ZERO)),
         Commands.waitUntil(() -> coralWrist.atGoal()),
         Commands.parallel(
             elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.CORAL),
@@ -103,8 +119,8 @@ public class CommandFactory {
 
   public Command moveElevatorAndAlgaeWrist() {
     return Commands.sequence(
-        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
-        Commands.waitUntil(() -> coralWrist.atGoal()),
+      coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+      Commands.waitUntil(() -> coralWrist.atGoal()),
         algaeWrist.goToSetpointCommand(() -> getSetpoint()),
         elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.ALGAE));
   }
@@ -119,7 +135,7 @@ public class CommandFactory {
   public Command outtakeBasedOnMode(Supplier<GameMode> gameMode) {
     return Commands.either(
         algaeIntake.outtake(),
-        coralIntake.outtake(),
+        coralIntake.setOuttakeSpeed(() -> getSetpoint()),
         () -> (getGameMode() == GameMode.ALGAE));
   }
 
