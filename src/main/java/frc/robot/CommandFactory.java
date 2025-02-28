@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
+import frc.robot.subsystems.coralIntake.CoralIntakeAlphaHardware;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -132,7 +133,7 @@ public class CommandFactory {
   public Command outtakeBasedOnMode(Supplier<GameMode> gameMode) {
     return Commands.either(
         algaeIntake.outtake(),
-        coralIntake.outtake(),
+        coralIntake.setOuttakeSpeed(() -> getSetpoint()),
         () -> (getGameMode() == GameMode.ALGAE));
   }
 
