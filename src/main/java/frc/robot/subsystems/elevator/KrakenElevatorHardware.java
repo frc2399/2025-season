@@ -7,15 +7,12 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
-import java.util.function.Supplier;
-
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -27,9 +24,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.MotorIdConstants;
-import frc.robot.Constants.SetpointConstants;
 
 public class KrakenElevatorHardware implements ElevatorIO {
 
@@ -45,7 +40,8 @@ public class KrakenElevatorHardware implements ElevatorIO {
         // (1 rot input/15 rot output) -> maxplanetary_conversion
         // (1.76 * pi inches) -> sprocket_conversion
         // (2) -> elevator_travel -> elevator travels 2 inches per inch of chain
-        // 1 / (maxplanetary_conversion * sprocket_conversion * elevator_travel * inch_to_meter)
+        // 1 / (maxplanetary_conversion * sprocket_conversion * elevator_travel *
+        // inch_to_meter)
         private static final Distance ELEVATOR_ROTOR_TO_SENSOR_RATIO = Inches.of(1);
         private static final double kDt = 0.02;
         private static final Current KRAKEN_CURRENT_LIMIT = Amps.of(80);
