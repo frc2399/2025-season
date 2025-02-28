@@ -217,7 +217,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         gyro.setYaw(lastAngle.getRadians());
                 }
 
-                logAndUpdateDriveSubsystemStates();
+                // logAndUpdateDriveSubsystemStates();
+                alert.set(gyro.hasFault());
 
                 frontLeft.updateStates();
                 frontRight.updateStates();
@@ -396,7 +397,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 states.totalVelocity = Math.hypot(states.velocityXMPS, states.velocityYMPS);
                 states.angularVelocity = Units.radiansToDegrees(relativeRobotSpeeds.omegaRadiansPerSecond);
                 states.gyroAngleDegrees = Math.toDegrees(gyro.getYaw());
-                alert.set(gyro.hasFault());
 
                 SmartDashboard.putNumber("drive/Pose X(m)", states.pose.getX());
                 SmartDashboard.putNumber("drive/Pose Y(m)", states.pose.getY());
