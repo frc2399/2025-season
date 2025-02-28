@@ -74,7 +74,7 @@ public class RobotContainer {
 
     driverController.y().onTrue(gyro.setYaw(0.0));
     driverController.x().whileTrue(drive.setX());
-    driverController.a().onTrue(commandFactory.turtleMode());
+    driverController.a().onTrue(commandFactory.turtleBasedOnMode());
   }
 
   private void configureButtonBindingsOperator() {
