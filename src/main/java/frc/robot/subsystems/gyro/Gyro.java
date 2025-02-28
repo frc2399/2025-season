@@ -15,13 +15,14 @@ public class Gyro {
     public Gyro(GyroIO io) {
         this.io = io;
         Optional<Alliance> ally = DriverStation.getAlliance();
-        if (ally.get() == Alliance.Red) {
-            io.setYaw(Math.toRadians(0));
-        } else if (ally.get() == Alliance.Blue) {
-            io.setYaw(180.0);
-        } else {
-            io.setYaw(0.0);
-        }
+        // if (ally.get() == Alliance.Red) {
+        //     io.setYaw(Math.toRadians(0));
+        // } else if (ally.get() == Alliance.Blue) {
+        //     io.setYaw(180.0);
+        // } else {
+        //     io.setYaw(0.0);
+        // }
+        io.setYaw(0);
     }
 
     public double getYaw() {
