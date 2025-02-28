@@ -19,16 +19,6 @@ public class ClimberSubsystem extends SubsystemBase {
             //add a line setting the climber to its initial position 
     }
 
-    public double getAngle()
-    {
-        return climberIO.getAngle(); 
-    }
-
-    public double getVelocity()
-    {
-        return climberIO.getVelocity(); 
-    }
-
     public Command goToAngle(Angle goalAngle)
     {
         return this.run(() -> climberIO.setGoalAngle(goalAngle));
@@ -37,5 +27,10 @@ public class ClimberSubsystem extends SubsystemBase {
     public Command setSpeed(double speed)
     {
         return this.run(() -> climberIO.setSpeed(speed));
+    }
+
+    public Command setServoAngle(Angle goalAngle)
+    {
+        return this.run(() -> climberIO.setServoAngle(goalAngle)); 
     }
 }

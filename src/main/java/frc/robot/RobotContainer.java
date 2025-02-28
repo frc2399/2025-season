@@ -80,6 +80,8 @@ public class RobotContainer {
 
     driverController.rightBumper().whileTrue(climber.setSpeed(0.1)); 
     driverController.leftBumper().whileTrue(climber.setSpeed(-0.5)); 
+
+    driverController.a().onTrue(climber.setServoAngle(Degrees.of(90.0))); 
   }
 
   private void configureButtonBindingsOperator() {

@@ -22,13 +22,16 @@ import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.Servo;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 import frc.robot.subsystems.coralWrist.CoralWristHardware;
@@ -46,6 +49,12 @@ public class ClimberHardware implements ClimberIO {
     private static final double CLIMBER_MOTOR_MIN_OUTPUT = -1.0;
     private static final double CLIMBER_MOTOR_MAX_OUTPUT = 1.0;
     private static final Angle MAX_ANGLE = Degrees.of(90);
+    private static final Angle CLIMBER_POSITION_CONVERSION_FACTOR = Radians.of(0.0235);
+    private static final double CLIMBER_VELOCITY_CONVERSION_FACTOR = (CLIMBER_POSITION_CONVERSION_FACTOR).in(Radians) / 60.0; 
+    private static final double CLIMBER_STATIC_FF = 0.0;
+    private static final double CLIMBER_GRAVITY_FF = 0.0;
+    private static final double CLIMBER_VELOCITY_FF = 0.0; 
+    private static final int SERVO_CHANNEL = 1; 
 
     private static final boolean LEFT_CLIMBER_INVERTED = false;
     private static final boolean RIGHT_CLIMBER_INVERTED = false;
@@ -54,25 +63,29 @@ public class ClimberHardware implements ClimberIO {
 
   } 
 
-    final SparkFlex leftClimber = new SparkFlex(MotorIdConstants.LEFT_CLIMBER_CAN_ID, MotorType.kBrushless);
-    final SparkFlex rightClimber  = new SparkFlex(MotorIdConstants.RIGHT_CLIMBER_CAN_ID, MotorType.kBrushless);
-    final SparkFlexConfig leftClimberConfig = new SparkFlexConfig();
-    final SparkFlexConfig rightClimberConfig = new SparkFlexConfig();
+    final SparkMax leftClimber = new SparkMax(MotorIdConstants.LEFT_CLIMBER_CAN_ID, MotorType.kBrushless);
+    final SparkMax rightClimber  = new SparkMax(MotorIdConstants.RIGHT_CLIMBER_CAN_ID, MotorType.kBrushless);
+    final SparkMaxConfig leftClimberConfig = new SparkMaxConfig();
+    final SparkMaxConfig rightClimberConfig = new SparkMaxConfig();
     private final RelativeEncoder leftClimberEncoder = leftClimber.getEncoder();
     private final SparkClosedLoopController climberClosedLoopController = leftClimber.getClosedLoopController();
-    private PositionVoltage climberPIDPositionControl;
-    private double goalAngle; 
+    private final ArmFeedforward climberFeedforward = new ArmFeedforward(ClimberConstants.CLIMBER_STATIC_FF, ClimberConstants.CLIMBER_GRAVITY_FF, ClimberConstants.CLIMBER_VELOCITY_FF); 
+    private Angle climberGoalAngle = Radians.of(0.0);
+    private Angle servoGoalAngle = Radians.of(0.0);
+    private final Servo climberServo = new Servo(ClimberConstants.SERVO_CHANNEL); 
 
     public ClimberHardware(){
 
         leftClimberConfig.inverted(ClimberConstants.LEFT_CLIMBER_INVERTED).idleMode(ClimberConstants.CLIMBER_IDLE_MODE)
-                .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
+                .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
 
-        leftClimberConfig.encoder.positionConversionFactor(); //TODO: add conversion factor AND add velocity converison factor
+        leftClimberConfig.encoder.positionConversionFactor((ClimberConstants.CLIMBER_POSITION_CONVERSION_FACTOR).in(Radians))
+                .velocityConversionFactor(ClimberConstants.CLIMBER_VELOCITY_CONVERSION_FACTOR);
 
         leftClimberConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .pidf(ClimberConstants.P_VALUE, ClimberConstants.I_VALUE, ClimberConstants.D_VALUE, ClimberConstants.FEEDFORWARD_VALUE)
                 .outputRange(ClimberConstants.CLIMBER_MOTOR_MIN_OUTPUT, ClimberConstants.CLIMBER_MOTOR_MAX_OUTPUT);
+    
         //TODO: uncomment once max angle is correct!
         // leftClimberConfig.softLimit
         //         .forwardSoftLimit(ClimberConstants.MAX_ANGLE)
@@ -84,7 +97,8 @@ public class ClimberHardware implements ClimberIO {
         rightClimberConfig.inverted(ClimberConstants.RIGHT_CLIMBER_INVERTED).idleMode(ClimberConstants.CLIMBER_IDLE_MODE)
                 .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
 
-        rightClimberConfig.encoder.positionConversionFactor();
+        rightClimberConfig.encoder.positionConversionFactor(ClimberConstants.CLIMBER_POSITION_CONVERSION_FACTOR.in(Radians))
+                .velocityConversionFactor(ClimberConstants.CLIMBER_VELOCITY_CONVERSION_FACTOR);
 
         rightClimberConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .pidf(ClimberConstants.P_VALUE, ClimberConstants.I_VALUE, ClimberConstants.D_VALUE, ClimberConstants.FEEDFORWARD_VALUE)
@@ -99,40 +113,41 @@ public class ClimberHardware implements ClimberIO {
 
         rightClimberConfig.follow(leftClimber.getDeviceId(), true);
 
-        leftClimber.configure(leftClimberConfig, ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-        rightClimber.configure(rightClimberConfig, ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+        leftClimber.configure(leftClimberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        rightClimber.configure(rightClimberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        
         leftClimberEncoder.setPosition(0); 
     }
 
 
-    public double getAngle(){
-        return leftClimberEncoder.getPosition(); 
-    }
-
     public void setGoalAngle(Angle desiredAngle){
         climberClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
-            ClosedLoopSlot.kSlot0,
-            climberFeedForward.calculate(desiredAngle.in(Radians), leftClimberEncoder.getVelocity());
-    
-        goalAngle = desiredAngle.in(Degrees); 
+                                ClosedLoopSlot.kSlot0,
+                                climberFeedforward.calculate(
+                                                desiredAngle.in(Radians),
+                                                leftClimberEncoder.getVelocity()));
+        climberGoalAngle = desiredAngle; 
     } 
   
     public void setSpeed(double speed)
     {
-        leftClimber.setControl(new DutyCycleOut(speed));
+        leftClimber.set(speed + climberFeedforward.calculate(leftClimberEncoder.getPosition(), speed));
     }
 
-    public double getVelocity()
+    public void setServoAngle(Angle desiredAngle)
     {
-        return leftClimber.getVelocity().getValueAsDouble(); 
+        climberServo.setAngle(desiredAngle.in(Degrees));
+        servoGoalAngle = desiredAngle;
     }
 
     public void updateStates(ClimberIOInputs inputs){
-        inputs.angle = getAngle(); 
-        inputs.velocity = getVelocity();
-        inputs.goalAngle = goalAngle; 
+        inputs.climberAngle = leftClimberEncoder.getPosition(); 
+        inputs.climberVelocity = leftClimberEncoder.getVelocity();
+        inputs.climberGoalAngle = climberGoalAngle.in(Radians); 
+
+        inputs.servoAngle = climberServo.getAngle();
+        inputs.servoVelocity = climberServo.getSpeed(); 
+        inputs.servoGoalAngle = servoGoalAngle.in(Radians);
     }
 
 }

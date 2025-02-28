@@ -16,6 +16,10 @@ public class ClimberPlacebo implements ClimberIO{
         return 0.0; 
     }
 
+    public void setServoAngle(Angle desiredAngle){
+
+    }
+
     public void updateStates(ClimberIOInputs inputs){}
 
 
