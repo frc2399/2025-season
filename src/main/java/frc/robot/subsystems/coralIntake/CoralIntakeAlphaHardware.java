@@ -114,12 +114,6 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
                 coralIntakeRightClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_INTAKE_SPEED.in(RPM), ControlType.kVelocity);
         }
 
-        // @Override 
-        // public void outtake() {
-        //         coralIntakeLeftClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_OUTTAKE_SPEED.in(RPM), ControlType.kVelocity);
-        //         coralIntakeRightClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_OUTTAKE_SPEED.in(RPM), ControlType.kVelocity);
-        // }
-
         @Override
         public void setOuttakeSpeed(Setpoint setpoint) {
                 double desiredVelocity = 0;

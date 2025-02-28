@@ -14,8 +14,6 @@ public interface CoralIntakeIO {
 
     public void intake();
 
-    // public void outtake();
-
     public void setOuttakeSpeed(Setpoint setpoint);
 
     public void setZero();

@@ -8,10 +8,6 @@ public class CoralIntakePlacebo implements CoralIntakeIO {
     public void intake() {
     }
 
-    // @Override
-    // public void outtake() {
-    // }
-
     @Override
     public void setOuttakeSpeed(Setpoint setpoint) {
     }
