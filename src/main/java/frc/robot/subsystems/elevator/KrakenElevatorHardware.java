@@ -122,7 +122,6 @@ public class KrakenElevatorHardware implements ElevatorIO {
         //elevatorLeftMotorLeader.getClosedLoopOutput().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
         //elevatorLeftMotorLeader.getSupplyVoltage().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
         //elevatorLeftMotorLeader.getSupplyCurrent().setUpdateFrequency(Constants.SpeedConstants.LOGGING_FREQUENCY_HZ);
-        elevatorLeftMotorLeader.optimizeBusUtilization();
         SmartDashboard.putNumber("Elevator/position update frequency", elevatorLeftMotorLeader.getPosition().getAppliedUpdateFrequency());
         SmartDashboard.putNumber("Elevator/velocity update frequency", elevatorLeftMotorLeader.getVelocity().getAppliedUpdateFrequency());
         SmartDashboard.putNumber("Elevator/closed loop output update frequency", elevatorLeftMotorLeader.getClosedLoopOutput().getAppliedUpdateFrequency());
@@ -134,7 +133,6 @@ public class KrakenElevatorHardware implements ElevatorIO {
         //elevatorRightMotorFollower.getClosedLoopOutput().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
         //elevatorRightMotorFollower.getSupplyVoltage().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
         //elevatorRightMotorFollower.getSupplyCurrent().setUpdateFrequency(Constants.SpeedConstants.LOGGING_FREQUENCY_HZ);
-        elevatorRightMotorFollower.optimizeBusUtilization();
 
     }
 
