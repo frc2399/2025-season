@@ -19,7 +19,6 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
