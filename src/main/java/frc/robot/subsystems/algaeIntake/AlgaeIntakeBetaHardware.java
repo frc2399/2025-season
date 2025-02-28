@@ -25,7 +25,7 @@ import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 import frc.robot.Constants.SpeedConstants;
 
-public class AlgaeIntakeHardware implements AlgaeIntakeIO {
+public class AlgaeIntakeBetaHardware implements AlgaeIntakeIO {
         private final SparkMax algaeIntakeSparkMax;
         private final SparkClosedLoopController algaeIntakeClosedLoopController;
         private final RelativeEncoder algaeIntakeEncoder;
@@ -52,7 +52,7 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
 
         private static final Debouncer algaeIntakeDebouncer = new Debouncer(ALGAE_INTAKE_STALL_TIME.in(Seconds));
 
-        public AlgaeIntakeHardware() {
+        public AlgaeIntakeBetaHardware() {
                 algaeIntakeSparkMaxConfig.inverted(LEFT_MOTOR_INVERTED).idleMode(IDLE_MODE)
                                 .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
                 algaeIntakeSparkMaxConfig.encoder.positionConversionFactor(ENCODER_POSITION_FACTOR)

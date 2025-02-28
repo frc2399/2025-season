@@ -9,7 +9,7 @@ import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristHardware;
 import frc.robot.subsystems.algaeWrist.AlgaeWristPlacebo;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
-import frc.robot.subsystems.algaeIntake.AlgaeIntakeHardware;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakeBetaHardware;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakePlacebo;
 import frc.robot.subsystems.coralIntake.CoralIntakeAlphaHardware;
 import frc.robot.subsystems.coralIntake.CoralIntakeBetaHardware;
@@ -173,7 +173,7 @@ public class SubsystemFactory {
 
     public AlgaeIntakeSubsystem buildAlgaeIntake() {
         if (robotType == RobotType.BETA) {
-            return new AlgaeIntakeSubsystem(new AlgaeIntakeHardware());
+            return new AlgaeIntakeSubsystem(new AlgaeIntakeBetaHardware());
         } else {
             return new AlgaeIntakeSubsystem(new AlgaeIntakePlacebo());
         }
