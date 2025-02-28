@@ -1,14 +1,11 @@
 package frc.robot.subsystems.elevator;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.units.measure.Distance;
-import frc.robot.CommandFactory.Setpoint;
 
 public interface ElevatorIO {
 
     static class ElevatorIOInputs {
-        public double position = 0.0; 
+        public double position = 0.0;
         public double velocity = 0.0;
         public double appliedVoltageRight = 0.0;
         public double appliedVoltageLeft = 0.0;
@@ -30,6 +27,7 @@ public interface ElevatorIO {
     public double getEncoderVelocity();
 
     public double getEncoderPosition();
+
     public void setSpeedManualControl(double speed);
 
     public void updateStates(ElevatorIOInputs states);
