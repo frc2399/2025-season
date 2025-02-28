@@ -115,25 +115,6 @@ public class KrakenElevatorHardware implements ElevatorIO {
         elevatorRightMotorFollower.setNeutralMode(NeutralModeValue.Brake);
 
         closedLoopController = new PositionVoltage(0).withSlot(0);
-
-        //limiting kraken utilization
-        //elevatorLeftMotorLeader.getPosition().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
-        //elevatorLeftMotorLeader.getVelocity().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
-        //elevatorLeftMotorLeader.getClosedLoopOutput().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
-        //elevatorLeftMotorLeader.getSupplyVoltage().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
-        //elevatorLeftMotorLeader.getSupplyCurrent().setUpdateFrequency(Constants.SpeedConstants.LOGGING_FREQUENCY_HZ);
-        SmartDashboard.putNumber("Elevator/position update frequency", elevatorLeftMotorLeader.getPosition().getAppliedUpdateFrequency());
-        SmartDashboard.putNumber("Elevator/velocity update frequency", elevatorLeftMotorLeader.getVelocity().getAppliedUpdateFrequency());
-        SmartDashboard.putNumber("Elevator/closed loop output update frequency", elevatorLeftMotorLeader.getClosedLoopOutput().getAppliedUpdateFrequency());
-        SmartDashboard.putNumber("Elevator/supply voltage update frequency", elevatorLeftMotorLeader.getSupplyVoltage().getAppliedUpdateFrequency());
-        SmartDashboard.putNumber("Elevator/supply current update frequency", elevatorLeftMotorLeader.getSupplyCurrent().getAppliedUpdateFrequency());
-
-        //elevatorRightMotorFollower.getPosition().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
-        //elevatorRightMotorFollower.getVelocity().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
-        //elevatorRightMotorFollower.getClosedLoopOutput().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
-        //elevatorRightMotorFollower.getSupplyVoltage().setUpdateFrequency(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
-        //elevatorRightMotorFollower.getSupplyCurrent().setUpdateFrequency(Constants.SpeedConstants.LOGGING_FREQUENCY_HZ);
-
     }
 
     public void resetSetpointsToCurrentPosition() {
