@@ -9,7 +9,6 @@ import frc.robot.CommandFactory.Setpoint;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.spark.SparkFlex;
@@ -81,17 +80,17 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     @Override
     public void intake() {
-        betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_INTAKE_SPEED.in(RadiansPerSecond), ControlType.kVelocity);
-        velocityGoal = SpeedConstants.BETA_CORAL_INTAKE_SPEED.in(RadiansPerSecond);
+        betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_INTAKE_SPEED.in(RPM), ControlType.kVelocity);
+        velocityGoal = SpeedConstants.BETA_CORAL_INTAKE_SPEED.in(RPM);
     }
 
     @Override
     public void setOuttakeSpeed(Setpoint setpoint) {
         double desiredVelocity = 0;
         if (setpoint == Setpoint.L_ONE) {
-            desiredVelocity = SpeedConstants.BETA_CORAL_L1_OUTTAKE_SPEED.in(RadiansPerSecond);    
+            desiredVelocity = SpeedConstants.BETA_CORAL_L1_OUTTAKE_SPEED.in(RPM);    
         } else {
-             desiredVelocity = SpeedConstants.BETA_CORAL_OUTTAKE_SPEED.in(RadiansPerSecond);   
+             desiredVelocity = SpeedConstants.BETA_CORAL_OUTTAKE_SPEED.in(RPM);   
         }
 
         betaCoralIntakeClosedLoop.setReference(desiredVelocity, ControlType.kVelocity);
