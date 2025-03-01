@@ -50,5 +50,6 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("algaeIntake/intakeVelocity", states.intakeVelocity);
         SmartDashboard.putNumber("algaeIntake/leftCurrent", states.leftCurrent);
         SmartDashboard.putNumber("algaeIntake/leftAppliedVoltage", states.leftAppliedVoltage);
+        SmartDashboard.putBoolean("algaeIntake/hasAlgae", hasAlgae);
     }
 }

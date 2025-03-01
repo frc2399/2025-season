@@ -49,5 +49,6 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("coralIntake/leftAppliedVoltage", states.leftAppliedVoltage);
         SmartDashboard.putNumber("coralIntake/rightAppliedVoltage", states.rightAppliedVoltage);
         SmartDashboard.putBoolean("coralIntake/isStalling", io.isStalling());
+        SmartDashboard.putBoolean("coralIntake/hasCoral", hasCoral);
     }
 }
