@@ -10,6 +10,10 @@ import static edu.wpi.first.units.Units.Radians;
 
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.Matrix;
@@ -30,6 +34,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.Timer;
@@ -53,6 +58,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private double DRIVE_D = 0.05;
 
         private PIDController drivePIDController = new PIDController(DRIVE_P, 0, DRIVE_D);
+
+        private RobotConfig config;
 
         // debouncer for turning
         private double ROTATION_DEBOUNCE_TIME = 0.5;
@@ -81,6 +88,11 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         private final SwerveDriveKinematics DRIVE_KINEMATICS;
 
+        private static final double HOLONOMIC_P = 5.0;
+        private static final double HOLONOMIC_I = 0.0;
+        private static final double HOLONOMIC_D = 0.0;
+
+        // Slew rate filter variables for controlling lateral acceleration
         private double currentRotationRate = 0.0;
         private double desiredAngle = 0;
         private Gyro gyro;
@@ -96,6 +108,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private ChassisSpeeds relativeRobotSpeeds;
 
         private Rotation2d lastAngle = new Rotation2d();
+
 
         public static class DriveSubsystemStates {
                 public ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
@@ -155,13 +168,36 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 rearLeft.getPosition(),
                                                 rearRight.getPosition() },
                                 new Pose2d(0, 0, new Rotation2d(0))); // TODO: make these constants in the constants
+                                                                         // file rather than
+                                                                         // free-floating numbers
+                try {
+                        config = RobotConfig.fromGUISettings();
 
-                // file rather than
-                // free-floating numbers
+                        AutoBuilder.configure(
+                                        this::getPose,
+                                        this::resetOdometry,
+                                        this::getRobotRelativeSpeeds,
+                                        (speeds, feedforwards) -> setRobotRelativeSpeeds(speeds),
+                                        new PPHolonomicDriveController(
+                                                        new PIDConstants(HOLONOMIC_P, HOLONOMIC_I,
+                                                                        HOLONOMIC_D),
+                                                        new PIDConstants(HOLONOMIC_P, HOLONOMIC_I,
+                                                                        HOLONOMIC_D)),
+                                        config, // The robot configuration
+                                        () -> {
 
-                // file rather than
-                // free-floating numbers
-
+                                                var alliance = DriverStation.getAlliance();
+                                                if (alliance.isPresent()) {
+                                                        return alliance.get() == DriverStation.Alliance.Red;
+                                                }
+                                                return false;
+                                        },
+                                        this);
+                } catch (Exception e) {
+                        DriverStation.reportError("Failed to load Pathplanner config and configure Autobuilder",
+                                        e.getStackTrace());
+                }
+                configurePathPlannerLogging();
         }
 
         @Override
@@ -169,13 +205,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // This will get the simulated sensor readings that we set
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
-
-                // SmartDashboard.putNumber("drive/relative X speeds",
-                // relativeRobotSpeeds.vxMetersPerSecond);
-                // SmartDashboard.putNumber("drive/relative Y speeds",
-                // relativeRobotSpeeds.vyMetersPerSecond);
-                // SmartDashboard.putNumber("drive/relative radian speeds",
-                // relativeRobotSpeeds.omegaRadiansPerSecond);
                 poseEstimator.updateWithTime(Timer.getFPGATimestamp(),
                                 Rotation2d.fromRadians(gyro.getYaw().in(Radians)),
                                 new SwerveModulePosition[] {
@@ -411,3 +440,4 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 SmartDashboard.putNumber("drive/Gyro Angle(deg)", states.gyroAngleDegrees);
         }
 }
+
