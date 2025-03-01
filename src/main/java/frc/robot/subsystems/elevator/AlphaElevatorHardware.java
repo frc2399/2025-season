@@ -24,14 +24,10 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import static edu.wpi.first.units.Units.*;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.CommandFactory.GameMode;
-import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
@@ -188,12 +184,6 @@ public class AlphaElevatorHardware implements ElevatorIO {
                 states.current = elevatorLeftMotorLeader.getOutputCurrent();
                 states.goalPosition = goalState.position;
                 states.intermediateSetpointPosition = intermediateSetpointState.position;
-        }
-
-        @Override
-        public Distance getElevatorSetpoint(Supplier<Setpoint> setpoint, Supplier<GameMode> gameMode,
-                        Distance eleavtorSetpoint) {
-                return Meters.of(0);
         }
 
         public void setSpeedManualControl(double speed) {
