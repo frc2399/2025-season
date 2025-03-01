@@ -110,6 +110,8 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                         desiredAngle = SetpointConstants.ALGAE_REEF_REMOVER_ANGLE;
                 } else if (setpoint == Setpoint.TURTLE) {
                         desiredAngle = SetpointConstants.ALGAE_WRIST_TURTLE_ANGLE;
+                } else if (setpoint == Setpoint.ZERO){
+                        desiredAngle = SetpointConstants.ALGAE_WRIST_ZERO_ANGLE;
                 }
                 algaeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
                                 ClosedLoopSlot.kSlot0,

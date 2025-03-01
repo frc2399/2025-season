@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
+import frc.robot.subsystems.coralIntake.CoralIntakeAlphaHardware;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -107,7 +108,7 @@ public class CommandFactory {
         coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
         Commands.waitUntil(() -> coralWrist.atGoal()),
         Commands.parallel(
-            algaeWrist.goToSetpointCommand(() -> Setpoint.TURTLE),
+            algaeWrist.goToSetpointCommand(() -> Setpoint.ZERO),
             elevator.goToGoalSetpointCmd(() -> Setpoint.TURTLE, () -> GameMode.CORAL)),
         Commands.waitUntil(() -> elevator.atGoal()),
         coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
@@ -117,7 +118,9 @@ public class CommandFactory {
     return Commands.sequence(
         coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
         Commands.waitUntil(() -> coralWrist.atGoal()),
-        elevator.goToGoalSetpointCmd(() -> Setpoint.L_ONE, () -> GameMode.ALGAE),
+        Commands.parallel(
+            elevator.goToGoalSetpointCmd(() -> Setpoint.TURTLE, () -> GameMode.ALGAE),
+            algaeWrist.goToSetpointCommand(() -> Setpoint.TURTLE)),
         Commands.waitUntil(() -> elevator.atGoal()),
         coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
   }
@@ -132,7 +135,7 @@ public class CommandFactory {
   public Command moveElevatorAndCoralWrist() {
     return Commands.sequence(
       Commands.parallel(
-            algaeWrist.goToSetpointCommand(() -> Setpoint.TURTLE),
+            algaeWrist.goToSetpointCommand(() -> Setpoint.ZERO),
             coralWrist.goToSetpointCommand(() -> Setpoint.ZERO)),
         Commands.waitUntil(() -> coralWrist.atGoal()),
         Commands.parallel(
@@ -160,7 +163,7 @@ public class CommandFactory {
   public Command outtakeBasedOnMode(Supplier<GameMode> gameMode) {
     return Commands.either(
         algaeIntake.outtake(),
-        coralIntake.outtake(),
+        coralIntake.setOuttakeSpeed(() -> getSetpoint()),
         () -> (getGameMode() == GameMode.ALGAE));
   }
 

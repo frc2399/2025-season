@@ -30,6 +30,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -82,6 +84,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private double currentRotationRate = 0.0;
         private double desiredAngle = 0;
         private Gyro gyro;
+
+        Alert alert = new Alert("Fault detected on pigeon", AlertType.kError);
 
         private final Field2d field2d = new Field2d();
         private FieldObject2d frontLeftField2dModule = field2d.getObject("front left module");
@@ -217,6 +221,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 }
 
                 // logAndUpdateDriveSubsystemStates();
+                alert.set(gyro.hasFault());
 
                 frontLeft.updateStates();
                 frontRight.updateStates();

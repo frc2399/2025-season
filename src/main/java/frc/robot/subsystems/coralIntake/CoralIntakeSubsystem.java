@@ -1,4 +1,6 @@
 package frc.robot.subsystems.coralIntake;
+import java.util.function.Supplier;
+import frc.robot.CommandFactory.Setpoint;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,13 +23,8 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         return this.run(() -> io.intake()).withName("run coral intake");
     }
 
-    public Command outtake() {
-        return this.run(() -> {
-            io.outtake();
-            if (hasCoral) {
-                setCoralEntry(false);
-            }
-        });
+    public Command setOuttakeSpeed(Supplier<Setpoint> setpoint) {
+        return this.run(() -> io.setOuttakeSpeed(setpoint.get())).withName("change outtaking speed for each scoring level");
     }
 
     public Command setZero() {
