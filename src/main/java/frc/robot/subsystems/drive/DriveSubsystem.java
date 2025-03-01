@@ -105,13 +105,12 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private FieldObject2d frontRightField2dModule = field2d.getObject("front right module");
         private FieldObject2d rearRightField2dModule = field2d.getObject("rear right module");
 
-        private ChassisSpeeds relativeRobotSpeeds;
+        private ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
 
         private Rotation2d lastAngle = new Rotation2d();
 
 
         public static class DriveSubsystemStates {
-                public ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
                 public Pose2d pose = new Pose2d();
                 public double poseTheta = 0;
                 public double velocityXMPS = 0;
@@ -216,6 +215,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
                 Pose2d pose = getPose();
                 field2d.setRobotPose(pose);
+                logAndUpdateDriveSubsystemStates();
 
                 frontLeftField2dModule.setPose(pose.transformBy(new Transform2d(
                                 FRONT_LEFT_OFFSET,
@@ -428,7 +428,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 states.velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
                 states.totalVelocity = Math.hypot(states.velocityXMPS, states.velocityYMPS);
                 states.angularVelocity = Units.radiansToDegrees(relativeRobotSpeeds.omegaRadiansPerSecond);
-                states.gyroAngleDegrees = Math.toDegrees(gyro.getYaw().in(Degrees));
+                states.gyroAngleDegrees = gyro.getYaw().in(Degrees);
 
                 SmartDashboard.putNumber("drive/Pose X(m)", states.pose.getX());
                 SmartDashboard.putNumber("drive/Pose Y(m)", states.pose.getY());
