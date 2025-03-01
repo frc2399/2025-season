@@ -127,8 +127,8 @@ public class CommandFactory {
 
   public Command intakeBasedOnMode(Supplier<GameMode> gameMode) {
     return Commands.either(
-        algaeIntake.intake(),
-        coralIntake.intake(),
+        algaeIntake.intakeToStall(),
+        coralIntake.intakeToStall(),
         () -> (getGameMode() == GameMode.ALGAE));
   }
 
