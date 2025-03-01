@@ -87,9 +87,6 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
                 } else {
                         algaeIntakeSparkMax.set(0);
                 }
-                // if (speed.in(RPM) == 0) {
-                //         algaeIntakeClosedLoopController.setReference(algaeIntakeEncoder.getPosition(), ControlType.kPosition, ClosedLoopSlot.kSlot1);
-                // }
         }
 
         public double getVelocity() {
