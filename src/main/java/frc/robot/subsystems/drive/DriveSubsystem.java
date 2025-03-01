@@ -32,6 +32,7 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -47,6 +48,8 @@ import frc.robot.vision.VisionPoseEstimator.DriveBase;
 public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         private DriveSubsystemStates states = new DriveSubsystemStates();
+
+        private Alliance alliance;
 
         // correction PID
         private double DRIVE_P = 1.1;
@@ -390,6 +393,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         public void addVisionMeasurement(Pose2d pose, double timestampSeconds,
                         Matrix<N3, N1> visionMeasurementStdDevs) {
                 poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
+        }
+
+        public void setAlliance(Alliance allianceFromDs) {
+                alliance = allianceFromDs;
         }
 
         private void logAndUpdateDriveSubsystemStates() {

@@ -131,4 +131,9 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationPeriodic() {
   }
+
+  @Override
+  public void driverStationConnected() {
+    robotContainer.setAlliance(DriverStation.getAlliance());
+  }
 }

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveControlConstants;
@@ -18,7 +19,10 @@ import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.vision.*;
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Optional;
+
 public class RobotContainer {
+  private Alliance alliance;
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
   private Gyro gyro = subsystemFactory.buildGyro();
   private final ElevatorSubsystem elevator = subsystemFactory.buildElevator();
@@ -74,6 +78,17 @@ public class RobotContainer {
     driverController.y().onTrue(gyro.setYaw(Degrees.of(0.0)));
     driverController.x().whileTrue(drive.setX());
     driverController.a().onTrue(commandFactory.turtleBasedOnMode());
+  }
+
+  public void setAlliance(Optional<Alliance> allianceFromDs) {
+    if (allianceFromDs.isPresent() && allianceFromDs.get() == Alliance.Blue) {
+      alliance = Alliance.Blue;
+    } else {
+      alliance = Alliance.Red;
+    }
+    gyro.setGyroBasedOnAlliance(alliance);
+    drive.setAlliance(alliance);
+    visionPoseEstimator.setAlliance(alliance);
   }
 
   private void configureButtonBindingsOperator() {

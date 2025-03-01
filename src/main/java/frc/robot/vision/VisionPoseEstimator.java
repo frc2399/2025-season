@@ -23,6 +23,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SpeedConstants;
 
@@ -39,6 +40,8 @@ public final class VisionPoseEstimator extends SubsystemBase {
     // private static final Distance Z_ROBOT_TO_CAMERA_OFFSET =
     // Inches.of(4.937);
     // private static final Angle CAMERA_YAW = Degrees.of(180);
+
+    private Alliance alliance;
  
     //TODO: change these when we get actual values for a robot!
     private static final Angle CAMERA_PITCH = Degrees.of(0);
@@ -134,7 +137,11 @@ public final class VisionPoseEstimator extends SubsystemBase {
      * Update the limelight's robot orientation
      */
     public void periodic() {
-        LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().getDegrees(), 0, 0, 0, 0, 0);
+        if (alliance == Alliance.Red) {
+            LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().getDegrees() + 180, 0, 0, 0, 0, 0);
+        } else {
+            LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().getDegrees(), 0, 0, 0, 0, 0);
+        }
         getPoseEstimate().ifPresent((pe) -> {
             mt2Publisher.set(pe.pose);
             // LimelightHelpers doesn't expose a helper method for these, layout is:
@@ -144,5 +151,9 @@ public final class VisionPoseEstimator extends SubsystemBase {
             driveBase.addVisionMeasurement(pe.pose, pe.timestampSeconds,
                     VecBuilder.fill(stddevs[6], stddevs[7], Double.POSITIVE_INFINITY));
         });
+    }
+
+    public void setAlliance(Alliance allianceFromDs) {
+        alliance = allianceFromDs;
     }
 }

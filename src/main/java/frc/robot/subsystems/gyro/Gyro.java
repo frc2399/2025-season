@@ -17,14 +17,6 @@ public class Gyro {
 
     public Gyro(GyroIO io) {
         this.io = io;
-        Optional<Alliance> ally = DriverStation.getAlliance();
-        if (ally.get() == Alliance.Red) {
-            io.setYaw(Degrees.of(0));
-        } else if (ally.get() == Alliance.Blue) {
-            io.setYaw(Degrees.of(180.0));
-        } else {
-            io.setYaw(Degrees.of(0.0));
-        }
     }
 
     public Angle getYaw() {
@@ -43,4 +35,15 @@ public class Gyro {
         return io.hasFault();
     }
 
+    public void setGyroBasedOnAlliance(Alliance alliance) {
+        // for this game, we initialize facing the alliance wall either way. however, if
+        // that changes, these values will change as well
+        if (alliance == Alliance.Red) {
+            io.setYaw(Degrees.of(180));
+        } else if (alliance == Alliance.Blue) {
+            io.setYaw(Degrees.of(180.0));
+        } else {
+            io.setYaw(Degrees.of(0.0));
+        }
+    }
 }
