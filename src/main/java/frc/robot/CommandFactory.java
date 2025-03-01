@@ -1,12 +1,14 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import java.util.function.Supplier;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
 import frc.robot.subsystems.coralIntake.CoralIntakeAlphaHardware;
@@ -29,6 +31,7 @@ public class CommandFactory {
   // private final NetworkTableEntry ntEntry; //one for each entry we want to read
   // (state changes)
   private final NetworkTable scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");;
+  // private final NetworkTableEntry newEntry;
   private final NetworkTableEntry levelEntry = scoringStateTables.getEntry("scoringLevel");
   private final NetworkTableEntry gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
   private final NetworkTableEntry leftRightEntry = scoringStateTables.getEntry("Position");
@@ -106,9 +109,7 @@ public class CommandFactory {
 
   public Command moveElevatorAndCoralWrist() {
     return Commands.sequence(
-      Commands.parallel(
-            algaeWrist.goToSetpointCommand(() -> Setpoint.TURTLE),
-            coralWrist.goToSetpointCommand(() -> Setpoint.ZERO)),
+        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
         Commands.waitUntil(() -> coralWrist.atGoal()),
         Commands.parallel(
             elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.CORAL),
@@ -117,8 +118,8 @@ public class CommandFactory {
 
   public Command moveElevatorAndAlgaeWrist() {
     return Commands.sequence(
-      coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
-      Commands.waitUntil(() -> coralWrist.atGoal()),
+        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+        Commands.waitUntil(() -> coralWrist.atGoal()),
         algaeWrist.goToSetpointCommand(() -> getSetpoint()),
         elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.ALGAE));
   }
@@ -133,12 +134,8 @@ public class CommandFactory {
   public Command outtakeBasedOnMode(Supplier<GameMode> gameMode) {
     return Commands.either(
         algaeIntake.outtake(),
-<<<<<<< HEAD
-        coralIntake.outtakeL1(),
-        //coralIntake.outtake(),
-=======
+        // coralIntake.outtake(),
         coralIntake.setOuttakeSpeed(() -> getSetpoint()),
->>>>>>> main
         () -> (getGameMode() == GameMode.ALGAE));
   }
 
