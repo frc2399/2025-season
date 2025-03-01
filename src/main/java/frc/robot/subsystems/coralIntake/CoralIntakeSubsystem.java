@@ -24,7 +24,10 @@ public class CoralIntakeSubsystem extends SubsystemBase {
     }
 
     public Command setOuttakeSpeed(Supplier<Setpoint> setpoint) {
-        return this.run(() -> io.setOuttakeSpeed(setpoint.get())).withName("change outtaking speed for each scoring level");
+        return this.run(() -> {
+            io.setOuttakeSpeed(setpoint.get());
+            setCoralEntry(false);
+        });
     }
 
     public Command setZero() {

@@ -55,7 +55,7 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     private double velocityGoal = 0;
 
     private static final Time BETA_CORAL_DEBOUNCER_TIME = Seconds.of(0.18);
-    private static final Current CORAL_INTAKE_STALL_THRESHOLD = Amps.of(16);
+    private static final Current CORAL_INTAKE_STALL_THRESHOLD = Amps.of(15);
     private static final Debouncer CORAL_BETA_DEBOUNCER = new Debouncer(BETA_CORAL_DEBOUNCER_TIME.in(Seconds));
 
     public CoralIntakeBetaHardware() {
