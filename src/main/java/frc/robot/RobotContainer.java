@@ -24,9 +24,9 @@ public class RobotContainer {
   private final ElevatorSubsystem elevator = subsystemFactory.buildElevator();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
   private final CoralIntakeSubsystem coralIntake = subsystemFactory.buildCoralIntake();
-  private final CoralWristSubsystem coralWrist = subsystemFactory.buildCoralWrist();
+  public final CoralWristSubsystem coralWrist = subsystemFactory.buildCoralWrist();
   private final AlgaeIntakeSubsystem algaeIntake = subsystemFactory.buildAlgaeIntake();
-  private final AlgaeWristSubsystem algaeWrist = subsystemFactory.buildAlgaeWrist();
+  public final AlgaeWristSubsystem algaeWrist = subsystemFactory.buildAlgaeWrist();
   // this is public because we need to run the visionPoseEstimator periodic from
   // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);

@@ -27,6 +27,10 @@ public class AlgaeWristSubsystem extends SubsystemBase {
         return this.run(() -> io.setWristSpeed(speed));
     }
 
+    public void resetWrist() {
+        io.resetRelativeToAbsolute();
+    }
+
     @Override
     public void periodic() {
         io.updateStates(states);
