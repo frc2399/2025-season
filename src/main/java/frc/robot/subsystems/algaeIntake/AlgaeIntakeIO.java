@@ -14,6 +14,7 @@ public interface AlgaeIntakeIO {
     public void setRollerSpeed(AngularVelocity speed);
     public void intake();
     public void outtake();
+    public void passiveIntake();
     public void updateStates(AlgaeIntakeIOStates states);
 
     public boolean isStalling();

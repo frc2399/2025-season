@@ -1,29 +1,27 @@
 package frc.robot.subsystems.coralIntake;
 
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Seconds;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import com.revrobotics.spark.config.SparkBaseConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.Seconds;
-
 import frc.robot.CommandFactory.Setpoint;
+import frc.robot.Constants;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 import frc.robot.Constants.SpeedConstants;
@@ -57,10 +55,11 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
 
         private static final boolean POSITION_WRAPPING_ENABLED_SIDE_MOTORS = true;
 
-        private static final Time ALPHA_CORAL_DEBOUNCER_TIME = Seconds.of(0.5);
-        private static final Current CORAL_INTAKE_STALL_THRESHOLD = Amps.of(15);
+        private static final Time ALPHA_CORAL_DEBOUNCER_TIME = Seconds.of(0.06);
+        private static final Current CORAL_INTAKE_STALL_THRESHOLD = Amps.of(0.004);
         private static final Debouncer CORAL_ALPHA_DEBOUNCER = new Debouncer(ALPHA_CORAL_DEBOUNCER_TIME.in(Seconds));
 
+        
         public CoralIntakeAlphaHardware() {
                 leftSparkMaxConfig.inverted(LEFT_MOTOR_INVERTED).idleMode(IDLE_MODE)
                                 .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
@@ -71,6 +70,11 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
                                 .outputRange(INTAKE_MOTOR_MIN_OUTPUT, INTAKE_MOTOR_MAX_OUTPUT)
                                 .positionWrappingEnabled(POSITION_WRAPPING_ENABLED_SIDE_MOTORS);
 
+                leftSparkMaxConfig.signals
+                                .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                                .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                                .outputCurrentPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS);
+
                 rightSparkMaxConfig.inverted(RIGHT_MOTOR_INVERTED).idleMode(IDLE_MODE)
                                 .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
                 rightSparkMaxConfig.encoder.positionConversionFactor(ENCODER_ROLLER_POSITION_FACTOR)
@@ -78,6 +82,11 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
                 rightSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                                 .pidf(INTAKE_MOTOR_P, INTAKE_MOTOR_I, INTAKE_MOTOR_D, INTAKE_MOTOR_FF)
                                 .outputRange(INTAKE_MOTOR_MIN_OUTPUT, INTAKE_MOTOR_MAX_OUTPUT);
+
+                rightSparkMaxConfig.signals
+                                .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                                .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                                .outputCurrentPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS);
 
                 coralIntakeLeftSparkMax = new SparkMax(MotorIdConstants.CORAL_ALPHA_INTAKE_LEFT_CAN_ID, MotorType.kBrushless);
                 coralIntakeRightSparkMax = new SparkMax(MotorIdConstants.CORAL_ALPHA_INTAKE_RIGHT_CAN_ID,
@@ -139,6 +148,13 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
         @Override
         public boolean isStalling() {
                 return (CORAL_ALPHA_DEBOUNCER.calculate(getCurrent() > CORAL_INTAKE_STALL_THRESHOLD.in(Amps)));
+        }
+
+        @Override
+        public void passiveIntake() {
+            if (!isStalling()) {
+                coralIntakeLeftClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
+            }
         }
 
         @Override
