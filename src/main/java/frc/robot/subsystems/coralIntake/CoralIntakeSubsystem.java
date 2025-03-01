@@ -1,16 +1,19 @@
 package frc.robot.subsystems.coralIntake;
 import java.util.function.Supplier;
-import frc.robot.CommandFactory.Setpoint;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CommandFactory;
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.subsystems.coralIntake.CoralIntakeIO.CoralIntakeIOStates;
 
 public class CoralIntakeSubsystem extends SubsystemBase {
     private final CoralIntakeIOStates states = new CoralIntakeIOStates();
     private CoralIntakeIO io;
     public boolean hasCoral = false;
+    private final NetworkTableEntry coralEntry = CommandFactory.scoringStateTables.getEntry("hasCoral");
 
     public CoralIntakeSubsystem(CoralIntakeIO io) {
         this.io = io;
@@ -21,7 +24,10 @@ public class CoralIntakeSubsystem extends SubsystemBase {
     }
 
     public Command setOuttakeSpeed(Supplier<Setpoint> setpoint) {
-        return this.run(() -> io.setOuttakeSpeed(setpoint.get())).withName("change outtaking speed for each scoring level");
+        return this.run(() -> {
+            io.setOuttakeSpeed(setpoint.get());
+            setCoralEntry(false);
+        });
     }
 
     public Command setZero() {
@@ -32,11 +38,22 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         return this.run(() -> {
             if (io.isStalling() || hasCoral) {
                 io.setZero();
-                hasCoral = true;
+                setCoralEntry(true);
             } else {
                 io.intake();
             }
         });
+    }
+
+    public Command passiveIntakeCommand() {
+        return this.runOnce(() -> { 
+            io.passiveIntake();
+        });
+    }
+
+    public void setCoralEntry(Boolean coralState) {
+        coralEntry.setBoolean(coralState);
+        hasCoral = coralState;
     }
 
     @Override
@@ -48,5 +65,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("coralIntake/rightCurrent", states.rightCurrent);
         SmartDashboard.putNumber("coralIntake/leftAppliedVoltage", states.leftAppliedVoltage);
         SmartDashboard.putNumber("coralIntake/rightAppliedVoltage", states.rightAppliedVoltage);
+        SmartDashboard.putBoolean("coralIntake/isStalling", io.isStalling());
+        SmartDashboard.putBoolean("coralIntake/hasCoral", hasCoral);
     }
 }
