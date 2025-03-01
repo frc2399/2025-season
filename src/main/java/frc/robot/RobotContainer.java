@@ -113,7 +113,7 @@ public class RobotContainer {
 
     driverController.y().onTrue(gyro.setYaw(Degrees.of(0.0)));
     driverController.x().whileTrue(drive.setX());
-    driverController.a().onTrue(commandFactory.turtleBasedOnMode());
+    driverController.b().onTrue(commandFactory.turtleBasedOnMode());
   }
 
   private void setUpAuton() {
