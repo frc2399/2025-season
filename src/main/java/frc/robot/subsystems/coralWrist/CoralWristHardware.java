@@ -117,6 +117,11 @@ public class CoralWristHardware implements CoralWristIO {
   }
 
   @Override
+  public void resetRelativeToAbsolute() {
+    coralIntakeWristRelativeEncoder.setPosition(coralIntakeWristAbsoluteEncoder.getPosition());
+  }
+
+  @Override
   public void setGoalAngle(Setpoint setpoint) {
     Angle desiredAngle = Radians.of(0);
     if (setpoint == Setpoint.L_ONE) {

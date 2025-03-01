@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
+import frc.robot.subsystems.coralWrist.CoralWristHardware;
 
 /**
  * The methods in this class are called automatically corresponding to each
@@ -92,6 +94,8 @@ public class Robot extends TimedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
     }
+    robotContainer.algaeWrist.resetWrist();
+    robotContainer.coralWrist.resetWrist();
   }
 
   /** This function is called periodically during autonomous. */
@@ -108,6 +112,8 @@ public class Robot extends TimedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+    robotContainer.algaeWrist.resetWrist();
+    robotContainer.coralWrist.resetWrist();
   }
 
   /** This function is called periodically during operator control. */

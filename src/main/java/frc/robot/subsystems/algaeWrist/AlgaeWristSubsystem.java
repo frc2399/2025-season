@@ -27,15 +27,20 @@ public class AlgaeWristSubsystem extends SubsystemBase {
         return this.run(() -> io.setWristSpeed(speed));
     }
 
+    public void resetWrist() {
+        io.resetRelativeToAbsolute();
+    }
+
     @Override
     public void periodic() {
         io.updateStates(states);
         SmartDashboard.putNumber("algaeWrist/wristCurrent", states.wristCurrent);
         SmartDashboard.putNumber("algaeWrist/wristAppliedVoltage", states.wristAppliedVoltage);
         SmartDashboard.putNumber("algaeWrist/wristVelocity", states.wristVelocity);
-        SmartDashboard.putNumber("algaeWrist/wristEncoderAngleInDegrees",
+        SmartDashboard.putNumber("algaeWrist/wristRelativeEncoderAngleInDegrees",
                 states.wristRelativeEncoderAngle * 180 / Math.PI);
-        SmartDashboard.putNumber("algaeWrist/abs enc/degrees", states.wristAbsoluteEncoderAngle * 180 / Math.PI);
+        SmartDashboard.putNumber("algaeWrist/wristAbsoluteEncoderAngleToDegrees", 
+                states.wristAbsoluteEncoderAngle * 180 / Math.PI);
         SmartDashboard.putNumber("algaeWrist/goalAngle", states.goalAngle);
     }
 }
