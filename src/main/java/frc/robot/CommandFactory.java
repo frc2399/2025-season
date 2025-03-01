@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
@@ -139,29 +140,29 @@ public class CommandFactory {
         () -> (getGameMode() == GameMode.ALGAE));
   }
 
-  public Command driveBasedOnElevatorHeight(double leftY, double leftX, double rightX)
+  public Command driveBasedOnElevatorHeight(DoubleSupplier leftY, DoubleSupplier leftX, DoubleSupplier rightX)
   {
       return Commands.either(
         drive.driveCommand(
         () -> -(MathUtil.applyDeadband(
-            leftY,
+            leftY.getAsDouble(),
             DriveControlConstants.DRIVE_DEADBAND)),
         () -> -(MathUtil.applyDeadband(
-            leftX,
+            leftX.getAsDouble(),
             DriveControlConstants.DRIVE_DEADBAND)),
         () -> -(MathUtil.applyDeadband(
-            rightX,
+            rightX.getAsDouble(),
             DriveControlConstants.DRIVE_DEADBAND)),
         ()-> false), 
         drive.driveCommand(
         () -> -(MathUtil.applyDeadband(
-            leftY,
+            leftY.getAsDouble(),
             DriveControlConstants.DRIVE_DEADBAND)),
         () -> -(MathUtil.applyDeadband(
-            leftX,
+            leftX.getAsDouble(),
             DriveControlConstants.DRIVE_DEADBAND)),
         () -> -(MathUtil.applyDeadband(
-            rightX,
+            rightX.getAsDouble(),
             DriveControlConstants.DRIVE_DEADBAND)),
         () -> true),
         () -> elevator.isElevatorHeightAboveRobotOrientedThreshold(() -> getGameMode()));

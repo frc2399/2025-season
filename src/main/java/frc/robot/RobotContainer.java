@@ -49,7 +49,7 @@ public class RobotContainer {
   }
 
   public void configureDefaultCommands() {
-    drive.setDefaultCommand(commandFactory.driveBasedOnElevatorHeight(driverController.getLeftY(), driverController.getLeftX(), driverController.getRightX()));
+    drive.setDefaultCommand(commandFactory.driveBasedOnElevatorHeight(() -> driverController.getLeftY(), () -> driverController.getLeftX(), () -> driverController.getRightX()));
     coralIntake.setDefaultCommand(coralIntake.setZero());
     algaeIntake.setDefaultCommand(algaeIntake.setRollerSpeed(RPM.of(0)));
     // elevator.setDefaultCommand(elevator.setSpeedManualControl(0));
