@@ -7,6 +7,8 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.function.Supplier;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -28,6 +30,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.CommandFactory.GameMode;
 import frc.robot.Constants;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
@@ -174,7 +177,7 @@ public class AlphaElevatorHardware implements ElevatorIO {
         // place holding method
     }
 
-    public boolean isElevatorHeightAboveRobotOrientedThreshold(){
+    public boolean isElevatorHeightAboveRobotOrientedThreshold(Supplier<GameMode> gameMode){
         return false; 
     }
 

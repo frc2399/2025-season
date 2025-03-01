@@ -97,9 +97,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         return this.run(() -> elevatorIO.setSpeedManualControl(speed));
     }
 
-    public boolean isElevatorHeightAboveRobotOrientedThreshold()
+    public boolean isElevatorHeightAboveRobotOrientedThreshold(Supplier<GameMode> gameMode)
     {
-        return elevatorIO.isElevatorHeightAboveRobotOrientedThreshold();
+        return elevatorIO.isElevatorHeightAboveRobotOrientedThreshold(gameMode);
     }
     
     @Override

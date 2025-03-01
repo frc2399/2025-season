@@ -141,9 +141,8 @@ public class CommandFactory {
 
   public Command driveBasedOnElevatorHeight(double leftY, double leftX, double rightX)
   {
-    if (elevator.isElevatorHeightAboveRobotOrientedThreshold())
-    {
-      return drive.driveCommand(
+      return Commands.either(
+        drive.driveCommand(
         () -> -(MathUtil.applyDeadband(
             leftY,
             DriveControlConstants.DRIVE_DEADBAND)),
@@ -153,9 +152,8 @@ public class CommandFactory {
         () -> -(MathUtil.applyDeadband(
             rightX,
             DriveControlConstants.DRIVE_DEADBAND)),
-        ()-> false);
-    } 
-      return drive.driveCommand(
+        ()-> false), 
+        drive.driveCommand(
         () -> -(MathUtil.applyDeadband(
             leftY,
             DriveControlConstants.DRIVE_DEADBAND)),
@@ -165,7 +163,8 @@ public class CommandFactory {
         () -> -(MathUtil.applyDeadband(
             rightX,
             DriveControlConstants.DRIVE_DEADBAND)),
-        () -> true);
+        () -> true),
+        () -> elevator.isElevatorHeightAboveRobotOrientedThreshold(() -> getGameMode()));
   }
 
   public Setpoint getSetpoint() {

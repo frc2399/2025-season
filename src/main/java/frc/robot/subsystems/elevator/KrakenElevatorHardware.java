@@ -7,6 +7,8 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
@@ -25,6 +27,7 @@ import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.CommandFactory.GameMode;
 import frc.robot.Constants;
 import frc.robot.Constants.MotorIdConstants;
 
@@ -44,7 +47,8 @@ public class KrakenElevatorHardware implements ElevatorIO {
         // (2) -> elevator_travel -> elevator travels 2 inches per inch of chain
         // 1 / (maxplanetary_conversion * sprocket_conversion * elevator_travel *
         // inch_to_meter)
-        private static final Distance ELEVATOR_ROBOT_ORIENTED_THRESHOLD_HEIGHT = Inches.of(11);
+        private static final Distance ELEVATOR_ALGAE_ROBOT_ORIENTED_THRESHOLD_HEIGHT = Inches.of(11);
+        private static final Distance ELEVATOR_CORAL_ROBOT_ORIENTED_THRESHOLD_HEIGHT = Inches.of(8);
         private static final Distance ELEVATOR_ROTOR_TO_SENSOR_RATIO = Inches.of(1);
         private static final double kDt = 0.02;
         private static final Current KRAKEN_CURRENT_LIMIT = Amps.of(80);
@@ -162,10 +166,13 @@ public class KrakenElevatorHardware implements ElevatorIO {
         elevatorLeftMotorLeader.setControl(new DutyCycleOut(speed));
     }
 
-    public boolean isElevatorHeightAboveRobotOrientedThreshold()
+    public boolean isElevatorHeightAboveRobotOrientedThreshold(Supplier<GameMode> gameMode)
     {
-        if(elevatorLeftMotorLeader.getPosition().getValueAsDouble() >= KrakenElevatorConstants.ELEVATOR_ROBOT_ORIENTED_THRESHOLD_HEIGHT.in(Inches))
+        if((gameMode.get() == GameMode.ALGAE) && elevatorLeftMotorLeader.getPosition().getValueAsDouble() >= KrakenElevatorConstants.ELEVATOR_ALGAE_ROBOT_ORIENTED_THRESHOLD_HEIGHT.in(Inches))
         {
+            return true;
+        } 
+        if (gameMode.get() == GameMode.CORAL && elevatorLeftMotorLeader.getPosition().getValueAsDouble() >= KrakenElevatorConstants.ELEVATOR_CORAL_ROBOT_ORIENTED_THRESHOLD_HEIGHT.in(Inches)){
             return true;
         }
         return false; 

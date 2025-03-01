@@ -1,6 +1,9 @@
 package frc.robot.subsystems.elevator;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.units.measure.Distance;
+import frc.robot.CommandFactory.GameMode;
 
 public interface ElevatorIO {
 
@@ -30,7 +33,7 @@ public interface ElevatorIO {
 
     public void setSpeedManualControl(double speed);
 
-    public boolean isElevatorHeightAboveRobotOrientedThreshold();
+    public boolean isElevatorHeightAboveRobotOrientedThreshold(Supplier<GameMode> gameMode);
 
     public void updateStates(ElevatorIOInputs states);
 }
