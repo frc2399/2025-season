@@ -92,7 +92,7 @@ public final class Constants {
     public static final Angle CORAL_ZERO_ANGLE = Degrees.of(0);
     public static final Angle CORAL_L1_OUTTAKE_ANGLE = Degrees.of(-15);
     public static final Angle CORAL_L2_L3_OUTTAKE_ANGLE = Degrees.of(-30);
-    public static final Angle CORAL_L4_OUTTAKE_ANGLE = Degree.of(-15);
+    public static final Angle CORAL_L4_OUTTAKE_ANGLE = Degree.of(-20);
 
     public static final Distance ELEVATOR_CORAL_TURTLE_HEIGHT = Inches.of(0);
     public static final Distance L_ONE_CORAL_HEIGHT = Inches.of(0);
