@@ -33,8 +33,8 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     private static final boolean COMP_ALGAE_INTAKE_MOTOR_INVERTED = false;
     private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
-    private static final double COMP_ALGAE_INTAKE_POSITION_CONVERSION_FACTOR = 0;
-    private static final double COMP_ALGAE_INTAKE_VELOCITY_CONVERSION_FACTOR = 0;
+    private static final double COMP_ALGAE_INTAKE_POSITION_CONVERSION_FACTOR = (2 * Math.PI) / 3;
+    private static final double COMP_ALGAE_INTAKE_VELOCITY_CONVERSION_FACTOR = (2 * Math.PI) / 3 / 60;
 
     private static final double COMP_ALGAE_INTAKE_P = 0.001;
     private static final double COMP_ALGAE_INTAKE_I = 0;
