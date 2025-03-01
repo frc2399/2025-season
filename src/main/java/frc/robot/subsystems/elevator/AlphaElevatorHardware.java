@@ -17,10 +17,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.CommandFactory.GameMode;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 
@@ -162,6 +165,11 @@ public class AlphaElevatorHardware implements ElevatorIO {
 
         public void setSpeedManualControl(double speed) {
                 // place holding method
+        }
+
+        public boolean isElevatorHeightAboveSpeedLimitingThreshold()
+        {
+                return false; 
         }
 
         @Override

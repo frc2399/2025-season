@@ -110,6 +110,9 @@ public final class Constants {
     public static final double DRIVE_DEADBAND = 0.1;
     public static final boolean FIELD_ORIENTED_DRIVE = true;
 
+    public static final double SLOW_DRIVE_FACTOR = 0.5;
+    public static final double DRIVE_FACTOR = 1.0;
+
     public static final Distance ALPHA_TRACK_WIDTH = Meters.of(0.4954);
     public static final Distance MOZART_TRACK_WIDTH = Inches.of(26 - (2 * 1.75));
     // replace if needed

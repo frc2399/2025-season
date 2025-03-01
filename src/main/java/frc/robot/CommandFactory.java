@@ -1,11 +1,14 @@
 package frc.robot;
 
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.DriveControlConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
 import frc.robot.subsystems.coralIntake.CoralIntakeAlphaHardware;
@@ -137,6 +140,36 @@ public class CommandFactory {
         algaeIntake.outtake(),
         coralIntake.setOuttakeSpeed(() -> getSetpoint()),
         () -> (getGameMode() == GameMode.ALGAE));
+  }
+
+  public Command driveBasedOnElevatorHeight(DoubleSupplier leftY, DoubleSupplier leftX, DoubleSupplier rightX)
+  {
+      return Commands.either(
+        drive.driveCommand(
+        () -> -(MathUtil.applyDeadband(
+            leftY.getAsDouble(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        () -> -(MathUtil.applyDeadband(
+            leftX.getAsDouble(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        () -> -(MathUtil.applyDeadband(
+            rightX.getAsDouble(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        true,
+        DriveControlConstants.SLOW_DRIVE_FACTOR), 
+        drive.driveCommand(
+        () -> -(MathUtil.applyDeadband(
+            leftY.getAsDouble(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        () -> -(MathUtil.applyDeadband(
+            leftX.getAsDouble(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        () -> -(MathUtil.applyDeadband(
+            rightX.getAsDouble(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        true,
+        DriveControlConstants.DRIVE_FACTOR),
+        () -> elevator.isElevatorHeightAboveSpeedLimitingThreshold());
   }
 
   public Setpoint getSetpoint() {
