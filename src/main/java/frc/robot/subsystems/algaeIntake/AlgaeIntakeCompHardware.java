@@ -1,6 +1,7 @@
 package frc.robot.subsystems.algaeIntake;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import com.revrobotics.RelativeEncoder;
@@ -87,7 +88,13 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     @Override
     public boolean isStalling() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isStalling'");
+        return false;
     }
+
+    @Override
+        public void passiveIntake() {
+            if (!isStalling()) {
+                compAlgaeIntakeClosedLoop.setReference(SpeedConstants.COMP_ALGAE_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
+            }
+        }
 }
