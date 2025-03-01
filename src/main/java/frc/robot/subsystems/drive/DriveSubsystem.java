@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -44,6 +45,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SpeedConstants;
 import frc.robot.Robot;
 import frc.robot.subsystems.gyro.Gyro;
@@ -291,13 +293,19 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
          *                      field.
          */
         public Command driveCommand(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotRate,
-                        Boolean fieldRelative) {
+                        Boolean fieldRelative, BooleanSupplier isElevatorHigh) {
                 return this.run(() -> {
+                        double driveSpeedFactor = DriveControlConstants.DRIVE_FACTOR;
+                        if(isElevatorHigh.getAsBoolean())
+                        {
+                           driveSpeedFactor = DriveControlConstants.SLOW_DRIVE_FACTOR; 
+                        }
                         double currentAngle = gyro.getYaw().in(Radians);
-                        double r = Math.hypot(xSpeed.getAsDouble(), ySpeed.getAsDouble());
+                        double r = Math.hypot(xSpeed.getAsDouble() * driveSpeedFactor, ySpeed.getAsDouble() * driveSpeedFactor);
                         double polarAngle = Math.atan2(ySpeed.getAsDouble(), xSpeed.getAsDouble());
                         double polarXSpeed = r * Math.cos(polarAngle);
                         double polarYSpeed = r * Math.sin(polarAngle);
+
 
                         // //Account for edge case when gyro resets
                         if (currentAngle == 0) {
@@ -325,6 +333,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
                         SmartDashboard.putNumber("x speed delivered", xSpeedDelivered);
                         SmartDashboard.putNumber("y speed delivered", ySpeedDelivered);
+                        SmartDashboard.putNumber("drive speed factor", driveSpeedFactor);
 
                         var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(relativeRobotSpeeds);
                         SwerveDriveKinematics.desaturateWheelSpeeds(
