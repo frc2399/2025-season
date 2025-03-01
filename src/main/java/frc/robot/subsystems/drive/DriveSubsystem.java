@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.util.PathPlannerLogging;
@@ -262,7 +263,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
          *                      field.
          */
         public Command driveCommand(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotRate,
-                        Boolean fieldRelative) {
+                        BooleanSupplier fieldRelative) {
                 return this.run(() -> {
                         double currentAngle = gyro.getYaw().in(Radians);
                         double r = Math.hypot(xSpeed.getAsDouble(), ySpeed.getAsDouble());
@@ -284,7 +285,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         double ySpeedDelivered = polarYSpeed * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS;
                         double rotRateDelivered = newRotRate * SpeedConstants.DRIVETRAIN_MAX_ANGULAR_SPEED_RPS;
 
-                        if (fieldRelative) {
+                        if (fieldRelative.getAsBoolean()) {
                                 relativeRobotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered,
                                                 ySpeedDelivered,
                                                 rotRateDelivered,

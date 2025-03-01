@@ -30,5 +30,7 @@ public interface ElevatorIO {
 
     public void setSpeedManualControl(double speed);
 
+    public boolean isElevatorHeightAboveRobotOrientedThreshold();
+
     public void updateStates(ElevatorIOInputs states);
 }

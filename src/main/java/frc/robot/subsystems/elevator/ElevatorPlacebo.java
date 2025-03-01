@@ -37,6 +37,10 @@ public class ElevatorPlacebo implements ElevatorIO {
     public void setSpeedManualControl(double speed) {
     }
 
+    public boolean isElevatorHeightAboveRobotOrientedThreshold(){
+        return false; 
+    }
+
     @Override
     public void updateStates(ElevatorIOInputs states) {
     }

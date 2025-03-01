@@ -96,6 +96,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     public Command setSpeedManualControl(double speed) {
         return this.run(() -> elevatorIO.setSpeedManualControl(speed));
     }
+
+    public boolean isElevatorHeightAboveRobotOrientedThreshold()
+    {
+        return elevatorIO.isElevatorHeightAboveRobotOrientedThreshold();
+    }
     
     @Override
     public void periodic() {

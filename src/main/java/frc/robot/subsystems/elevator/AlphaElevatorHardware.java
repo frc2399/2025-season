@@ -174,6 +174,10 @@ public class AlphaElevatorHardware implements ElevatorIO {
         // place holding method
     }
 
+    public boolean isElevatorHeightAboveRobotOrientedThreshold(){
+        return false; 
+    }
+
     @Override
     public void updateStates(ElevatorIOInputs states) {
         states.position = getEncoderPosition();
