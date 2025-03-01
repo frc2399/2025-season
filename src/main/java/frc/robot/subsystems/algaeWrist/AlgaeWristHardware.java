@@ -102,6 +102,11 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         }
 
         @Override
+        public void resetRelativeToAbsolute() {
+            algaeWristRelativeEncoder.setPosition(algaeWristAbsoluteEncoder.getPosition());
+        }
+
+        @Override
         public void setGoalAngle(Setpoint setpoint) {
                 Angle desiredAngle = Radians.of(0);
                 if (setpoint == Setpoint.L_ONE) {
