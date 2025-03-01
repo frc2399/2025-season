@@ -1,11 +1,10 @@
 package frc.robot.subsystems.coralIntake;
 import java.util.function.Supplier;
-import frc.robot.CommandFactory.Setpoint;
 
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.subsystems.coralIntake.CoralIntakeIO.CoralIntakeIOStates;
 
 public class CoralIntakeSubsystem extends SubsystemBase {
