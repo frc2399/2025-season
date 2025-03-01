@@ -119,5 +119,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Elevator/output current", states.current);
         SmartDashboard.putNumber("Elevator/intermediate setpoint position", states.intermediateSetpointPosition);
         SmartDashboard.putBoolean("Elevator/profiled PID enabled", profiledPIDEnabled);
+        SmartDashboard.putBoolean("Elevator/elevator height above speed limiting threshold", isElevatorHeightAboveSpeedLimitingThreshold());
     }
 }

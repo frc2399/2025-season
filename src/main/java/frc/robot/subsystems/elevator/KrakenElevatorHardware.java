@@ -165,7 +165,7 @@ public class KrakenElevatorHardware implements ElevatorIO {
 
      public boolean isElevatorHeightAboveSpeedLimitingThreshold()
     {
-        if(elevatorLeftMotorLeader.getPosition().getValueAsDouble() >= KrakenElevatorConstants.ELEVATOR_SPEED_LIMIT_THRESHOLD_HEIGHT.in(Inches))
+        if(elevatorLeftMotorLeader.getPosition().getValueAsDouble() >= KrakenElevatorConstants.ELEVATOR_SPEED_LIMIT_THRESHOLD_HEIGHT.in(Meters))
         {
             return true;
         } 
