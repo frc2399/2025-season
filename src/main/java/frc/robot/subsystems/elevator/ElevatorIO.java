@@ -31,4 +31,5 @@ public interface ElevatorIO {
     public void setSpeedManualControl(double speed);
 
     public void updateStates(ElevatorIOInputs states);
+
 }
