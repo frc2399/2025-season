@@ -142,36 +142,6 @@ public class CommandFactory {
         () -> (getGameMode() == GameMode.ALGAE));
   }
 
-  public Command driveBasedOnElevatorHeight(DoubleSupplier leftY, DoubleSupplier leftX, DoubleSupplier rightX)
-  {
-      return Commands.either(
-        drive.driveCommand(
-        () -> -(MathUtil.applyDeadband(
-            leftY.getAsDouble(),
-            DriveControlConstants.DRIVE_DEADBAND)),
-        () -> -(MathUtil.applyDeadband(
-            leftX.getAsDouble(),
-            DriveControlConstants.DRIVE_DEADBAND)),
-        () -> -(MathUtil.applyDeadband(
-            rightX.getAsDouble(),
-            DriveControlConstants.DRIVE_DEADBAND)),
-        true,
-        DriveControlConstants.SLOW_DRIVE_FACTOR), 
-        drive.driveCommand(
-        () -> -(MathUtil.applyDeadband(
-            leftY.getAsDouble(),
-            DriveControlConstants.DRIVE_DEADBAND)),
-        () -> -(MathUtil.applyDeadband(
-            leftX.getAsDouble(),
-            DriveControlConstants.DRIVE_DEADBAND)),
-        () -> -(MathUtil.applyDeadband(
-            rightX.getAsDouble(),
-            DriveControlConstants.DRIVE_DEADBAND)),
-        true,
-        DriveControlConstants.DRIVE_FACTOR),
-        () -> elevator.isElevatorHeightAboveSpeedLimitingThreshold());
-  }
-
   public Setpoint getSetpoint() {
     Setpoint setpoint;
     if (levelEntry.getString("None").equals("Level 1")) {

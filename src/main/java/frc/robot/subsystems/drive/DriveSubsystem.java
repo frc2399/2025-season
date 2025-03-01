@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.util.PathPlannerLogging;
@@ -262,8 +263,13 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
          *                      field.
          */
         public Command driveCommand(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotRate,
-                        Boolean fieldRelative, double driveSpeedFactor) {
+                        Boolean fieldRelative, BooleanSupplier isSlow) {
                 return this.run(() -> {
+                        double driveSpeedFactor = 1.0;
+                        if(isSlow.getAsBoolean())
+                        {
+                           driveSpeedFactor = 0.5; 
+                        }
                         double currentAngle = gyro.getYaw().in(Radians);
                         double r = Math.hypot(xSpeed.getAsDouble() * driveSpeedFactor, ySpeed.getAsDouble() * driveSpeedFactor);
                         double polarAngle = Math.atan2(ySpeed.getAsDouble(), xSpeed.getAsDouble());
