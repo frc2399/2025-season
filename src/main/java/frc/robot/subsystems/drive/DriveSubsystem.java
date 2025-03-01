@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SpeedConstants;
 import frc.robot.Robot;
 import frc.robot.subsystems.gyro.Gyro;
@@ -265,10 +266,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         public Command driveCommand(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotRate,
                         Boolean fieldRelative, BooleanSupplier isSlow) {
                 return this.run(() -> {
-                        double driveSpeedFactor = 1.0;
+                        double driveSpeedFactor = DriveControlConstants.DRIVE_FACTOR;
                         if(isSlow.getAsBoolean())
                         {
-                           driveSpeedFactor = 0.5; 
+                           driveSpeedFactor = DriveControlConstants.SLOW_DRIVE_FACTOR; 
                         }
                         double currentAngle = gyro.getYaw().in(Radians);
                         double r = Math.hypot(xSpeed.getAsDouble() * driveSpeedFactor, ySpeed.getAsDouble() * driveSpeedFactor);
