@@ -22,6 +22,7 @@ import edu.wpi.first.units.measure.Time;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import frc.robot.Constants;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 import frc.robot.Constants.SpeedConstants;
@@ -64,6 +65,11 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
                                 .outputRange(ALGAE_MOTOR_MIN_OUTPUT, ALGAE_MOTOR_MAX_OUTPUT)
                                 .positionWrappingEnabled(POSITION_WRAPPING_ENABLED);
 
+                algaeIntakeSparkMaxConfig.signals
+                        .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS) 
+                        .outputCurrentPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                        .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS);
+
                 algaeIntakeSparkMax = new SparkMax(MotorIdConstants.ALGAE_BETA_INTAKE_CAN_ID, MotorType.kBrushless);
 
                 algaeIntakeEncoder = algaeIntakeSparkMax.getEncoder();
@@ -72,6 +78,7 @@ public class AlgaeIntakeHardware implements AlgaeIntakeIO {
                                 PersistMode.kPersistParameters);
 
                 algaeIntakeClosedLoopController = algaeIntakeSparkMax.getClosedLoopController();
+
         }
 
         public void setRollerSpeed(AngularVelocity speed) {
