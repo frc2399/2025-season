@@ -37,8 +37,10 @@ public class AlgaeWristSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("algaeWrist/wristCurrent", states.wristCurrent);
         SmartDashboard.putNumber("algaeWrist/wristAppliedVoltage", states.wristAppliedVoltage);
         SmartDashboard.putNumber("algaeWrist/wristVelocity", states.wristVelocity);
-        SmartDashboard.putNumber("algaeWrist/wristEncoderAngleInDegrees",
+        SmartDashboard.putNumber("algaeWrist/wristRelativeEncoderAngleInDegrees",
                 states.wristRelativeEncoderAngle * 180 / Math.PI);
+        SmartDashboard.putNumber("algaeWrist/wristAbsoluteEncoderAngleToDegrees", 
+                states.wristAbsoluteEncoderAngle * 180 / Math.PI);
         SmartDashboard.putNumber("algaeWrist/goalAngle", states.goalAngle);
     }
 }
