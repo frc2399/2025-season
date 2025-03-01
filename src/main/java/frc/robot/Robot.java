@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
     DriverStation.startDataLog(DataLogManager.getLog());
     CommandScheduler.getInstance().onCommandInitialize(cmd -> DataLogManager.log(cmd.getName() + " : Init"));
     CommandScheduler.getInstance().onCommandInterrupt((interrupted, interrupting) -> DataLogManager
-        .log(interrupted.getName() + "Interrupted by " + interrupting.get().getName()));
+        .log(interrupted.getName() + "Interrupted by " + (!interrupting.isEmpty() ? interrupting.get().getName() : "nothing")));
     CommandScheduler.getInstance().onCommandFinish(cmd -> DataLogManager.log(cmd.getName() + ": End"));
   }
 
