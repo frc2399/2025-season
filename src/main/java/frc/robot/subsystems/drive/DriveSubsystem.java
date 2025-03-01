@@ -109,6 +109,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         private Rotation2d lastAngle = new Rotation2d();
 
+
         public static class DriveSubsystemStates {
                 public ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
                 public Pose2d pose = new Pose2d();
@@ -197,6 +198,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                         e.getStackTrace());
                 }
                 configurePathPlannerLogging();
+        }
 
         @Override
         public void periodic() {
@@ -204,7 +206,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
                 SmartDashboard.putNumber("left front distance (meters)", frontLeft.getDriveEncoderPosition());
-                SmartDashboard.putNumber("drive/gyro angle(degrees)", Math.toDegrees(gyro.getYaw()));
+                SmartDashboard.putNumber("drive/gyro angle(degrees)", gyro.getYaw().in(Degrees));
 
                 // SmartDashboard.putNumber("drive/relative X speeds",
                 // relativeRobotSpeeds.vxMetersPerSecond);
@@ -451,3 +453,4 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 SmartDashboard.putNumber("drive/Gyro Angle(deg)", states.gyroAngleDegrees);
         }
 }
+

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
@@ -133,7 +135,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("call scoring level 4", Commands.runOnce(() -> commandFactory.setScoringLevel("Level 4")));
     NamedCommands.registerCommand("call game mode coral", Commands.runOnce(() -> commandFactory.setGameMode("coral")));
     NamedCommands.registerCommand("Move elevator and coral wrist", commandFactory.moveElevatorAndCoralWrist());
-    NamedCommands.registerCommand("Outtake coral", coralIntake.outtake().withTimeout(0.5).andThen(Commands.waitSeconds(1)));
+    NamedCommands.registerCommand("Outtake coral", coralIntake.setOuttakeSpeed(() -> commandFactory.getSetpoint()).withTimeout(0.5).andThen(Commands.waitSeconds(1)));
     
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Autos/Selector", autoChooser);
