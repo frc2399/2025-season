@@ -66,6 +66,8 @@ public class CommandFactory {
     ALGAE
   }
 
+
+
   public RobotPosition robotPosition;
   public GameMode gameMode;
   public Setpoint setpoint;
@@ -155,8 +157,8 @@ public class CommandFactory {
 
   public Command intakeBasedOnMode(Supplier<GameMode> gameMode) {
     return Commands.either(
-        algaeIntake.intake(),
-        coralIntake.intake(),
+        algaeIntake.intakeToStall(),
+        coralIntake.intakeToStall(),
         () -> (getGameMode() == GameMode.ALGAE));
   }
 

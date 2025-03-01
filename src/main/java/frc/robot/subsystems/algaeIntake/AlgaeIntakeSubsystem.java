@@ -45,6 +45,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
                 }
                 else{
                     io.setRollerSpeed(Constants.SpeedConstants.ALGAE_INTAKE_SPEED);
+
                 }
           }
         );
@@ -67,5 +68,6 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("algaeIntake/intakeVelocity", states.intakeVelocity);
         SmartDashboard.putNumber("algaeIntake/leftCurrent", states.leftCurrent);
         SmartDashboard.putNumber("algaeIntake/leftAppliedVoltage", states.leftAppliedVoltage);
+        SmartDashboard.putBoolean("algaeIntake/hasAlgae", hasAlgae);
     }
 }
