@@ -58,7 +58,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 } 
             } else if (gameMode.get() == GameMode.ALGAE) {
                 if (setpoint.get() == Setpoint.TURTLE) {
-                    elevatorIO.setGoalPosition(SetpointConstants.L_ONE_ALGAE_HEIGHT);
+                    elevatorIO.setGoalPosition(SetpointConstants.ELEVATOR_ALGAE_TURTLE_HEIGHT);
                     profiledPIDEnabled = true;
                     goalSetpoint = SetpointConstants.ELEVATOR_ALGAE_TURTLE_HEIGHT.in(Meters);
                 } else if (setpoint.get() == Setpoint.L_ONE) {
