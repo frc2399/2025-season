@@ -93,7 +93,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private FieldObject2d frontRightField2dModule = field2d.getObject("front right module");
         private FieldObject2d rearRightField2dModule = field2d.getObject("rear right module");
 
-        private ChassisSpeeds relativeRobotSpeeds;
+        private ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
 
         private Rotation2d lastAngle = new Rotation2d();
 
@@ -186,6 +186,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
                 Pose2d pose = getPose();
                 field2d.setRobotPose(pose);
+                logAndUpdateDriveSubsystemStates();
 
                 frontLeftField2dModule.setPose(pose.transformBy(new Transform2d(
                                 FRONT_LEFT_OFFSET,
