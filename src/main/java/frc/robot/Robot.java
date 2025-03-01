@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -64,8 +65,10 @@ public class Robot extends TimedRobot {
     DriverStation.startDataLog(DataLogManager.getLog());
     CommandScheduler.getInstance().onCommandInitialize(cmd -> DataLogManager.log(cmd.getName() + " : Init"));
     CommandScheduler.getInstance().onCommandInterrupt((interrupted, interrupting) -> DataLogManager
-        .log(interrupted.getName() + "Interrupted by " + (!interrupting.isEmpty() ? interrupting.get().getName() : "nothing")));
+        .log(interrupted.getName() + "Interrupted by "
+            + (!interrupting.isEmpty() ? interrupting.get().getName() : "nothing")));
     CommandScheduler.getInstance().onCommandFinish(cmd -> DataLogManager.log(cmd.getName() + ": End"));
+    SmartDashboard.putString("branch and date", CodeVersionInfo.GIT_BRANCH + " " + CodeVersionInfo.GIT_DATE);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
