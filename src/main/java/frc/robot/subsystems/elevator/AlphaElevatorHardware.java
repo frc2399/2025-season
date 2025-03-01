@@ -1,5 +1,12 @@
 package frc.robot.subsystems.elevator;
 
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -21,6 +28,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.Constants;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 
@@ -100,6 +108,11 @@ public class AlphaElevatorHardware implements ElevatorIO {
                                 .reverseSoftLimit(0)
                                 .reverseSoftLimitEnabled(true);
 
+                globalMotorConfig.signals
+                                .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                                .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                                .outputCurrentPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS);
+
                 leftMotorConfigLeader
                                 .apply(globalMotorConfig)
                                 .inverted(false)
@@ -160,10 +173,6 @@ public class AlphaElevatorHardware implements ElevatorIO {
                 return leftEncoder.getPosition();
         }
 
-        public void setSpeedManualControl(double speed) {
-                // place holding method
-        }
-
         @Override
         public void updateStates(ElevatorIOInputs states) {
                 states.position = getEncoderPosition();
@@ -176,4 +185,9 @@ public class AlphaElevatorHardware implements ElevatorIO {
                 states.goalPosition = goalState.position;
                 states.intermediateSetpointPosition = intermediateSetpointState.position;
         }
+
+        public void setSpeedManualControl(double speed) {
+                // place holding method
+        }
+
 }

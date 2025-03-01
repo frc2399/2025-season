@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PY-E2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "E2-PCS"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PCS-D1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "D1-PCS"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PCS-C1"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": true
+}

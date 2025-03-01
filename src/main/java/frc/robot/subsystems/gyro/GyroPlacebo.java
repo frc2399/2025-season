@@ -18,4 +18,8 @@ public class GyroPlacebo implements GyroIO {
     public StatusSignal<AngularVelocity> getAngularVelocity() {
         return new StatusSignal<AngularVelocity>(null, null, null);
     }
+
+    public boolean hasFault() {
+        return false;
+    }
 }

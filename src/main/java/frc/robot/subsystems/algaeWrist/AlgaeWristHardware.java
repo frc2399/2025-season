@@ -19,6 +19,8 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
@@ -88,6 +90,11 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                                 .forwardSoftLimitEnabled(SOFT_LIMIT_ENABLED)
                                 .reverseSoftLimit(REVERSE_SOFT_LIMIT.in(Radians))
                                 .reverseSoftLimitEnabled(SOFT_LIMIT_ENABLED);
+                
+                wristSparkMaxConfig.signals
+                                .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                                .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                                .outputCurrentPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS);
 
                 algaeWristSparkMax = new SparkFlex(MotorIdConstants.ALGAE_BETA_WRIST_CAN_ID, MotorType.kBrushless);
 
@@ -102,6 +109,11 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         }
 
         @Override
+        public void resetRelativeToAbsolute() {
+            algaeWristRelativeEncoder.setPosition(algaeWristAbsoluteEncoder.getPosition());
+        }
+
+        @Override
         public void setGoalAngle(Setpoint setpoint) {
                 Angle desiredAngle = Radians.of(0);
                 if (setpoint == Setpoint.L_ONE) {
@@ -110,6 +122,8 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                         desiredAngle = SetpointConstants.ALGAE_REEF_REMOVER_ANGLE;
                 } else if (setpoint == Setpoint.TURTLE) {
                         desiredAngle = SetpointConstants.ALGAE_WRIST_TURTLE_ANGLE;
+                } else if (setpoint == Setpoint.ZERO){
+                        desiredAngle = SetpointConstants.ALGAE_WRIST_ZERO_ANGLE;
                 }
                 algaeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
                                 ClosedLoopSlot.kSlot0,
