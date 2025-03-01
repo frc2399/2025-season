@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Z-J2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "J2-CS"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CS-K4 "
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": true
+}

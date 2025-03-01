@@ -1,13 +1,14 @@
 package frc.robot.subsystems.elevator;
 
-import edu.wpi.first.units.measure.Distance;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CommandFactory.GameMode;
 import frc.robot.CommandFactory.Setpoint;
@@ -82,8 +83,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         return (Math.abs(goalSetpoint - elevatorIO.getEncoderPosition()) <= HEIGHT_TOLERANCE.in(Meters));
     }
 
-    public Command incrementGoalPosition(Distance changeInGoalPosition) {
-        return this.run(() -> {
+    public Command atGoalCommand() {
+        return Commands.waitUntil(() -> atGoal());
+    }
+    
+    public Command incrementGoalPosition(Distance changeInGoalPosition)
+    {
+        return this.run(()-> {
             profiledPIDEnabled = true;
             elevatorIO.incrementGoalPosition(changeInGoalPosition);
         });

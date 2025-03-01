@@ -42,5 +42,4 @@ public class Gyro {
     public boolean hasFault() {
         return io.hasFault();
     }
-
 }
