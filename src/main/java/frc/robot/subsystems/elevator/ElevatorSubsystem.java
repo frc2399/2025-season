@@ -89,8 +89,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     
     public Command incrementGoalPosition(Distance changeInGoalPosition)
     {
-        profiledPIDEnabled = true;
-        return this.run(()-> elevatorIO.incrementGoalPosition(changeInGoalPosition));
+        return this.run(()-> {
+            elevatorIO.incrementGoalPosition(changeInGoalPosition);
+            profiledPIDEnabled = true;
+        });
     }
 
     public double getCurrentPosition() {

@@ -205,15 +205,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // This will get the simulated sensor readings that we set
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
-                SmartDashboard.putNumber("left front distance (meters)", frontLeft.getDriveEncoderPosition());
-                SmartDashboard.putNumber("drive/gyro angle(degrees)", gyro.getYaw().in(Degrees));
-
-                // SmartDashboard.putNumber("drive/relative X speeds",
-                // relativeRobotSpeeds.vxMetersPerSecond);
-                // SmartDashboard.putNumber("drive/relative Y speeds",
-                // relativeRobotSpeeds.vyMetersPerSecond);
-                // SmartDashboard.putNumber("drive/relative radian speeds",
-                // relativeRobotSpeeds.omegaRadiansPerSecond);
                 poseEstimator.updateWithTime(Timer.getFPGATimestamp(),
                                 Rotation2d.fromRadians(gyro.getYaw().in(Radians)),
                                 new SwerveModulePosition[] {
@@ -224,10 +215,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 });
 
                 Pose2d pose = getPose();
-                SmartDashboard.putNumber("Swerve/vision/x", pose.getX());
-                SmartDashboard.putNumber("Swerve/vision/y", pose.getY());
-
-                SmartDashboard.putNumber("robot pose theta", pose.getRotation().getDegrees());
                 field2d.setRobotPose(pose);
 
                 frontLeftField2dModule.setPose(pose.transformBy(new Transform2d(
