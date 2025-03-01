@@ -4,17 +4,16 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
-import frc.robot.subsystems.coralIntake.CoralIntakeAlphaHardware;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CommandFactory {
 
@@ -119,8 +118,8 @@ public class CommandFactory {
 
   public Command moveElevatorAndAlgaeWrist() {
     return Commands.sequence(
-      coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
-      Commands.waitUntil(() -> coralWrist.atGoal()),
+        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+        Commands.waitUntil(() -> coralWrist.atGoal()),
         algaeWrist.goToSetpointCommand(() -> getSetpoint()),
         elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.ALGAE));
   }

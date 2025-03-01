@@ -1,31 +1,28 @@
 package frc.robot.subsystems.coralIntake;
 
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
-import frc.robot.Constants;
-import frc.robot.Constants.MotorConstants;
-import frc.robot.Constants.MotorIdConstants;
-import frc.robot.Constants.SpeedConstants;
-import frc.robot.CommandFactory.Setpoint;
-
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Seconds;
 
-import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Time;
-
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import frc.robot.CommandFactory.Setpoint;
+import frc.robot.Constants;
+import frc.robot.Constants.MotorConstants;
+import frc.robot.Constants.MotorIdConstants;
+import frc.robot.Constants.SpeedConstants;
 
 //intake to stall
 public class CoralIntakeBetaHardware implements CoralIntakeIO {
