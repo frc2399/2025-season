@@ -1,6 +1,10 @@
 package frc.robot.subsystems.elevator;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.units.measure.Distance;
+import frc.robot.CommandFactory.GameMode;
+import frc.robot.CommandFactory.Setpoint;
 
 public interface ElevatorIO {
 
@@ -31,4 +35,7 @@ public interface ElevatorIO {
     public void setSpeedManualControl(double speed);
 
     public void updateStates(ElevatorIOInputs states);
+
+    public Distance getElevatorSetpoint(Supplier<Setpoint> setpoint, Supplier<GameMode> gameMode,
+            Distance eleavtorSetpoint);
 }

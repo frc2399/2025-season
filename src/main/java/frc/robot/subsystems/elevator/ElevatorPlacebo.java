@@ -1,6 +1,12 @@
 package frc.robot.subsystems.elevator;
 
+import static edu.wpi.first.units.Units.Meters;
+
+import java.util.function.Supplier;
+
 import edu.wpi.first.units.measure.Distance;
+import frc.robot.CommandFactory.GameMode;
+import frc.robot.CommandFactory.Setpoint;
 
 public class ElevatorPlacebo implements ElevatorIO {
 
@@ -39,5 +45,11 @@ public class ElevatorPlacebo implements ElevatorIO {
 
     @Override
     public void updateStates(ElevatorIOInputs states) {
+    }
+
+    @Override
+    public Distance getElevatorSetpoint(Supplier<Setpoint> setpoint, Supplier<GameMode> gameMode,
+            Distance eleavtorSetpoint) {
+        return Meters.of(0);
     }
 }
