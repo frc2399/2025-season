@@ -55,10 +55,11 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
 
         private static final boolean POSITION_WRAPPING_ENABLED_SIDE_MOTORS = true;
 
-        private static final Time ALPHA_CORAL_DEBOUNCER_TIME = Seconds.of(0.5);
-        private static final Current CORAL_INTAKE_STALL_THRESHOLD = Amps.of(15);
+        private static final Time ALPHA_CORAL_DEBOUNCER_TIME = Seconds.of(0.06);
+        private static final Current CORAL_INTAKE_STALL_THRESHOLD = Amps.of(0.004);
         private static final Debouncer CORAL_ALPHA_DEBOUNCER = new Debouncer(ALPHA_CORAL_DEBOUNCER_TIME.in(Seconds));
 
+        
         public CoralIntakeAlphaHardware() {
                 leftSparkMaxConfig.inverted(LEFT_MOTOR_INVERTED).idleMode(IDLE_MODE)
                                 .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
@@ -147,6 +148,13 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
         @Override
         public boolean isStalling() {
                 return (CORAL_ALPHA_DEBOUNCER.calculate(getCurrent() > CORAL_INTAKE_STALL_THRESHOLD.in(Amps)));
+        }
+
+        @Override
+        public void passiveIntake() {
+            if (!isStalling()) {
+                coralIntakeLeftClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
+            }
         }
 
         @Override

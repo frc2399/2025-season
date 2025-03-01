@@ -26,7 +26,7 @@ public class CommandFactory {
 
   // private final NetworkTableEntry ntEntry; //one for each entry we want to read
   // (state changes)
-  private final NetworkTable scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");;
+  public static final NetworkTable scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");
   // private final NetworkTableEntry newEntry;
   private final NetworkTableEntry levelEntry = scoringStateTables.getEntry("scoringLevel");
   private final NetworkTableEntry gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
@@ -65,9 +65,37 @@ public class CommandFactory {
     ALGAE
   }
 
+
+
   public RobotPosition robotPosition;
   public GameMode gameMode;
   public Setpoint setpoint;
+
+  public Setpoint getScoringLevel() {
+    Setpoint scoringLevel;
+    if (levelEntry.getString("None").equals("Level 1")) {
+        scoringLevel = Setpoint.L_ONE;
+      } else if (levelEntry.getString("None").equals("Level 2")) {
+        scoringLevel = Setpoint.L_TWO;
+      } else if (levelEntry.getString("None").equals("Level 3")) {
+        scoringLevel = Setpoint.L_THREE;
+      } else if (levelEntry.getString("None").equals("Level 4")) {
+        scoringLevel = Setpoint.L_FOUR;
+      } else {
+        scoringLevel = Setpoint.L_ONE;
+      }
+      return scoringLevel;
+  }
+
+  public GameMode getGameMode() {
+    if (gameModeEntry.getString("None").equals("coral")) {
+      gameMode = GameMode.CORAL;
+    } else if (gameModeEntry.getString("None").equals("algae")) {
+      gameMode = GameMode.ALGAE;
+    }
+    SmartDashboard.putString("networktablesData/gameMode", gameMode.toString());
+    return gameMode;
+  }
 
   public Command turtleBasedOnMode() {
     return Commands.either(
@@ -111,9 +139,11 @@ public class CommandFactory {
             algaeWrist.goToSetpointCommand(() -> Setpoint.ZERO),
             coralWrist.goToSetpointCommand(() -> Setpoint.ZERO)),
         Commands.waitUntil(() -> coralWrist.atGoal()),
-      elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.CORAL),
-      Commands.waitUntil(() -> elevator.atGoal()),
-      coralWrist.goToSetpointCommand(() -> getSetpoint()));
+        Commands.parallel(
+            elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.CORAL),
+            coralWrist.goToSetpointCommand(() -> getSetpoint()),
+            Commands.run(
+              () -> coralIntake.passiveIntakeCommand()).until(() -> elevator.atGoal())));
   }
 
   public Command moveElevatorAndAlgaeWrist() {
@@ -126,8 +156,8 @@ public class CommandFactory {
 
   public Command intakeBasedOnMode(Supplier<GameMode> gameMode) {
     return Commands.either(
-        algaeIntake.intake(),
-        coralIntake.intake(),
+        algaeIntake.intakeToStall(),
+        coralIntake.intakeToStall(),
         () -> (getGameMode() == GameMode.ALGAE));
   }
 
@@ -163,16 +193,6 @@ public class CommandFactory {
     }
     SmartDashboard.putString("networktablesData/robotPosition", robotPosition.toString());
     return robotPosition;
-  }
-
-  public GameMode getGameMode() {
-    if (gameModeEntry.getString("None").equals("coral")) {
-      gameMode = GameMode.CORAL;
-    } else if (gameModeEntry.getString("None").equals("algae")) {
-      gameMode = GameMode.ALGAE;
-    }
-    SmartDashboard.putString("networktablesData/gameMode", gameMode.toString());
-    return gameMode;
   }
 
   public void setGameMode(String level) {

@@ -23,4 +23,7 @@ public class AlgaeIntakePlacebo implements AlgaeIntakeIO {
     @Override
     public void outtake() {}
 
+    @Override
+    public void passiveIntake() {}
+
 }

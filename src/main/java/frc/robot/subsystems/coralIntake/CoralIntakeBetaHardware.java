@@ -52,7 +52,7 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     private double velocityGoal = 0;
 
-    private static final Time BETA_CORAL_DEBOUNCER_TIME = Seconds.of(0.5);
+    private static final Time BETA_CORAL_DEBOUNCER_TIME = Seconds.of(0.18);
     private static final Current CORAL_INTAKE_STALL_THRESHOLD = Amps.of(15);
     private static final Debouncer CORAL_BETA_DEBOUNCER = new Debouncer(BETA_CORAL_DEBOUNCER_TIME.in(Seconds));
 
@@ -110,8 +110,16 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     @Override
     public boolean isStalling() {
-        return CORAL_BETA_DEBOUNCER
+        boolean isStalling = CORAL_BETA_DEBOUNCER
                 .calculate(betaCoralIntakeSparkFlex.getOutputCurrent() > CORAL_INTAKE_STALL_THRESHOLD.in(Amps));
+        return isStalling;
+    }
+
+    @Override
+    public void passiveIntake() {
+        if (!isStalling()) {
+            betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
+        }
     }
 
     @Override
