@@ -3,6 +3,7 @@ package frc.robot.subsystems.algaeIntake;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -15,7 +16,10 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Time;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 import frc.robot.Constants.SpeedConstants;
@@ -41,6 +45,11 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
     private static final double COMP_ALGAE_INTAKE_MAX_OUTPUT = -1;
 
     private static final boolean COMP_ALGAE_INTAKE_POSITION_WRAPPING_ENABLED = true;
+
+     private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(19.5);
+        private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(0.09);
+
+        private static final Debouncer algaeIntakeDebouncer = new Debouncer(ALGAE_INTAKE_STALL_TIME.in(Seconds));
 
     public AlgaeIntakeCompHardware() {
         compAlgaeIntakeConfig.inverted(COMP_ALGAE_INTAKE_MOTOR_INVERTED)
@@ -87,9 +96,9 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
     }
 
     @Override
-    public boolean isStalling() {
-        return false;
-    }
+        public boolean isStalling() {
+                return algaeIntakeDebouncer.calculate(algaeIntakeSparkMax.getOutputCurrent() > ALGAE_INTAKE_STALL_THRESHOLD.in(Amps));
+        }
 
     @Override
         public void passiveIntake() {
