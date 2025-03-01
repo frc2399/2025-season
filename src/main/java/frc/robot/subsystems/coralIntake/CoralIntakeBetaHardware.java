@@ -9,6 +9,7 @@ import frc.robot.CommandFactory.Setpoint;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.spark.SparkFlex;
@@ -102,12 +103,6 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     public void setZero() {
         betaCoralIntakeClosedLoop.setReference(0, ControlType.kVelocity);
         velocityGoal = 0;
-    }
-
-    @Override
-    public void outtakeL1() {
-        betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_L1_OUTTAKE_SPEED.in(RPM), ControlType.kVelocity);
-        velocityGoal = SpeedConstants.BETA_CORAL_L1_OUTTAKE_SPEED.in(RadiansPerSecond) / 5;
     }
 
     @Override

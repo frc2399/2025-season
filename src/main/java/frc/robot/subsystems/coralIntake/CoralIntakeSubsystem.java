@@ -29,10 +29,6 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         return this.run(() -> io.setZero()).withName("coral intake default");
     }
 
-    public Command outtakeL1() {
-        return this.run(() -> io.outtakeL1()).withName("run coral outtake L1");
-    }
-
     public Command intakeToStall() {
         return this.run(() -> {
             if (io.isStalling() || hasCoral) {

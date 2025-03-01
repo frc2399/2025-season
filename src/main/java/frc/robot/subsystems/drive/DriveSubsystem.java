@@ -88,9 +88,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         private final SwerveDriveKinematics DRIVE_KINEMATICS;
 
-        private static final double HOLONOMIC_P_CONSTANT = 5.0;
-        private static final double HOLONOMIC_I_CONSTANT = 0.0;
-        private static final double HOLONOMIC_D_CONSTANT = 0.0;
+        private static final double HOLONOMIC_P = 5.0;
+        private static final double HOLONOMIC_I = 0.0;
+        private static final double HOLONOMIC_D = 0.0;
 
         // Slew rate filter variables for controlling lateral acceleration
         private double currentRotationRate = 0.0;
@@ -179,10 +179,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                         this::getRobotRelativeSpeeds,
                                         (speeds, feedforwards) -> setRobotRelativeSpeeds(speeds),
                                         new PPHolonomicDriveController(
-                                                        new PIDConstants(HOLONOMIC_P_CONSTANT, HOLONOMIC_I_CONSTANT,
-                                                                        HOLONOMIC_D_CONSTANT),
-                                                        new PIDConstants(HOLONOMIC_P_CONSTANT, HOLONOMIC_I_CONSTANT,
-                                                                        HOLONOMIC_D_CONSTANT)),
+                                                        new PIDConstants(HOLONOMIC_P, HOLONOMIC_I,
+                                                                        HOLONOMIC_D),
+                                                        new PIDConstants(HOLONOMIC_P, HOLONOMIC_I,
+                                                                        HOLONOMIC_D)),
                                         config, // The robot configuration
                                         () -> {
 

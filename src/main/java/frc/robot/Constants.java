@@ -89,12 +89,7 @@ public final class Constants {
     public static final Angle CORAL_L2_L3_OUTTAKE_ANGLE = Degrees.of(-30);
     public static final Angle CORAL_L4_OUTTAKE_ANGLE = Degree.of(-15);
 
-<<<<<<< HEAD
-
-    public static final Distance ELEVATOR_TURTLE_HEIGHT = Inches.of(0);
-=======
     public static final Distance ELEVATOR_CORAL_TURTLE_HEIGHT = Inches.of(0);
->>>>>>> main
     public static final Distance L_ONE_CORAL_HEIGHT = Inches.of(0);
     public static final Distance L_TWO_CORAL_HEIGHT = Inches.of(10);
     public static final Distance L_THREE_CORAL_HEIGHT = Inches.of(26);

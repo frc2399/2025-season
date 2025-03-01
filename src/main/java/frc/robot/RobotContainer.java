@@ -42,7 +42,7 @@ public class RobotContainer {
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
   private static SendableChooser<Command> autoChooser;
   private ComplexWidget autonChooserWidget;
-  private final Field2d field;
+  // private final Field2d field;
   private final CoralIntakeSubsystem coralIntake = subsystemFactory.buildCoralIntake();
   private final CoralWristSubsystem coralWrist = subsystemFactory.buildCoralWrist();
   private final AlgaeIntakeSubsystem algaeIntake = subsystemFactory.buildAlgaeIntake();
@@ -61,23 +61,23 @@ public class RobotContainer {
 
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
-    field = new Field2d();
-    SmartDashboard.putData("Field", field);
+    // field = new Field2d();
+    // SmartDashboard.putData("Field", field);
 
     // Logging callback for current robot pose
-    PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
-      field.setRobotPose(pose);
-    });
+    // PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+    //   field.setRobotPose(pose);
+    // });
 
-    // Logging callback for target robot pose
-    PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
-      field.getObject("target pose").setPose(pose);
-    });
+    // // Logging callback for target robot pose
+    // PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+    //   field.getObject("target pose").setPose(pose);
+    // });
 
-    // Logging callback for the active path, this is sent as a list of poses
-    PathPlannerLogging.setLogActivePathCallback((poses) -> {
-      field.getObject("path").setPoses(poses);
-    });
+    // // Logging callback for the active path, this is sent as a list of poses
+    // PathPlannerLogging.setLogActivePathCallback((poses) -> {
+    //   field.getObject("path").setPoses(poses);
+    // });
     configureDefaultCommands();
     configureButtonBindingsDriver();
     configureButtonBindingsOperator();
@@ -117,25 +117,13 @@ public class RobotContainer {
   }
 
   private void setUpAuton() {
-    // NamedCommands.registerCommand("intake coral", Commands.print("intake coral"));
-    // NamedCommands.registerCommand("Score coral on L1", Commands.print("coral scored on L1"));
-    // NamedCommands.registerCommand("Score coral on L2", Commands.print("coral scored on L2"));
-    // NamedCommands.registerCommand("Score coral on L4", Commands.print("coral scored on L4"));
-    // NamedCommands.registerCommand("Elevator to L1 setpoint", elevator.goToGoalSetpointCmd(() -> Setpoint.L_ONE, () -> GameMode.CORAL).andThen(elevator.atGoalCommand()));
-    // NamedCommands.registerCommand("Elevator to L2 setpoint", elevator.goToGoalSetpointCmd(() -> Setpoint.L_TWO, () -> GameMode.CORAL).andThen(elevator.atGoalCommand()));
-    // NamedCommands.registerCommand("Elevator to L3 setpoint", elevator.goToGoalSetpointCmd(() -> Setpoint.L_THREE, () -> GameMode.CORAL).andThen(elevator.atGoalCommand()));
-    // NamedCommands.registerCommand("Elevator to L4 setpoint", elevator.goToGoalSetpointCmd(() -> Setpoint.L_FOUR, () -> GameMode.CORAL).andThen(elevator.atGoalCommand()));
-    // NamedCommands.registerCommand("Coral wrist to L1 setpoint", coralWrist.goToSetpointCommand(() -> Setpoint.L_ONE).withTimeout(1));
-    // NamedCommands.registerCommand("Coral wrist to L2 setpoint", coralWrist.goToSetpointCommand(() -> Setpoint.L_TWO).withTimeout(1));
-    // NamedCommands.registerCommand("Coral wrist to L3 setpoint", coralWrist.goToSetpointCommand(() -> Setpoint.L_THREE).withTimeout(1));
-    // NamedCommands.registerCommand("Coral wrist to L4 setpoint", coralWrist.goToSetpointCommand(() -> Setpoint.L_FOUR).withTimeout(1));
     NamedCommands.registerCommand("call scoring level 1", Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")));
     NamedCommands.registerCommand("call scoring level 2", Commands.runOnce(() -> commandFactory.setScoringLevel("Level 2")));
     NamedCommands.registerCommand("call scoring level 3", Commands.runOnce(() -> commandFactory.setScoringLevel("Level 3")));
     NamedCommands.registerCommand("call scoring level 4", Commands.runOnce(() -> commandFactory.setScoringLevel("Level 4")));
     NamedCommands.registerCommand("call game mode coral", Commands.runOnce(() -> commandFactory.setGameMode("coral")));
     NamedCommands.registerCommand("Move elevator and coral wrist", commandFactory.moveElevatorAndCoralWrist());
-    NamedCommands.registerCommand("Outtake coral", coralIntake.setOuttakeSpeed(() -> commandFactory.getSetpoint()).withTimeout(0.5).andThen(Commands.waitSeconds(1)));
+    NamedCommands.registerCommand("Outtake coral", coralIntake.setOuttakeSpeed(() -> commandFactory.getSetpoint()).andThen(Commands.waitSeconds(0.5)));
     
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Autos/Selector", autoChooser);
