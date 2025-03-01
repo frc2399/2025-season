@@ -19,6 +19,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CommandFactory.Setpoint;
+import frc.robot.Constants;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.SetpointConstants;
 
@@ -100,6 +101,12 @@ public class CoralWristHardware implements CoralWristIO {
         .forwardSoftLimitEnabled(SOFT_LIMIT_ENABLED)
         .reverseSoftLimit(REVERSE_SOFT_LIMIT.in(Radians))
         .reverseSoftLimitEnabled(SOFT_LIMIT_ENABLED);
+      
+      
+    wristSparkFlexConfig.signals
+                .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                .outputCurrentPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS);
 
     coralIntakeWristSparkFlex = new SparkFlex(CAN_ID, MotorType.kBrushless);
     coralIntakeWristAbsoluteEncoder = coralIntakeWristSparkFlex.getAbsoluteEncoder();

@@ -19,6 +19,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Time;
 import frc.robot.CommandFactory.Setpoint;
+import frc.robot.Constants;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 import frc.robot.Constants.SpeedConstants;
@@ -64,6 +65,12 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
                 .pidf(BETA_CORAL_INTAKE_P, BETA_CORAL_INTAKE_I, BETA_CORAL_INTAKE_D, BETA_CORAL_INTAKE_FF)
                 .outputRange(BETA_CORAL_INTAKE_PID_MIN_OUTPUT, BETA_CORAL_INTAKE_PID_MAX_OUTPUT)
                 .positionWrappingEnabled(BETA_CORAL_INTAKE_POSITION_WRAPPING_ENABLED);
+        
+        betaCoralIntakeConfig.signals
+                .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                .outputCurrentPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS);
+
 
         betaCoralIntakeSparkFlex = new SparkFlex(MotorIdConstants.CORAL_BETA_INTAKE_CAN_ID,
                 MotorType.kBrushless);
