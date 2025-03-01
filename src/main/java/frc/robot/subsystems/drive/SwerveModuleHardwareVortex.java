@@ -18,6 +18,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import edu.wpi.first.math.MathUtil;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.util.Units;
@@ -193,8 +194,8 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
     }
 
     public void updateStates(SwerveModuleIOStates states) {
-                states.desiredAngle = Units.radiansToDegrees(this.desiredAngle);
-                states.turnAngle = Units.radiansToDegrees(turningAbsoluteEncoder.getPosition());
+                states.desiredAngle = Units.radiansToDegrees(MathUtil.angleModulus(this.desiredAngle));
+                states.turnAngle = Units.radiansToDegrees(MathUtil.angleModulus(turningAbsoluteEncoder.getPosition()));
                 states.driveDesiredVelocity = this.driveDesiredVelocity;
                 states.driveVelocity = drivingRelativeEncoder.getVelocity();
                 states.driveEncoderPos = drivingRelativeEncoder.getPosition();

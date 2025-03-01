@@ -64,16 +64,17 @@ public class RobotContainer {
 
   public void configureDefaultCommands() {
     drive.setDefaultCommand(drive.driveCommand(
-        () -> -(MathUtil.applyDeadband(
-            driverController.getLeftY(),
-            DriveControlConstants.DRIVE_DEADBAND)),
-        () -> -(MathUtil.applyDeadband(
-            driverController.getLeftX(),
-            DriveControlConstants.DRIVE_DEADBAND)),
-        () -> -(MathUtil.applyDeadband(
-            driverController.getRightX(),
-            DriveControlConstants.DRIVE_DEADBAND)),
-        DriveControlConstants.FIELD_ORIENTED_DRIVE));
+      () -> -(MathUtil.applyDeadband(
+          driverController.getLeftY(),
+          DriveControlConstants.DRIVE_DEADBAND)),
+      () -> -(MathUtil.applyDeadband(
+        driverController.getLeftX(),
+          DriveControlConstants.DRIVE_DEADBAND)),
+      () -> -(MathUtil.applyDeadband(
+        driverController.getRightX(),
+          DriveControlConstants.DRIVE_DEADBAND)),
+      true,
+      () -> elevator.isElevatorHeightAboveSpeedLimitingThreshold()));
     coralIntake.setDefaultCommand(coralIntake.setZero());
     algaeIntake.setDefaultCommand(algaeIntake.setRollerSpeed(RPM.of(0)));
     // elevator.setDefaultCommand(elevator.setSpeedManualControl(0));
