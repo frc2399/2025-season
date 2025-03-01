@@ -293,10 +293,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
          *                      field.
          */
         public Command driveCommand(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotRate,
-                        Boolean fieldRelative, BooleanSupplier isSlow) {
+                        Boolean fieldRelative, BooleanSupplier isElevatorHigh) {
                 return this.run(() -> {
                         double driveSpeedFactor = DriveControlConstants.DRIVE_FACTOR;
-                        if(isSlow.getAsBoolean())
+                        if(isElevatorHigh.getAsBoolean())
                         {
                            driveSpeedFactor = DriveControlConstants.SLOW_DRIVE_FACTOR; 
                         }
