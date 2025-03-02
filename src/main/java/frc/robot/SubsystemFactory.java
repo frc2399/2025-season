@@ -2,6 +2,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Inches;
 
+import com.ctre.phoenix6.signals.InvertedValue;
+
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants.MotorIdConstants;
 
@@ -175,19 +177,22 @@ public class SubsystemFactory {
     public AlgaeIntakeSubsystem buildAlgaeIntake() {
         if (robotType == RobotType.BETA) {
             return new AlgaeIntakeSubsystem(new AlgaeIntakeBetaHardware());
-        } else 
+        // } else 
         // if (robotType == RobotType.COMP) {
         //     return new AlgaeIntakeSubsystem(new AlgaeIntakeCompHardware());
-        // }else 
+        }else 
         {
             return new AlgaeIntakeSubsystem(new AlgaeIntakePlacebo());
         }
     }
 
     public AlgaeWristSubsystem buildAlgaeWrist() {
-        if (robotType == RobotType.BETA || robotType == RobotType.COMP) {
-            return new AlgaeWristSubsystem(new AlgaeWristHardware());
-        } else {
+        if (robotType == RobotType.COMP) {
+            return new AlgaeWristSubsystem(new AlgaeWristHardware(true, true));
+        } else if (robotType == RobotType.BETA) {
+            return new AlgaeWristSubsystem(new AlgaeWristHardware(false, false));
+        }
+        else {
             return new AlgaeWristSubsystem(new AlgaeWristPlacebo());
         }
     }
@@ -220,11 +225,11 @@ public class SubsystemFactory {
         if (robotType == RobotType.ALPHA) {
             return new ElevatorSubsystem(new AlphaElevatorHardware(ELEVATOR_ALPHA_MAX_HEIGHT));
         }
-        if (robotType == RobotType.BETA || robotType == RobotType.COMP) {
-            return new ElevatorSubsystem(new KrakenElevatorHardware(ELEVATOR_BETA_MAX_HEIGHT));
-        }
         if (robotType == RobotType.BETA) {
-            return new ElevatorSubsystem(new KrakenElevatorHardware(ELEVATOR_BETA_MAX_HEIGHT));
+            return new ElevatorSubsystem(new KrakenElevatorHardware(ELEVATOR_BETA_MAX_HEIGHT, InvertedValue.CounterClockwise_Positive));
+        }
+        if (robotType == RobotType.COMP) {
+            return new ElevatorSubsystem(new KrakenElevatorHardware(ELEVATOR_BETA_MAX_HEIGHT, InvertedValue.Clockwise_Positive));
         } else {
             return new ElevatorSubsystem(new ElevatorPlacebo());
         }
