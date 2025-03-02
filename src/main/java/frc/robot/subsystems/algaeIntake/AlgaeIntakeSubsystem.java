@@ -62,6 +62,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        hasAlgae = algaeEntry.getBoolean(hasAlgae);
         io.updateStates(states);
         SmartDashboard.putNumber("algaeIntake/intakeVelocity", states.intakeVelocity);
         SmartDashboard.putNumber("algaeIntake/leftCurrent", states.leftCurrent);

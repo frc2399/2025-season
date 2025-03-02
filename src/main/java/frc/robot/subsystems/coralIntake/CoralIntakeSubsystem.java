@@ -55,6 +55,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        hasCoral = coralEntry.getBoolean(hasCoral);
         io.updateStates(states);
         SmartDashboard.putNumber("coralIntake/velocity", states.velocity);
         SmartDashboard.putNumber("coralIntake/goalVelocity", states.goalVelocity);
