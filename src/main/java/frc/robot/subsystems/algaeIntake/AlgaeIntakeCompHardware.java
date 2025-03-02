@@ -33,16 +33,18 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     private static final boolean COMP_ALGAE_INTAKE_MOTOR_INVERTED = false;
     private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
-    private static final double COMP_ALGAE_INTAKE_POSITION_CONVERSION_FACTOR = (2 * Math.PI) / 3;
-    private static final double COMP_ALGAE_INTAKE_VELOCITY_CONVERSION_FACTOR = (2 * Math.PI) / 3 / 60;
+    private static final double COMP_ALGAE_INTAKE_POSITION_CONVERSION_FACTOR = 1.0 / 3;
+    private static final double COMP_ALGAE_INTAKE_VELOCITY_CONVERSION_FACTOR = 1.0 / 3 / 60;
 
-    private static final double COMP_ALGAE_INTAKE_P = 0.001;
+    private static final double COMP_ALGAE_INTAKE_P = 0;
     private static final double COMP_ALGAE_INTAKE_I = 0;
     private static final double COMP_ALGAE_INTAKE_D = 0;
     private static final double COMP_ALGAE_INTAKE_FeedForward = 0.001;
 
     private static final double COMP_ALGAE_INTAKE_MIN_INPUT = 1;
     private static final double COMP_ALGAE_INTAKE_MAX_OUTPUT = -1;
+
+    private double goalVelocity = 0.0;
 
     private static final boolean COMP_ALGAE_INTAKE_POSITION_WRAPPING_ENABLED = true;
 
@@ -70,17 +72,18 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     @Override
     public void setRollerSpeed(AngularVelocity speed) {
-        compAlgaeIntakeClosedLoop.setReference(speed.in(RPM), ControlType.kVelocity);
+        compAlgaeIntakeClosedLoop.setReference(0, ControlType.kVelocity);
+        goalVelocity = speed.in(RPM);
     }
 
     @Override
     public void intake() {
-        setRollerSpeed(SpeedConstants.COMP_ALGAE_INTAKE_SPEED);
+       // setRollerSpeed(SpeedConstants.COMP_ALGAE_INTAKE_SPEED);
     }
 
     @Override
     public void outtake() {
-        setRollerSpeed(SpeedConstants.COMP_ALGAE_OUTTAKE_SPEED);
+        //setRollerSpeed(SpeedConstants.COMP_ALGAE_OUTTAKE_SPEED);
     }
 
     @Override
@@ -89,6 +92,7 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
         states.leftAppliedVoltage = algaeIntakeSparkMax.getAppliedOutput()
                                 * algaeIntakeSparkMax.getBusVoltage();
         states.leftCurrent = algaeIntakeSparkMax.getOutputCurrent();
+        states.goalVelocity = goalVelocity;
     }
 
     private double getVelocity() {
@@ -103,7 +107,7 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
     @Override
         public void passiveIntake() {
             if (!isStalling()) {
-                compAlgaeIntakeClosedLoop.setReference(SpeedConstants.COMP_ALGAE_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
+                //compAlgaeIntakeClosedLoop.setReference(SpeedConstants.COMP_ALGAE_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
             }
         }
 }
