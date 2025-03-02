@@ -91,7 +91,6 @@ public class RobotContainer {
     driverController.y().onTrue(gyro.setYaw(Degrees.of(0.0)));
     driverController.x().whileTrue(drive.setX());
     driverController.b().onTrue(commandFactory.turtleBasedOnMode());
-    driverController.a().onTrue(coralWrist.goToSetpointCommand(() -> Setpoint.L_ONE));
   }
 
   private void setUpAuton() {
