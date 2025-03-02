@@ -17,7 +17,7 @@ public class CoralWristSubsystem extends SubsystemBase {
     }
 
     public void resetWrist() {
-        io.resetRelativeToAbsolute();
+       // io.resetRelativeToAbsolute();
     }
 
     public Command goToSetpointCommand(Supplier<Setpoint> setpoint) {

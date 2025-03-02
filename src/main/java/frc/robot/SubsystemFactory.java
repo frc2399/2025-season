@@ -175,9 +175,11 @@ public class SubsystemFactory {
     public AlgaeIntakeSubsystem buildAlgaeIntake() {
         if (robotType == RobotType.BETA) {
             return new AlgaeIntakeSubsystem(new AlgaeIntakeBetaHardware());
-        } else if (robotType == RobotType.COMP) {
-            return new AlgaeIntakeSubsystem(new AlgaeIntakeCompHardware());
-        }else {
+        } else 
+        // if (robotType == RobotType.COMP) {
+        //     return new AlgaeIntakeSubsystem(new AlgaeIntakeCompHardware());
+        // }else 
+        {
             return new AlgaeIntakeSubsystem(new AlgaeIntakePlacebo());
         }
     }
@@ -193,7 +195,7 @@ public class SubsystemFactory {
     public CoralIntakeSubsystem buildCoralIntake() {
         if (robotType == RobotType.ALPHA) {
             return new CoralIntakeSubsystem(new CoralIntakeAlphaHardware());
-        } else if (robotType == RobotType.BETA) { //TODO: WE HAVE NO INTAKE RN; ADD IT IN WHEN WE GET IT
+        } else if (robotType == RobotType.BETA || robotType == RobotType.COMP) {    
             return new CoralIntakeSubsystem(new CoralIntakeBetaHardware());
         } else {
             return new CoralIntakeSubsystem(new CoralIntakePlacebo());
