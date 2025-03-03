@@ -1,5 +1,10 @@
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -9,12 +14,6 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -85,15 +84,11 @@ public class SwerveModuleHardwareNEO implements SwerveModuleIO {
         private static final double DRIVING_I = 0;
         private static final double DRIVING_D = 0;
         private static final double DRIVING_FF = 1 / DRIVE_WHEEL_FREE_SPEED.in(RotationsPerSecond);
-        private static final double DRIVING_MIN_OUTPUT = -1;
-        private static final double DRIVING_MAX_OUTPUT = 1;
 
         private static final double TURNING_P = 1.0;
         private static final double TURNING_I = 0;
         private static final double TURNING_D = 0.001;
         private static final double TURNING_FF = 0;
-        private static final double TURNING_MIN_OUTPUT = -1;
-        private static final double TURNING_MAX_OUTPUT = 1;
 
         private static final double VOLTAGE_COMPENSATION = 12;
 
@@ -114,8 +109,7 @@ public class SwerveModuleHardwareNEO implements SwerveModuleIO {
                 sparkMaxConfigDriving.encoder.positionConversionFactor(DRIVING_ENCODER_POSITION_FACTOR.in(Meters))
                                 .velocityConversionFactor(DRIVING_ENCODER_VELOCITY_FACTOR.in(Meters));
                 sparkMaxConfigDriving.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                .pidf(DRIVING_P, DRIVING_I, DRIVING_D, DRIVING_FF)
-                                .outputRange(DRIVING_MIN_OUTPUT, DRIVING_MAX_OUTPUT);
+                                .pidf(DRIVING_P, DRIVING_I, DRIVING_D, DRIVING_FF);
 
                 sparkMaxConfigTurning.inverted(TURNING_MOTOR_INVERTED).idleMode(TURNING_MOTOR_IDLE_MODE)
                                 .smartCurrentLimit(
@@ -126,16 +120,15 @@ public class SwerveModuleHardwareNEO implements SwerveModuleIO {
                 sparkMaxConfigTurning.absoluteEncoder.inverted(TURNING_ENCODER_INVERTED);
                 sparkMaxConfigTurning.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                                 .pidf(TURNING_P, TURNING_I, TURNING_D, TURNING_FF)
-                                .outputRange(TURNING_MIN_OUTPUT, TURNING_MAX_OUTPUT)
                                 .positionWrappingEnabled(TURNING_ENCODER_POSITION_WRAPPING)
                                 .positionWrappingInputRange(
                                                 TURNING_ENCODER_POSITION_PID_MIN_INPUT,
                                                 TURNING_ENCODER_POSITION_PID_MAX_INPUT);
 
                 drivingSparkMax.configure(sparkMaxConfigDriving, ResetMode.kResetSafeParameters,
-                                PersistMode.kNoPersistParameters);
+                                PersistMode.kPersistParameters);
                 turningSparkMax.configure(sparkMaxConfigTurning, ResetMode.kResetSafeParameters,
-                                PersistMode.kNoPersistParameters);
+                                PersistMode.kPersistParameters);
 
                 drivingRelativeEncoder = drivingSparkMax.getEncoder();
                 turningAbsoluteEncoder = turningSparkMax.getAbsoluteEncoder();
