@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -90,7 +91,6 @@ public class RobotContainer {
     driverController.y().onTrue(gyro.setYaw(Degrees.of(0.0)));
     driverController.x().whileTrue(drive.setX());
     driverController.b().onTrue(commandFactory.turtleBasedOnMode());
-    driverController.a().onTrue(coralWrist.goToSetpointCommand(() -> Setpoint.L_ONE));
   }
 
   private void setUpAuton() {

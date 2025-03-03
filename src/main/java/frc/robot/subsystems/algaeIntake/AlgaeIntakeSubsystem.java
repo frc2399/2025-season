@@ -65,6 +65,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
         hasAlgae = algaeEntry.getBoolean(hasAlgae);
         io.updateStates(states);
         SmartDashboard.putNumber("algaeIntake/intakeVelocity", states.intakeVelocity);
+        SmartDashboard.putNumber("algaeIntake/goalVelocity", states.goalVelocity);
         SmartDashboard.putNumber("algaeIntake/leftCurrent", states.leftCurrent);
         SmartDashboard.putNumber("algaeIntake/leftAppliedVoltage", states.leftAppliedVoltage);
         SmartDashboard.putBoolean("algaeIntake/hasAlgae", hasAlgae);
