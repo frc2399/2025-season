@@ -19,9 +19,8 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
 import frc.robot.CommandFactory.Setpoint;
+import frc.robot.Constants;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 import frc.robot.Constants.SetpointConstants;
@@ -42,27 +41,20 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         private final AbsoluteEncoder algaeWristAbsoluteEncoder;
         private final RelativeEncoder algaeWristRelativeEncoder;
         private static final SparkFlexConfig wristSparkMaxConfig = new SparkFlexConfig();
-        private static final boolean MOTOR_INVERTED = true;
-
-        private static final boolean ABSOLUTE_ENCODER_INVERTED = true;
 
         private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
 
         private static final double ABSOLUTE_ENCODER_POSITION_FACTOR = (2 * Math.PI) / 2.0;
-        private static final double ABSOLUTE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 2 / 60.0;
+        private static final double ABSOLUTE_ENCODER_VELOCITY_FACTOR = ABSOLUTE_ENCODER_POSITION_FACTOR / 60.0;
         private static final double RELATIVE_ENCODER_POSITION_FACTOR = (2 * Math.PI) / 40.0; // radians
-        private static final double RELATIVE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 2400.0; // radians per second
+        private static final double RELATIVE_ENCODER_VELOCITY_FACTOR = RELATIVE_ENCODER_POSITION_FACTOR / 60; // radians
+                                                                                                              // per
+                                                                                                              // second
 
         private static final double WRIST_MOTOR_P = 0.5;
         private static final double WRIST_MOTOR_I = 0;
         private static final double WRIST_MOTOR_D = 0;
         private static final double WRIST_MOTOR_FF = 0;
-        private static final double WRIST_MOTOR_MIN_OUTPUT = -1;
-        private static final double WRIST_MOTOR_MAX_OUTPUT = 1;
-
-        private static final boolean POSITION_WRAPPING_ENABLED = false;
-        private static final Angle POSITION_WRAPPING_MIN_INPUT = Degrees.of(-90);
-        private static final Angle POSITION_WRAPPING_MAX_INPUT = Degrees.of(90);
 
         private static final Angle FORWARD_SOFT_LIMIT = Degrees.of(0);
         private static final Angle REVERSE_SOFT_LIMIT = Degrees.of(-110);
@@ -79,18 +71,14 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                 wristSparkMaxConfig.encoder.positionConversionFactor(RELATIVE_ENCODER_POSITION_FACTOR)
                                 .velocityConversionFactor(RELATIVE_ENCODER_VELOCITY_FACTOR);
                 wristSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                .pidf(WRIST_MOTOR_P, WRIST_MOTOR_I, WRIST_MOTOR_D, WRIST_MOTOR_FF)
-                                .outputRange(WRIST_MOTOR_MIN_OUTPUT, WRIST_MOTOR_MAX_OUTPUT)
-                                .positionWrappingEnabled(POSITION_WRAPPING_ENABLED)
-                                .positionWrappingInputRange(POSITION_WRAPPING_MIN_INPUT.in(Radians),
-                                                POSITION_WRAPPING_MAX_INPUT.in(Radians));
+                                .pidf(WRIST_MOTOR_P, WRIST_MOTOR_I, WRIST_MOTOR_D, WRIST_MOTOR_FF);
 
                 wristSparkMaxConfig.softLimit
                                 .forwardSoftLimit(FORWARD_SOFT_LIMIT.in(Radians))
                                 .forwardSoftLimitEnabled(SOFT_LIMIT_ENABLED)
                                 .reverseSoftLimit(REVERSE_SOFT_LIMIT.in(Radians))
                                 .reverseSoftLimitEnabled(SOFT_LIMIT_ENABLED);
-                
+
                 wristSparkMaxConfig.signals
                                 .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
                                 .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
@@ -110,7 +98,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
 
         @Override
         public void resetRelativeToAbsolute() {
-            algaeWristRelativeEncoder.setPosition(algaeWristAbsoluteEncoder.getPosition());
+                algaeWristRelativeEncoder.setPosition(algaeWristAbsoluteEncoder.getPosition());
         }
 
         @Override
@@ -122,7 +110,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                         desiredAngle = SetpointConstants.ALGAE_REEF_REMOVER_ANGLE;
                 } else if (setpoint == Setpoint.TURTLE) {
                         desiredAngle = SetpointConstants.ALGAE_WRIST_TURTLE_ANGLE;
-                } else if (setpoint == Setpoint.ZERO){
+                } else if (setpoint == Setpoint.ZERO) {
                         desiredAngle = SetpointConstants.ALGAE_WRIST_ZERO_ANGLE;
                 }
                 algaeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
