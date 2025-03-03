@@ -137,7 +137,7 @@ public final class VisionPoseEstimator extends SubsystemBase {
         // on the red alliance, we want 0 (forward on joystick) to be blue alliance
         // wall. limelight doesn't like that, so we add 180 degrees to compensate
         if (alliance.isPresent() && alliance.get() == Alliance.Red) {
-            LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().getDegrees() + 180, 0, 0, 0, 0, 0);
+            LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().plus(Rotation2d.k180deg).getDegrees(), 0, 0, 0, 0, 0);
         } else {
             LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().getDegrees(), 0, 0, 0, 0, 0);
         }
