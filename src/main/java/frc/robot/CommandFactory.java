@@ -138,7 +138,7 @@ public class CommandFactory {
             coralWrist.goToSetpointCommand(() -> Setpoint.ZERO)),
         Commands.waitUntil(() -> coralWrist.atGoal()),
         elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.CORAL),
-        Commands.waitUntil(() -> elevator.atGoal())
+        Commands.waitUntil(() -> elevator.atGoal()),
         coralWrist.goToSetpointCommand(() -> getSetpoint()));
   }
 
