@@ -2,13 +2,12 @@ package frc.robot.subsystems.algaeIntake;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -22,7 +21,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Time;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
-import frc.robot.Constants.SpeedConstants;
 
 public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
     private final SparkMax algaeIntakeSparkMax;
@@ -33,25 +31,21 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     private static final boolean COMP_ALGAE_INTAKE_MOTOR_INVERTED = false;
     private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
-    private static final double COMP_ALGAE_INTAKE_POSITION_CONVERSION_FACTOR = 1.0 / 3;
-    private static final double COMP_ALGAE_INTAKE_VELOCITY_CONVERSION_FACTOR = 1.0 / 3 / 60;
+    private static final double COMP_ALGAE_INTAKE_POSITION_CONVERSION_FACTOR = 1.0 / 3; // rotations of output wheels
+    private static final double COMP_ALGAE_INTAKE_VELOCITY_CONVERSION_FACTOR = COMP_ALGAE_INTAKE_POSITION_CONVERSION_FACTOR
+            / 60; // rotations of output wheels per second
 
     private static final double COMP_ALGAE_INTAKE_P = 0;
     private static final double COMP_ALGAE_INTAKE_I = 0;
     private static final double COMP_ALGAE_INTAKE_D = 0;
     private static final double COMP_ALGAE_INTAKE_FeedForward = 0.001;
 
-    private static final double COMP_ALGAE_INTAKE_MIN_INPUT = 1;
-    private static final double COMP_ALGAE_INTAKE_MAX_OUTPUT = -1;
-
     private double goalVelocity = 0.0;
 
-    private static final boolean COMP_ALGAE_INTAKE_POSITION_WRAPPING_ENABLED = true;
+    private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(19.5);
+    private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(0.09);
 
-     private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(19.5);
-        private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(0.09);
-
-        private static final Debouncer algaeIntakeDebouncer = new Debouncer(ALGAE_INTAKE_STALL_TIME.in(Seconds));
+    private static final Debouncer algaeIntakeDebouncer = new Debouncer(ALGAE_INTAKE_STALL_TIME.in(Seconds));
 
     public AlgaeIntakeCompHardware() {
         compAlgaeIntakeConfig.inverted(COMP_ALGAE_INTAKE_MOTOR_INVERTED)
@@ -60,12 +54,11 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
         compAlgaeIntakeConfig.encoder.positionConversionFactor(COMP_ALGAE_INTAKE_POSITION_CONVERSION_FACTOR)
                 .velocityConversionFactor(COMP_ALGAE_INTAKE_VELOCITY_CONVERSION_FACTOR);
         compAlgaeIntakeConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pidf(COMP_ALGAE_INTAKE_P, COMP_ALGAE_INTAKE_I, COMP_ALGAE_INTAKE_D, COMP_ALGAE_INTAKE_FeedForward)
-                .outputRange(COMP_ALGAE_INTAKE_MIN_INPUT, COMP_ALGAE_INTAKE_MAX_OUTPUT)
-                .positionWrappingEnabled(COMP_ALGAE_INTAKE_POSITION_WRAPPING_ENABLED);
+                .pidf(COMP_ALGAE_INTAKE_P, COMP_ALGAE_INTAKE_I, COMP_ALGAE_INTAKE_D, COMP_ALGAE_INTAKE_FeedForward);
 
         algaeIntakeSparkMax = new SparkMax(MotorIdConstants.ALGAE_BETA_INTAKE_CAN_ID, MotorType.kBrushless);
-        algaeIntakeSparkMax.configure(compAlgaeIntakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        algaeIntakeSparkMax.configure(compAlgaeIntakeConfig, ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
         compAlgaeIntakeClosedLoop = algaeIntakeSparkMax.getClosedLoopController();
         compAlgaeIntakeRelativeEncoder = algaeIntakeSparkMax.getEncoder();
     }
@@ -78,19 +71,19 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     @Override
     public void intake() {
-       // setRollerSpeed(SpeedConstants.COMP_ALGAE_INTAKE_SPEED);
+        // setRollerSpeed(SpeedConstants.COMP_ALGAE_INTAKE_SPEED);
     }
 
     @Override
     public void outtake() {
-        //setRollerSpeed(SpeedConstants.COMP_ALGAE_OUTTAKE_SPEED);
+        // setRollerSpeed(SpeedConstants.COMP_ALGAE_OUTTAKE_SPEED);
     }
 
     @Override
     public void updateStates(AlgaeIntakeIOStates states) {
         states.intakeVelocity = getVelocity();
         states.leftAppliedVoltage = algaeIntakeSparkMax.getAppliedOutput()
-                                * algaeIntakeSparkMax.getBusVoltage();
+                * algaeIntakeSparkMax.getBusVoltage();
         states.leftCurrent = algaeIntakeSparkMax.getOutputCurrent();
         states.goalVelocity = goalVelocity;
     }
@@ -100,14 +93,16 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
     }
 
     @Override
-        public boolean isStalling() {
-                return algaeIntakeDebouncer.calculate(algaeIntakeSparkMax.getOutputCurrent() > ALGAE_INTAKE_STALL_THRESHOLD.in(Amps));
-        }
+    public boolean isStalling() {
+        return algaeIntakeDebouncer
+                .calculate(algaeIntakeSparkMax.getOutputCurrent() > ALGAE_INTAKE_STALL_THRESHOLD.in(Amps));
+    }
 
     @Override
-        public void passiveIntake() {
-            if (!isStalling()) {
-                //compAlgaeIntakeClosedLoop.setReference(SpeedConstants.COMP_ALGAE_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
-            }
+    public void passiveIntake() {
+        if (!isStalling()) {
+            // compAlgaeIntakeClosedLoop.setReference(SpeedConstants.COMP_ALGAE_PASSIVE_SPEED.in(RPM),
+            // ControlType.kVelocity);
         }
+    }
 }
