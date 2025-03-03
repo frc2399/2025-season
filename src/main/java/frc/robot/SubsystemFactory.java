@@ -60,7 +60,7 @@ public class SubsystemFactory {
     private static final Distance ELEVATOR_ALPHA_MAX_HEIGHT = Inches.of(34.25);
     private static final Distance ELEVATOR_BETA_MAX_HEIGHT = Inches.of(50);
 
-    private enum RobotType {
+    public enum RobotType {
         MOZART,
         SIM,
         ALPHA,
@@ -84,6 +84,10 @@ public class SubsystemFactory {
         } else {
             robotType = RobotType.SIM;
         }
+    }
+
+    public RobotType getRobotType() {
+        return robotType;
     }
 
     public DriveSubsystem buildDriveSubsystem(Gyro gyro) {
