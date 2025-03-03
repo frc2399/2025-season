@@ -6,6 +6,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CommandFactory;
 import frc.robot.Constants;
@@ -21,9 +22,11 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     public AlgaeIntakeSubsystem(AlgaeIntakeIO io) {
         this.io = io;
     }
+
     public Command intake() {
         return this.run(() -> io.intake()).withName("run algae intake");
     }
+
     public Command outtake() {
         return this.run(() -> {
             io.outtake();
@@ -32,23 +35,24 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
             }
         });
     }
-    public Command setRollerSpeed(AngularVelocity speed) {
-        return this.run(() -> io.setRollerSpeed(speed));
+
+    public Command defaultBehavior() {
+        return Commands.either(this.run(() -> io.passiveIntake()),
+                this.run(() -> io.setRollerSpeed(RPM.of(0))).withName("Default Algae Intake"),
+                () -> this.hasAlgae);
     }
 
     public Command intakeToStall() {
         return this.run(
-          () -> {
-                if(io.isStalling() || hasAlgae){
-                    io.setRollerSpeed(RPM.of(0));
-                    setAlgaeEntry(true);
-                }
-                else{
-                    io.setRollerSpeed(Constants.SpeedConstants.ALGAE_INTAKE_SPEED);
+                () -> {
+                    if (io.isStalling() || hasAlgae) {
+                        io.setRollerSpeed(RPM.of(0));
+                        setAlgaeEntry(true);
+                    } else {
+                        io.setRollerSpeed(Constants.SpeedConstants.ALGAE_INTAKE_SPEED);
 
-                }
-          }
-        );
+                    }
+                });
     }
 
     public void setAlgaeEntry(Boolean algaeState) {
@@ -56,14 +60,9 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
         hasAlgae = algaeState;
     }
 
-    public Command passiveIntakeCommand() {
-        return this.runOnce(() -> {
-            io.passiveIntake();
-        });
-    }
-
     @Override
     public void periodic() {
+        hasAlgae = algaeEntry.getBoolean(hasAlgae);
         io.updateStates(states);
         SmartDashboard.putNumber("algaeIntake/intakeVelocity", states.intakeVelocity);
         SmartDashboard.putNumber("algaeIntake/leftCurrent", states.leftCurrent);

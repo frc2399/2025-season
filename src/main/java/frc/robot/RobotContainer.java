@@ -65,19 +65,19 @@ public class RobotContainer {
 
   public void configureDefaultCommands() {
     drive.setDefaultCommand(drive.driveCommand(
-      () -> -(MathUtil.applyDeadband(
-          driverController.getLeftY(),
-          DriveControlConstants.DRIVE_DEADBAND)),
-      () -> -(MathUtil.applyDeadband(
-        driverController.getLeftX(),
-          DriveControlConstants.DRIVE_DEADBAND)),
-      () -> -(MathUtil.applyDeadband(
-        driverController.getRightX(),
-          DriveControlConstants.DRIVE_DEADBAND)),
-      true,
-      () -> elevator.isElevatorHeightAboveSpeedLimitingThreshold()));
-    coralIntake.setDefaultCommand(coralIntake.setZero());
-    algaeIntake.setDefaultCommand(algaeIntake.setRollerSpeed(RPM.of(0)));
+        () -> -(MathUtil.applyDeadband(
+            driverController.getLeftY(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        () -> -(MathUtil.applyDeadband(
+            driverController.getLeftX(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        () -> -(MathUtil.applyDeadband(
+            driverController.getRightX(),
+            DriveControlConstants.DRIVE_DEADBAND)),
+        true,
+        () -> elevator.isElevatorHeightAboveSpeedLimitingThreshold()));
+    coralIntake.setDefaultCommand(coralIntake.defaultBehavior());
+    algaeIntake.setDefaultCommand(algaeIntake.defaultBehavior());
     // elevator.setDefaultCommand(elevator.setSpeedManualControl(0));
   }
 
@@ -94,14 +94,19 @@ public class RobotContainer {
   }
 
   private void setUpAuton() {
-    NamedCommands.registerCommand("call scoring level 1", Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")));
-    NamedCommands.registerCommand("call scoring level 2", Commands.runOnce(() -> commandFactory.setScoringLevel("Level 2")));
-    NamedCommands.registerCommand("call scoring level 3", Commands.runOnce(() -> commandFactory.setScoringLevel("Level 3")));
-    NamedCommands.registerCommand("call scoring level 4", Commands.runOnce(() -> commandFactory.setScoringLevel("Level 4")));
+    NamedCommands.registerCommand("call scoring level 1",
+        Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")));
+    NamedCommands.registerCommand("call scoring level 2",
+        Commands.runOnce(() -> commandFactory.setScoringLevel("Level 2")));
+    NamedCommands.registerCommand("call scoring level 3",
+        Commands.runOnce(() -> commandFactory.setScoringLevel("Level 3")));
+    NamedCommands.registerCommand("call scoring level 4",
+        Commands.runOnce(() -> commandFactory.setScoringLevel("Level 4")));
     NamedCommands.registerCommand("call game mode coral", Commands.runOnce(() -> commandFactory.setGameMode("coral")));
     NamedCommands.registerCommand("Move elevator and coral wrist", commandFactory.moveElevatorAndCoralWrist());
-    NamedCommands.registerCommand("Outtake coral", coralIntake.setOuttakeSpeed(() -> commandFactory.getSetpoint()).andThen(Commands.waitSeconds(0.5)));
-    
+    NamedCommands.registerCommand("Outtake coral",
+        coralIntake.setOuttakeSpeed(() -> commandFactory.getSetpoint()).andThen(Commands.waitSeconds(0.5)));
+
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Autos/Selector", autoChooser);
   }

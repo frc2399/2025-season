@@ -40,7 +40,7 @@ public class AlgaeIntakeBetaHardware implements AlgaeIntakeIO {
         private static final double ENCODER_POSITION_FACTOR = (2 * Math.PI) / 9; // radians
         private static final double ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 9 / 60.0; // radians per second
 
-        private static final double ALGAE_MOTOR_P = 0.0001;
+        private static final double ALGAE_MOTOR_P = 0.001;
         private static final double ALGAE_MOTOR_I = 0;
         private static final double ALGAE_MOTOR_D = 0;
         private static final double ALGAE_MOTOR_FF = 0.01;
@@ -49,8 +49,8 @@ public class AlgaeIntakeBetaHardware implements AlgaeIntakeIO {
 
         private static final boolean POSITION_WRAPPING_ENABLED = true;
 
-        private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(20);
-        private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(0.10);
+        private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(21);
+        private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(0.14);
 
         private static final Debouncer algaeIntakeDebouncer = new Debouncer(ALGAE_INTAKE_STALL_TIME.in(Seconds));
 
@@ -61,14 +61,15 @@ public class AlgaeIntakeBetaHardware implements AlgaeIntakeIO {
                                 .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
                 algaeIntakeSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                                 .pidf(ALGAE_MOTOR_P, ALGAE_MOTOR_I, ALGAE_MOTOR_D, ALGAE_MOTOR_FF)
-                                .pidf(ALGAE_MOTOR_P, ALGAE_MOTOR_I, ALGAE_MOTOR_D, ALGAE_MOTOR_FF, ClosedLoopSlot.kSlot1)
+                                .pidf(ALGAE_MOTOR_P, ALGAE_MOTOR_I, ALGAE_MOTOR_D, ALGAE_MOTOR_FF,
+                                                ClosedLoopSlot.kSlot1)
                                 .outputRange(ALGAE_MOTOR_MIN_OUTPUT, ALGAE_MOTOR_MAX_OUTPUT)
                                 .positionWrappingEnabled(POSITION_WRAPPING_ENABLED);
 
                 algaeIntakeSparkMaxConfig.signals
-                        .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS) 
-                        .outputCurrentPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
-                        .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS);
+                                .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                                .outputCurrentPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                                .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS);
 
                 algaeIntakeSparkMax = new SparkMax(MotorIdConstants.ALGAE_BETA_INTAKE_CAN_ID, MotorType.kBrushless);
 
@@ -82,11 +83,7 @@ public class AlgaeIntakeBetaHardware implements AlgaeIntakeIO {
         }
 
         public void setRollerSpeed(AngularVelocity speed) {
-                if (speed.in(RPM) != 0) {
-                        algaeIntakeClosedLoopController.setReference(speed.in(RPM), ControlType.kVelocity);
-                } else {
-                        algaeIntakeSparkMax.set(0);
-                }
+                algaeIntakeClosedLoopController.setReference(speed.in(RPM), ControlType.kVelocity);
         }
 
         public double getVelocity() {
@@ -95,10 +92,10 @@ public class AlgaeIntakeBetaHardware implements AlgaeIntakeIO {
 
         @Override
         public void intake() {
-                setRollerSpeed(SpeedConstants.BETA_ALGAE_INTAKE_SPEED);                
+                setRollerSpeed(SpeedConstants.BETA_ALGAE_INTAKE_SPEED);
         }
 
-        @Override 
+        @Override
         public void outtake() {
                 setRollerSpeed(SpeedConstants.BETA_ALGAE_OUTTAKE_SPEED);
         }
@@ -114,9 +111,10 @@ public class AlgaeIntakeBetaHardware implements AlgaeIntakeIO {
 
         @Override
         public void passiveIntake() {
-            if (!isStalling()) {
-                algaeIntakeClosedLoopController.setReference(SpeedConstants.BETA_ALGAE_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
-            }
+                if (!isStalling()) {
+                        algaeIntakeClosedLoopController.setReference(SpeedConstants.BETA_ALGAE_PASSIVE_SPEED.in(RPM),
+                                        ControlType.kVelocity);
+                }
         }
 
         @Override
