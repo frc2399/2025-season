@@ -55,18 +55,14 @@ public class CoralWristHardware implements CoralWristIO {
   // 3:1 and 5:1 gearbox on motor. 64:16 (4:1) gear ratio. 3 * 5 * 4 = 60
   private static final double RELATIVE_ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 60; // radians
   // divide position factor by 60 for radians per second
-  private static final double RELATIVE_ENCODER_WRIST_VELOCITY_FACTOR = (2 * Math.PI) / 3600; // radians per second
-
-  private static final boolean POSITION_WRAPPING_ENABLED = false;
-  private static final Angle POSITION_WRAPPING_MIN_INPUT = Degrees.of(-90);
-  private static final Angle POSITION_WRAPPING_MAX_INPUT = Degrees.of(90);
+  private static final double RELATIVE_ENCODER_WRIST_VELOCITY_FACTOR = RELATIVE_ENCODER_WRIST_POSITION_FACTOR / 60; // radians
+                                                                                                                    // per
+                                                                                                                    // second
 
   private static final double WRIST_MOTOR_P = 1;
   private static final double WRIST_MOTOR_I = 0.0;
   private static final double WRIST_MOTOR_D = 0.3;
   private static final double WRIST_MOTOR_FF = 0.0;
-  private static final double WRIST_MOTOR_MIN_OUTPUT = -1.0;
-  private static final double WRIST_MOTOR_MAX_OUTPUT = 1.0;
 
   private static final Angle FORWARD_SOFT_LIMIT = Degrees.of(25);
   private static final Angle REVERSE_SOFT_LIMIT = Degrees.of(-90);
@@ -92,23 +88,18 @@ public class CoralWristHardware implements CoralWristIO {
         .velocityConversionFactor(RELATIVE_ENCODER_WRIST_VELOCITY_FACTOR);
 
     wristSparkFlexConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pidf(WRIST_MOTOR_P, WRIST_MOTOR_I, WRIST_MOTOR_D, WRIST_MOTOR_FF)
-        .outputRange(WRIST_MOTOR_MIN_OUTPUT, WRIST_MOTOR_MAX_OUTPUT)
-        .positionWrappingEnabled(POSITION_WRAPPING_ENABLED)
-        .positionWrappingInputRange(POSITION_WRAPPING_MIN_INPUT.in(Radians),
-            POSITION_WRAPPING_MAX_INPUT.in(Radians));
+        .pidf(WRIST_MOTOR_P, WRIST_MOTOR_I, WRIST_MOTOR_D, WRIST_MOTOR_FF);
 
     wristSparkFlexConfig.softLimit
         .forwardSoftLimit(FORWARD_SOFT_LIMIT.in(Radians))
         .forwardSoftLimitEnabled(SOFT_LIMIT_ENABLED)
         .reverseSoftLimit(REVERSE_SOFT_LIMIT.in(Radians))
         .reverseSoftLimitEnabled(SOFT_LIMIT_ENABLED);
-      
-      
+
     wristSparkFlexConfig.signals
-                .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
-                .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
-                .outputCurrentPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS);
+        .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+        .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+        .outputCurrentPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS);
 
     coralIntakeWristSparkFlex = new SparkFlex(CAN_ID, MotorType.kBrushless);
     coralIntakeWristAbsoluteEncoder = coralIntakeWristSparkFlex.getAbsoluteEncoder();
@@ -116,7 +107,8 @@ public class CoralWristHardware implements CoralWristIO {
     coralIntakeWristRelativeEncoder.setPosition(
         coralIntakeWristAbsoluteEncoder.getPosition());
     coralIntakeWristClosedLoopController = coralIntakeWristSparkFlex.getClosedLoopController();
-    coralIntakeWristSparkFlex.configure(wristSparkFlexConfig,  ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    coralIntakeWristSparkFlex.configure(wristSparkFlexConfig, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
 
   }
 
@@ -163,7 +155,6 @@ public class CoralWristHardware implements CoralWristIO {
     states.wristRelativeEncoderAngle = coralIntakeWristRelativeEncoder.getPosition();
     states.goalAngle = goalAngle.in(Degrees);
     states.wristAbsoluteAngle = coralIntakeWristAbsoluteEncoder.getPosition();
-    // states.trapezoidProfileGoalAngle = goalState.position;
   }
 
   @Override
@@ -174,7 +165,5 @@ public class CoralWristHardware implements CoralWristIO {
 
   @Override
   public void periodic() {
-    // setpointState = wristTrapezoidProfile.calculate(0.02,
-    // setpointState, goalState);
   }
 }
