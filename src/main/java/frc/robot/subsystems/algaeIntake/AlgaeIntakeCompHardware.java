@@ -41,9 +41,6 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
     private static final double COMP_ALGAE_INTAKE_D = 0;
     private static final double COMP_ALGAE_INTAKE_FeedForward = 0;
 
-    private static final double COMP_ALGAE_INTAKE_MIN_INPUT = 1;
-    private static final double COMP_ALGAE_INTAKE_MAX_OUTPUT = -1;
-
     private static final boolean COMP_ALGAE_INTAKE_POSITION_WRAPPING_ENABLED = true;
 
      private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(19.5);
@@ -59,7 +56,6 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
                 .velocityConversionFactor(COMP_ALGAE_INTAKE_VELOCITY_CONVERSION_FACTOR);
         compAlgaeIntakeConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .pidf(COMP_ALGAE_INTAKE_P, COMP_ALGAE_INTAKE_I, COMP_ALGAE_INTAKE_D, COMP_ALGAE_INTAKE_FeedForward)
-                .outputRange(COMP_ALGAE_INTAKE_MIN_INPUT, COMP_ALGAE_INTAKE_MAX_OUTPUT)
                 .positionWrappingEnabled(COMP_ALGAE_INTAKE_POSITION_WRAPPING_ENABLED);
 
         algaeIntakeSparkMax = new SparkMax(MotorIdConstants.ALGAE_BETA_INTAKE_CAN_ID, MotorType.kBrushless);

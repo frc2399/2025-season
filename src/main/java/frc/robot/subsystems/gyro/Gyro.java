@@ -18,9 +18,9 @@ public class Gyro {
     public Gyro(GyroIO io) {
         this.io = io;
         Optional<Alliance> ally = DriverStation.getAlliance();
-        if (ally.get() == Alliance.Red) {
+        if (ally.isPresent() && ally.get() == Alliance.Red) {
             io.setYaw(Degrees.of(0));
-        } else if (ally.get() == Alliance.Blue) {
+        } else if (ally.isPresent() && ally.get() == Alliance.Blue) {
             io.setYaw(Degrees.of(180.0));
         } else {
             io.setYaw(Degrees.of(0.0));
