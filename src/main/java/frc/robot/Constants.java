@@ -59,7 +59,7 @@ public final class Constants {
   public static class SpeedConstants {
     public static final double MAIN_LOOP_FREQUENCY_HZ = 50;
     public static final double LOGGING_FREQUENCY_HZ = 10;
-    public static final int LOGGING_FREQUENCY_MS = (int) (1000 / LOGGING_FREQUENCY_HZ); 
+    public static final int LOGGING_FREQUENCY_MS = (int) (1000 / LOGGING_FREQUENCY_HZ);
     public static final AngularVelocity ALGAE_INTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(1);
     public static final AngularVelocity ALGAE_OUTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(-0.50);
     public static final double DRIVETRAIN_MAX_SPEED_MPS = 4.8;
@@ -72,12 +72,14 @@ public final class Constants {
 
     public static final AngularVelocity BETA_ALGAE_INTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.75);
     public static final AngularVelocity BETA_ALGAE_OUTTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(-0.50);
-    public static final AngularVelocity BETA_ALGAE_PASSIVE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.0005);
+    public static final AngularVelocity BETA_ALGAE_PASSIVE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.01);
 
     public static final AngularVelocity BETA_CORAL_INTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.25);
     public static final AngularVelocity BETA_CORAL_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.15);
-    public static final AngularVelocity BETA_CORAL_L1_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.0075); // slower speed :-0.005
-    public static final AngularVelocity BETA_CORAL_PASSIVE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.0005);
+    public static final AngularVelocity BETA_CORAL_L1_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.0075); // slower
+                                                                                                                       // speed
+                                                                                                                       // :-0.005
+    public static final AngularVelocity BETA_CORAL_PASSIVE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.005);
   }
 
   public static class SetpointConstants {
@@ -97,7 +99,7 @@ public final class Constants {
     public static final Distance ELEVATOR_CORAL_TURTLE_HEIGHT = Inches.of(0);
     public static final Distance L_ONE_CORAL_HEIGHT = Inches.of(0);
     public static final Distance L_TWO_CORAL_HEIGHT = Inches.of(10);
-    public static final Distance L_THREE_CORAL_HEIGHT = Inches.of(26);
+    public static final Distance L_THREE_CORAL_HEIGHT = Inches.of(25.5);
     public static final Distance L_FOUR_CORAL_HEIGHT = Inches.of(48.5);
 
     public static final Distance ELEVATOR_ALGAE_TURTLE_HEIGHT = Inches.of(4);
