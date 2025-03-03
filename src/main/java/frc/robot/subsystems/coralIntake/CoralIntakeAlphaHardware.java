@@ -29,31 +29,22 @@ import frc.robot.Constants.SpeedConstants;
 public class CoralIntakeAlphaHardware implements CoralIntakeIO {
 
         private final SparkMax coralIntakeLeftSparkMax;
-        private final SparkMax coralIntakeRightSparkMax;
 
         private final SparkClosedLoopController coralIntakeLeftClosedLoopController;
-        private final SparkClosedLoopController coralIntakeRightClosedLoopController;
 
         private final RelativeEncoder coralIntakeLeftEncoder;
-        private final RelativeEncoder coralIntakeRightEncoder;
 
         private static final SparkMaxConfig leftSparkMaxConfig = new SparkMaxConfig();
-        private static final SparkMaxConfig rightSparkMaxConfig = new SparkMaxConfig();
 
         private static final boolean LEFT_MOTOR_INVERTED = false;
-        private static final boolean RIGHT_MOTOR_INVERTED = true;
         private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
         private static final double ENCODER_ROLLER_POSITION_FACTOR = (2 * Math.PI); // radians
-        private static final double ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 60.0; // radians per second
+        private static final double ENCODER_VELOCITY_FACTOR = ENCODER_ROLLER_POSITION_FACTOR / 60.0; // radians per second
 
         private static final double INTAKE_MOTOR_P = 0.00018;
         private static final double INTAKE_MOTOR_I = 0.0;
         private static final double INTAKE_MOTOR_D = 0.0;
         private static final double INTAKE_MOTOR_FF = 0.001;
-        private static final double INTAKE_MOTOR_MIN_OUTPUT = -1.0;
-        private static final double INTAKE_MOTOR_MAX_OUTPUT = 1.0;
-
-        private static final boolean POSITION_WRAPPING_ENABLED_SIDE_MOTORS = true;
 
         private static final Time ALPHA_CORAL_DEBOUNCER_TIME = Seconds.of(0.06);
         private static final Current CORAL_INTAKE_STALL_THRESHOLD = Amps.of(0.004);
@@ -66,46 +57,24 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
                 leftSparkMaxConfig.encoder.positionConversionFactor(ENCODER_ROLLER_POSITION_FACTOR)
                                 .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
                 leftSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                .pidf(INTAKE_MOTOR_P, INTAKE_MOTOR_I, INTAKE_MOTOR_D, INTAKE_MOTOR_FF)
-                                .outputRange(INTAKE_MOTOR_MIN_OUTPUT, INTAKE_MOTOR_MAX_OUTPUT)
-                                .positionWrappingEnabled(POSITION_WRAPPING_ENABLED_SIDE_MOTORS);
+                                .pidf(INTAKE_MOTOR_P, INTAKE_MOTOR_I, INTAKE_MOTOR_D, INTAKE_MOTOR_FF);
 
                 leftSparkMaxConfig.signals
                                 .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
                                 .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
                                 .outputCurrentPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS);
 
-                rightSparkMaxConfig.inverted(RIGHT_MOTOR_INVERTED).idleMode(IDLE_MODE)
-                                .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
-                rightSparkMaxConfig.encoder.positionConversionFactor(ENCODER_ROLLER_POSITION_FACTOR)
-                                .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
-                rightSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                .pidf(INTAKE_MOTOR_P, INTAKE_MOTOR_I, INTAKE_MOTOR_D, INTAKE_MOTOR_FF)
-                                .outputRange(INTAKE_MOTOR_MIN_OUTPUT, INTAKE_MOTOR_MAX_OUTPUT);
-
-                rightSparkMaxConfig.signals
-                                .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
-                                .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
-                                .outputCurrentPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS);
-
                 coralIntakeLeftSparkMax = new SparkMax(MotorIdConstants.CORAL_ALPHA_INTAKE_LEFT_CAN_ID, MotorType.kBrushless);
-                coralIntakeRightSparkMax = new SparkMax(MotorIdConstants.CORAL_ALPHA_INTAKE_RIGHT_CAN_ID,
-                                MotorType.kBrushless);
 
                 coralIntakeLeftEncoder = coralIntakeLeftSparkMax.getEncoder();
-                coralIntakeRightEncoder = coralIntakeRightSparkMax.getEncoder();
 
                 coralIntakeLeftSparkMax.configure(leftSparkMaxConfig, ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);
-                coralIntakeRightSparkMax.configure(rightSparkMaxConfig, ResetMode.kResetSafeParameters,
-                                PersistMode.kPersistParameters);
 
                 coralIntakeLeftClosedLoopController = coralIntakeLeftSparkMax.getClosedLoopController();
-                coralIntakeRightClosedLoopController = coralIntakeRightSparkMax.getClosedLoopController();
         }
 
         public void setRollerSpeed(AngularVelocity speed) {
-                coralIntakeRightSparkMax.set(speed.in(RPM));
                 coralIntakeLeftSparkMax.set(speed.in(RPM));
         }
 
@@ -120,7 +89,6 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
         @Override
         public void intake() {
                 coralIntakeLeftClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_INTAKE_SPEED.in(RPM), ControlType.kVelocity);
-                coralIntakeRightClosedLoopController.setReference(SpeedConstants.ALPHA_CORAL_INTAKE_SPEED.in(RPM), ControlType.kVelocity);
         }
 
         @Override
@@ -129,11 +97,9 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
                 if (setpoint == Setpoint.L_ONE) {
                     desiredVelocity = SpeedConstants.ALPHA_CORAL_L1_OUTTAKE_SPEED.in(RPM);
                     coralIntakeLeftClosedLoopController.setReference(desiredVelocity, ControlType.kVelocity);
-                    coralIntakeRightClosedLoopController.setReference(desiredVelocity, ControlType.kVelocity);   
                 } else {
                      desiredVelocity = SpeedConstants.ALPHA_CORAL_OUTTAKE_SPEED.in(RPM);
                      coralIntakeLeftClosedLoopController.setReference(desiredVelocity, ControlType.kVelocity);
-                     coralIntakeRightClosedLoopController.setReference(desiredVelocity, ControlType.kVelocity);  
                 }
 
                 SmartDashboard.putNumber("coralIntake/desiredVelocity", desiredVelocity);
@@ -142,7 +108,6 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
         @Override
         public void setZero() {
                 coralIntakeLeftClosedLoopController.setReference(0, ControlType.kVelocity);
-                coralIntakeRightClosedLoopController.setReference(0, ControlType.kVelocity);
         }
 
         @Override
@@ -162,9 +127,6 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
                 states.velocity = getVelocity();
                 states.leftAppliedVoltage = coralIntakeLeftSparkMax.getAppliedOutput()
                                 * coralIntakeLeftSparkMax.getBusVoltage();
-                states.rightAppliedVoltage = coralIntakeRightSparkMax.getAppliedOutput()
-                                * coralIntakeRightSparkMax.getBusVoltage();
                 states.leftCurrent = coralIntakeLeftSparkMax.getOutputCurrent();
-                states.rightCurrent = coralIntakeRightSparkMax.getOutputCurrent();
         }
 }
