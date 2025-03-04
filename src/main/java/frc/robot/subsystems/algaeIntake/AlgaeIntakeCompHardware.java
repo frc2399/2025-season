@@ -48,8 +48,8 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     private static final boolean COMP_ALGAE_INTAKE_POSITION_WRAPPING_ENABLED = true;
 
-     private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(19.5);
-        private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(0.09);
+     private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(21);
+        private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(0.14);
 
         private static final Debouncer algaeIntakeDebouncer = new Debouncer(ALGAE_INTAKE_STALL_TIME.in(Seconds));
 
@@ -72,7 +72,7 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     @Override
     public void setRollerSpeed(AngularVelocity speed) {
-        compAlgaeIntakeClosedLoop.setReference(0, ControlType.kVelocity);
+        compAlgaeIntakeClosedLoop.setReference(speed.in(RPM), ControlType.kVelocity);
         goalVelocity = speed.in(RPM);
     }
 
