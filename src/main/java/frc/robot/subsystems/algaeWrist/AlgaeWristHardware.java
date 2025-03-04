@@ -50,13 +50,13 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         private static final double RELATIVE_ENCODER_POSITION_FACTOR = (2 * Math.PI) / 40.0; // radians
         private static final double RELATIVE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 2400.0; // radians per second
 
-        private static final double WRIST_MOTOR_P = .001;
+        private static final double WRIST_MOTOR_P = .0075;
         private static final double WRIST_MOTOR_I = 0;
         private static final double WRIST_MOTOR_D = 0;
         private static final double WRIST_MOTOR_FF = 0.04;
 
         private static final Angle FORWARD_SOFT_LIMIT = Degrees.of(0);
-        private static final Angle REVERSE_SOFT_LIMIT = Degrees.of(-90);
+        private static final Angle REVERSE_SOFT_LIMIT = Degrees.of(-100);
         private static final boolean SOFT_LIMIT_ENABLED = true;
 
         private Angle goalAngle = Radians.of(0);
