@@ -41,8 +41,8 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
     private static final double COMP_ALGAE_INTAKE_D = 0;
     private static final double COMP_ALGAE_INTAKE_FeedForward = 0.001;
 
-    private static final double COMP_ALGAE_INTAKE_MIN_INPUT = 1;
-    private static final double COMP_ALGAE_INTAKE_MAX_OUTPUT = -1;
+    private static final double COMP_ALGAE_INTAKE_MIN_INPUT = -1;
+    private static final double COMP_ALGAE_INTAKE_MAX_OUTPUT = 1;
 
     private double goalVelocity = 0.0;
 
