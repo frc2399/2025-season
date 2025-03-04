@@ -184,24 +184,26 @@ public class SubsystemFactory {
     }
 
     public AlgaeIntakeSubsystem buildAlgaeIntake() {
-        if (robotType == RobotType.BETA) {
-            return new AlgaeIntakeSubsystem(new AlgaeIntakeBetaHardware());
-        } else if (robotType == RobotType.COMP) {
-            return new AlgaeIntakeSubsystem(new AlgaeIntakeCompHardware());
-        } else {
-            return new AlgaeIntakeSubsystem(new AlgaeIntakePlacebo());
-        }
+        // if (robotType == RobotType.BETA) {
+        //     return new AlgaeIntakeSubsystem(new AlgaeIntakeBetaHardware());
+        // } else if (robotType == RobotType.COMP) {
+        //     return new AlgaeIntakeSubsystem(new AlgaeIntakeCompHardware());
+        // } else {
+        //     return new AlgaeIntakeSubsystem(new AlgaeIntakePlacebo());
+        // }
+        return new AlgaeIntakeSubsystem(new AlgaeIntakePlacebo());
     }
 
     public AlgaeWristSubsystem buildAlgaeWrist() {
-        if (robotType == RobotType.COMP) {
-            return new AlgaeWristSubsystem(new AlgaeWristHardware(true, true));
-        } else if (robotType == RobotType.BETA) {
-            return new AlgaeWristSubsystem(new AlgaeWristHardware(false, false));
-        }
-        else {
-            return new AlgaeWristSubsystem(new AlgaeWristPlacebo());
-        }
+        // if (robotType == RobotType.COMP) {
+        //     return new AlgaeWristSubsystem(new AlgaeWristHardware(true, true));
+        // } else if (robotType == RobotType.BETA) {
+        //     return new AlgaeWristSubsystem(new AlgaeWristHardware(false, false));
+        // }
+        // else {
+        //     return new AlgaeWristSubsystem(new AlgaeWristPlacebo());
+        // }
+        return new AlgaeWristSubsystem(new AlgaeWristPlacebo());
     }
 
     public CoralIntakeSubsystem buildCoralIntake() {

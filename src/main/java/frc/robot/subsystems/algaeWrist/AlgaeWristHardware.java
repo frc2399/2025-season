@@ -29,7 +29,7 @@ import frc.robot.Constants.SetpointConstants;
 public class AlgaeWristHardware implements AlgaeWristIO {
 
         private final double STATIC_FF_ALGAE = 0.0;
-        private final double GRAVITY_FF_ALGAE = 0.015;
+        private final double GRAVITY_FF_ALGAE = .75;
         private final double VELOCITY_FF_ALGAE = 0.50;
         private final Angle WRIST_ANGULAR_OFFSET = Degrees.of(90);
 
