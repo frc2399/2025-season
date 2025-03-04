@@ -41,6 +41,6 @@ public class AlgaeWristSubsystem extends SubsystemBase {
                 states.wristRelativeEncoderAngle * 180 / Math.PI);
         SmartDashboard.putNumber("algaeWrist/wristAbsoluteEncoderAngleToDegrees", 
                 states.wristAbsoluteEncoderAngle * 180 / Math.PI);
-        SmartDashboard.putNumber("algaeWrist/goalAngle", states.goalAngle);
+        SmartDashboard.putNumber("algaeWrist/goalAngle", states.goalAngle * 180 / Math.PI);
     }
 }

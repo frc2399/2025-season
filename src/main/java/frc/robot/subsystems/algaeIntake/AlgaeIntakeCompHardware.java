@@ -36,10 +36,10 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
     private static final double COMP_ALGAE_INTAKE_POSITION_CONVERSION_FACTOR = 1.0 / 3;
     private static final double COMP_ALGAE_INTAKE_VELOCITY_CONVERSION_FACTOR = 1.0 / 3 / 60;
 
-    private static final double COMP_ALGAE_INTAKE_P = 0;
+    private static final double COMP_ALGAE_INTAKE_P = 0.001;
     private static final double COMP_ALGAE_INTAKE_I = 0;
     private static final double COMP_ALGAE_INTAKE_D = 0;
-    private static final double COMP_ALGAE_INTAKE_FeedForward = 0.001;
+    private static final double COMP_ALGAE_INTAKE_FeedForward = 0.2;
 
     private double goalVelocity = 0.0;
 
@@ -74,12 +74,14 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     @Override
     public void intake() {
-       // setRollerSpeed(SpeedConstants.COMP_ALGAE_INTAKE_SPEED);
+       setRollerSpeed(SpeedConstants.COMP_ALGAE_INTAKE_SPEED);
+       System.out.println("trying to intake");
     }
 
     @Override
     public void outtake() {
-        //setRollerSpeed(SpeedConstants.COMP_ALGAE_OUTTAKE_SPEED);
+        setRollerSpeed(SpeedConstants.COMP_ALGAE_OUTTAKE_SPEED);
+        System.out.println("trying to outtake");
     }
 
     @Override

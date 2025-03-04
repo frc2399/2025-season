@@ -186,11 +186,9 @@ public class SubsystemFactory {
     public AlgaeIntakeSubsystem buildAlgaeIntake() {
         if (robotType == RobotType.BETA) {
             return new AlgaeIntakeSubsystem(new AlgaeIntakeBetaHardware());
-        } else 
-        if (robotType == RobotType.COMP) {
+        } else if (robotType == RobotType.COMP) {
             return new AlgaeIntakeSubsystem(new AlgaeIntakeCompHardware());
-        }else 
-        {
+        } else {
             return new AlgaeIntakeSubsystem(new AlgaeIntakePlacebo());
         }
     }

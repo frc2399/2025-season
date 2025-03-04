@@ -42,9 +42,6 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         private final AbsoluteEncoder algaeWristAbsoluteEncoder;
         private final RelativeEncoder algaeWristRelativeEncoder;
         private static final SparkFlexConfig wristSparkMaxConfig = new SparkFlexConfig();
-        private static final boolean MOTOR_INVERTED = true;
-
-        private static final boolean ABSOLUTE_ENCODER_INVERTED = true;
 
         private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
 
@@ -53,37 +50,27 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         private static final double RELATIVE_ENCODER_POSITION_FACTOR = (2 * Math.PI) / 40.0; // radians
         private static final double RELATIVE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 2400.0; // radians per second
 
-        private static final double WRIST_MOTOR_P = 0.5;
+        private static final double WRIST_MOTOR_P = .001;
         private static final double WRIST_MOTOR_I = 0;
         private static final double WRIST_MOTOR_D = 0;
-        private static final double WRIST_MOTOR_FF = 0;
-        private static final double WRIST_MOTOR_MIN_OUTPUT = -1;
-        private static final double WRIST_MOTOR_MAX_OUTPUT = 1;
-
-        private static final boolean POSITION_WRAPPING_ENABLED = false;
-        private static final Angle POSITION_WRAPPING_MIN_INPUT = Degrees.of(-90);
-        private static final Angle POSITION_WRAPPING_MAX_INPUT = Degrees.of(90);
+        private static final double WRIST_MOTOR_FF = 0.04;
 
         private static final Angle FORWARD_SOFT_LIMIT = Degrees.of(0);
-        private static final Angle REVERSE_SOFT_LIMIT = Degrees.of(-110);
+        private static final Angle REVERSE_SOFT_LIMIT = Degrees.of(-90);
         private static final boolean SOFT_LIMIT_ENABLED = true;
 
         private Angle goalAngle = Radians.of(0);
 
         public AlgaeWristHardware(boolean motorInversion, boolean absoluteEncoderInverison) {
                 wristSparkMaxConfig.inverted(motorInversion).idleMode(IDLE_MODE)
-                                .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
+                                .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
                 wristSparkMaxConfig.absoluteEncoder.positionConversionFactor(ABSOLUTE_ENCODER_POSITION_FACTOR)
                                 .velocityConversionFactor(ABSOLUTE_ENCODER_VELOCITY_FACTOR)
                                 .inverted(absoluteEncoderInverison).zeroCentered(true);
                 wristSparkMaxConfig.encoder.positionConversionFactor(RELATIVE_ENCODER_POSITION_FACTOR)
                                 .velocityConversionFactor(RELATIVE_ENCODER_VELOCITY_FACTOR);
                 wristSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                .pidf(WRIST_MOTOR_P, WRIST_MOTOR_I, WRIST_MOTOR_D, WRIST_MOTOR_FF)
-                                .outputRange(WRIST_MOTOR_MIN_OUTPUT, WRIST_MOTOR_MAX_OUTPUT)
-                                .positionWrappingEnabled(POSITION_WRAPPING_ENABLED)
-                                .positionWrappingInputRange(POSITION_WRAPPING_MIN_INPUT.in(Radians),
-                                                POSITION_WRAPPING_MAX_INPUT.in(Radians));
+                                .pidf(WRIST_MOTOR_P, WRIST_MOTOR_I, WRIST_MOTOR_D, WRIST_MOTOR_FF);
 
                 wristSparkMaxConfig.softLimit
                                 .forwardSoftLimit(FORWARD_SOFT_LIMIT.in(Radians))
@@ -129,7 +116,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                                 ClosedLoopSlot.kSlot0,
                                 algaeWristFeedFoward.calculate(
                                                 desiredAngle.in(Radians) + WRIST_ANGULAR_OFFSET.in(Radians),
-                                                algaeWristAbsoluteEncoder.getVelocity()));
+                                                algaeWristRelativeEncoder.getVelocity()));
                 // the arm feedforward assumes horizontal = 0. ours is vertical (up) = 0, so add
                 // 90 degrees to get us from encoder position to position for arm feedforward
                 goalAngle = desiredAngle;
