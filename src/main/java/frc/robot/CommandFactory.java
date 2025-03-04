@@ -24,10 +24,7 @@ public class CommandFactory {
   private final AlgaeIntakeSubsystem algaeIntake;
   private final CoralIntakeSubsystem coralIntake;
 
-  // private final NetworkTableEntry ntEntry; //one for each entry we want to read
-  // (state changes)
   public static final NetworkTable scoringStateTables = NetworkTableInstance.getDefault().getTable("sidecarTable");
-  // private final NetworkTableEntry newEntry;
   private final NetworkTableEntry levelEntry = scoringStateTables.getEntry("scoringLevel");
   private final NetworkTableEntry gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
   private final NetworkTableEntry leftRightEntry = scoringStateTables.getEntry("Position");
@@ -42,8 +39,6 @@ public class CommandFactory {
     this.coralIntake = coralIntake;
     setGameMode("coral");
     setScoringLevel("Level 1");
-    // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
-    // newEntry = scoringStateTables.getEntry("Indicator");
   }
 
   public enum RobotPosition {
