@@ -427,13 +427,18 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         @Override
         public void addVisionMeasurement(Pose2d pose, double timestampSeconds,
                         Matrix<N3, N1> visionMeasurementStdDevs) {
-                                // System.out.println(timestampSeconds);
+                // Something cursed happens here where the robot code crashes in a loop on first
+                // boot, complaining about doing a Rotation2d.exp on a Rotation2d with x = y =
+                // 0. I (Will) _think_ it has to do with an invalid timestamp value passed here
+                // (negative? before robot boot?) that then causes the poseEstimator to try to
+                // replay odometry measurements that it doesn't have. This try-catch fixes the
+                // issue, and who wants vision updates to crash their robot code anyway?
                 try {
                         poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
-                        
                 } catch (Exception e) {
-                        System.out.println("Pose" + pose.toString());
-                        System.out.println("time" + timestampSeconds);
+                        System.err.printf("Adding vision measurement: %s %f %s\n", pose.toString(), timestampSeconds,
+                                        visionMeasurementStdDevs.toString());
+                        e.printStackTrace();
                 }
         }
 
