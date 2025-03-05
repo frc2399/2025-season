@@ -32,7 +32,7 @@ import frc.robot.SubsystemFactory.RobotType;
 public final class VisionPoseEstimator extends SubsystemBase {
 
     private static final Angle CAMERA_PITCH = Degrees.of(28);
-    private static final Distance X_ROBOT_TO_CAMERA_OFFSET = Inches.of(-11.175);
+    private static final Distance X_ROBOT_TO_CAMERA_OFFSET = Inches.of(11.175);
     private static Distance Y_ROBOT_TO_CAMERA_OFFSET;
     private static final Distance Z_ROBOT_TO_CAMERA_OFFSET = Inches.of(6.405);
     private static final Angle CAMERA_YAW = Degrees.of(0);
@@ -126,7 +126,7 @@ public final class VisionPoseEstimator extends SubsystemBase {
             return Optional.empty();
         }
         var est = Optional.ofNullable(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName));
-        return est.filter((pe) -> pe.tagCount > 0);
+        return est.filter((pe) -> pe.tagCount > 0 && (pe.pose.getX() != 0 && pe.pose.getY() != 0));
     }
 
     /**
@@ -136,11 +136,11 @@ public final class VisionPoseEstimator extends SubsystemBase {
         Optional<Alliance> alliance = DriverStation.getAlliance();
         // on the red alliance, we want 0 (forward on joystick) to be blue alliance
         // wall. limelight doesn't like that, so we add 180 degrees to compensate
-        if (alliance.isPresent() && alliance.get() == Alliance.Red) {
-            LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().plus(Rotation2d.k180deg).getDegrees(), 0, 0, 0, 0, 0);
-        } else {
+        // if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+            // LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().plus(Rotation2d.k180deg).getDegrees(), 0, 0, 0, 0, 0);
+        // } else {
             LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().getDegrees(), 0, 0, 0, 0, 0);
-        }
+        // }
         getPoseEstimate().ifPresent((pe) -> {
             mt2Publisher.set(pe.pose);
             // LimelightHelpers doesn't expose a helper method for these, layout is:
