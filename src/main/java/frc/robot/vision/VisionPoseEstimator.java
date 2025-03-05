@@ -133,14 +133,10 @@ public final class VisionPoseEstimator extends SubsystemBase {
      * Update the limelight's robot orientation
      */
     public void periodic() {
-        Optional<Alliance> alliance = DriverStation.getAlliance();
-        // on the red alliance, we want 0 (forward on joystick) to be blue alliance
-        // wall. limelight doesn't like that, so we add 180 degrees to compensate
-        // if (alliance.isPresent() && alliance.get() == Alliance.Red) {
-            // LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().plus(Rotation2d.k180deg).getDegrees(), 0, 0, 0, 0, 0);
-        // } else {
-            LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().getDegrees(), 0, 0, 0, 0, 0);
-        // }
+        // Resist the temptation to rotate this depending on alliance - the coordinate
+        // system here _has_ to match the WPILib coordinate system, where Yaw is CCW +
+        // and 0 faces the red alliance wall
+        LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().getDegrees(), 0, 0, 0, 0, 0);
         getPoseEstimate().ifPresent((pe) -> {
             mt2Publisher.set(pe.pose);
             // LimelightHelpers doesn't expose a helper method for these, layout is:
