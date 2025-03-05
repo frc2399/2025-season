@@ -48,8 +48,9 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     private static final boolean COMP_ALGAE_INTAKE_POSITION_WRAPPING_ENABLED = true;
 
-     private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(21);
-        private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(0.14);
+     private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(35);
+        private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(0.15);
+        private static final AngularVelocity ALGAE_INTAKE_STALL_VELOCITY = SpeedConstants.BETA_ALGAE_INTAKE_SPEED;
 
         private static final Debouncer algaeIntakeDebouncer = new Debouncer(ALGAE_INTAKE_STALL_TIME.in(Seconds));
 
@@ -83,7 +84,7 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     @Override
     public void outtake() {
-        //setRollerSpeed(SpeedConstants.COMP_ALGAE_OUTTAKE_SPEED);
+        setRollerSpeed(SpeedConstants.COMP_ALGAE_OUTTAKE_SPEED);
     }
 
     @Override
@@ -101,7 +102,7 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     @Override
         public boolean isStalling() {
-                return algaeIntakeDebouncer.calculate(algaeIntakeSparkMax.getOutputCurrent() > ALGAE_INTAKE_STALL_THRESHOLD.in(Amps));
+                return algaeIntakeDebouncer.calculate((algaeIntakeSparkMax.getOutputCurrent() > ALGAE_INTAKE_STALL_THRESHOLD.in(Amps)) && (compAlgaeIntakeRelativeEncoder.getVelocity() < 0.1*ALGAE_INTAKE_STALL_VELOCITY.in(RPM)));
         }
 
     @Override
