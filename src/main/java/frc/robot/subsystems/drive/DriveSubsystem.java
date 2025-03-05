@@ -34,6 +34,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -130,6 +131,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         .getStructArrayTopic("/SmartDashboard/Swerve/Desired Modules States", SwerveModuleState.struct)
                         .publish();
 
+        // Useful pose debugging
+        private final StructPublisher<Pose2d> posePublisher;
+
         /** Creates a new DriveSubsystem. */
         public DriveSubsystem(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule rearLeft,
                         SwerveModule rearRight, Gyro gyro, Distance trackWidth, Distance wheelBase) {
@@ -170,6 +174,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 new Pose2d(0, 0, new Rotation2d(0))); // TODO: make these constants in the constants
                                                                       // file rather than
                                                                       // free-floating numbers
+                posePublisher = NetworkTableInstance.getDefault()
+                                .getStructTopic("DriveSubsystem/EstimatedPose", Pose2d.struct).publish();
+                posePublisher.setDefault(new Pose2d());
                 try {
                         config = RobotConfig.fromGUISettings();
 
@@ -448,6 +455,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 states.totalVelocity = Math.hypot(states.velocityXMPS, states.velocityYMPS);
                 states.angularVelocity = Units.radiansToDegrees(relativeRobotSpeeds.omegaRadiansPerSecond);
                 states.gyroAngleDegrees = gyro.getYaw().in(Degrees);
+
+                // Publish the pose in a struct that can be laid onto the "odometry" view in
+                // advantagescope
+                posePublisher.set(states.pose);
 
                 SmartDashboard.putNumber("drive/Pose X(m)", states.pose.getX());
                 SmartDashboard.putNumber("drive/Pose Y(m)", states.pose.getY());
