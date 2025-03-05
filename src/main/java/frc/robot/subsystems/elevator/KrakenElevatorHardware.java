@@ -7,8 +7,6 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
-import java.util.function.Supplier;
-
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
@@ -26,7 +24,6 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.CommandFactory.GameMode;
 import frc.robot.Constants.MotorIdConstants;
 
 public class KrakenElevatorHardware implements ElevatorIO {
@@ -116,8 +113,8 @@ public class KrakenElevatorHardware implements ElevatorIO {
     }
 
     public void resetSetpointsToCurrentPosition() {
-        goalState.position = elevatorLeftMotorLeader.getPosition().getValueAsDouble();
-        intermediateSetpointState.position = elevatorLeftMotorLeader.getPosition().getValueAsDouble();
+        goalState.position = getEncoderPosition();
+        intermediateSetpointState.position = getEncoderPosition();
 
         goalState.velocity = 0;
         intermediateSetpointState.velocity = 0;
@@ -150,12 +147,26 @@ public class KrakenElevatorHardware implements ElevatorIO {
 
     @Override
     public double getEncoderVelocity() {
-        return elevatorLeftMotorLeader.getVelocity().getValueAsDouble();
+        // Don't refresh the status signal by default, we already get it at 50Hz, and
+        // refreshing blocks, causing loop overruns
+        return this.getEncoderVelocity(false);
+    }
+
+    public double getEncoderVelocity(boolean refresh) {
+        return elevatorLeftMotorLeader.getVelocity(refresh).getValueAsDouble();
+
     }
 
     @Override
     public double getEncoderPosition() {
-        return elevatorLeftMotorLeader.getPosition().getValueAsDouble();
+        // Don't refresh the status signal by default, we already get it at 50Hz, and
+        // refreshing blocks, causing loop overruns
+        return this.getEncoderPosition(false);
+    }
+
+    public double getEncoderPosition(boolean refresh) {
+        return elevatorLeftMotorLeader.getPosition(refresh).getValueAsDouble();
+
     }
 
     @Override
@@ -164,23 +175,19 @@ public class KrakenElevatorHardware implements ElevatorIO {
     }
 
     public boolean isElevatorHeightAboveSpeedLimitingThreshold() {
-        if (elevatorLeftMotorLeader.getPosition()
-                .getValueAsDouble() >= KrakenElevatorConstants.ELEVATOR_SPEED_LIMIT_THRESHOLD_HEIGHT.in(Meters)) {
-            return true;
-        }
-        return false;
+        return getEncoderPosition() >= KrakenElevatorConstants.ELEVATOR_SPEED_LIMIT_THRESHOLD_HEIGHT.in(Meters);
     }
 
     @Override
     public void updateStates(ElevatorIOInputs inputs) {
+        // Don't refresh the status signal by default, we already get it at
+        // 4-100Hz and refreshing blocks causing loop overruns
+        boolean refresh = false;
         inputs.position = getEncoderPosition();
         inputs.velocity = getEncoderVelocity();
-        inputs.appliedVoltageRight = elevatorRightMotorFollower.getClosedLoopOutput().getValueAsDouble()
-                * elevatorRightMotorFollower.getSupplyVoltage().getValueAsDouble();
-        inputs.appliedVoltageLeft = elevatorLeftMotorLeader.getClosedLoopOutput().getValueAsDouble()
-                * elevatorLeftMotorLeader.getSupplyVoltage().getValueAsDouble();
-        // TODO: check if this is correct
-        inputs.current = elevatorLeftMotorLeader.getSupplyCurrent().getValueAsDouble();
+        inputs.appliedVoltageRight = elevatorRightMotorFollower.getMotorVoltage(refresh).getValueAsDouble();
+        inputs.appliedVoltageLeft = elevatorLeftMotorLeader.getMotorVoltage(refresh).getValueAsDouble();
+        inputs.current = elevatorLeftMotorLeader.getSupplyCurrent(refresh).getValueAsDouble();
         inputs.goalPosition = goalState.position;
         inputs.intermediateSetpointPosition = intermediateSetpointState.position;
     }
