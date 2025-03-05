@@ -23,18 +23,17 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SpeedConstants;
 import frc.robot.SubsystemFactory.RobotType;
 
 public final class VisionPoseEstimator extends SubsystemBase {
 
-    private static final Angle CAMERA_PITCH = Degrees.of(28);
-    private static final Distance X_ROBOT_TO_CAMERA_OFFSET = Inches.of(11.175);
-    private static Distance Y_ROBOT_TO_CAMERA_OFFSET;
-    private static final Distance Z_ROBOT_TO_CAMERA_OFFSET = Inches.of(6.405);
+    private static final Angle CAMERA_PITCH = Degrees.of(28); // 0 = horizontal, positive = leaning back
+    private static final Distance X_ROBOT_TO_CAMERA_OFFSET = Inches.of(11.175); // positive = in front of
+                                                                                // robot center
+    private static Distance Y_ROBOT_TO_CAMERA_OFFSET; // positive = left of robot centerline
+    private static final Distance Z_ROBOT_TO_CAMERA_OFFSET = Inches.of(6.405); // ground plane = 0
     private static final Angle CAMERA_YAW = Degrees.of(0);
 
     /**
@@ -126,7 +125,8 @@ public final class VisionPoseEstimator extends SubsystemBase {
             return Optional.empty();
         }
         var est = Optional.ofNullable(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName));
-        // Reject poses where we can see no tags or are at the "uh oh something went wrong" 0,0 coordinate
+        // Reject poses where we can see no tags or are at the "uh oh something went
+        // wrong" 0,0 coordinate
         return est.filter((pe) -> pe.tagCount > 0 && (pe.pose.getX() != 0 && pe.pose.getY() != 0));
     }
 
