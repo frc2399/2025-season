@@ -42,9 +42,9 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         private final AbsoluteEncoder algaeWristAbsoluteEncoder;
         private final RelativeEncoder algaeWristRelativeEncoder;
         private static final SparkFlexConfig wristSparkMaxConfig = new SparkFlexConfig();
-        private static final boolean MOTOR_INVERTED = false;
+        private static final boolean MOTOR_INVERTED = true;
 
-        private static final boolean ABSOLUTE_ENCODER_INVERTED = false;
+        private static final boolean ABSOLUTE_ENCODER_INVERTED = true;
 
         private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
 
@@ -70,12 +70,12 @@ public class AlgaeWristHardware implements AlgaeWristIO {
 
         private Angle goalAngle = Radians.of(0);
 
-        public AlgaeWristHardware() {
-                wristSparkMaxConfig.inverted(MOTOR_INVERTED).idleMode(IDLE_MODE)
+        public AlgaeWristHardware(boolean motorInversion, boolean absoluteEncoderInverison) {
+                wristSparkMaxConfig.inverted(motorInversion).idleMode(IDLE_MODE)
                                 .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
                 wristSparkMaxConfig.absoluteEncoder.positionConversionFactor(ABSOLUTE_ENCODER_POSITION_FACTOR)
                                 .velocityConversionFactor(ABSOLUTE_ENCODER_VELOCITY_FACTOR)
-                                .inverted(ABSOLUTE_ENCODER_INVERTED).zeroCentered(true);
+                                .inverted(absoluteEncoderInverison).zeroCentered(true);
                 wristSparkMaxConfig.encoder.positionConversionFactor(RELATIVE_ENCODER_POSITION_FACTOR)
                                 .velocityConversionFactor(RELATIVE_ENCODER_VELOCITY_FACTOR);
                 wristSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)

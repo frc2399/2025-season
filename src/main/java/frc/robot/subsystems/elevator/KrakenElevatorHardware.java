@@ -60,7 +60,7 @@ public class KrakenElevatorHardware implements ElevatorIO {
     private TrapezoidProfile.State intermediateSetpointState = new TrapezoidProfile.State();
     private PositionVoltage closedLoopController;
 
-    public KrakenElevatorHardware(Distance maxElevatorHeight) {
+    public KrakenElevatorHardware(Distance maxElevatorHeight, InvertedValue leftClimberInversion) {
         elevatorRightMotorFollower = new TalonFX(MotorIdConstants.RIGHT_BETA_ELEVATOR_CAN_ID);
         elevatorLeftMotorLeader = new TalonFX(MotorIdConstants.LEFT_BETA_ELEVATOR_CAN_ID);
 
@@ -91,6 +91,8 @@ public class KrakenElevatorHardware implements ElevatorIO {
 
         globalMotorConfiguration.CurrentLimits
                 .withStatorCurrentLimit(KrakenElevatorConstants.KRAKEN_CURRENT_LIMIT.in(Amps));
+        
+        globalMotorConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         elevatorLeftMotorLeader.setPosition(0);
 
@@ -104,7 +106,7 @@ public class KrakenElevatorHardware implements ElevatorIO {
         rightMotorFollowerConfigurator.apply(globalMotorConfiguration);
 
         // TODO: check inversions
-        leftMotorLeaderConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        leftMotorLeaderConfiguration.MotorOutput.Inverted = leftClimberInversion;
 
         // rightMotorFollowerConfigurator.apply(rightMotorFollowerConfiguration);
         // leftMotorLeaderConfigurator.apply(leftMotorLeaderConfiguration);
