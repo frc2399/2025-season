@@ -38,6 +38,7 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -306,6 +307,11 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 driveSpeedFactor = DriveControlConstants.SLOW_DRIVE_FACTOR;
                         }
                         double currentAngle = gyro.getYaw().in(Radians);
+                        if (DriverStation.getAlliance().isPresent()
+                                        && DriverStation.getAlliance().get() == Alliance.Red) {
+                                currentAngle += Math.PI;
+                        }
+
                         double r = Math.hypot(xSpeed.getAsDouble() * driveSpeedFactor,
                                         ySpeed.getAsDouble() * driveSpeedFactor);
                         double polarAngle = Math.atan2(ySpeed.getAsDouble(), xSpeed.getAsDouble());
@@ -330,7 +336,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 relativeRobotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered,
                                                 ySpeedDelivered,
                                                 rotRateDelivered,
-                                                Rotation2d.fromRadians(gyro.getYaw().in(Radians)));
+                                                Rotation2d.fromRadians(currentAngle));
                         } else {
                                 relativeRobotSpeeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered,
                                                 rotRateDelivered);
