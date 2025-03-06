@@ -34,10 +34,11 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -111,7 +112,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         private Rotation2d lastAngle = new Rotation2d();
 
-
         public static class DriveSubsystemStates {
                 public Pose2d pose = new Pose2d();
                 public double poseTheta = 0;
@@ -130,6 +130,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         StructArrayPublisher<SwerveModuleState> swerveModuleDesiredStatePublisher = NetworkTableInstance.getDefault()
                         .getStructArrayTopic("/SmartDashboard/Swerve/Desired Modules States", SwerveModuleState.struct)
                         .publish();
+
+        // Useful pose debugging
+        private final StructPublisher<Pose2d> posePublisher;
 
         /** Creates a new DriveSubsystem. */
         public DriveSubsystem(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule rearLeft,
@@ -169,8 +172,11 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 rearLeft.getPosition(),
                                                 rearRight.getPosition() },
                                 new Pose2d(0, 0, new Rotation2d(0))); // TODO: make these constants in the constants
-                                                                         // file rather than
-                                                                         // free-floating numbers
+                                                                      // file rather than
+                                                                      // free-floating numbers
+                posePublisher = NetworkTableInstance.getDefault()
+                                .getStructTopic("DriveSubsystem/EstimatedPose", Pose2d.struct).publish();
+                posePublisher.setDefault(new Pose2d());
                 try {
                         config = RobotConfig.fromGUISettings();
 
@@ -296,16 +302,15 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         Boolean fieldRelative, BooleanSupplier isElevatorHigh) {
                 return this.run(() -> {
                         double driveSpeedFactor = DriveControlConstants.DRIVE_FACTOR;
-                        if(isElevatorHigh.getAsBoolean())
-                        {
-                           driveSpeedFactor = DriveControlConstants.SLOW_DRIVE_FACTOR; 
+                        if (isElevatorHigh.getAsBoolean()) {
+                                driveSpeedFactor = DriveControlConstants.SLOW_DRIVE_FACTOR;
                         }
                         double currentAngle = gyro.getYaw().in(Radians);
-                        double r = Math.hypot(xSpeed.getAsDouble() * driveSpeedFactor, ySpeed.getAsDouble() * driveSpeedFactor);
+                        double r = Math.hypot(xSpeed.getAsDouble() * driveSpeedFactor,
+                                        ySpeed.getAsDouble() * driveSpeedFactor);
                         double polarAngle = Math.atan2(ySpeed.getAsDouble(), xSpeed.getAsDouble());
                         double polarXSpeed = r * Math.cos(polarAngle);
                         double polarYSpeed = r * Math.sin(polarAngle);
-
 
                         // //Account for edge case when gyro resets
                         if (currentAngle == 0) {
@@ -427,7 +432,19 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         @Override
         public void addVisionMeasurement(Pose2d pose, double timestampSeconds,
                         Matrix<N3, N1> visionMeasurementStdDevs) {
-                poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
+                // Something cursed happens here where the robot code crashes in a loop on first
+                // boot, complaining about doing a Rotation2d.exp on a Rotation2d with x = y =
+                // 0. I (Will) _think_ it has to do with an invalid timestamp value passed here
+                // (negative? before robot boot?) that then causes the poseEstimator to try to
+                // replay odometry measurements that it doesn't have. This try-catch fixes the
+                // issue, and who wants vision updates to crash their robot code anyway?
+                try {
+                        poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
+                } catch (Exception e) {
+                        System.err.printf("Adding vision measurement: %s %f %s\n", pose.toString(), timestampSeconds,
+                                        visionMeasurementStdDevs.toString());
+                        e.printStackTrace();
+                }
         }
 
         private void logAndUpdateDriveSubsystemStates() {
@@ -439,6 +456,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 states.angularVelocity = Units.radiansToDegrees(relativeRobotSpeeds.omegaRadiansPerSecond);
                 states.gyroAngleDegrees = gyro.getYaw().in(Degrees);
 
+                // Publish the pose in a struct that can be laid onto the "odometry" view in
+                // advantagescope
+                posePublisher.set(states.pose);
+
                 SmartDashboard.putNumber("drive/Pose X(m)", states.pose.getX());
                 SmartDashboard.putNumber("drive/Pose Y(m)", states.pose.getY());
                 SmartDashboard.putNumber("drive/Pose Theta(deg)", states.poseTheta);
@@ -449,4 +470,3 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 SmartDashboard.putNumber("drive/Gyro Angle(deg)", states.gyroAngleDegrees);
         }
 }
-

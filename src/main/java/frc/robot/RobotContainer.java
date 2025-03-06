@@ -41,7 +41,7 @@ public class RobotContainer {
   public final AlgaeWristSubsystem algaeWrist = subsystemFactory.buildAlgaeWrist();
   // this is public because we need to run the visionPoseEstimator periodic from
   // Robot
-  public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
+  public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive, subsystemFactory.getRobotType());
   public CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist, algaeWrist, algaeIntake,
       coralIntake);
 
