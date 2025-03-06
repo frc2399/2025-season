@@ -104,11 +104,11 @@ public final class Constants {
     public static final Distance L_ONE_CORAL_HEIGHT = Inches.of(0);
     public static final Distance L_TWO_CORAL_HEIGHT = Inches.of(10);
     public static final Distance L_THREE_CORAL_HEIGHT = Inches.of(25.5);
-    public static final Distance L_FOUR_CORAL_HEIGHT = Inches.of(49);
+    public static final Distance L_FOUR_CORAL_HEIGHT = Inches.of(49.75);
 
     public static final Distance ELEVATOR_ALGAE_TURTLE_HEIGHT = Inches.of(10);
     public static final Distance L_ONE_ALGAE_HEIGHT = Inches.of(10);
-    public static final Distance L_TWO_ALGAE_HEIGHT = Inches.of(29);
+    public static final Distance L_TWO_ALGAE_HEIGHT = Inches.of(29.5);
     public static final Distance L_THREE_ALGAE_HEIGHT = Inches.of(46.75);
 
     public static final Distance ELEVATOR_COLLISION_RANGE_BOTTOM = Inches.of(1); // 0.5 m
