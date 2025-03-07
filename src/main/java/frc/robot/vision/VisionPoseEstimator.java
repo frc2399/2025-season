@@ -145,7 +145,7 @@ public final class VisionPoseEstimator extends SubsystemBase {
             // MT2pitch, MT2yaw]
             var stddevs = LimelightHelpers.getLimelightNTDoubleArray(limelightHostname, "stddevs");
             driveBase.addVisionMeasurement(pe.pose, pe.timestampSeconds,
-                    VecBuilder.fill(stddevs[6], stddevs[7], Double.POSITIVE_INFINITY));
+                    VecBuilder.fill(stddevs[6], stddevs[7], 10000000));
         });
     }
 }

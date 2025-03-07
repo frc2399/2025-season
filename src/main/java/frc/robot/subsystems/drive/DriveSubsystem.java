@@ -172,9 +172,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 frontRight.getPosition(),
                                                 rearLeft.getPosition(),
                                                 rearRight.getPosition() },
-                                new Pose2d(0, 0, new Rotation2d(0))); // TODO: make these constants in the constants
-                                                                      // file rather than
-                                                                      // free-floating numbers
+                                new Pose2d(0, 0, new Rotation2d(gyro.getYaw()))); // TODO: make these constants in the
+                                                                                  // constants
+                // file rather than
+                // free-floating numbers
                 posePublisher = NetworkTableInstance.getDefault()
                                 .getStructTopic("DriveSubsystem/EstimatedPose", Pose2d.struct).publish();
                 posePublisher.setDefault(new Pose2d());
@@ -444,10 +445,11 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // (negative? before robot boot?) that then causes the poseEstimator to try to
                 // replay odometry measurements that it doesn't have. This try-catch fixes the
                 // issue, and who wants vision updates to crash their robot code anyway?
+
                 try {
                         poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
                 } catch (Exception e) {
-                        System.err.printf("Adding vision measurement: %s %f %s\n", pose.toString(), timestampSeconds,
+                        System.out.printf("Adding vision measurement: %s %f %s\n", pose.toString(), timestampSeconds,
                                         visionMeasurementStdDevs.toString());
                         e.printStackTrace();
                 }
