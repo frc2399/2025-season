@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NonScoreKeeperSide_Leave"
+            "pathName": "NonProcessorSide_Leave"
           }
         }
       ]

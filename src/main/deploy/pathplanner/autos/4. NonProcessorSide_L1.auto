@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ScoreKeeperSide_L1"
+            "pathName": "NonProcessorSide_L1"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.0
+            "waitTime": 0
           }
         },
         {
