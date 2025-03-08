@@ -457,6 +457,16 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         System.out.printf("Adding vision measurement: %s %f %s\n", pose.toString(), timestampSeconds,
                                         visionMeasurementStdDevs.toString());
                         e.printStackTrace();
+                        poseEstimator = new SwerveDrivePoseEstimator(
+                                DRIVE_KINEMATICS,
+                                Rotation2d.fromDegrees(gyro.getYaw().in(Degrees)),
+                                new SwerveModulePosition[] {
+                                                frontLeft.getPosition(),
+                                                frontRight.getPosition(),
+                                                rearLeft.getPosition(),
+                                                rearRight.getPosition() },
+                                new Pose2d(0, 0, new Rotation2d(gyro.getYaw())));
+                        poseEstimator.resetPose(pose);
                 }
         }
 
