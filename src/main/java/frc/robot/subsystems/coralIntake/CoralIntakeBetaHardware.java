@@ -86,6 +86,8 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
         double desiredVelocity = 0;
         if (setpoint == Setpoint.L_ONE) {
             desiredVelocity = SpeedConstants.BETA_CORAL_L1_OUTTAKE_SPEED.in(RPM);
+        } else if (setpoint == Setpoint.L_FOUR) {
+            desiredVelocity = SpeedConstants.BETA_CORAL_L4_OUTTAKE_SPEED.in(RPM);
         } else {
             desiredVelocity = SpeedConstants.BETA_CORAL_OUTTAKE_SPEED.in(RPM);
         }
@@ -113,6 +115,13 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
             betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_PASSIVE_SPEED.in(RPM),
                     ControlType.kVelocity);
         }
+    }
+
+    @Override
+    public void passiveIntakeIgnoringStall() {
+       
+            betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_PASSIVE_SPEED.in(RPM),
+                    ControlType.kVelocity);
     }
 
     @Override

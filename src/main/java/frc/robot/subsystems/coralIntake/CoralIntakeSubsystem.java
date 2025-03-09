@@ -1,9 +1,11 @@
 package frc.robot.subsystems.coralIntake;
+
 import java.util.function.Supplier;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CommandFactory;
 import frc.robot.CommandFactory.Setpoint;
@@ -30,24 +32,19 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         });
     }
 
-    public Command setZero() {
-        return this.run(() -> io.setZero()).withName("coral intake default");
+    public Command defaultBehavior() {
+        return Commands.either(this.run(() -> io.passiveIntake()), this.run(() -> io.setZero()), () -> this.hasCoral)
+                .withName("coral intake default");
     }
 
     public Command intakeToStall() {
         return this.run(() -> {
             if (io.isStalling() || hasCoral) {
-                io.setZero();
+                io.passiveIntakeIgnoringStall();
                 setCoralEntry(true);
             } else {
                 io.intake();
             }
-        });
-    }
-
-    public Command passiveIntakeCommand() {
-        return this.runOnce(() -> { 
-            io.passiveIntake();
         });
     }
 
@@ -58,6 +55,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        hasCoral = coralEntry.getBoolean(hasCoral);
         io.updateStates(states);
         SmartDashboard.putNumber("coralIntake/velocity", states.velocity);
         SmartDashboard.putNumber("coralIntake/goalVelocity", states.goalVelocity);

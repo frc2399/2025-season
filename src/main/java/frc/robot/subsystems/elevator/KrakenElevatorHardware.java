@@ -48,7 +48,7 @@ public class KrakenElevatorHardware implements ElevatorIO {
         private static final Distance ELEVATOR_ROTOR_TO_SENSOR_RATIO = Inches.of(1);
         private static final double kDt = 0.02;
         private static final Current KRAKEN_CURRENT_LIMIT = Amps.of(80);
-        private static final Distance ELEVATOR_SPEED_LIMIT_THRESHOLD_HEIGHT = Inches.of(36);
+        private static final Distance ELEVATOR_SPEED_LIMIT_THRESHOLD_HEIGHT = Inches.of(25);
     }
 
     private TalonFX elevatorRightMotorFollower, elevatorLeftMotorLeader;
@@ -91,7 +91,7 @@ public class KrakenElevatorHardware implements ElevatorIO {
 
         globalMotorConfiguration.CurrentLimits
                 .withStatorCurrentLimit(KrakenElevatorConstants.KRAKEN_CURRENT_LIMIT.in(Amps));
-        
+
         globalMotorConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         elevatorLeftMotorLeader.setPosition(0);
@@ -165,23 +165,20 @@ public class KrakenElevatorHardware implements ElevatorIO {
         elevatorLeftMotorLeader.setControl(new DutyCycleOut(speed));
     }
 
-     public boolean isElevatorHeightAboveSpeedLimitingThreshold()
-    {
-        if(elevatorLeftMotorLeader.getPosition().getValueAsDouble() >= KrakenElevatorConstants.ELEVATOR_SPEED_LIMIT_THRESHOLD_HEIGHT.in(Meters))
-        {
+    public boolean isElevatorHeightAboveSpeedLimitingThreshold() {
+        if (elevatorLeftMotorLeader.getPosition()
+                .getValueAsDouble() >= KrakenElevatorConstants.ELEVATOR_SPEED_LIMIT_THRESHOLD_HEIGHT.in(Meters)) {
             return true;
-        } 
-        return false; 
+        }
+        return false;
     }
 
     @Override
     public void updateStates(ElevatorIOInputs inputs) {
         inputs.position = getEncoderPosition();
         inputs.velocity = getEncoderVelocity();
-        inputs.appliedVoltageRight = elevatorRightMotorFollower.getClosedLoopOutput().getValueAsDouble()
-                * elevatorRightMotorFollower.getSupplyVoltage().getValueAsDouble();
-        inputs.appliedVoltageLeft = elevatorLeftMotorLeader.getClosedLoopOutput().getValueAsDouble()
-                * elevatorLeftMotorLeader.getSupplyVoltage().getValueAsDouble();
+        inputs.appliedVoltageRight = elevatorRightMotorFollower.getMotorVoltage().getValueAsDouble();
+        inputs.appliedVoltageLeft = elevatorLeftMotorLeader.getMotorVoltage().getValueAsDouble();
         // TODO: check if this is correct
         inputs.current = elevatorLeftMotorLeader.getSupplyCurrent().getValueAsDouble();
         inputs.goalPosition = goalState.position;

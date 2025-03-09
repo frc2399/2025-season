@@ -37,13 +37,13 @@ public class AlgaeIntakeBetaHardware implements AlgaeIntakeIO {
         private static final double ENCODER_POSITION_FACTOR = (2 * Math.PI) / 9; // radians
         private static final double ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 9 / 60.0; // radians per second
 
-        private static final double ALGAE_MOTOR_P = 0.0001;
+        private static final double ALGAE_MOTOR_P = 0.001;
         private static final double ALGAE_MOTOR_I = 0;
         private static final double ALGAE_MOTOR_D = 0;
         private static final double ALGAE_MOTOR_FF = 0.01;
 
-        private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(20);
-        private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(0.10);
+        private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(21);
+        private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(0.14);
 
         private static final Debouncer algaeIntakeDebouncer = new Debouncer(ALGAE_INTAKE_STALL_TIME.in(Seconds));
 
@@ -72,11 +72,7 @@ public class AlgaeIntakeBetaHardware implements AlgaeIntakeIO {
         }
 
         public void setRollerSpeed(AngularVelocity speed) {
-                if (speed.in(RPM) != 0) {
-                        algaeIntakeClosedLoopController.setReference(speed.in(RPM), ControlType.kVelocity);
-                } else {
-                        algaeIntakeSparkMax.set(0);
-                }
+                algaeIntakeClosedLoopController.setReference(speed.in(RPM), ControlType.kVelocity);
         }
 
         public double getVelocity() {

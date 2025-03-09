@@ -21,6 +21,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Time;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
+import frc.robot.Constants.SpeedConstants;
 
 public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
     private final SparkMax algaeIntakeSparkMax;
@@ -40,12 +41,13 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
     private static final double COMP_ALGAE_INTAKE_D = 0;
     private static final double COMP_ALGAE_INTAKE_FeedForward = 0.001;
 
-    private double goalVelocity = 0.0;
-
-    private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(19.5);
-    private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(0.09);
+    private static final Current ALGAE_INTAKE_STALL_THRESHOLD = Amps.of(35);
+    private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(0.15);
+    private static final AngularVelocity ALGAE_INTAKE_STALL_VELOCITY = SpeedConstants.BETA_ALGAE_INTAKE_SPEED;
 
     private static final Debouncer algaeIntakeDebouncer = new Debouncer(ALGAE_INTAKE_STALL_TIME.in(Seconds));
+
+    private double goalVelocity = 0;
 
     public AlgaeIntakeCompHardware() {
         compAlgaeIntakeConfig.inverted(COMP_ALGAE_INTAKE_MOTOR_INVERTED)
@@ -65,18 +67,18 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     @Override
     public void setRollerSpeed(AngularVelocity speed) {
-        compAlgaeIntakeClosedLoop.setReference(0, ControlType.kVelocity);
+        compAlgaeIntakeClosedLoop.setReference(speed.in(RPM), ControlType.kVelocity);
         goalVelocity = speed.in(RPM);
     }
 
     @Override
     public void intake() {
-        // setRollerSpeed(SpeedConstants.COMP_ALGAE_INTAKE_SPEED);
+       setRollerSpeed(SpeedConstants.COMP_ALGAE_INTAKE_SPEED);
     }
 
     @Override
     public void outtake() {
-        // setRollerSpeed(SpeedConstants.COMP_ALGAE_OUTTAKE_SPEED);
+        setRollerSpeed(SpeedConstants.COMP_ALGAE_OUTTAKE_SPEED);
     }
 
     @Override
@@ -93,10 +95,9 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
     }
 
     @Override
-    public boolean isStalling() {
-        return algaeIntakeDebouncer
-                .calculate(algaeIntakeSparkMax.getOutputCurrent() > ALGAE_INTAKE_STALL_THRESHOLD.in(Amps));
-    }
+        public boolean isStalling() {
+                return algaeIntakeDebouncer.calculate((algaeIntakeSparkMax.getOutputCurrent() > ALGAE_INTAKE_STALL_THRESHOLD.in(Amps)) && (compAlgaeIntakeRelativeEncoder.getVelocity() < 0.1*ALGAE_INTAKE_STALL_VELOCITY.in(RPM)));
+        }
 
     @Override
     public void passiveIntake() {

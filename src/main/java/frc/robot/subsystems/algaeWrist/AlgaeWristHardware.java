@@ -51,7 +51,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                                                                                                               // per
                                                                                                               // second
 
-        private static final double WRIST_MOTOR_P = 0.5;
+        private static final double WRIST_MOTOR_P = 1.0;
         private static final double WRIST_MOTOR_I = 0;
         private static final double WRIST_MOTOR_D = 0;
         private static final double WRIST_MOTOR_FF = 0;

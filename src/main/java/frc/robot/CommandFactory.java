@@ -65,8 +65,6 @@ public class CommandFactory {
     ALGAE
   }
 
-
-
   public RobotPosition robotPosition;
   public GameMode gameMode;
   public Setpoint setpoint;
@@ -74,17 +72,17 @@ public class CommandFactory {
   public Setpoint getScoringLevel() {
     Setpoint scoringLevel;
     if (levelEntry.getString("None").equals("Level 1")) {
-        scoringLevel = Setpoint.L_ONE;
-      } else if (levelEntry.getString("None").equals("Level 2")) {
-        scoringLevel = Setpoint.L_TWO;
-      } else if (levelEntry.getString("None").equals("Level 3")) {
-        scoringLevel = Setpoint.L_THREE;
-      } else if (levelEntry.getString("None").equals("Level 4")) {
-        scoringLevel = Setpoint.L_FOUR;
-      } else {
-        scoringLevel = Setpoint.L_ONE;
-      }
-      return scoringLevel;
+      scoringLevel = Setpoint.L_ONE;
+    } else if (levelEntry.getString("None").equals("Level 2")) {
+      scoringLevel = Setpoint.L_TWO;
+    } else if (levelEntry.getString("None").equals("Level 3")) {
+      scoringLevel = Setpoint.L_THREE;
+    } else if (levelEntry.getString("None").equals("Level 4")) {
+      scoringLevel = Setpoint.L_FOUR;
+    } else {
+      scoringLevel = Setpoint.L_ONE;
+    }
+    return scoringLevel;
   }
 
   public GameMode getGameMode() {
@@ -135,15 +133,13 @@ public class CommandFactory {
 
   public Command moveElevatorAndCoralWrist() {
     return Commands.sequence(
-      Commands.parallel(
+        Commands.parallel(
             algaeWrist.goToSetpointCommand(() -> Setpoint.ZERO),
             coralWrist.goToSetpointCommand(() -> Setpoint.ZERO)),
         Commands.waitUntil(() -> coralWrist.atGoal()),
         Commands.parallel(
             elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.CORAL),
-            coralWrist.goToSetpointCommand(() -> getSetpoint()),
-            Commands.run(
-              () -> coralIntake.passiveIntakeCommand()).until(() -> elevator.atGoal())));
+            coralWrist.goToSetpointCommand(() -> getSetpoint())));
   }
 
   public Command moveElevatorAndAlgaeWrist() {
