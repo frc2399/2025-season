@@ -3,6 +3,8 @@ package frc.robot.subsystems.coralWrist;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
@@ -18,7 +20,11 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants;
@@ -73,6 +79,15 @@ public class CoralWristHardware implements CoralWristIO {
 
   private Angle goalAngle = Radians.of(0);
   private static final Angle WRIST_ANGLE_TOLERANCE = Radians.of(.05);
+
+  private static final AngularVelocity MAX_VEL = RadiansPerSecond.of(0.5);
+  private static final AngularAcceleration MAX_ACCEL = RadiansPerSecondPerSecond.of(0.1);
+
+  private TrapezoidProfile wristTrapezoidProfile = new TrapezoidProfile(
+        new Constraints(MAX_VEL.in(RadiansPerSecond), MAX_ACCEL.in(RadiansPerSecondPerSecond)));
+
+  private TrapezoidProfile.State setpointState = new TrapezoidProfile.State();
+  private TrapezoidProfile.State goalState = new TrapezoidProfile.State();
 
   public CoralWristHardware(double ABSOLUTE_ENCODER_POSITION_CONVERSION_FACTOR,
       double ABSOLUTE_ENCODER_VELOCITY_CONVERSION_FACTOR,
@@ -173,8 +188,20 @@ public class CoralWristHardware implements CoralWristIO {
   }
 
   @Override
+  public void calculateNextIntermediateSetpoint() {}
+
+  @Override
+  public void resetToCurrentPosition() {
+        setpointState.position = coralIntakeWristRelativeEncoder.getPosition();
+        goalState.position = coralIntakeWristRelativeEncoder.getPosition();
+
+        setpointState.velocity = 0;
+        goalState.velocity = 0;
+  }
+
+  @Override
   public void periodic() {
-    // setpointState = wristTrapezoidProfile.calculate(0.02,
-    // setpointState, goalState);
+    setpointState = wristTrapezoidProfile.calculate(0.02,
+      setpointState, goalState);
   }
 }
