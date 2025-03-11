@@ -12,7 +12,6 @@ import static edu.wpi.first.units.Units.Degrees;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.Constants;
 
@@ -32,7 +31,13 @@ public class GyroHardware implements GyroIO {
     }
 
     public Angle getYaw() {
-        return Degrees.of(pigeon.getYaw().getValueAsDouble());
+        // Don't refresh the status signal by default, we already get it at
+        // MAIN_LOOP_FREQUENCY_HZ, and refreshing blocks, causing loop overruns
+        return this.getYaw(false);
+    }
+
+    public Angle getYaw(boolean refresh) {
+        return Degrees.of(pigeon.getYaw(refresh).getValueAsDouble());
     }
 
     public void setYaw(Angle yaw) {
@@ -40,10 +45,22 @@ public class GyroHardware implements GyroIO {
     }
 
     public StatusSignal<edu.wpi.first.units.measure.AngularVelocity> getAngularVelocity() {
-        return pigeon.getAngularVelocityZDevice();
+        // Don't refresh the status signal by default, we already get it at
+        // MAIN_LOOP_FREQUENCY_HZ, and refreshing blocks, causing loop overruns
+        return this.getAngularVelocity(false);
+    }
+
+    public StatusSignal<edu.wpi.first.units.measure.AngularVelocity> getAngularVelocity(boolean refresh) {
+        return pigeon.getAngularVelocityZDevice(refresh);
     }
 
     public boolean hasFault() {
-        return pigeon.getFault_Hardware(true).getValue();
+        // Don't refresh the status signal by default, we already get it at
+        // MAIN_LOOP_FREQUENCY_HZ, and refreshing blocks, causing loop overruns
+        return this.hasFault(false);
+    }
+
+    public boolean hasFault(boolean refresh) {
+        return pigeon.getFault_Hardware(refresh).getValue();
     }
 }

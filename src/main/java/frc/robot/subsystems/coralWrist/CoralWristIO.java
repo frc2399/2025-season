@@ -13,6 +13,8 @@ public interface CoralWristIO {
         public double goalAngle = 0.0;
     }
 
+    public void resetRelativeToAbsolute();
+
     public void setGoalAngle(Setpoint setpoint);
 
     // taking out motion profiling to see if code works

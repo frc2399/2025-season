@@ -4,10 +4,26 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RPM;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.MathUtil;
+<<<<<<< HEAD
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+=======
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+>>>>>>> main
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
@@ -16,8 +32,7 @@ import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
-import frc.robot.vision.*;
-import static edu.wpi.first.units.Units.*;
+import frc.robot.vision.VisionPoseEstimator;
 
 import java.util.Optional;
 
@@ -27,13 +42,15 @@ public class RobotContainer {
   private Gyro gyro = subsystemFactory.buildGyro();
   private final ElevatorSubsystem elevator = subsystemFactory.buildElevator();
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
+  private static SendableChooser<Command> autoChooser;
+  private ComplexWidget autonChooserWidget;
   private final CoralIntakeSubsystem coralIntake = subsystemFactory.buildCoralIntake();
-  private final CoralWristSubsystem coralWrist = subsystemFactory.buildCoralWrist();
+  public final CoralWristSubsystem coralWrist = subsystemFactory.buildCoralWrist();
   private final AlgaeIntakeSubsystem algaeIntake = subsystemFactory.buildAlgaeIntake();
-  private final AlgaeWristSubsystem algaeWrist = subsystemFactory.buildAlgaeWrist();
+  public final AlgaeWristSubsystem algaeWrist = subsystemFactory.buildAlgaeWrist();
   // this is public because we need to run the visionPoseEstimator periodic from
   // Robot
-  public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive);
+  public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive, subsystemFactory.getRobotType());
   public CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist, algaeWrist, algaeIntake,
       coralIntake);
 
@@ -43,9 +60,11 @@ public class RobotContainer {
       DriveControlConstants.OPERATOR_CONTROLLER_PORT);
 
   public RobotContainer() {
+    DriverStation.silenceJoystickConnectionWarning(true);
     configureDefaultCommands();
     configureButtonBindingsDriver();
     configureButtonBindingsOperator();
+    setUpAuton();
   }
 
   public void disableSubsystems() {
@@ -63,9 +82,10 @@ public class RobotContainer {
         () -> -(MathUtil.applyDeadband(
             driverController.getRightX(),
             DriveControlConstants.DRIVE_DEADBAND)),
-        DriveControlConstants.FIELD_ORIENTED_DRIVE));
-    coralIntake.setDefaultCommand(coralIntake.setZero());
-    algaeIntake.setDefaultCommand(algaeIntake.setRollerSpeed(RPM.of(0)));
+        true,
+        () -> elevator.isElevatorHeightAboveSpeedLimitingThreshold()));
+    coralIntake.setDefaultCommand(coralIntake.defaultBehavior());
+    algaeIntake.setDefaultCommand(algaeIntake.defaultBehavior());
     // elevator.setDefaultCommand(elevator.setSpeedManualControl(0));
   }
 
@@ -77,7 +97,29 @@ public class RobotContainer {
 
     driverController.y().onTrue(gyro.setYaw(Degrees.of(0.0)));
     driverController.x().whileTrue(drive.setX());
-    driverController.a().onTrue(commandFactory.turtleBasedOnMode());
+    driverController.b().onTrue(commandFactory.turtleBasedOnMode());
+  }
+
+  private void setUpAuton() {
+    NamedCommands.registerCommand("call scoring level 1",
+        Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")));
+    NamedCommands.registerCommand("call scoring level 2",
+        Commands.runOnce(() -> commandFactory.setScoringLevel("Level 2")));
+    NamedCommands.registerCommand("call scoring level 3",
+        Commands.runOnce(() -> commandFactory.setScoringLevel("Level 3")));
+    NamedCommands.registerCommand("call scoring level 4",
+        Commands.runOnce(() -> commandFactory.setScoringLevel("Level 4")));
+    NamedCommands.registerCommand("call game mode coral", Commands.runOnce(() -> commandFactory.setGameMode("coral")));
+    NamedCommands.registerCommand("Move elevator and coral wrist", commandFactory.moveElevatorAndCoralWrist());
+    NamedCommands.registerCommand("Outtake coral",
+        coralIntake.setOuttakeSpeed(() -> commandFactory.getSetpoint()).andThen(Commands.waitSeconds(0.5)));
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Autos/Selector", autoChooser);
+  }
+
+  public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
   }
 
   public void setAlliance(Optional<Alliance> allianceFromDs) {
