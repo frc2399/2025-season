@@ -61,7 +61,8 @@ public class RobotContainer {
   }
 
   public void disableSubsystems() {
-    elevator.profiledPIDEnabled = false;
+    elevator.disableProfiledPid();
+    coralWrist.disableProfiledPid();
   }
 
   public void configureDefaultCommands() {

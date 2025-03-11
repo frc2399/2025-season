@@ -19,7 +19,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private final ElevatorIO elevatorIO;
     private final ElevatorIOInputs states = new ElevatorIOInputs();
-    public boolean profiledPIDEnabled = false;
+    private boolean profiledPIDEnabled = false;
     private double goalSetpoint;
     private final Distance HEIGHT_TOLERANCE = Inches.of(0.5);
     private double JOYSTICK_INPUT_TO_CHANGE_IN_POSITION_CONVERSION_FACTOR = 0.002;
@@ -96,6 +96,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     public boolean isElevatorHeightAboveSpeedLimitingThreshold()
     {
         return elevatorIO.isElevatorHeightAboveSpeedLimitingThreshold();
+    }
+
+    public void disableProfiledPid() {
+        profiledPIDEnabled = false;
     }
 
     
