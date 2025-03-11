@@ -1,6 +1,5 @@
 package frc.robot.vision;
 
-import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
@@ -18,7 +17,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Angle;
@@ -27,27 +25,17 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SpeedConstants;
+import frc.robot.SubsystemFactory.RobotType;
 
 public final class VisionPoseEstimator extends SubsystemBase {
-    // mozart values
-    // private static final Angle CAMERA_PITCH =
-    // Degrees.of(24.62);
-    // private static final Distance X_ROBOT_TO_CAMERA_OFFSET =
-    // Inches.of(-11.94);
-    // this is positive instead of negative despite robot coordinate system due to
-    // the 180* yaw rotation!
-    // private static final Distance Y_ROBOT_TO_CAMERA_OFFSET =
-    // Inches.of(7.54);
-    // private static final Distance Z_ROBOT_TO_CAMERA_OFFSET =
-    // Inches.of(4.937);
-    // private static final Angle CAMERA_YAW = Degrees.of(180);
- 
-    //TODO: change these when we get actual values for a robot!
-    private static final Angle CAMERA_PITCH = Degrees.of(0);
-    private static final Distance X_ROBOT_TO_CAMERA_OFFSET = Inches.of(0);
-    private static final Distance Y_ROBOT_TO_CAMERA_OFFSET = Inches.of(0);
-    private static final Distance Z_ROBOT_TO_CAMERA_OFFSET = Inches.of(0);
+
+    private static final Angle CAMERA_PITCH = Degrees.of(28); // 0 = horizontal, positive = leaning back
+    private static final Distance X_ROBOT_TO_CAMERA_OFFSET = Inches.of(11.175); // positive = in front of
+                                                                                // robot center
+    private static Distance Y_ROBOT_TO_CAMERA_OFFSET; // positive = left of robot centerline
+    private static final Distance Z_ROBOT_TO_CAMERA_OFFSET = Inches.of(6.405); // ground plane = 0
     private static final Angle CAMERA_YAW = Degrees.of(0);
+
     /**
      * Provides the methods needed to do first-class pose estimation
      */
@@ -70,11 +58,7 @@ public final class VisionPoseEstimator extends SubsystemBase {
         void addVisionMeasurement(Pose2d pose, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs);
     }
 
-    // meters, radians. Robot origin to camera lens origin
-    private static final Transform3d ROBOT_TO_CAMERA = new Transform3d(
-            X_ROBOT_TO_CAMERA_OFFSET.in(Meters), Y_ROBOT_TO_CAMERA_OFFSET.in(Meters),
-            Z_ROBOT_TO_CAMERA_OFFSET.in(Meters),
-            new Rotation3d(0, CAMERA_PITCH.in(Radians), CAMERA_YAW.in(Radians)));
+    private static Transform3d ROBOT_TO_CAMERA;
 
     // reject new poses if spinning too fast
     private static final AngularVelocity MAX_ROTATIONS_PER_SECOND = RotationsPerSecond.of(2);
@@ -92,7 +76,7 @@ public final class VisionPoseEstimator extends SubsystemBase {
      * @param limelightName passed down to calls to LimelightHelpers, useful if you
      *                      have more than one Limelight on a robot
      */
-    public VisionPoseEstimator(DriveBase driveBase, String limelightName) {
+    public VisionPoseEstimator(DriveBase driveBase, String limelightName, RobotType robot) {
         this.driveBase = driveBase;
         this.limelightName = limelightName;
         this.limelightHostname = "limelight" + (limelightName != "" ? "-" + limelightName : "");
@@ -100,6 +84,18 @@ public final class VisionPoseEstimator extends SubsystemBase {
         mt2Publisher = NetworkTableInstance.getDefault()
                 .getStructTopic("VisionPoseEstimator/" + this.limelightName, Pose2d.struct).publish();
         mt2Publisher.setDefault(new Pose2d());
+
+        if (robot == RobotType.BETA) {
+            Y_ROBOT_TO_CAMERA_OFFSET = Inches.of(-2);
+        } else {
+            Y_ROBOT_TO_CAMERA_OFFSET = Inches.of(0);
+        }
+
+        // meters, radians. Robot origin to camera lens origin
+        ROBOT_TO_CAMERA = new Transform3d(
+                X_ROBOT_TO_CAMERA_OFFSET.in(Meters), Y_ROBOT_TO_CAMERA_OFFSET.in(Meters),
+                Z_ROBOT_TO_CAMERA_OFFSET.in(Meters),
+                new Rotation3d(0, CAMERA_PITCH.in(Radians), CAMERA_YAW.in(Radians)));
 
         LimelightHelpers.setCameraPose_RobotSpace(limelightName, ROBOT_TO_CAMERA.getX(), ROBOT_TO_CAMERA.getY(),
                 ROBOT_TO_CAMERA.getZ(), Math.toDegrees(ROBOT_TO_CAMERA.getRotation().getX()),
@@ -112,8 +108,8 @@ public final class VisionPoseEstimator extends SubsystemBase {
      *
      * @param driveBase the robot drive base to estimate the pose of
      */
-    public VisionPoseEstimator(DriveBase driveBase) {
-        this(driveBase, "");
+    public VisionPoseEstimator(DriveBase driveBase, RobotType robotType) {
+        this(driveBase, "", robotType);
     }
 
     /**
@@ -129,13 +125,18 @@ public final class VisionPoseEstimator extends SubsystemBase {
             return Optional.empty();
         }
         var est = Optional.ofNullable(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName));
-        return est.filter((pe) -> pe.tagCount > 0);
+        // Reject poses where we can see no tags or are at the "uh oh something went
+        // wrong" 0,0 coordinate
+        return est.filter((pe) -> pe.tagCount > 0 && (pe.pose.getX() != 0 && pe.pose.getY() != 0));
     }
 
     /**
      * Update the limelight's robot orientation
      */
     public void periodic() {
+        // Resist the temptation to rotate this depending on alliance - the coordinate
+        // system here _has_ to match the WPILib coordinate system, where Yaw is CCW +
+        // and 0 faces the red alliance wall
         LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().getDegrees(), 0, 0, 0, 0, 0);
         getPoseEstimate().ifPresent((pe) -> {
             mt2Publisher.set(pe.pose);

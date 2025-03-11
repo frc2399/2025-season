@@ -1,8 +1,8 @@
-package frc.robot.subsystems.coralWrist;
+package frc.robot.subsystems.algaeWrist;
 
 import frc.robot.CommandFactory.Setpoint;
 
-public class CoralWristPlacebo implements CoralWristIO {
+public class AlgaeWristPlacebo implements AlgaeWristIO {
 
     @Override
     public void resetRelativeToAbsolute() {
@@ -17,19 +17,10 @@ public class CoralWristPlacebo implements CoralWristIO {
     }
 
     @Override
-    public void updateStates(CoralWristIOStates states) {
-    }
-
-    @Override
-    public boolean atGoal() {
-        return true;
+    public void updateStates(AlgaeWristIOStates states) {
     }
 
     @Override
     public void periodic() {
     }
-
-    // @Override
-    // public void setGoalStateTrapezoid(Angle angle) {
-    // }
 }
