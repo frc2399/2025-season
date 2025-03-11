@@ -59,6 +59,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         private Alliance alliance;
 
+        private boolean hasFirstVisionMeasurement = false;
+
         // correction PID
         private double DRIVE_P = 1.1;
         private double DRIVE_D = 0.05;
@@ -442,7 +444,13 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // replay odometry measurements that it doesn't have. This try-catch fixes the
                 // issue, and who wants vision updates to crash their robot code anyway?
                 try {
-                        poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
+                        //this might have to be second vision measurement lmao
+                        if (!hasFirstVisionMeasurement) {
+                                resetOdometry(pose);
+                                hasFirstVisionMeasurement = false;
+                        } else {
+                                poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
+                        }
                 } catch (Exception e) {
                         System.err.printf("Adding vision measurement: %s %f %s\n", pose.toString(), timestampSeconds,
                                         visionMeasurementStdDevs.toString());
