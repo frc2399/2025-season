@@ -114,6 +114,7 @@ public class Robot extends TimedRobot {
     }
     robotContainer.algaeWrist.resetWrist();
     robotContainer.coralWrist.resetWrist();
+    robotContainer.visionPoseEstimator.setTeleop();
   }
 
   /** This function is called periodically during operator control. */

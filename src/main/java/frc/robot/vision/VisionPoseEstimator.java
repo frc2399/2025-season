@@ -44,6 +44,7 @@ public final class VisionPoseEstimator extends SubsystemBase {
     // private static final Angle CAMERA_YAW = Degrees.of(180);
 
     private Alliance alliance;
+    private boolean isTeleop = false;
 
     private static final Angle CAMERA_PITCH = Degrees.of(28); // 0 = horizontal, positive = leaning back
     private static final Distance X_ROBOT_TO_CAMERA_OFFSET = Inches.of(11.175); // positive = in front of
@@ -150,7 +151,12 @@ public final class VisionPoseEstimator extends SubsystemBase {
      * Update the limelight's robot orientation
      */
     public void periodic() {
-        if (alliance == Alliance.Red) {
+        // if we're on red alliance AND in teleop, we want 0 to be the blue alliance
+        // wall, so drive stick forward = go forward. however, limelight assumes we are
+        // always facing red alliance wall, so we compensate by 180 degrees however,
+        // pathplanner (auton) uses red alliance wall as 0 so we do not want to
+        // compensate in auton at all
+        if (alliance == Alliance.Red && isTeleop) {
             LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().getDegrees() + 180, 0, 0, 0, 0, 0);
         } else {
             LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().getDegrees(), 0, 0, 0, 0, 0);
@@ -168,5 +174,9 @@ public final class VisionPoseEstimator extends SubsystemBase {
 
     public void setAlliance(Alliance allianceFromDs) {
         alliance = allianceFromDs;
+    }
+
+    public void setTeleop() {
+        isTeleop = true;
     }
 }
