@@ -15,6 +15,8 @@ public interface GyroIO {
 
     public Angle getYaw();
 
+    public Angle getYaw(boolean refresh);
+
     public void setYaw(Angle yaw);
 
     public StatusSignal<edu.wpi.first.units.measure.AngularVelocity> getAngularVelocity();
