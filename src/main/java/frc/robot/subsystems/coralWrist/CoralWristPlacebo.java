@@ -26,10 +26,6 @@ public class CoralWristPlacebo implements CoralWristIO {
     }
 
     @Override
-    public void periodic() {
-    }
-
-    @Override
     public void calculateNextIntermediateSetpoint() {}
 
     @Override

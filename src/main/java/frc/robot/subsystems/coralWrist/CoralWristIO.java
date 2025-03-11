@@ -29,6 +29,4 @@ public interface CoralWristIO {
     public void resetToCurrentPosition();
 
     public void calculateNextIntermediateSetpoint();
-
-    public void periodic();
 }

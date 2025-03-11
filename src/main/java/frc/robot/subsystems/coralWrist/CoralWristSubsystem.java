@@ -11,6 +11,7 @@ import frc.robot.subsystems.coralWrist.CoralWristIO.CoralWristIOStates;
 public class CoralWristSubsystem extends SubsystemBase {
     private final CoralWristIO io;
     private CoralWristIOStates states = new CoralWristIOStates();
+    private boolean profiledPidEnabled = false;
 
     public CoralWristSubsystem(CoralWristIO io) {
         this.io = io;
@@ -22,6 +23,7 @@ public class CoralWristSubsystem extends SubsystemBase {
 
     public Command goToSetpointCommand(Supplier<Setpoint> setpoint) {
         return this.runOnce(() -> {
+            profiledPidEnabled = true;
             io.setGoalAngle(setpoint.get());
         });
     }
@@ -43,8 +45,17 @@ public class CoralWristSubsystem extends SubsystemBase {
     // });
     // }
 
+    public void disableProfiledPid() {
+        profiledPidEnabled = false;
+    }
+
     @Override
     public void periodic() {
+        if (!profiledPidEnabled) {
+            io.resetToCurrentPosition();
+        } else {
+            io.calculateNextIntermediateSetpoint();
+        }
         io.updateStates(states);
         SmartDashboard.putNumber("coralWrist/wristVelocity", states.wristVelocity);
         SmartDashboard.putNumber("coralWrist/wristAppliedVoltage",
