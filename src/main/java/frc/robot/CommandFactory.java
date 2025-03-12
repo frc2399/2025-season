@@ -71,13 +71,14 @@ public class CommandFactory {
 
   public Setpoint getScoringLevel() {
     Setpoint scoringLevel;
-    if (levelEntry.getString("None").equals("Level 1")) {
+    String levelEntryString = levelEntry.getString("None");
+    if (levelEntryString.equals("Level 1")) {
       scoringLevel = Setpoint.L_ONE;
-    } else if (levelEntry.getString("None").equals("Level 2")) {
+    } else if (levelEntryString.equals("Level 2")) {
       scoringLevel = Setpoint.L_TWO;
-    } else if (levelEntry.getString("None").equals("Level 3")) {
+    } else if (levelEntryString.equals("Level 3")) {
       scoringLevel = Setpoint.L_THREE;
-    } else if (levelEntry.getString("None").equals("Level 4")) {
+    } else if (levelEntryString.equals("Level 4")) {
       scoringLevel = Setpoint.L_FOUR;
     } else {
       scoringLevel = Setpoint.L_ONE;
