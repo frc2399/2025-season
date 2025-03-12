@@ -7,8 +7,6 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
-import java.util.function.Supplier;
-
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
@@ -26,7 +24,6 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.CommandFactory.GameMode;
 import frc.robot.Constants.MotorIdConstants;
 
 public class KrakenElevatorHardware implements ElevatorIO {
@@ -91,7 +88,7 @@ public class KrakenElevatorHardware implements ElevatorIO {
 
         globalMotorConfiguration.CurrentLimits
                 .withStatorCurrentLimit(KrakenElevatorConstants.KRAKEN_CURRENT_LIMIT.in(Amps));
-        
+
         globalMotorConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         elevatorLeftMotorLeader.setPosition(0);
