@@ -81,6 +81,14 @@ public class RobotContainer {
     driverController.rightBumper().whileTrue(climber.setSpeed(0.1)); 
     driverController.leftBumper().whileTrue(climber.setSpeed(-0.5)); 
 
+    // this yucky code bc out of buttons (we want to make sure that anything up does up and same for down)
+    driverController.povUp().whileTrue(climber.setSpeed(0.1));
+    driverController.povUpLeft().whileTrue(climber.setSpeed(0.1));
+    driverController.povUpRight().whileTrue(climber.setSpeed(0.1));
+    driverController.povDown().whileTrue(climber.setSpeed(-0.5));
+    driverController.povDownLeft().whileTrue(climber.setSpeed(-0.5));
+    driverController.povDownRight().whileTrue(climber.setSpeed(-0.5));
+
     driverController.a().onTrue(climber.setServoAngle(Degrees.of(90.0))); 
   }
 
