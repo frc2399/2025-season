@@ -133,9 +133,9 @@ public class SwerveModuleHardwareNEO implements SwerveModuleIO {
                                                 TURNING_ENCODER_POSITION_PID_MAX_INPUT);
 
                 drivingSparkMax.configure(sparkMaxConfigDriving, ResetMode.kResetSafeParameters,
-                                PersistMode.kNoPersistParameters);
+                                PersistMode.kPersistParameters);
                 turningSparkMax.configure(sparkMaxConfigTurning, ResetMode.kResetSafeParameters,
-                                PersistMode.kNoPersistParameters);
+                                PersistMode.kPersistParameters);
 
                 drivingRelativeEncoder = drivingSparkMax.getEncoder();
                 turningAbsoluteEncoder = turningSparkMax.getAbsoluteEncoder();
