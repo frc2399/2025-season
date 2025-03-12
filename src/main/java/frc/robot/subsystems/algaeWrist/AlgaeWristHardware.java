@@ -90,7 +90,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                                 .forwardSoftLimitEnabled(SOFT_LIMIT_ENABLED)
                                 .reverseSoftLimit(REVERSE_SOFT_LIMIT.in(Radians))
                                 .reverseSoftLimitEnabled(SOFT_LIMIT_ENABLED);
-                
+
                 wristSparkMaxConfig.signals
                                 .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
                                 .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
@@ -110,7 +110,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
 
         @Override
         public void resetRelativeToAbsolute() {
-            algaeWristRelativeEncoder.setPosition(algaeWristAbsoluteEncoder.getPosition());
+                algaeWristRelativeEncoder.setPosition(algaeWristAbsoluteEncoder.getPosition());
         }
 
         @Override
@@ -122,7 +122,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                         desiredAngle = SetpointConstants.ALGAE_REEF_REMOVER_ANGLE;
                 } else if (setpoint == Setpoint.TURTLE) {
                         desiredAngle = SetpointConstants.ALGAE_WRIST_TURTLE_ANGLE;
-                } else if (setpoint == Setpoint.ZERO){
+                } else if (setpoint == Setpoint.ZERO) {
                         desiredAngle = SetpointConstants.ALGAE_WRIST_ZERO_ANGLE;
                 }
                 algaeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
@@ -152,7 +152,4 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                 states.goalAngle = goalAngle.in(Radians);
         }
 
-        @Override
-        public void periodic() {
-        }
 }

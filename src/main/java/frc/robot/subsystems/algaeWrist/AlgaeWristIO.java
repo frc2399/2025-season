@@ -21,5 +21,4 @@ public interface AlgaeWristIO {
 
     public void updateStates(AlgaeWristIOStates states);
 
-    public void periodic();
 }

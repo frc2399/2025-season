@@ -19,8 +19,4 @@ public class AlgaeWristPlacebo implements AlgaeWristIO {
     @Override
     public void updateStates(AlgaeWristIOStates states) {
     }
-
-    @Override
-    public void periodic() {
-    }
 }

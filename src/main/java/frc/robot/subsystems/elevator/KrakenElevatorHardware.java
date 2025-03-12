@@ -53,7 +53,7 @@ public class KrakenElevatorHardware implements ElevatorIO {
 
     private TalonFX elevatorRightMotorFollower, elevatorLeftMotorLeader;
     private TalonFXConfigurator rightMotorFollowerConfigurator, leftMotorLeaderConfigurator;
-    private TalonFXConfiguration globalMotorConfiguration, rightMotorFollowerConfiguration,
+    private TalonFXConfiguration globalMotorConfiguration,
             leftMotorLeaderConfiguration;
     private TrapezoidProfile elevatorMotionProfile;
     private TrapezoidProfile.State goalState = new TrapezoidProfile.State();
@@ -68,8 +68,6 @@ public class KrakenElevatorHardware implements ElevatorIO {
         leftMotorLeaderConfigurator = elevatorLeftMotorLeader.getConfigurator();
 
         globalMotorConfiguration = new TalonFXConfiguration();
-        rightMotorFollowerConfiguration = new TalonFXConfiguration();
-        leftMotorLeaderConfiguration = new TalonFXConfiguration();
 
         globalMotorConfiguration.Feedback
                 .withSensorToMechanismRatio(KrakenElevatorConstants.ELEVATOR_SENSOR_TO_MECHANISM_RATIO.in(Meters));
@@ -91,7 +89,7 @@ public class KrakenElevatorHardware implements ElevatorIO {
 
         globalMotorConfiguration.CurrentLimits
                 .withStatorCurrentLimit(KrakenElevatorConstants.KRAKEN_CURRENT_LIMIT.in(Amps));
-        
+
         globalMotorConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         elevatorLeftMotorLeader.setPosition(0);
@@ -107,9 +105,6 @@ public class KrakenElevatorHardware implements ElevatorIO {
 
         // TODO: check inversions
         leftMotorLeaderConfiguration.MotorOutput.Inverted = leftClimberInversion;
-
-        // rightMotorFollowerConfigurator.apply(rightMotorFollowerConfiguration);
-        // leftMotorLeaderConfigurator.apply(leftMotorLeaderConfiguration);
 
         elevatorLeftMotorLeader.setNeutralMode(NeutralModeValue.Brake);
         elevatorRightMotorFollower.setNeutralMode(NeutralModeValue.Brake);
