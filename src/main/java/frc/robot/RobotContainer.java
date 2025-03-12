@@ -86,19 +86,24 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsDriver() {
-    // driverController.rightBumper()
-    //     .whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_INTAKE_SPEED).withName("run coral intake"));
-    // driverController.leftBumper()
-    //     .whileTrue(coralIntake.setRollerSpeed(SpeedConstants.CORAL_OUTTAKE_SPEED).withName("run coral outtake"));
-    // driverController.b().onTrue(gyro.setYaw(0.0));
-    // driverController.x().whileTrue(drive.setX());
-    // driverController.a().onTrue(commandFactory.turtleMode());
+    driverController.rightTrigger().whileTrue(commandFactory.intakeBasedOnMode(() -> commandFactory.gameMode));
+    driverController.leftTrigger().whileTrue(commandFactory.outtakeBasedOnMode(() -> commandFactory.gameMode));
 
     driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
 
     driverController.y().onTrue(gyro.setYaw(Degrees.of(0.0)));
     driverController.x().whileTrue(drive.setX());
     driverController.b().onTrue(commandFactory.turtleBasedOnMode());
+
+    // this yucky code bc out of buttons (we want to make sure that anything up does up and same for down)
+    driverController.povUp().whileTrue(climber.setSpeed(0.1));
+    driverController.povUpLeft().whileTrue(climber.setSpeed(0.1));
+    driverController.povUpRight().whileTrue(climber.setSpeed(0.1));
+    driverController.povDown().whileTrue(climber.setSpeed(-0.5));
+    driverController.povDownLeft().whileTrue(climber.setSpeed(-0.5));
+    driverController.povDownRight().whileTrue(climber.setSpeed(-0.5));
+
+    driverController.a().onTrue(climber.setServoAngle(Degrees.of(90.0))); 
   }
 
   private void setUpAuton() {
