@@ -19,6 +19,8 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
@@ -40,9 +42,9 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         private final AbsoluteEncoder algaeWristAbsoluteEncoder;
         private final RelativeEncoder algaeWristRelativeEncoder;
         private static final SparkFlexConfig wristSparkMaxConfig = new SparkFlexConfig();
-        private static final boolean MOTOR_INVERTED = false;
+        private static final boolean MOTOR_INVERTED = true;
 
-        private static final boolean ABSOLUTE_ENCODER_INVERTED = false;
+        private static final boolean ABSOLUTE_ENCODER_INVERTED = true;
 
         private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
 
@@ -68,12 +70,12 @@ public class AlgaeWristHardware implements AlgaeWristIO {
 
         private Angle goalAngle = Radians.of(0);
 
-        public AlgaeWristHardware() {
-                wristSparkMaxConfig.inverted(MOTOR_INVERTED).idleMode(IDLE_MODE)
+        public AlgaeWristHardware(boolean motorInversion, boolean absoluteEncoderInverison) {
+                wristSparkMaxConfig.inverted(motorInversion).idleMode(IDLE_MODE)
                                 .smartCurrentLimit((int) MotorConstants.NEO550_CURRENT_LIMIT.in(Amps));
                 wristSparkMaxConfig.absoluteEncoder.positionConversionFactor(ABSOLUTE_ENCODER_POSITION_FACTOR)
                                 .velocityConversionFactor(ABSOLUTE_ENCODER_VELOCITY_FACTOR)
-                                .inverted(ABSOLUTE_ENCODER_INVERTED).zeroCentered(true);
+                                .inverted(absoluteEncoderInverison).zeroCentered(true);
                 wristSparkMaxConfig.encoder.positionConversionFactor(RELATIVE_ENCODER_POSITION_FACTOR)
                                 .velocityConversionFactor(RELATIVE_ENCODER_VELOCITY_FACTOR);
                 wristSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -88,6 +90,11 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                                 .forwardSoftLimitEnabled(SOFT_LIMIT_ENABLED)
                                 .reverseSoftLimit(REVERSE_SOFT_LIMIT.in(Radians))
                                 .reverseSoftLimitEnabled(SOFT_LIMIT_ENABLED);
+                
+                wristSparkMaxConfig.signals
+                                .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                                .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
+                                .outputCurrentPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS);
 
                 algaeWristSparkMax = new SparkFlex(MotorIdConstants.ALGAE_BETA_WRIST_CAN_ID, MotorType.kBrushless);
 
@@ -102,6 +109,11 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         }
 
         @Override
+        public void resetRelativeToAbsolute() {
+            algaeWristRelativeEncoder.setPosition(algaeWristAbsoluteEncoder.getPosition());
+        }
+
+        @Override
         public void setGoalAngle(Setpoint setpoint) {
                 Angle desiredAngle = Radians.of(0);
                 if (setpoint == Setpoint.L_ONE) {
@@ -110,6 +122,8 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                         desiredAngle = SetpointConstants.ALGAE_REEF_REMOVER_ANGLE;
                 } else if (setpoint == Setpoint.TURTLE) {
                         desiredAngle = SetpointConstants.ALGAE_WRIST_TURTLE_ANGLE;
+                } else if (setpoint == Setpoint.ZERO){
+                        desiredAngle = SetpointConstants.ALGAE_WRIST_ZERO_ANGLE;
                 }
                 algaeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
                                 ClosedLoopSlot.kSlot0,

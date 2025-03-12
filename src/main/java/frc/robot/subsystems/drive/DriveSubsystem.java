@@ -4,10 +4,17 @@
 
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Radians;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.Matrix;
@@ -27,7 +34,11 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -35,13 +46,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SpeedConstants;
 import frc.robot.Robot;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.vision.VisionPoseEstimator.DriveBase;
 
 public class DriveSubsystem extends SubsystemBase implements DriveBase {
-        
+
         private DriveSubsystemStates states = new DriveSubsystemStates();
 
         // correction PID
@@ -49,6 +61,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private double DRIVE_D = 0.05;
 
         private PIDController drivePIDController = new PIDController(DRIVE_P, 0, DRIVE_D);
+
+        private RobotConfig config;
 
         // debouncer for turning
         private double ROTATION_DEBOUNCE_TIME = 0.5;
@@ -77,9 +91,16 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         private final SwerveDriveKinematics DRIVE_KINEMATICS;
 
+        private static final double HOLONOMIC_P = 5.0;
+        private static final double HOLONOMIC_I = 0.0;
+        private static final double HOLONOMIC_D = 0.0;
+
+        // Slew rate filter variables for controlling lateral acceleration
         private double currentRotationRate = 0.0;
         private double desiredAngle = 0;
         private Gyro gyro;
+
+        Alert alert = new Alert("Fault detected on pigeon", AlertType.kError);
 
         private final Field2d field2d = new Field2d();
         private FieldObject2d frontLeftField2dModule = field2d.getObject("front left module");
@@ -87,12 +108,11 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private FieldObject2d frontRightField2dModule = field2d.getObject("front right module");
         private FieldObject2d rearRightField2dModule = field2d.getObject("rear right module");
 
-        private ChassisSpeeds relativeRobotSpeeds;
+        private ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
 
         private Rotation2d lastAngle = new Rotation2d();
 
         public static class DriveSubsystemStates {
-                public ChassisSpeeds relativeRobotSpeeds = new ChassisSpeeds();
                 public Pose2d pose = new Pose2d();
                 public double poseTheta = 0;
                 public double velocityXMPS = 0;
@@ -111,6 +131,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         .getStructArrayTopic("/SmartDashboard/Swerve/Desired Modules States", SwerveModuleState.struct)
                         .publish();
 
+        // Useful pose debugging
+        private final StructPublisher<Pose2d> posePublisher;
+
         /** Creates a new DriveSubsystem. */
         public DriveSubsystem(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule rearLeft,
                         SwerveModule rearRight, Gyro gyro, Distance trackWidth, Distance wheelBase) {
@@ -119,7 +142,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 this.frontRight = frontRight;
                 this.rearLeft = rearLeft;
                 this.rearRight = rearRight;
-                
+
                 TRACK_WIDTH = trackWidth;
                 WHEEL_BASE = wheelBase;
 
@@ -142,15 +165,46 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
                 poseEstimator = new SwerveDrivePoseEstimator(
                                 DRIVE_KINEMATICS,
-                                Rotation2d.fromDegrees(gyro.getYaw()),
+                                Rotation2d.fromDegrees(gyro.getYaw().in(Degrees)),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
                                                 frontRight.getPosition(),
                                                 rearLeft.getPosition(),
                                                 rearRight.getPosition() },
                                 new Pose2d(0, 0, new Rotation2d(0))); // TODO: make these constants in the constants
-                                                                         // file rather than
-                                                                         // free-floating numbers
+                                                                      // file rather than
+                                                                      // free-floating numbers
+                posePublisher = NetworkTableInstance.getDefault()
+                                .getStructTopic("DriveSubsystem/EstimatedPose", Pose2d.struct).publish();
+                posePublisher.setDefault(new Pose2d());
+                try {
+                        config = RobotConfig.fromGUISettings();
+
+                        AutoBuilder.configure(
+                                        this::getPose,
+                                        this::resetOdometry,
+                                        this::getRobotRelativeSpeeds,
+                                        (speeds, feedforwards) -> setRobotRelativeSpeeds(speeds),
+                                        new PPHolonomicDriveController(
+                                                        new PIDConstants(HOLONOMIC_P, HOLONOMIC_I,
+                                                                        HOLONOMIC_D),
+                                                        new PIDConstants(HOLONOMIC_P, HOLONOMIC_I,
+                                                                        HOLONOMIC_D)),
+                                        config, // The robot configuration
+                                        () -> {
+
+                                                var alliance = DriverStation.getAlliance();
+                                                if (alliance.isPresent()) {
+                                                        return alliance.get() == DriverStation.Alliance.Red;
+                                                }
+                                                return false;
+                                        },
+                                        this);
+                } catch (Exception e) {
+                        DriverStation.reportError("Failed to load Pathplanner config and configure Autobuilder",
+                                        e.getStackTrace());
+                }
+                configurePathPlannerLogging();
         }
 
         @Override
@@ -158,11 +212,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // This will get the simulated sensor readings that we set
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
-
-                // SmartDashboard.putNumber("drive/relative X speeds", relativeRobotSpeeds.vxMetersPerSecond);
-                // SmartDashboard.putNumber("drive/relative Y speeds", relativeRobotSpeeds.vyMetersPerSecond);
-                // SmartDashboard.putNumber("drive/relative radian speeds", relativeRobotSpeeds.omegaRadiansPerSecond);
-                poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromRadians(gyro.getYaw()),
+                poseEstimator.updateWithTime(Timer.getFPGATimestamp(),
+                                Rotation2d.fromRadians(gyro.getYaw().in(Radians)),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
                                                 frontRight.getPosition(),
@@ -172,6 +223,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
                 Pose2d pose = getPose();
                 field2d.setRobotPose(pose);
+                logAndUpdateDriveSubsystemStates();
 
                 frontLeftField2dModule.setPose(pose.transformBy(new Transform2d(
                                 FRONT_LEFT_OFFSET,
@@ -202,10 +254,11 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                         .toChassisSpeeds(swerveModuleStates).omegaRadiansPerSecond
                                         * (1 / Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_HZ);
                         lastAngle = lastAngle.plus(Rotation2d.fromRadians(angleChange));
-                        gyro.setYaw(lastAngle.getRadians());
+                        gyro.setYaw(Radians.of(lastAngle.getRadians()));
                 }
 
-            //    logAndUpdateDriveSubsystemStates();
+                // logAndUpdateDriveSubsystemStates();
+                alert.set(gyro.hasFault());
 
                 frontLeft.updateStates();
                 frontRight.updateStates();
@@ -226,7 +279,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         /** Resets the odometry to the specified pose. */
         public void resetOdometry(Pose2d pose) {
                 poseEstimator.resetPosition(
-                                Rotation2d.fromRadians(gyro.getYaw()),
+                                Rotation2d.fromRadians(gyro.getYaw().in(Radians)),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
                                                 frontRight.getPosition(),
@@ -246,10 +299,15 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
          *                      field.
          */
         public Command driveCommand(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotRate,
-                        Boolean fieldRelative) {
+                        Boolean fieldRelative, BooleanSupplier isElevatorHigh) {
                 return this.run(() -> {
-                        double currentAngle = gyro.getYaw();
-                        double r = Math.hypot(xSpeed.getAsDouble(), ySpeed.getAsDouble());
+                        double driveSpeedFactor = DriveControlConstants.DRIVE_FACTOR;
+                        if (isElevatorHigh.getAsBoolean()) {
+                                driveSpeedFactor = DriveControlConstants.SLOW_DRIVE_FACTOR;
+                        }
+                        double currentAngle = gyro.getYaw().in(Radians);
+                        double r = Math.hypot(xSpeed.getAsDouble() * driveSpeedFactor,
+                                        ySpeed.getAsDouble() * driveSpeedFactor);
                         double polarAngle = Math.atan2(ySpeed.getAsDouble(), xSpeed.getAsDouble());
                         double polarXSpeed = r * Math.cos(polarAngle);
                         double polarYSpeed = r * Math.sin(polarAngle);
@@ -272,7 +330,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 relativeRobotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered,
                                                 ySpeedDelivered,
                                                 rotRateDelivered,
-                                                Rotation2d.fromRadians(gyro.getYaw()));
+                                                Rotation2d.fromRadians(gyro.getYaw().in(Radians)));
                         } else {
                                 relativeRobotSpeeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered,
                                                 rotRateDelivered);
@@ -280,6 +338,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
                         SmartDashboard.putNumber("x speed delivered", xSpeedDelivered);
                         SmartDashboard.putNumber("y speed delivered", ySpeedDelivered);
+                        SmartDashboard.putNumber("drive speed factor", driveSpeedFactor);
 
                         var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(relativeRobotSpeeds);
                         SwerveDriveKinematics.desaturateWheelSpeeds(
@@ -373,7 +432,19 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         @Override
         public void addVisionMeasurement(Pose2d pose, double timestampSeconds,
                         Matrix<N3, N1> visionMeasurementStdDevs) {
-                poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
+                // Something cursed happens here where the robot code crashes in a loop on first
+                // boot, complaining about doing a Rotation2d.exp on a Rotation2d with x = y =
+                // 0. I (Will) _think_ it has to do with an invalid timestamp value passed here
+                // (negative? before robot boot?) that then causes the poseEstimator to try to
+                // replay odometry measurements that it doesn't have. This try-catch fixes the
+                // issue, and who wants vision updates to crash their robot code anyway?
+                try {
+                        poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
+                } catch (Exception e) {
+                        System.err.printf("Adding vision measurement: %s %f %s\n", pose.toString(), timestampSeconds,
+                                        visionMeasurementStdDevs.toString());
+                        e.printStackTrace();
+                }
         }
 
         private void logAndUpdateDriveSubsystemStates() {
@@ -383,7 +454,11 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 states.velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
                 states.totalVelocity = Math.hypot(states.velocityXMPS, states.velocityYMPS);
                 states.angularVelocity = Units.radiansToDegrees(relativeRobotSpeeds.omegaRadiansPerSecond);
-                states.gyroAngleDegrees = Math.toDegrees(gyro.getYaw());
+                states.gyroAngleDegrees = gyro.getYaw().in(Degrees);
+
+                // Publish the pose in a struct that can be laid onto the "odometry" view in
+                // advantagescope
+                posePublisher.set(states.pose);
 
                 SmartDashboard.putNumber("drive/Pose X(m)", states.pose.getX());
                 SmartDashboard.putNumber("drive/Pose Y(m)", states.pose.getY());

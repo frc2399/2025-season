@@ -1,5 +1,7 @@
 package frc.robot.subsystems.coralIntake;
 
+import frc.robot.CommandFactory.Setpoint;
+
 public interface CoralIntakeIO {
     static class CoralIntakeIOStates {
         public double velocity = 0.0;
@@ -12,11 +14,13 @@ public interface CoralIntakeIO {
 
     public void intake();
 
-    public void outtake();
+    public void setOuttakeSpeed(Setpoint setpoint);
 
     public void setZero();
 
     public boolean isStalling();
+
+    public void passiveIntake();
 
     public void updateStates(CoralIntakeIOStates states);
 }
