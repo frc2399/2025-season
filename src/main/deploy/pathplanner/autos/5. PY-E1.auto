@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.0
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "call game mode coral"
@@ -37,7 +43,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": true
 }
