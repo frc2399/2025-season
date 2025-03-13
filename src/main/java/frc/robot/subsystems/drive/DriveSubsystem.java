@@ -439,7 +439,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         @Override
         public void addVisionMeasurement(Pose2d pose, double timestampSeconds,
                         Matrix<N3, N1> visionMeasurementStdDevs) {
-                SmartDashboard.putNumber("addVisionMeasurement/timeStampSeconds", timestampSeconds);
                 // Something cursed happens here where the robot code crashes in a loop on first
                 // boot, complaining about doing a Rotation2d.exp on a Rotation2d with x = y =
                 // 0. I (Will) _think_ it has to do with an invalid timestamp value passed here
@@ -450,24 +449,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 if (timestampSeconds <= 0) {
                         return;
                 }
-
-                try {
-                        poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
-                } catch (Exception e) {
-                        System.out.printf("Adding vision measurement: %s %f %s\n", pose.toString(), timestampSeconds,
-                                        visionMeasurementStdDevs.toString());
-                        e.printStackTrace();
-                        poseEstimator = new SwerveDrivePoseEstimator(
-                                DRIVE_KINEMATICS,
-                                Rotation2d.fromDegrees(gyro.getYaw().in(Degrees)),
-                                new SwerveModulePosition[] {
-                                                frontLeft.getPosition(),
-                                                frontRight.getPosition(),
-                                                rearLeft.getPosition(),
-                                                rearRight.getPosition() },
-                                new Pose2d(0, 0, new Rotation2d(gyro.getYaw())));
-                        poseEstimator.resetPose(pose);
-                }
+                poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
         }
 
         private void logAndUpdateDriveSubsystemStates() {
