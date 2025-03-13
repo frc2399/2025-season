@@ -180,9 +180,8 @@ public class KrakenElevatorHardware implements ElevatorIO {
 
     @Override
     public void updateStates(ElevatorIOInputs inputs) {
-        // Don't refresh the status signal by default, we already get it at
-        // 4-100Hz and refreshing blocks causing loop overruns
-        boolean refresh = false;
+        // We need to refresh once every periodic - for our standards, we do this in the updateStates method
+        boolean refresh = true;
         inputs.position = getEncoderPosition();
         inputs.velocity = getEncoderVelocity();
         inputs.appliedVoltageRight = elevatorRightMotorFollower.getMotorVoltage(refresh).getValueAsDouble();
