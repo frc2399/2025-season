@@ -215,7 +215,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
                 poseEstimator.updateWithTime(Timer.getFPGATimestamp(),
-                                Rotation2d.fromRadians(gyro.getYaw(false).in(Radians)),
+                                Rotation2d.fromRadians(gyro.getYaw(true).in(Radians)),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
                                                 frontRight.getPosition(),
@@ -459,7 +459,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 states.velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
                 states.totalVelocity = Math.hypot(states.velocityXMPS, states.velocityYMPS);
                 states.angularVelocity = Units.radiansToDegrees(relativeRobotSpeeds.omegaRadiansPerSecond);
-                states.gyroAngleDegrees = gyro.getYaw(true).in(Degrees);
+                states.gyroAngleDegrees = gyro.getYaw(false).in(Degrees);
 
                 // Publish the pose in a struct that can be laid onto the "odometry" view in
                 // advantagescope
