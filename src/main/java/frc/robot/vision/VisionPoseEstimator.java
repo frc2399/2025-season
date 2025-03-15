@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SpeedConstants;
 import frc.robot.SubsystemFactory.RobotType;
 
-public final class VisionPoseEstimator extends SubsystemBase {
+public final class VisionPoseEstimator {
 
     private static final Angle CAMERA_PITCH = Degrees.of(28); // 0 = horizontal, positive = leaning back
     private static final Distance X_ROBOT_TO_CAMERA_OFFSET = Inches.of(11.175); // positive = in front of
