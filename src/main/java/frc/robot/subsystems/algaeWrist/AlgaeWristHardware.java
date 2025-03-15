@@ -3,6 +3,7 @@ package frc.robot.subsystems.algaeWrist;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
+import edu.wpi.first.math.util.Units;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
@@ -19,7 +20,6 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.MotorConstants;
@@ -90,7 +90,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                                 .forwardSoftLimitEnabled(SOFT_LIMIT_ENABLED)
                                 .reverseSoftLimit(REVERSE_SOFT_LIMIT.in(Radians))
                                 .reverseSoftLimitEnabled(SOFT_LIMIT_ENABLED);
-                
+
                 wristSparkMaxConfig.signals
                                 .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
                                 .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
@@ -110,7 +110,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
 
         @Override
         public void resetRelativeToAbsolute() {
-            algaeWristRelativeEncoder.setPosition(algaeWristAbsoluteEncoder.getPosition());
+                algaeWristRelativeEncoder.setPosition(algaeWristAbsoluteEncoder.getPosition());
         }
 
         @Override
@@ -122,7 +122,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                         desiredAngle = SetpointConstants.ALGAE_REEF_REMOVER_ANGLE;
                 } else if (setpoint == Setpoint.TURTLE) {
                         desiredAngle = SetpointConstants.ALGAE_WRIST_TURTLE_ANGLE;
-                } else if (setpoint == Setpoint.ZERO){
+                } else if (setpoint == Setpoint.ZERO) {
                         desiredAngle = SetpointConstants.ALGAE_WRIST_ZERO_ANGLE;
                 }
                 algaeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
@@ -147,9 +147,9 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                 states.wristVelocity = algaeWristAbsoluteEncoder.getVelocity();
                 states.wristAppliedVoltage = algaeWristSparkMax.getAppliedOutput() * algaeWristSparkMax.getBusVoltage();
                 states.wristCurrent = algaeWristSparkMax.getOutputCurrent();
-                states.wristRelativeEncoderAngle = algaeWristRelativeEncoder.getPosition();
-                states.wristAbsoluteEncoderAngle = algaeWristAbsoluteEncoder.getPosition();
-                states.goalAngle = goalAngle.in(Radians);
+                states.wristRelativeEncoderAngle = Units.radiansToDegrees(algaeWristRelativeEncoder.getPosition());
+                states.wristAbsoluteEncoderAngle = Units.radiansToDegrees(algaeWristAbsoluteEncoder.getPosition());
+                states.goalAngle = goalAngle.in(Degrees);
         }
 
         @Override

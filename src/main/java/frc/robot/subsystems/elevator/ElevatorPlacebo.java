@@ -1,9 +1,6 @@
 package frc.robot.subsystems.elevator;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.units.measure.Distance;
-import frc.robot.CommandFactory.GameMode;
 
 public class ElevatorPlacebo implements ElevatorIO {
 
@@ -40,10 +37,9 @@ public class ElevatorPlacebo implements ElevatorIO {
     public void setSpeedManualControl(double speed) {
     }
 
-    public boolean isElevatorHeightAboveSpeedLimitingThreshold(){
-        return false; 
+    public boolean isElevatorHeightAboveSpeedLimitingThreshold() {
+        return false;
     }
-
 
     @Override
     public void updateStates(ElevatorIOInputs states) {
