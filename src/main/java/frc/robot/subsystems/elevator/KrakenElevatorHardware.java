@@ -174,10 +174,8 @@ public class KrakenElevatorHardware implements ElevatorIO {
     public void updateStates(ElevatorIOInputs inputs) {
         inputs.position = getEncoderPosition();
         inputs.velocity = getEncoderVelocity();
-        inputs.appliedVoltageRight = elevatorRightMotorFollower.getClosedLoopOutput().getValueAsDouble()
-                * elevatorRightMotorFollower.getSupplyVoltage().getValueAsDouble();
-        inputs.appliedVoltageLeft = elevatorLeftMotorLeader.getClosedLoopOutput().getValueAsDouble()
-                * elevatorLeftMotorLeader.getSupplyVoltage().getValueAsDouble();
+        inputs.appliedVoltageRight = elevatorRightMotorFollower.getMotorVoltage().getValueAsDouble();
+        inputs.appliedVoltageLeft = elevatorLeftMotorLeader.getMotorVoltage().getValueAsDouble();
         // TODO: check if this is correct
         inputs.current = elevatorLeftMotorLeader.getSupplyCurrent().getValueAsDouble();
         inputs.goalPosition = goalState.position;

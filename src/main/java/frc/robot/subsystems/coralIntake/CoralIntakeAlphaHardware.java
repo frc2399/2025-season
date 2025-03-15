@@ -157,6 +157,11 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
             }
         }
 
+        public void passiveIntakeIgnoringStall() 
+        {
+                
+        }
+
         @Override
         public void updateStates(CoralIntakeIOStates states) {
                 states.velocity = getVelocity();

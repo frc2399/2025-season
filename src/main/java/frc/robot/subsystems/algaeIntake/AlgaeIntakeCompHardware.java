@@ -79,7 +79,7 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     @Override
     public void intake() {
-        // setRollerSpeed(SpeedConstants.COMP_ALGAE_INTAKE_SPEED);
+       setRollerSpeed(SpeedConstants.COMP_ALGAE_INTAKE_SPEED);
     }
 
     @Override
