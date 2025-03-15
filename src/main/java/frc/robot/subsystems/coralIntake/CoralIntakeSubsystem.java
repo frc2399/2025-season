@@ -40,7 +40,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
     public Command intakeToStall() {
         return this.run(() -> {
             if (io.isStalling() || hasCoral) {
-                io.setZero();
+                io.passiveIntakeIgnoringStall();
                 setCoralEntry(true);
             } else {
                 io.intake();
