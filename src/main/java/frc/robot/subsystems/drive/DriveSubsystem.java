@@ -166,7 +166,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
                 poseEstimator = new SwerveDrivePoseEstimator(
                                 DRIVE_KINEMATICS,
-                                Rotation2d.fromDegrees(gyro.getYaw().in(Degrees)),
+                                Rotation2d.fromDegrees(gyro.getYaw(false).in(Degrees)),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
                                                 frontRight.getPosition(),
@@ -215,7 +215,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
                 poseEstimator.updateWithTime(Timer.getFPGATimestamp(),
-                                Rotation2d.fromRadians(gyro.getYaw().in(Radians)),
+                                Rotation2d.fromRadians(gyro.getYaw(true).in(Radians)),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
                                                 frontRight.getPosition(),
@@ -259,7 +259,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         gyro.setYaw(Radians.of(lastAngle.getRadians()));
                 }
 
-                // logAndUpdateDriveSubsystemStates();
+                logAndUpdateDriveSubsystemStates();
                 alert.set(gyro.hasFault());
 
                 frontLeft.updateStates();
@@ -281,7 +281,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         /** Resets the odometry to the specified pose. */
         public void resetOdometry(Pose2d pose) {
                 poseEstimator.resetPosition(
-                                Rotation2d.fromRadians(gyro.getYaw().in(Radians)),
+                                Rotation2d.fromRadians(gyro.getYaw(false).in(Radians)),
                                 new SwerveModulePosition[] {
                                                 frontLeft.getPosition(),
                                                 frontRight.getPosition(),
@@ -307,7 +307,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         if (isElevatorHigh.getAsBoolean()) {
                                 driveSpeedFactor = DriveControlConstants.SLOW_DRIVE_FACTOR;
                         }
-                        double currentAngle = gyro.getYaw().in(Radians);
+                        double currentAngle = gyro.getYaw(false).in(Radians);
                         if (DriverStation.getAlliance().isPresent()
                                         && DriverStation.getAlliance().get() == Alliance.Red) {
                                 currentAngle += Math.PI;
@@ -337,7 +337,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 relativeRobotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered,
                                                 ySpeedDelivered,
                                                 rotRateDelivered,
-                                                Rotation2d.fromRadians(currentAngle));
+                                                Rotation2d.fromRadians(gyro.getYaw(false).in(Radians)));
                         } else {
                                 relativeRobotSpeeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered,
                                                 rotRateDelivered);
@@ -421,7 +421,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         @Override
         public Rotation2d getYaw() {
-                return new Rotation2d(gyro.getYaw());
+                return new Rotation2d(gyro.getYaw(false));
         }
 
         @Override
@@ -459,7 +459,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 states.velocityYMPS = getRobotRelativeSpeeds().vyMetersPerSecond;
                 states.totalVelocity = Math.hypot(states.velocityXMPS, states.velocityYMPS);
                 states.angularVelocity = Units.radiansToDegrees(relativeRobotSpeeds.omegaRadiansPerSecond);
-                states.gyroAngleDegrees = gyro.getYaw().in(Degrees);
+                states.gyroAngleDegrees = gyro.getYaw(false).in(Degrees);
 
                 // Publish the pose in a struct that can be laid onto the "odometry" view in
                 // advantagescope
