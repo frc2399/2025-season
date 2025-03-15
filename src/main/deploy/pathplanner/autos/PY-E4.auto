@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "PY-E4 (pt1)"
+            "pathName": "PY-E4pt1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "call scoring level 4"
+            "name": "call scoring level 1"
           }
         },
         {
@@ -31,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "PY-E4 (pt2)"
+            "pathName": "PY-E4pt2"
           }
         },
         {
