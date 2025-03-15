@@ -88,7 +88,7 @@ public class KrakenElevatorHardware implements ElevatorIO {
 
         globalMotorConfiguration.CurrentLimits
                 .withStatorCurrentLimit(KrakenElevatorConstants.KRAKEN_CURRENT_LIMIT.in(Amps));
-        
+
         globalMotorConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         elevatorLeftMotorLeader.setPosition(0);

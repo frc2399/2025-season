@@ -4,7 +4,50 @@
  "type":"Swerve",
  "variables":{
   "expressions":{},
-  "poses":{}
+  "poses":{
+   "Blue_Tag_20":{
+    "x":{
+     "exp":"193.1 in",
+     "val":4.904739999999999
+    },
+    "y":{
+     "exp":"186.83 in",
+     "val":4.745482
+    },
+    "heading":{
+     "exp":"0 rad",
+     "val":0.0
+    }
+   },
+   "Blue_Tag_21":{
+    "x":{
+     "exp":"209.49 in",
+     "val":5.321046
+    },
+    "y":{
+     "exp":"158.5 in",
+     "val":4.0259
+    },
+    "heading":{
+     "exp":"0 rad",
+     "val":0.0
+    }
+   },
+   "Blue_Tag_22":{
+    "x":{
+     "exp":"193.1 in",
+     "val":4.904739999999999
+    },
+    "y":{
+     "exp":"130.17 in",
+     "val":3.3063179999999996
+    },
+    "heading":{
+     "exp":"0 rad",
+     "val":0.0
+    }
+   }
+  }
  },
  "config":{
   "frontLeft":{

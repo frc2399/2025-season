@@ -23,6 +23,10 @@ public class Gyro {
         return io.getYaw();
     }
 
+    public Angle getYaw(boolean refresh) {
+        return io.getYaw(refresh);
+    }
+
     public Command setYaw(Angle yaw) {
         return Commands.runOnce(() -> io.setYaw(yaw));
     }
