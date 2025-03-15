@@ -176,9 +176,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 frontRight.getPosition(),
                                                 rearLeft.getPosition(),
                                                 rearRight.getPosition() },
-                                new Pose2d(0, 0, new Rotation2d(0))); // TODO: make these constants in the constants
-                                                                      // file rather than
-                                                                      // free-floating numbers
+                                new Pose2d(0, 0, new Rotation2d(gyro.getYaw()))); // TODO: make these constants in the
+                                                                                  // constants
+                // file rather than
+                // free-floating numbers
                 posePublisher = NetworkTableInstance.getDefault()
                                 .getStructTopic("DriveSubsystem/EstimatedPose", Pose2d.struct).publish();
                 posePublisher.setDefault(new Pose2d());
@@ -311,6 +312,11 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 driveSpeedFactor = DriveControlConstants.SLOW_DRIVE_FACTOR;
                         }
                         double currentAngle = gyro.getYaw().in(Radians);
+                        if (DriverStation.getAlliance().isPresent()
+                                        && DriverStation.getAlliance().get() == Alliance.Red) {
+                                currentAngle += Math.PI;
+                        }
+
                         double r = Math.hypot(xSpeed.getAsDouble() * driveSpeedFactor,
                                         ySpeed.getAsDouble() * driveSpeedFactor);
                         double polarAngle = Math.atan2(ySpeed.getAsDouble(), xSpeed.getAsDouble());
@@ -335,7 +341,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 relativeRobotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered,
                                                 ySpeedDelivered,
                                                 rotRateDelivered,
-                                                Rotation2d.fromRadians(gyro.getYaw().in(Radians)));
+                                                Rotation2d.fromRadians(currentAngle));
                         } else {
                                 relativeRobotSpeeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered,
                                                 rotRateDelivered);
@@ -444,13 +450,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // replay odometry measurements that it doesn't have. This try-catch fixes the
                 // issue, and who wants vision updates to crash their robot code anyway?
                 try {
-                        //this might have to be second vision measurement lmao
-                        if (!hasFirstVisionMeasurement) {
-                                resetOdometry(pose);
-                                hasFirstVisionMeasurement = false;
-                        } else {
-                                poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
-                        }
+                        poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
                 } catch (Exception e) {
                         System.err.printf("Adding vision measurement: %s %f %s\n", pose.toString(), timestampSeconds,
                                         visionMeasurementStdDevs.toString());
