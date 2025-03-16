@@ -66,7 +66,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private AtomicBoolean atGoal = new AtomicBoolean(true);
         private boolean isBlueAlliance;
 
-        
         private DriveSubsystemStates states = new DriveSubsystemStates();
 
         // correction PID
@@ -228,7 +227,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // This will get the simulated sensor readings that we set
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
-                //System.out.println("refresh true " + gyro.getYaw(true).in(Radians));
+                // System.out.println("refresh true " + gyro.getYaw(true).in(Radians));
                 poseEstimator.updateWithTime(Timer.getFPGATimestamp(),
                                 Rotation2d.fromRadians(gyro.getYaw(true).in(Radians)),
                                 new SwerveModulePosition[] {
@@ -304,6 +303,21 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 rearRight.getPosition()
                                 },
                                 pose);
+        }
+
+        // basically, when we reset gyro, m_gyroOffset in SwerveDrivePoseEstimator does
+        // NOT reset so the pose does not reset properly :(
+        public void resetOdometryAfterGyro() {
+                Rotation2d gyroRotation = Rotation2d.fromRadians(gyro.getYaw(false).in(Radians));
+                poseEstimator.resetPosition(
+                                gyroRotation,
+                                new SwerveModulePosition[] {
+                                                frontLeft.getPosition(),
+                                                frontRight.getPosition(),
+                                                rearLeft.getPosition(),
+                                                rearRight.getPosition()
+                                },
+                                new Pose2d(getPose().getTranslation(), gyroRotation));
         }
 
         /**
@@ -484,7 +498,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         // risks
                         atGoal.set(false);
 
-                        Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(robotPosition.get(), () -> robotPose,
+                        Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(robotPosition.get(),
+                                        () -> robotPose,
                                         isBlueAlliance);
                         SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.get().getY());
                         SmartDashboard.putNumber("Swerve/vision/goalPosex", goalPose.get().getX());
@@ -493,7 +508,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         Supplier<Transform2d> velocities = DriveToPoseUtil.getDriveToPoseVelocities(
                                         () -> robotPose, goalPose);
                         ChassisSpeeds alignmentSpeeds = new ChassisSpeeds(
-                                        velocities.get().getX(), 
+                                        velocities.get().getX(),
                                         velocities.get().getY(),
                                         velocities.get().getRotation().getRadians());
 
@@ -510,11 +525,13 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         }
 
         public Command disableDriveToPose() {
-                return this.runOnce(() -> {atGoal.set(true);
+                return this.runOnce(() -> {
+                        atGoal.set(true);
                         frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
                         frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
                         rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
-                        rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));});
+                        rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
+                });
         }
 
         private void logAndUpdateDriveSubsystemStates() {
