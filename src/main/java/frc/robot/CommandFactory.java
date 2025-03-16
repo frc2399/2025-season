@@ -42,6 +42,7 @@ public class CommandFactory {
     this.coralIntake = coralIntake;
     setGameMode("coral");
     setScoringLevel("Level 1");
+    setRobotAlignmentPosition("left");
     // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
     // newEntry = scoringStateTables.getEntry("Indicator");
   }

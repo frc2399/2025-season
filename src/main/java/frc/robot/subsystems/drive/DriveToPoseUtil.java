@@ -60,7 +60,7 @@ public class DriveToPoseUtil {
         }
 
         // tolerance constants
-        private static final Distance XY_ALIGN_TOLERANCE = Inches.of(0.5);
+        private static final Distance XY_ALIGN_TOLERANCE = Inches.of(0.25);
         private static final Angle THETA_ALIGN_TOLERANCE = Degrees.of(1);
 
         // filtering constants
@@ -69,11 +69,14 @@ public class DriveToPoseUtil {
 
         public static Supplier<Transform2d> getDriveToPoseVelocities(Supplier<Pose2d> robotPose,
                         Supplier<Pose2d> goalPose) {
+                
                 // if there is no robot pose, don't move
                 if (robotPose.get() == null) {
                         Transform2d nullReturn = new Transform2d(0, 0, new Rotation2d(0));
                         return () -> nullReturn;
                 }
+
+                System.out.println(robotPose.get().getRotation().getDegrees());
 
                 // calculate current error
                 Transform2d transformToGoal = goalPose.get().minus(robotPose.get());
@@ -94,6 +97,7 @@ public class DriveToPoseUtil {
                         xDesired = MetersPerSecond.of(0);
                         yDesired = MetersPerSecond.of(0);
                         thetaDesired = RadiansPerSecond.of(0);
+                        System.out.println("oh no! we are filtering!");
                 }
 
                 // tolerance checking
