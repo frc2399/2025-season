@@ -1,15 +1,22 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Seconds;
 
+import com.ctre.phoenix6.signals.InvertedValue;
+
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Time;
 import frc.robot.Constants.MotorIdConstants;
 
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristHardware;
 import frc.robot.subsystems.algaeWrist.AlgaeWristPlacebo;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
-import frc.robot.subsystems.algaeIntake.AlgaeIntakeHardware;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakeBetaHardware;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakeCompHardware;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakePlacebo;
 import frc.robot.subsystems.coralIntake.CoralIntakeAlphaHardware;
 import frc.robot.subsystems.coralIntake.CoralIntakeBetaHardware;
@@ -44,6 +51,11 @@ public class SubsystemFactory {
     private static final double BETA_CORAL_ABSOLUTE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 180.0; // radians per
                                                                                                      // second
     private static final boolean BETA_CORAL_WRIST_SOFT_LIMIT = true;
+    private static final Time BETA_CORAL_DEBOUNCER_TIME = Seconds.of(0.25); 
+    private static final Current BETA_CORAL_INTAKE_STALL_THRESHOLD = Amps.of(25.0);
+    
+    private static final Time COMP_CORAL_DEBOUNCER_TIME = Seconds.of(0.45); 
+    private static final Current COMP_CORAL_INTAKE_STALL_THRESHOLD = Amps.of(38.0);
 
     // 64:16 (4:1) gear ratio (through bore encoder on shaft)
     private static final double ALPHA_CORAL_ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR = (2 * Math.PI) / 4.0; // radians
@@ -55,12 +67,12 @@ public class SubsystemFactory {
     private static final String MOZART_SERIAL_NUMBER = "030ee8c8";
     private static final String ALPHA_SERIAL_NUMBER = "03260A64";
     private static final String BETA_SERIAL_NUMBER = "030589d5";
-    private static final String COMP_SERIAL_NUMBER = "";
+    private static final String COMP_SERIAL_NUMBER = "030fc267";
 
     private static final Distance ELEVATOR_ALPHA_MAX_HEIGHT = Inches.of(34.25);
     private static final Distance ELEVATOR_BETA_MAX_HEIGHT = Inches.of(50);
 
-    private enum RobotType {
+    public enum RobotType {
         MOZART,
         SIM,
         ALPHA,
@@ -84,6 +96,10 @@ public class SubsystemFactory {
         } else {
             robotType = RobotType.SIM;
         }
+    }
+
+    public RobotType getRobotType() {
+        return robotType;
     }
 
     public DriveSubsystem buildDriveSubsystem(Gyro gyro) {
@@ -112,7 +128,7 @@ public class SubsystemFactory {
             return new DriveSubsystem(frontLeft, frontRight, rearLeft, rearRight, gyro,
                     Constants.DriveControlConstants.ALPHA_TRACK_WIDTH,
                     Constants.DriveControlConstants.ALPHA_TRACK_WIDTH);
-        } else if (robotType == RobotType.BETA) {
+        } else if (robotType == RobotType.BETA || robotType == RobotType.COMP) {
             frontLeft = new SwerveModule(new SwerveModuleHardwareVortex(
                     MotorIdConstants.FRONT_LEFT_DRIVING_CAN_ID,
                     MotorIdConstants.FRONT_LEFT_TURNING_CAN_ID,
@@ -164,7 +180,7 @@ public class SubsystemFactory {
     }
 
     public Gyro buildGyro() {
-        if (robotType == RobotType.BETA || robotType == RobotType.ALPHA || robotType == RobotType.MOZART) {
+        if (robotType == RobotType.COMP || robotType == RobotType.BETA || robotType == RobotType.ALPHA || robotType == RobotType.MOZART) {
             return new Gyro(new GyroHardware());
         } else {
             return new Gyro(new GyroPlacebo());
@@ -173,16 +189,23 @@ public class SubsystemFactory {
 
     public AlgaeIntakeSubsystem buildAlgaeIntake() {
         if (robotType == RobotType.BETA) {
-            return new AlgaeIntakeSubsystem(new AlgaeIntakeHardware());
-        } else {
+            return new AlgaeIntakeSubsystem(new AlgaeIntakeBetaHardware());
+        } else 
+        if (robotType == RobotType.COMP) {
+            return new AlgaeIntakeSubsystem(new AlgaeIntakeCompHardware());
+        }else 
+        {
             return new AlgaeIntakeSubsystem(new AlgaeIntakePlacebo());
         }
     }
 
     public AlgaeWristSubsystem buildAlgaeWrist() {
-        if (robotType == RobotType.BETA) {
-            return new AlgaeWristSubsystem(new AlgaeWristHardware());
-        } else {
+        if (robotType == RobotType.COMP) {
+            return new AlgaeWristSubsystem(new AlgaeWristHardware(true, true));
+        } else if (robotType == RobotType.BETA) {
+            return new AlgaeWristSubsystem(new AlgaeWristHardware(false, false));
+        }
+        else {
             return new AlgaeWristSubsystem(new AlgaeWristPlacebo());
         }
     }
@@ -190,9 +213,13 @@ public class SubsystemFactory {
     public CoralIntakeSubsystem buildCoralIntake() {
         if (robotType == RobotType.ALPHA) {
             return new CoralIntakeSubsystem(new CoralIntakeAlphaHardware());
-        } else if (robotType == RobotType.BETA) {
-            return new CoralIntakeSubsystem(new CoralIntakeBetaHardware());
-        } else {
+        } else if (robotType == RobotType.BETA) {    
+            return new CoralIntakeSubsystem(new CoralIntakeBetaHardware(BETA_CORAL_DEBOUNCER_TIME, BETA_CORAL_INTAKE_STALL_THRESHOLD));
+        } else if (robotType == RobotType.COMP) 
+        {
+            return new CoralIntakeSubsystem(new CoralIntakeBetaHardware(COMP_CORAL_DEBOUNCER_TIME, COMP_CORAL_INTAKE_STALL_THRESHOLD));
+        }
+        else {
             return new CoralIntakeSubsystem(new CoralIntakePlacebo());
         }
     }
@@ -202,7 +229,7 @@ public class SubsystemFactory {
             return new CoralWristSubsystem(new CoralWristHardware(ALPHA_CORAL_ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR,
                     ALPHA_CORAL_ABSOLUTE_ENCODER_VELOCITY_FACTOR, ALPHA_CORAL_WRIST_SOFT_LIMIT,
                     MotorIdConstants.CORAL_ALPHA_INTAKE_WRIST_CAN_ID));
-        } else if (robotType == RobotType.BETA) {
+        } else if (robotType == RobotType.BETA || robotType == RobotType.COMP) {
             return new CoralWristSubsystem(new CoralWristHardware(BETA_CORAL_ABSOLUTE_ENCODER_WRIST_POSITION_FACTOR,
                     BETA_CORAL_ABSOLUTE_ENCODER_VELOCITY_FACTOR, BETA_CORAL_WRIST_SOFT_LIMIT,
                     MotorIdConstants.CORAL_BETA_WRIST_CAN_ID));
@@ -216,10 +243,10 @@ public class SubsystemFactory {
             return new ElevatorSubsystem(new AlphaElevatorHardware(ELEVATOR_ALPHA_MAX_HEIGHT));
         }
         if (robotType == RobotType.BETA) {
-            return new ElevatorSubsystem(new KrakenElevatorHardware(ELEVATOR_BETA_MAX_HEIGHT));
+            return new ElevatorSubsystem(new KrakenElevatorHardware(ELEVATOR_BETA_MAX_HEIGHT, InvertedValue.CounterClockwise_Positive));
         }
-        if (robotType == RobotType.BETA) {
-            return new ElevatorSubsystem(new KrakenElevatorHardware(ELEVATOR_BETA_MAX_HEIGHT));
+        if (robotType == RobotType.COMP) {
+            return new ElevatorSubsystem(new KrakenElevatorHardware(ELEVATOR_BETA_MAX_HEIGHT, InvertedValue.Clockwise_Positive));
         } else {
             return new ElevatorSubsystem(new ElevatorPlacebo());
         }

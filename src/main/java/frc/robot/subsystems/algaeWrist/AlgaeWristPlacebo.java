@@ -5,6 +5,10 @@ import frc.robot.CommandFactory.Setpoint;
 public class AlgaeWristPlacebo implements AlgaeWristIO {
 
     @Override
+    public void resetRelativeToAbsolute() {
+    }
+
+    @Override
     public void setGoalAngle(Setpoint setpoint) {
     }
 

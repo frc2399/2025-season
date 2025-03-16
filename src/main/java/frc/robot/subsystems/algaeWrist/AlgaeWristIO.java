@@ -13,6 +13,8 @@ public interface AlgaeWristIO {
         public double goalAngle = 0.0;
     }
 
+    public void resetRelativeToAbsolute();
+
     public void setGoalAngle(Setpoint setpoint);
 
     public void setWristSpeed(double speed);

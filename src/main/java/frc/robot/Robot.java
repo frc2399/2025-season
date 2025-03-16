@@ -7,8 +7,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
+import frc.robot.subsystems.coralWrist.CoralWristHardware;
 
 /**
  * The methods in this class are called automatically corresponding to each
@@ -18,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+  private Command autonomousCommand;
 
   private final RobotContainer robotContainer;
 
@@ -54,8 +57,8 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods. This must be called from the
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
-    robotContainer.visionPoseEstimator.periodic();
     CommandScheduler.getInstance().run();
+    robotContainer.visionPoseEstimator.periodic();
   }
 
   @Override
@@ -64,8 +67,10 @@ public class Robot extends TimedRobot {
     DriverStation.startDataLog(DataLogManager.getLog());
     CommandScheduler.getInstance().onCommandInitialize(cmd -> DataLogManager.log(cmd.getName() + " : Init"));
     CommandScheduler.getInstance().onCommandInterrupt((interrupted, interrupting) -> DataLogManager
-        .log(interrupted.getName() + "Interrupted by " + interrupting.get().getName()));
+        .log(interrupted.getName() + "Interrupted by "
+            + (!interrupting.isEmpty() ? interrupting.get().getName() : "nothing")));
     CommandScheduler.getInstance().onCommandFinish(cmd -> DataLogManager.log(cmd.getName() + ": End"));
+    SmartDashboard.putString("branch and date", CodeVersionInfo.GIT_BRANCH + " " + CodeVersionInfo.GIT_DATE);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -85,9 +90,12 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    autonomousCommand = robotContainer.getAutonomousCommand();
+    if (autonomousCommand != null) {
+      autonomousCommand.schedule();
     }
+    robotContainer.algaeWrist.resetWrist();
+    robotContainer.coralWrist.resetWrist();
   }
 
   /** This function is called periodically during autonomous. */
@@ -101,9 +109,11 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    if (autonomousCommand != null) {
+      autonomousCommand.cancel();
     }
+    robotContainer.algaeWrist.resetWrist();
+    robotContainer.coralWrist.resetWrist();
   }
 
   /** This function is called periodically during operator control. */

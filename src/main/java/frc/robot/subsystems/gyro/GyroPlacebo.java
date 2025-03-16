@@ -12,10 +12,18 @@ public class GyroPlacebo implements GyroIO {
         return Degrees.of(0.0);
     }
 
+    public Angle getYaw(boolean refresh) {
+        return Degrees.of(0);
+    }
+
     public void setYaw(Angle yaw) {
     }
 
     public StatusSignal<AngularVelocity> getAngularVelocity() {
         return new StatusSignal<AngularVelocity>(null, null, null);
+    }
+
+    public boolean hasFault() {
+        return false;
     }
 }

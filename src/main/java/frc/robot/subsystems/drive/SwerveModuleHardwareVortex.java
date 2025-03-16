@@ -18,6 +18,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import edu.wpi.first.math.MathUtil;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.util.Units;
@@ -147,7 +148,16 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
     };
 
     public double getDriveEncoderPosition() {
-        return drivingRelativeEncoder.getPosition();
+        double driveEncoderPosition = drivingRelativeEncoder.getPosition();
+        if(Double.isNaN(driveEncoderPosition))
+        {
+            return 0.0; 
+        }
+        else
+        {
+            return driveEncoderPosition; 
+        }
+
     };
 
     public void setDesiredDriveSpeedMPS(double speed) {
@@ -156,11 +166,27 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
     };
 
     public double getDriveEncoderSpeedMPS() {
-        return drivingRelativeEncoder.getVelocity();
+        double driveVelocity = drivingRelativeEncoder.getVelocity();
+        if(Double.isNaN(driveVelocity))
+        {
+            return 0.0; 
+        }
+        else
+        {
+            return driveVelocity; 
+        }
     };
 
     public double getTurnEncoderPosition() {
-        return turningAbsoluteEncoder.getPosition();
+    double drivePosition = turningAbsoluteEncoder.getPosition();
+
+        if(Double.isNaN(drivePosition))
+        {
+            return 0.0; 
+        }
+        else{
+            return drivePosition; 
+        }
     };
 
     public void setDesiredTurnAngle(double angle) {
@@ -193,11 +219,11 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
     }
 
     public void updateStates(SwerveModuleIOStates states) {
-                states.desiredAngle = Units.radiansToDegrees(this.desiredAngle);
-                states.turnAngle = Units.radiansToDegrees(turningAbsoluteEncoder.getPosition());
+                states.desiredAngle = Units.radiansToDegrees(MathUtil.angleModulus(this.desiredAngle));
+                states.turnAngle = Units.radiansToDegrees(MathUtil.angleModulus(getTurnEncoderPosition()));
                 states.driveDesiredVelocity = this.driveDesiredVelocity;
-                states.driveVelocity = drivingRelativeEncoder.getVelocity();
-                states.driveEncoderPos = drivingRelativeEncoder.getPosition();
+                states.driveVelocity = getDriveEncoderSpeedMPS();
+                states.driveEncoderPos = getDriveEncoderPosition();
                 states.driveVoltage = drivingSparkFlex.getBusVoltage() * drivingSparkFlex.getAppliedOutput();
                 states.turnVoltage = turningSparkMax.getBusVoltage() * turningSparkMax.getAppliedOutput();
                 states.driveCurrent = drivingSparkFlex.getOutputCurrent();
