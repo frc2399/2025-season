@@ -48,7 +48,7 @@ public class RobotContainer {
   // this is public because we need to run the visionPoseEstimator periodic from
   // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive, subsystemFactory.getRobotType());
-  public CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist, algaeWrist, algaeIntake,
+  public CommandFactory commandFactory = new CommandFactory(drive, gyro, elevator, coralWrist, algaeWrist, algaeIntake,
       coralIntake);
 
   private static final CommandXboxController driverController = new CommandXboxController(
@@ -94,7 +94,7 @@ public class RobotContainer {
     driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
     driverController.leftBumper().onTrue(drive.driveToPoseCommand(() -> commandFactory.getRobotPosition())).onFalse(drive.disableDriveToPose());
 
-    driverController.y().onTrue(gyro.setYaw(Degrees.of(0.0)));
+    driverController.y().onTrue(commandFactory.resetHeading(Degrees.of(0)));
     driverController.x().whileTrue(drive.setX());
     driverController.b().onTrue(commandFactory.turtleBasedOnMode());
   }
