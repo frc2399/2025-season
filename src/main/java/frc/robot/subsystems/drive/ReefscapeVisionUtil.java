@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Degrees;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -99,13 +100,13 @@ public class ReefscapeVisionUtil {
         //                 BLUE_REEF_B, BLUE_REEF_D, BLUE_REEF_F, BLUE_REEF_H, BLUE_REEF_J, BLUE_REEF_L);
 
         public static Supplier<Pose2d> getGoalPose(RobotPosition robotPosition, Supplier<Pose2d> robotPose,
-                        boolean isBlueAlliance) {
+                        BooleanSupplier isBlueAlliance) {
                 Pose2d goalPose;
                 if (robotPose.get() == null) {
                         Pose2d nullReturn = new Pose2d();
                         return () -> nullReturn;
                 }
-                if (isBlueAlliance) {
+                if (isBlueAlliance.getAsBoolean()) {
                         if (robotPosition == RobotPosition.LEFT) {
                                // goalPose = robotPose.get().nearest(LEFT_POSES_BLUE);
                                goalPose = new Pose2d(0,0, new Rotation2d(0));

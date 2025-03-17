@@ -64,7 +64,7 @@ import frc.robot.vision.VisionPoseEstimator.DriveBase;
 public class DriveSubsystem extends SubsystemBase implements DriveBase {
         // for drivetopose
         private AtomicBoolean atGoal = new AtomicBoolean(true);
-        private boolean isBlueAlliance;
+        private BooleanSupplier isBlueAlliance;
 
         private DriveSubsystemStates states = new DriveSubsystemStates();
 
@@ -497,6 +497,12 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         // a lambda and access it outside that lambda, but atomic booleans prevent these
                         // risks
                         atGoal.set(false);
+
+                        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+                                isBlueAlliance = () -> true;
+                        } else {
+                                isBlueAlliance = () -> false;
+                        }
 
                         Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(robotPosition.get(),
                                         () -> robotPose,
