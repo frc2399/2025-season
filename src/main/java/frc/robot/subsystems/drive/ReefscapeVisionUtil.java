@@ -1,89 +1,28 @@
 package frc.robot.subsystems.drive;
 
-import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import frc.robot.CommandFactory.RobotPosition;
 
 public class ReefscapeVisionUtil {
-        private static final Pose2d RED_TAG_10 = new Pose2d(Units.inchesToMeters(481.39), Units.inchesToMeters(158.50), new Rotation2d(0));
-        private static final Pose2d RED_TAG_11 = new Pose2d(Units.inchesToMeters(497.77), Units.inchesToMeters(130.17), new Rotation2d(Units.degreesToRadians(60)));
+        private static AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+        private static final Transform2d ROBOT_FROM_REEF = new Transform2d(Inches.of(31.5), Inches.zero(), Rotation2d.k180deg);
+        private static final Transform2d SCORING_POSE_OFFSET = new Transform2d(Inches.zero(), Inches.of(7.5), Rotation2d.kZero);
 
-        // private static final Pose2d RED_REEF_A = new Pose2d(new Translation2d(14.538, 3.861),
-        //                 new Rotation2d(Degrees.of(180)));
-        // private static final Pose2d RED_REEF_B = new Pose2d(new Translation2d(14.538, 4.191),
-        //                 new Rotation2d(Degrees.of(180)));
-        // private static final Pose2d RED_REEF_C = new Pose2d(new Translation2d(13.942, 5.225),
-        //                 new Rotation2d(Degrees.of(-120)));
-        // private static final Pose2d RED_REEF_D = new Pose2d(new Translation2d(13.656, 5.390),
-        //                 new Rotation2d(Degrees.of(-120)));
-        // private static final Pose2d RED_REEF_E = new Pose2d(new Translation2d(12.462, 5.390),
-        //                 new Rotation2d(Degrees.of(-60)));
-        // private static final Pose2d RED_REEF_F = new Pose2d(new Translation2d(12.176, 5.225),
-        //                 new Rotation2d(Degrees.of(-60)));
-        // private static final Pose2d RED_REEF_G = new Pose2d(new Translation2d(11.579, 4.191),
-        //                 new Rotation2d(Degrees.of(0)));
-        private static final Pose2d RED_REEF_G = RED_TAG_10.transformBy(new Transform2d(
-                Units.inchesToMeters(-31.5), 
-                Units.inchesToMeters(7.5), 
-                new Rotation2d(0)));
-        private static final Pose2d RED_REEF_H = RED_TAG_10.transformBy(new Transform2d(
-                Units.inchesToMeters(-31.5), 
-                Units.inchesToMeters(-7.5), 
-                new Rotation2d(0)));
-        private static final Pose2d RED_REEF_I = new Pose2d(
-                RED_TAG_11.getTranslation().plus(new Translation2d(
-                                 Units.inchesToMeters(-22.245), 
-                                 Units.inchesToMeters(-23.53))),
-                RED_TAG_11.getRotation());
-        private static final Pose2d RED_REEF_J = new Pose2d(
-                RED_TAG_11.getTranslation().plus(new Translation2d(
-                        Units.inchesToMeters(-9.255),
-                        Units.inchesToMeters(-31.30))),
-                RED_TAG_11.getRotation());
-        
-        // private static final Pose2d RED_REEF_K = new Pose2d(new Translation2d(13.656, 2.662),
-        //                 new Rotation2d(Degrees.of(120)));
-        // private static final Pose2d RED_REEF_L = new Pose2d(new Translation2d(13.942, 2.827),
-        //                 new Rotation2d(Degrees.of(120)));
-
-        // private static final Pose2d BLUE_REEF_A = new Pose2d(new Translation2d(3.010, 4.191),
-        //                 new Rotation2d(Degrees.of(0)));
-        // private static final Pose2d BLUE_REEF_B = new Pose2d(new Translation2d(3.010, 3.861),
-        //                 new Rotation2d(Degrees.of(0)));
-        // private static final Pose2d BLUE_REEF_C = new Pose2d(new Translation2d(3.607, 2.827),
-        //                 new Rotation2d(Degrees.of(60)));
-        // private static final Pose2d BLUE_REEF_D = new Pose2d(new Translation2d(3.893, 2.662),
-        //                 new Rotation2d(Degrees.of(60)));
-        // private static final Pose2d BLUE_REEF_E = new Pose2d(new Translation2d(5.086, 2.662),
-        //                 new Rotation2d(Degrees.of(120)));
-        // private static final Pose2d BLUE_REEF_F = new Pose2d(new Translation2d(5.372, 2.827),
-        //                 new Rotation2d(Degrees.of(120)));
-        // private static final Pose2d BLUE_REEF_G = new Pose2d(new Translation2d(5.969, 3.861),
-        //                 new Rotation2d(Degrees.of(180)));
-        // private static final Pose2d BLUE_REEF_H = new Pose2d(new Translation2d(5.969, 4.191),
-        //                 new Rotation2d(Degrees.of(180)));
-        // private static final Pose2d BLUE_REEF_I = new Pose2d(new Translation2d(5.372, 5.225),
-        //                 new Rotation2d(Degrees.of(-120)));
-        // private static final Pose2d BLUE_REEF_J = new Pose2d(new Translation2d(5.086, 5.390),
-        //                 new Rotation2d(Degrees.of(-120)));
-        // private static final Pose2d BLUE_REEF_K = new Pose2d(new Translation2d(3.893, 5.390),
-        //                 new Rotation2d(Degrees.of(-60)));
-        // private static final Pose2d BLUE_REEF_L = new Pose2d(new Translation2d(3.607, 5.225),
-        //                 new Rotation2d(Degrees.of(-60)));
-
-        private static final Pose2d RED_CORAL_STATION = new Pose2d();
-        private static final Pose2d BLUE_CORAL_STATION = new Pose2d();
-
+        private static final Pose2d RED_REEF_G = layout.getTagPose(10).get().toPose2d().transformBy(ROBOT_FROM_REEF.plus(SCORING_POSE_OFFSET));
+        private static final Pose2d RED_REEF_H = layout.getTagPose(10).get().toPose2d().transformBy(ROBOT_FROM_REEF.plus(SCORING_POSE_OFFSET.inverse()));
+        private static final Pose2d RED_REEF_I = layout.getTagPose(11).get().toPose2d().transformBy(ROBOT_FROM_REEF.plus(SCORING_POSE_OFFSET));
+        private static final Pose2d RED_REEF_J = layout.getTagPose(11).get().toPose2d().transformBy(ROBOT_FROM_REEF.plus(SCORING_POSE_OFFSET.inverse()));
         // private static final List<Pose2d> LEFT_POSES_RED = Arrays.asList(
         //                 RED_REEF_A, RED_REEF_C, RED_REEF_E, RED_REEF_G, RED_REEF_I, RED_REEF_K);
         // private static final List<Pose2d> RIGHT_POSES_RED = Arrays.asList(
