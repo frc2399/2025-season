@@ -76,8 +76,6 @@ public class DriveToPoseUtil {
                         return () -> nullReturn;
                 }
 
-                System.out.println(robotPose.get().getRotation().getDegrees());
-
                 // calculate current error
                 Transform2d transformToGoal = goalPose.get().minus(robotPose.get());
                 double xToGoal = transformToGoal.getX();
@@ -97,7 +95,6 @@ public class DriveToPoseUtil {
                         xDesired = MetersPerSecond.of(0);
                         yDesired = MetersPerSecond.of(0);
                         thetaDesired = RadiansPerSecond.of(0);
-                        System.out.println("oh no! we are filtering!");
                 }
 
                 // tolerance checking
