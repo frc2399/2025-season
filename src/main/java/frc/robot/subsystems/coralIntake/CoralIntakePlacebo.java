@@ -25,6 +25,11 @@ public class CoralIntakePlacebo implements CoralIntakeIO {
     public void passiveIntake() {
     }
 
+    public void passiveIntakeIgnoringStall() 
+    {
+        
+    }
+
     @Override
     public void updateStates(CoralIntakeIOStates states) {
     }
