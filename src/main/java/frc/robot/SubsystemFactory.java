@@ -215,7 +215,7 @@ public class SubsystemFactory {
 
     public ClimberSubsystem buildClimber()
     {
-        if (robotType == RobotType.BETA){
+        if (robotType == RobotType.COMP){
             return new ClimberSubsystem(new ClimberHardware());
         } else {
             return new ClimberSubsystem(new ClimberPlacebo()); 
