@@ -99,7 +99,7 @@ public class RobotContainer {
     driverController.x().whileTrue(drive.setX());
     driverController.b().onTrue(commandFactory.turtleBasedOnMode());
 
-    // this yucky code bc we are out of buttons and have to use the FOV pad (we want
+    // this yucky code bc we are out of buttons and have to use the POV pad (we want
     // to make sure that anything up does up and same for down)
     driverController.povUp().whileTrue(climber.setSpeed(0.1));
     driverController.povUpLeft().whileTrue(climber.setSpeed(0.1));
@@ -109,6 +109,9 @@ public class RobotContainer {
     driverController.povDownRight().whileTrue(climber.setSpeed(-0.5));
 
     driverController.a().onTrue(climber.setServoAngle(Degrees.of(90.0)));
+
+    //temporary button for testing purposes - but maybe also good to have in case of accidental A press?
+    driverController.povLeft().onTrue(climber.setServoAngle(Degrees.of(0)));
   }
 
   private void setUpAuton() {
