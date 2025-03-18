@@ -3,10 +3,12 @@ package frc.robot.subsystems.climber;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.InchesPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -18,6 +20,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Servo;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
@@ -94,26 +97,15 @@ public class ClimberHardware implements ClimberIO {
                 rightClimberConfig.follow(leftClimber.getDeviceId(), true);
         }
 
-        public void setGoalAngle(Angle desiredAngle) {
-                // climberClosedLoopController.setReference(desiredAngle.in(Radians),
-                // ControlType.kPosition,
-                // ClosedLoopSlot.kSlot0,
-                // climberFeedforward.calculate( // arm FF assumes 0 = horizontal ... this will
-                // likely not be the case
-                // desiredAngle.in(Radians) + ClimberConstants.CLIMBER_OFFSET_ANGLE.in(Radians),
-                // leftClimberEncoder.getVelocity()));
-                // climberGoalAngle = desiredAngle;
-        }
-
-        public void setSpeed(double speed) {
-                // climberClosedLoopController.set(speed +
-                // climberFeedforward.calculate(leftClimberEncoder.getPosition() +
-                // ClimberConstants.CLIMBER_OFFSET_ANGLE.in(Radians), speed));
-        }
-
-        public void setServoAngle(Angle desiredAngle) {
-                climberServo.setAngle(desiredAngle.in(Degrees));
-                servoGoalAngle = desiredAngle;
+        public void setSpeed(LinearVelocity speed) {
+                climberClosedLoopController.setReference(speed.in(InchesPerSecond), ControlType.kVelocity);
+                // if (speed.equals(InchesPerSecond.zero())) {
+                //         climberServo.setAngle(0);
+                //         servoGoalAngle = Degrees.of(0);
+                // } else {
+                //         climberServo.setAngle(90);
+                //         servoGoalAngle = Degrees.of(90);
+                // }
         }
 
         public void updateStates(ClimberIOInputs inputs) {

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.climber;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,19 +19,9 @@ public class ClimberSubsystem extends SubsystemBase {
             //add a line setting the climber to its initial position 
     }
 
-    public Command goToAngle(Angle goalAngle)
-    {
-        return this.run(() -> climberIO.setGoalAngle(goalAngle));
-    }
-
-    public Command setSpeed(double speed)
+    public Command setSpeed(LinearVelocity speed)
     {
         return this.run(() -> climberIO.setSpeed(speed));
-    }
-
-    public Command setServoAngle(Angle goalAngle)
-    {
-        return this.run(() -> climberIO.setServoAngle(goalAngle)); 
     }
 
     @Override

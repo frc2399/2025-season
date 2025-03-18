@@ -1,6 +1,7 @@
 package frc.robot.subsystems.climber;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.LinearVelocity;
 
 public class ClimberPlacebo implements ClimberIO{
     
@@ -10,14 +11,10 @@ public class ClimberPlacebo implements ClimberIO{
         return 0.0; 
     }
 
-    public void setSpeed(double speed){}
+    public void setSpeed(LinearVelocity speed){}
 
     public double getVelocity(){
         return 0.0; 
-    }
-
-    public void setServoAngle(Angle desiredAngle){
-
     }
 
     public void updateStates(ClimberIOInputs inputs){}

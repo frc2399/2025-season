@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.InchesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 
@@ -86,7 +87,7 @@ public class RobotContainer {
         () -> elevator.isElevatorHeightAboveSpeedLimitingThreshold()));
     coralIntake.setDefaultCommand(coralIntake.defaultBehavior());
     algaeIntake.setDefaultCommand(algaeIntake.defaultBehavior());
-    climber.setDefaultCommand(climber.setSpeed(0));
+    climber.setDefaultCommand(climber.setSpeed(InchesPerSecond.of(0)));
   }
 
   private void configureButtonBindingsDriver() {
@@ -101,17 +102,12 @@ public class RobotContainer {
 
     // this yucky code bc we are out of buttons and have to use the POV pad (we want
     // to make sure that anything up does up and same for down)
-    driverController.povUp().whileTrue(climber.setSpeed(0.1));
-    driverController.povUpLeft().whileTrue(climber.setSpeed(0.1));
-    driverController.povUpRight().whileTrue(climber.setSpeed(0.1));
-    driverController.povDown().whileTrue(climber.setSpeed(-0.5));
-    driverController.povDownLeft().whileTrue(climber.setSpeed(-0.5));
-    driverController.povDownRight().whileTrue(climber.setSpeed(-0.5));
-
-    driverController.a().onTrue(climber.setServoAngle(Degrees.of(90.0)));
-
-    //temporary button for testing purposes - but maybe also good to have in case of accidental A press?
-    driverController.povLeft().onTrue(climber.setServoAngle(Degrees.of(0)));
+    driverController.povUp().whileTrue(climber.setSpeed(InchesPerSecond.of(0.1)));
+    driverController.povUpLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(0.1)));
+    driverController.povUpRight().whileTrue(climber.setSpeed(InchesPerSecond.of(0.1)));
+    driverController.povDown().whileTrue(climber.setSpeed(InchesPerSecond.of(-0.5)));
+    driverController.povDownLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(-0.5)));
+    driverController.povDownRight().whileTrue(climber.setSpeed(InchesPerSecond.of(-0.5)));
   }
 
   private void setUpAuton() {
