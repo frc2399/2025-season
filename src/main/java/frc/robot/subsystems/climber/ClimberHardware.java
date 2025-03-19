@@ -33,7 +33,7 @@ public class ClimberHardware implements ClimberIO {
                 private static final double I_VALUE = 0.0;
                 private static final double D_VALUE = 0.0;
 
-                private static final Distance UPPER_LIMIT = Inches.of(26.5);
+                private static final Distance UPPER_LIMIT = Inches.of(29.75);
                 // INIT TO HERE
                 private static final Distance LOWER_LIMIT = Inches.of(14.165);
 
@@ -43,7 +43,7 @@ public class ClimberHardware implements ClimberIO {
                                 / 60.0;
                 private static final double CLIMBER_VELOCITY_FF = 1.0
                                 / (MotorConstants.NEO_FREE_SPEED.in(RPM) * CLIMBER_VELOCITY_CONVERSION_FACTOR);
-                private static final int SERVO_CHANNEL = 1;
+                private static final int SERVO_CHANNEL = 0;
 
                 private static final boolean LEFT_CLIMBER_INVERTED = false;
                 private static final boolean RIGHT_CLIMBER_INVERTED = false;
@@ -88,24 +88,25 @@ public class ClimberHardware implements ClimberIO {
                                 .reverseSoftLimit(ClimberConstants.LOWER_LIMIT.in(Inches))
                                 .reverseSoftLimitEnabled(true);
 
+                rightClimberConfig.follow(leftClimber.getDeviceId(), true);
+
                 leftClimber.configure(leftClimberConfig, ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);
                 rightClimber.configure(rightClimberConfig, ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);
 
                 leftClimberEncoder.setPosition(ClimberConstants.LOWER_LIMIT.in(Inches));
-                rightClimberConfig.follow(leftClimber.getDeviceId(), true);
         }
 
         public void setSpeed(LinearVelocity speed) {
                 climberClosedLoopController.setReference(speed.in(InchesPerSecond), ControlType.kVelocity);
-                // if (speed.equals(InchesPerSecond.zero())) {
-                //         climberServo.setAngle(0);
-                //         servoGoalAngle = Degrees.of(0);
-                // } else {
-                //         climberServo.setAngle(90);
-                //         servoGoalAngle = Degrees.of(90);
-                // }
+                if (speed.equals(InchesPerSecond.zero())) {
+                        climberServo.setAngle(90);
+                        servoGoalAngle = Degrees.of(90);
+                } else {
+                        climberServo.setAngle(270);
+                        servoGoalAngle = Degrees.of(270);
+                }
         }
 
         public void updateStates(ClimberIOInputs inputs) {

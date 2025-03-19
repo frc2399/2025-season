@@ -102,12 +102,12 @@ public class RobotContainer {
 
     // this yucky code bc we are out of buttons and have to use the POV pad (we want
     // to make sure that anything up does up and same for down)
-    driverController.povUp().whileTrue(climber.setSpeed(InchesPerSecond.of(0.1)));
-    driverController.povUpLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(0.1)));
-    driverController.povUpRight().whileTrue(climber.setSpeed(InchesPerSecond.of(0.1)));
-    driverController.povDown().whileTrue(climber.setSpeed(InchesPerSecond.of(-0.5)));
-    driverController.povDownLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(-0.5)));
-    driverController.povDownRight().whileTrue(climber.setSpeed(InchesPerSecond.of(-0.5)));
+    driverController.povUp().whileTrue(climber.setSpeed(InchesPerSecond.of(3)));
+    driverController.povUpLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(3)));
+    driverController.povUpRight().whileTrue(climber.setSpeed(InchesPerSecond.of(3)));
+    driverController.povDown().whileTrue(climber.setSpeed(InchesPerSecond.of(-3)));
+    driverController.povDownLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(-3)));
+    driverController.povDownRight().whileTrue(climber.setSpeed(InchesPerSecond.of(-3)));
   }
 
   private void setUpAuton() {
