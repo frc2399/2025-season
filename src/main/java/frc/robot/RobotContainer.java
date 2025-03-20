@@ -108,9 +108,9 @@ public class RobotContainer {
     driverController.povUp().whileTrue(climber.setSpeed(InchesPerSecond.of(4.45)));
     driverController.povUpLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(4.45)));
     driverController.povUpRight().whileTrue(climber.setSpeed(InchesPerSecond.of(4.45)));
-    driverController.povDown().whileTrue(climber.setSpeed(InchesPerSecond.of(-3)));
-    driverController.povDownLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(-3)));
-    driverController.povDownRight().whileTrue(climber.setSpeed(InchesPerSecond.of(-3)));
+    driverController.povDown().whileTrue(climber.setSpeed(InchesPerSecond.of(-3.5)));
+    driverController.povDownLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(-3.5)));
+    driverController.povDownRight().whileTrue(climber.setSpeed(InchesPerSecond.of(-3.5)));
   }
 
   private void setUpAuton() {
