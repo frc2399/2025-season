@@ -31,17 +31,13 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     private static final IdleMode BETA_CORAL_INTAKE_IDLE_MODE = IdleMode.kBrake;
 
     // 5:1 gearbox ratio
-    private static final double BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR = 1.0 / 5.0; // Rotations
-    private static final double BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR = 1.0 / 5.0; // RPM
+    private static final double BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR = 1.0 / 5.0; // Rotations of output wheels
+    private static final double BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR = BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR; // RPM
 
     private static final double BETA_CORAL_INTAKE_P = 0.001;
     private static final double BETA_CORAL_INTAKE_I = 0;
     private static final double BETA_CORAL_INTAKE_D = 0;
     private static final double BETA_CORAL_INTAKE_FF = 5.0 / MotorConstants.VORTEX_FREE_SPEED.in(RPM);
-    private static final double BETA_CORAL_INTAKE_PID_MIN_OUTPUT = -1.0;
-    private static final double BETA_CORAL_INTAKE_PID_MAX_OUTPUT = 1.0;
-
-    private static final boolean BETA_CORAL_INTAKE_POSITION_WRAPPING_ENABLED = true;
 
     private final RelativeEncoder betaCoralIntakeEncoder;
     private final SparkClosedLoopController betaCoralIntakeClosedLoop;
@@ -62,9 +58,7 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
         betaCoralIntakeConfig.encoder.positionConversionFactor(BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR)
                 .velocityConversionFactor(BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR);
         betaCoralIntakeConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pidf(BETA_CORAL_INTAKE_P, BETA_CORAL_INTAKE_I, BETA_CORAL_INTAKE_D, BETA_CORAL_INTAKE_FF)
-                .outputRange(BETA_CORAL_INTAKE_PID_MIN_OUTPUT, BETA_CORAL_INTAKE_PID_MAX_OUTPUT)
-                .positionWrappingEnabled(BETA_CORAL_INTAKE_POSITION_WRAPPING_ENABLED);
+                .pidf(BETA_CORAL_INTAKE_P, BETA_CORAL_INTAKE_I, BETA_CORAL_INTAKE_D, BETA_CORAL_INTAKE_FF);
 
         betaCoralIntakeConfig.signals
                 .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)

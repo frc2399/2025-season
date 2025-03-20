@@ -1,9 +1,6 @@
 package frc.robot.subsystems.elevator;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.units.measure.Distance;
-import frc.robot.CommandFactory.GameMode;
 
 public interface ElevatorIO {
 

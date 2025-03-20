@@ -18,9 +18,9 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
-import edu.wpi.first.math.MathUtil;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
@@ -85,15 +85,11 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
     private static final double DRIVING_I = 0;
     private static final double DRIVING_D = 0;
     private static final double DRIVING_FF = 1 / DRIVE_WHEEL_FREE_SPEED.in(RotationsPerSecond);
-    private static final double DRIVING_MIN_OUTPUT = -1;
-    private static final double DRIVING_MAX_OUTPUT = 1;
 
     private static final double TURNING_P = 1.0;
     private static final double TURNING_I = 0;
     private static final double TURNING_D = 0.001;
     private static final double TURNING_FF = 0;
-    private static final double TURNING_MIN_OUTPUT = -1;
-    private static final double TURNING_MAX_OUTPUT = 1;
 
     private static final double VOLTAGE_COMPENSATION = 12;
 
@@ -113,8 +109,7 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
         sparkFlexConfigDriving.encoder.positionConversionFactor(DRIVING_ENCODER_POSITION_FACTOR.in(Meters))
                 .velocityConversionFactor(DRIVING_ENCODER_VELOCITY_FACTOR.in(Meters));
         sparkFlexConfigDriving.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pidf(DRIVING_P, DRIVING_I, DRIVING_D, DRIVING_FF)
-                .outputRange(DRIVING_MIN_OUTPUT, DRIVING_MAX_OUTPUT);
+                .pidf(DRIVING_P, DRIVING_I, DRIVING_D, DRIVING_FF);
 
         sparkMaxConfigTurning.inverted(TURNING_MOTOR_INVERTED).idleMode(TURNING_MOTOR_IDLE_MODE)
                 .smartCurrentLimit(
@@ -125,7 +120,6 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
         sparkMaxConfigTurning.absoluteEncoder.inverted(TURNING_ENCODER_INVERTED);
         sparkMaxConfigTurning.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                 .pidf(TURNING_P, TURNING_I, TURNING_D, TURNING_FF)
-                .outputRange(TURNING_MIN_OUTPUT, TURNING_MAX_OUTPUT)
                 .positionWrappingEnabled(TURNING_ENCODER_POSITION_WRAPPING)
                 .positionWrappingInputRange(
                         TURNING_ENCODER_POSITION_PID_MIN_INPUT,
