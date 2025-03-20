@@ -84,7 +84,7 @@ public final class Constants {
     public static final AngularVelocity BETA_CORAL_L1_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.0075); // slower
                                                                                                                        // speed
                                                                                                                        // :-0.005
-    public static final AngularVelocity BETA_CORAL_PASSIVE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.005);
+    public static final AngularVelocity BETA_CORAL_PASSIVE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.008);
   }
 
   public static class SetpointConstants {
