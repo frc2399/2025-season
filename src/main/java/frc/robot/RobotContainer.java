@@ -128,6 +128,7 @@ public class RobotContainer {
         coralIntake.setOuttakeSpeed(() -> commandFactory.getSetpoint()).withDeadline(Commands.waitSeconds(0.5)));
     NamedCommands.registerCommand("turtle", commandFactory.turtleBasedOnMode());
     NamedCommands.registerCommand("coral intake default", coralIntake.defaultBehavior());
+    NamedCommands.registerCommand("intake", coralIntake.intakeToStall());
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Autos/Selector", autoChooser);
