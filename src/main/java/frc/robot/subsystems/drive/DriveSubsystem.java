@@ -227,7 +227,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 // This will get the simulated sensor readings that we set
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
-                // System.out.println("refresh true " + gyro.getYaw(true).in(Radians));
                 poseEstimator.updateWithTime(Timer.getFPGATimestamp(),
                                 Rotation2d.fromRadians(gyro.getYaw(true).in(Radians)),
                                 new SwerveModulePosition[] {
