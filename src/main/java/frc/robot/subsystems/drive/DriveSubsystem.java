@@ -10,6 +10,9 @@ import static edu.wpi.first.units.Units.Radians;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -17,6 +20,7 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.hal.SimBoolean;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -34,6 +38,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
@@ -41,11 +46,14 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CommandFactory.RobotPosition;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SpeedConstants;
@@ -54,6 +62,9 @@ import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.vision.VisionPoseEstimator.DriveBase;
 
 public class DriveSubsystem extends SubsystemBase implements DriveBase {
+        // for drivetopose
+        private AtomicBoolean atGoal = new AtomicBoolean(true);
+        private BooleanSupplier isBlueAlliance;
 
         private DriveSubsystemStates states = new DriveSubsystemStates();
 
@@ -73,6 +84,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         // Odometry
         private SwerveDrivePoseEstimator poseEstimator;
+        private Pose2d robotPose;
 
         // swerve modules
         private SwerveModule frontLeft;
@@ -211,6 +223,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         @Override
         public void periodic() {
+                SmartDashboard.putBoolean("/drive/atGoal", atGoal.get());
                 // This will get the simulated sensor readings that we set
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
@@ -223,23 +236,23 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                                 rearRight.getPosition()
                                 });
 
-                Pose2d pose = getPose();
-                field2d.setRobotPose(pose);
+                robotPose = getPose();
+                field2d.setRobotPose(robotPose);
                 logAndUpdateDriveSubsystemStates();
 
-                frontLeftField2dModule.setPose(pose.transformBy(new Transform2d(
+                frontLeftField2dModule.setPose(robotPose.transformBy(new Transform2d(
                                 FRONT_LEFT_OFFSET,
                                 new Rotation2d(frontLeft.getTurnEncoderPosition()))));
 
-                rearLeftField2dModule.setPose(pose.transformBy(new Transform2d(
+                rearLeftField2dModule.setPose(robotPose.transformBy(new Transform2d(
                                 REAR_LEFT_OFFSET,
                                 new Rotation2d(rearLeft.getTurnEncoderPosition()))));
 
-                frontRightField2dModule.setPose(pose.transformBy(new Transform2d(
+                frontRightField2dModule.setPose(robotPose.transformBy(new Transform2d(
                                 FRONT_RIGHT_OFFSET,
                                 new Rotation2d(frontRight.getTurnEncoderPosition()))));
 
-                rearRightField2dModule.setPose(pose.transformBy(new Transform2d(
+                rearRightField2dModule.setPose(robotPose.transformBy(new Transform2d(
                                 REAR_RIGHT_OFFSET,
                                 new Rotation2d(rearRight.getTurnEncoderPosition()))));
 
@@ -291,6 +304,12 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 pose);
         }
 
+        // basically, when we reset gyro, m_gyroOffset in SwerveDrivePoseEstimator does
+        // NOT reset so the pose does not reset properly :(
+        public void resetOdometryAfterGyro() {
+                poseEstimator.resetRotation(Rotation2d.fromRadians(gyro.getYaw(false).in(Radians)));
+        }
+
         /**
          * Method to drive the robot using joystick info.
          *
@@ -303,9 +322,11 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         public Command driveCommand(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotRate,
                         Boolean fieldRelative, BooleanSupplier isElevatorHigh) {
                 return this.run(() -> {
+                        Boolean useFieldRelative = true;
                         double driveSpeedFactor = DriveControlConstants.DRIVE_FACTOR;
                         if (isElevatorHigh.getAsBoolean()) {
                                 driveSpeedFactor = DriveControlConstants.SLOW_DRIVE_FACTOR;
+                                useFieldRelative = false;
                         }
                         double currentAngle = gyro.getYaw(false).in(Radians);
                         if (DriverStation.getAlliance().isPresent()
@@ -333,7 +354,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         double ySpeedDelivered = polarYSpeed * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS;
                         double rotRateDelivered = newRotRate * SpeedConstants.DRIVETRAIN_MAX_ANGULAR_SPEED_RPS;
 
-                        if (fieldRelative) {
+                        if (useFieldRelative) {
                                 relativeRobotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered,
                                                 ySpeedDelivered,
                                                 rotRateDelivered,
@@ -450,6 +471,65 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         return;
                 }
                 poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
+        }
+
+        // this method has a LOT of suppliers - so short explanation of why they're good
+        // basically, when a button binding is called in robotContainer, it makes an
+        // object
+        // represnting the command. this object does not change, and it does not
+        // actually look
+        // at the command each time - it just calls the one that was constructed at
+        // robotInit
+        // by using a supplier, the robot knows 'hey, this value might change, so i
+        // should
+        // check it every time i use this object' thus allowing it to change
+        public Command driveToPoseCommand(Supplier<RobotPosition> robotPosition) {
+                return this.run(() -> {
+                        // basically, bad things can happen if we try to update a normal boolean within
+                        // a lambda and access it outside that lambda, but atomic booleans prevent these
+                        // risks
+                        atGoal.set(false);
+
+                        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+                                isBlueAlliance = () -> true;
+                        } else {
+                                isBlueAlliance = () -> false;
+                        }
+
+                        Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(robotPosition.get(),
+                                        () -> robotPose,
+                                        isBlueAlliance);
+                        SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.get().getY());
+                        SmartDashboard.putNumber("Swerve/vision/goalPosex", goalPose.get().getX());
+                        SmartDashboard.putNumber("Swerve/vision/goalTheta", goalPose.get().getRotation().getDegrees());
+
+                        Supplier<Transform2d> velocities = DriveToPoseUtil.getDriveToPoseVelocities(
+                                        () -> robotPose, goalPose);
+                        ChassisSpeeds alignmentSpeeds = new ChassisSpeeds(
+                                        velocities.get().getX(),
+                                        velocities.get().getY(),
+                                        velocities.get().getRotation().getRadians());
+
+                        SmartDashboard.putNumber("Swerve/vision/xVel", alignmentSpeeds.vxMetersPerSecond);
+                        SmartDashboard.putNumber("Swerve/vision/yVel", alignmentSpeeds.vyMetersPerSecond);
+                        SmartDashboard.putNumber("Swerve/vision/thetaVel", alignmentSpeeds.omegaRadiansPerSecond);
+
+                        // tolerances were accounted for in getDriveToPoseVelocities
+                        atGoal.set((velocities.get().getX() == 0 && velocities.get().getY() == 0
+                                        && velocities.get().getRotation().getRadians() == 0));
+
+                        setRobotRelativeSpeeds(alignmentSpeeds);
+                }).until(() -> atGoal.get());
+        }
+
+        public Command disableDriveToPose() {
+                return this.runOnce(() -> {
+                        atGoal.set(true);
+                        frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
+                        frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
+                        rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
+                        rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
+                });
         }
 
         private void logAndUpdateDriveSubsystemStates() {

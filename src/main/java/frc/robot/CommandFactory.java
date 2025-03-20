@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -14,10 +15,12 @@ import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.gyro.Gyro;
 
 public class CommandFactory {
 
   private final DriveSubsystem drive;
+  private final Gyro gyro;
   private final ElevatorSubsystem elevator;
   private final CoralWristSubsystem coralWrist;
   private final AlgaeWristSubsystem algaeWrist;
@@ -32,7 +35,7 @@ public class CommandFactory {
   private final NetworkTableEntry gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
   private final NetworkTableEntry leftRightEntry = scoringStateTables.getEntry("Position");
 
-  public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist,
+  public CommandFactory(DriveSubsystem drive, Gyro gyro, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist,
       AlgaeWristSubsystem algaeWrist, AlgaeIntakeSubsystem algaeIntake, CoralIntakeSubsystem coralIntake) {
     this.drive = drive;
     this.elevator = elevator;
@@ -40,8 +43,10 @@ public class CommandFactory {
     this.algaeWrist = algaeWrist;
     this.algaeIntake = algaeIntake;
     this.coralIntake = coralIntake;
+    this.gyro = gyro;
     setGameMode("coral");
     setScoringLevel("Level 1");
+    setRobotAlignmentPosition("left");
     // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
     // newEntry = scoringStateTables.getEntry("Indicator");
   }
@@ -201,5 +206,9 @@ public class CommandFactory {
 
   public void setRobotAlignmentPosition(String alignmentValue) {
     leftRightEntry.setString(alignmentValue);
+  }
+
+  public Command resetHeading(Angle yaw) {
+    return Commands.parallel(gyro.setYaw(yaw), Commands.runOnce(() -> drive.resetOdometryAfterGyro()));
   }
 }

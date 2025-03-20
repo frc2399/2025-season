@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.InchesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 
@@ -26,9 +27,12 @@ import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
+import frc.robot.subsystems.climber.ClimberSubsystem;
+import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.drive.ReefscapeVisionUtil;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.vision.VisionPoseEstimator;
@@ -41,6 +45,7 @@ public class RobotContainer {
   private DriveSubsystem drive = subsystemFactory.buildDriveSubsystem(gyro);
   private static SendableChooser<Command> autoChooser;
   private ComplexWidget autonChooserWidget;
+  private ClimberSubsystem climber = subsystemFactory.buildClimber();
   private final CoralIntakeSubsystem coralIntake = subsystemFactory.buildCoralIntake();
   public final CoralWristSubsystem coralWrist = subsystemFactory.buildCoralWrist();
   private final AlgaeIntakeSubsystem algaeIntake = subsystemFactory.buildAlgaeIntake();
@@ -48,7 +53,7 @@ public class RobotContainer {
   // this is public because we need to run the visionPoseEstimator periodic from
   // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive, subsystemFactory.getRobotType());
-  public CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist, algaeWrist, algaeIntake,
+  public CommandFactory commandFactory = new CommandFactory(drive, gyro, elevator, coralWrist, algaeWrist, algaeIntake,
       coralIntake);
 
   private static final CommandXboxController driverController = new CommandXboxController(
@@ -65,6 +70,7 @@ public class RobotContainer {
   }
 
   public void disableSubsystems() {
+    drive.disableDriveToPose();
     elevator.profiledPIDEnabled = false;
   }
 
@@ -83,7 +89,7 @@ public class RobotContainer {
         () -> elevator.isElevatorHeightAboveSpeedLimitingThreshold()));
     coralIntake.setDefaultCommand(coralIntake.defaultBehavior());
     algaeIntake.setDefaultCommand(algaeIntake.defaultBehavior());
-    // elevator.setDefaultCommand(elevator.setSpeedManualControl(0));
+    climber.setDefaultCommand(climber.setSpeed(InchesPerSecond.of(0)));
   }
 
   private void configureButtonBindingsDriver() {
@@ -91,10 +97,20 @@ public class RobotContainer {
     driverController.leftTrigger().whileTrue(commandFactory.outtakeBasedOnMode(() -> commandFactory.gameMode));
 
     driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
+    driverController.leftBumper().onTrue(drive.driveToPoseCommand(() -> commandFactory.getRobotPosition())).onFalse(drive.disableDriveToPose());
 
-    driverController.y().onTrue(gyro.setYaw(Degrees.of(0.0)));
+    driverController.y().onTrue(commandFactory.resetHeading(Degrees.of(0)));
     driverController.x().whileTrue(drive.setX());
     driverController.b().onTrue(commandFactory.turtleBasedOnMode());
+
+    // this yucky code bc we are out of buttons and have to use the POV pad (we want
+    // to make sure that anything up does up and same for down)
+    driverController.povUp().whileTrue(climber.setSpeed(InchesPerSecond.of(3)));
+    driverController.povUpLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(3)));
+    driverController.povUpRight().whileTrue(climber.setSpeed(InchesPerSecond.of(3)));
+    driverController.povDown().whileTrue(climber.setSpeed(InchesPerSecond.of(-3)));
+    driverController.povDownLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(-3)));
+    driverController.povDownRight().whileTrue(climber.setSpeed(InchesPerSecond.of(-3)));
   }
 
   private void setUpAuton() {
