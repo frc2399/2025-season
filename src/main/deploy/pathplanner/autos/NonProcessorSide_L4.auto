@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "PY-E4pt1"
+            "pathName": "NonProcessorSide-L4pt1"
           }
         },
         {
@@ -31,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "PY-E4pt2"
+            "pathName": "NonProcessorSide-L4pt2"
           }
         },
         {
@@ -49,7 +49,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "PY-E4pt3"
+            "pathName": "NonProcessorSide-L4pt3"
           }
         },
         {
