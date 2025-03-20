@@ -32,6 +32,7 @@ import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.drive.ReefscapeVisionUtil;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.vision.VisionPoseEstimator;
@@ -52,7 +53,7 @@ public class RobotContainer {
   // this is public because we need to run the visionPoseEstimator periodic from
   // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive, subsystemFactory.getRobotType());
-  public CommandFactory commandFactory = new CommandFactory(drive, elevator, coralWrist, algaeWrist, algaeIntake,
+  public CommandFactory commandFactory = new CommandFactory(drive, gyro, elevator, coralWrist, algaeWrist, algaeIntake,
       coralIntake);
 
   private static final CommandXboxController driverController = new CommandXboxController(
@@ -69,6 +70,7 @@ public class RobotContainer {
   }
 
   public void disableSubsystems() {
+    drive.disableDriveToPose();
     elevator.profiledPIDEnabled = false;
   }
 
@@ -95,8 +97,9 @@ public class RobotContainer {
     driverController.leftTrigger().whileTrue(commandFactory.outtakeBasedOnMode(() -> commandFactory.gameMode));
 
     driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
+    driverController.leftBumper().onTrue(drive.driveToPoseCommand(() -> commandFactory.getRobotPosition())).onFalse(drive.disableDriveToPose());
 
-    driverController.y().onTrue(gyro.setYaw(Degrees.of(0.0)));
+    driverController.y().onTrue(commandFactory.resetHeading(Degrees.of(0)));
     driverController.x().whileTrue(drive.setX());
     driverController.b().onTrue(commandFactory.turtleBasedOnMode());
 
