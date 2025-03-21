@@ -33,7 +33,7 @@ public class ClimberHardware implements ClimberIO {
                 private static final double I_VALUE = 0.0;
                 private static final double D_VALUE = 0.0;
 
-                private static final Distance UPPER_LIMIT = Inches.of(30.25);
+                private static final Distance UPPER_LIMIT = Inches.of(31.216);
                 // INIT TO HERE
                 private static final Distance LOWER_LIMIT = Inches.of(16);
                 private static final Distance ZERO_POSITION = Inches.of(14.665);
@@ -85,7 +85,7 @@ public class ClimberHardware implements ClimberIO {
 
                 leftClimberConfig.softLimit
                                 .forwardSoftLimit(ClimberConstants.UPPER_LIMIT.in(Inches))
-                                .forwardSoftLimitEnabled(false)
+                                .forwardSoftLimitEnabled(true)
                                 .reverseSoftLimit(ClimberConstants.LOWER_LIMIT.in(Inches))
                                 .reverseSoftLimitEnabled(true);
 
