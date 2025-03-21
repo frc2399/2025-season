@@ -125,7 +125,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("call game mode coral", Commands.runOnce(() -> commandFactory.setGameMode("coral")));
     NamedCommands.registerCommand("Move elevator and coral wrist", commandFactory.moveElevatorAndCoralWrist());
     NamedCommands.registerCommand("Outtake coral",
-        coralIntake.setOuttakeSpeed(() -> commandFactory.getSetpoint()).withDeadline(Commands.waitSeconds(0.5)));
+        coralIntake.setOuttakeSpeed(() -> commandFactory.getSetpoint()).withDeadline(Commands.waitSeconds(0.4)));
     NamedCommands.registerCommand("turtle", commandFactory.turtleBasedOnMode());
     NamedCommands.registerCommand("coral intake default", coralIntake.defaultBehavior());
     NamedCommands.registerCommand("intake", coralIntake.intakeToStall());
