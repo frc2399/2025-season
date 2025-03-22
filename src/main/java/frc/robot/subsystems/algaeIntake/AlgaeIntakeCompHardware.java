@@ -107,8 +107,9 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     @Override
         public void passiveIntake() {
-            if (!isStalling()) {
-                //compAlgaeIntakeClosedLoop.setReference(SpeedConstants.COMP_ALGAE_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
-            }
+            // if (!isStalling()) {
+            //     //compAlgaeIntakeClosedLoop.setReference(SpeedConstants.COMP_ALGAE_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
+            // }
+            compAlgaeIntakeClosedLoop.setReference(SpeedConstants.COMP_ALGAE_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
         }
 }

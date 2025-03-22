@@ -37,9 +37,16 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     }
 
     public Command defaultBehavior() {
-        return Commands.either(this.run(() -> io.passiveIntake()),
-                this.run(() -> io.setRollerSpeed(RPM.of(0))).withName("Default Algae Intake"),
-                () -> this.hasAlgae);
+        // return Commands.either(this.run(() -> io.passiveIntake()),
+        //         this.run(() -> io.setRollerSpeed(RPM.of(0))).withName("Default Algae Intake"),
+        //         () -> this.hasAlgae);
+        return this.run(() -> {
+            if (hasAlgae) {
+                io.passiveIntake();
+            } else {
+                io.setRollerSpeed(RPM.of(0));
+            }
+        });
     }
 
     public Command intakeToStall() {
