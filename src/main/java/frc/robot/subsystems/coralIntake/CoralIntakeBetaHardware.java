@@ -34,7 +34,7 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     private static final double BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR = 1.0 / 5.0; // Rotations
     private static final double BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR = 1.0 / 5.0; // RPM
 
-    private static final double BETA_CORAL_INTAKE_P = 0.001;
+    private static final double BETA_CORAL_INTAKE_P = 0;
     private static final double BETA_CORAL_INTAKE_I = 0;
     private static final double BETA_CORAL_INTAKE_D = 0;
     private static final double BETA_CORAL_INTAKE_FF = 5.0 / MotorConstants.VORTEX_FREE_SPEED.in(RPM);
@@ -125,7 +125,6 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     @Override
     public void passiveIntakeIgnoringStall() {
-       
             betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_PASSIVE_SPEED.in(RPM),
                     ControlType.kVelocity);
     }

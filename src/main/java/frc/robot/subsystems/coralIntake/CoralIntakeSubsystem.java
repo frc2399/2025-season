@@ -33,8 +33,13 @@ public class CoralIntakeSubsystem extends SubsystemBase {
     }
 
     public Command defaultBehavior() {
-        return Commands.either(this.run(() -> io.passiveIntake()), this.run(() -> io.setZero()), () -> this.hasCoral)
-                .withName("coral intake default");
+        return this.run(() -> {
+            if (hasCoral) {
+                io.passiveIntake();
+            } else {
+                io.setZero();
+            }
+        });
     }
 
     public Command intakeToStall() {

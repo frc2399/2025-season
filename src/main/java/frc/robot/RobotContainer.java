@@ -105,12 +105,12 @@ public class RobotContainer {
 
     // this yucky code bc we are out of buttons and have to use the POV pad (we want
     // to make sure that anything up does up and same for down)
-    driverController.povUp().whileTrue(climber.setSpeed(InchesPerSecond.of(3)));
-    driverController.povUpLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(3)));
-    driverController.povUpRight().whileTrue(climber.setSpeed(InchesPerSecond.of(3)));
-    driverController.povDown().whileTrue(climber.setSpeed(InchesPerSecond.of(-3)));
-    driverController.povDownLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(-3)));
-    driverController.povDownRight().whileTrue(climber.setSpeed(InchesPerSecond.of(-3)));
+    driverController.povUp().whileTrue(climber.setSpeed(InchesPerSecond.of(5)));
+    driverController.povUpLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(5)));
+    driverController.povUpRight().whileTrue(climber.setSpeed(InchesPerSecond.of(5)));
+    driverController.povDown().whileTrue(climber.setSpeed(InchesPerSecond.of(-3.5)));
+    driverController.povDownLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(-3.5)));
+    driverController.povDownRight().whileTrue(climber.setSpeed(InchesPerSecond.of(-3.5)));
   }
 
   private void setUpAuton() {
@@ -125,9 +125,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("call game mode coral", Commands.runOnce(() -> commandFactory.setGameMode("coral")));
     NamedCommands.registerCommand("Move elevator and coral wrist", commandFactory.moveElevatorAndCoralWrist());
     NamedCommands.registerCommand("Outtake coral",
-        coralIntake.setOuttakeSpeed(() -> commandFactory.getSetpoint()).withDeadline(Commands.waitSeconds(0.5)));
+        coralIntake.setOuttakeSpeed(() -> commandFactory.getSetpoint()).withDeadline(Commands.waitSeconds(0.4)));
     NamedCommands.registerCommand("turtle", commandFactory.turtleBasedOnMode());
     NamedCommands.registerCommand("coral intake default", coralIntake.defaultBehavior());
+    NamedCommands.registerCommand("intake", coralIntake.intakeToStall());
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Autos/Selector", autoChooser);

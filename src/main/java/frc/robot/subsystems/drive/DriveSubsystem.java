@@ -326,7 +326,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         double driveSpeedFactor = DriveControlConstants.DRIVE_FACTOR;
                         if (isElevatorHigh.getAsBoolean()) {
                                 driveSpeedFactor = DriveControlConstants.SLOW_DRIVE_FACTOR;
-                                useFieldRelative = false;
+                                // useFieldRelative = false;
                         }
                         double currentAngle = gyro.getYaw(false).in(Radians);
                         if (DriverStation.getAlliance().isPresent()
@@ -358,7 +358,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 relativeRobotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered,
                                                 ySpeedDelivered,
                                                 rotRateDelivered,
-                                                Rotation2d.fromRadians(gyro.getYaw(false).in(Radians)));
+                                                Rotation2d.fromRadians(currentAngle));
                         } else {
                                 relativeRobotSpeeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered,
                                                 rotRateDelivered);

@@ -76,15 +76,15 @@ public final class Constants {
 
     public static final AngularVelocity COMP_ALGAE_INTAKE_SPEED = MotorConstants.NEO_FREE_SPEED.times(0.2);
     public static final AngularVelocity COMP_ALGAE_OUTTAKE_SPEED = MotorConstants.NEO_FREE_SPEED.times(-0.07);
-    public static final AngularVelocity COMP_ALGAE_PASSIVE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.0005);
+    public static final AngularVelocity COMP_ALGAE_PASSIVE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.003);
 
-    public static final AngularVelocity BETA_CORAL_INTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.25);
+    public static final AngularVelocity BETA_CORAL_INTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.18);
     public static final AngularVelocity BETA_CORAL_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.15);
     public static final AngularVelocity BETA_CORAL_L4_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.025);
     public static final AngularVelocity BETA_CORAL_L1_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.0075); // slower
                                                                                                                        // speed
                                                                                                                        // :-0.005
-    public static final AngularVelocity BETA_CORAL_PASSIVE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.005);
+    public static final AngularVelocity BETA_CORAL_PASSIVE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.008);
   }
 
   public static class SetpointConstants {
@@ -94,7 +94,7 @@ public final class Constants {
     public static final Angle ALGAE_WRIST_TURTLE_ANGLE = Degrees.of(-80);
     public static final Angle ALGAE_WRIST_ZERO_ANGLE = Degrees.of(0);
 
-    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(24);
+    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(30);
     public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
     public static final Angle CORAL_ZERO_ANGLE = Degrees.of(0);
     public static final Angle CORAL_L1_OUTTAKE_ANGLE = Degrees.of(-15);

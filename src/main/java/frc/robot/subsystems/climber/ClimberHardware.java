@@ -33,9 +33,10 @@ public class ClimberHardware implements ClimberIO {
                 private static final double I_VALUE = 0.0;
                 private static final double D_VALUE = 0.0;
 
-                private static final Distance UPPER_LIMIT = Inches.of(29.75);
+                private static final Distance UPPER_LIMIT = Inches.of(32.216);
                 // INIT TO HERE
-                private static final Distance LOWER_LIMIT = Inches.of(14.165);
+                private static final Distance LOWER_LIMIT = Inches.of(16);
+                private static final Distance ZERO_POSITION = Inches.of(14.665);
 
                 // TODO: check!
                 private static final double CLIMBER_POSITION_CONVERSION_FACTOR = 1.5 * 1.0 / 100.0 * Math.PI;
@@ -94,8 +95,8 @@ public class ClimberHardware implements ClimberIO {
                                 PersistMode.kPersistParameters);
                 rightClimber.configure(rightClimberConfig, ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);
-
-                leftClimberEncoder.setPosition(ClimberConstants.LOWER_LIMIT.in(Inches));
+                // Will made me do this
+                leftClimberEncoder.setPosition(ClimberConstants.ZERO_POSITION.in(Inches)); // inches
         }
 
         public void setSpeed(LinearVelocity speed) {
