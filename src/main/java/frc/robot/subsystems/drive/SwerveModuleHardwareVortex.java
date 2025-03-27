@@ -110,7 +110,6 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
         drivingSparkFlex = new SparkFlex(drivingCanId, MotorType.kBrushless);
         turningSparkMax = new SparkMax(turningCanId, MotorType.kBrushless);
 
-        SmartDashboard.putNumber("drive/ff", DRIVING_FF);
         sparkFlexConfigDriving.inverted(DRIVING_MOTOR_INVERTED).idleMode(DRIVING_MOTOR_IDLE_MODE)
                 .smartCurrentLimit(
                         (int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps))
