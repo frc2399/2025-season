@@ -29,11 +29,11 @@ import frc.robot.SubsystemFactory.RobotType;
 
 public final class VisionPoseEstimator {
 
-    private static final Angle CAMERA_PITCH = Degrees.of(28); // 0 = horizontal, positive = leaning back
-    private static final Distance X_ROBOT_TO_CAMERA_OFFSET = Inches.of(11.175); // positive = in front of
+    private static final Angle CAMERA_PITCH = Degrees.of(25); // 0 = horizontal, positive = leaning back
+    private static final Distance X_ROBOT_TO_CAMERA_OFFSET = Inches.of(11.29); // positive = in front of
                                                                                 // robot center
     private static Distance Y_ROBOT_TO_CAMERA_OFFSET; // positive = left of robot centerline
-    private static final Distance Z_ROBOT_TO_CAMERA_OFFSET = Inches.of(6.405); // ground plane = 0
+    private static final Distance Z_ROBOT_TO_CAMERA_OFFSET = Inches.of(6.91); // ground plane = 0
     private static final Angle CAMERA_YAW = Degrees.of(0);
 
     /**
