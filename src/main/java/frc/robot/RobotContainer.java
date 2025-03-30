@@ -97,7 +97,7 @@ public class RobotContainer {
     driverController.leftTrigger().whileTrue(commandFactory.outtakeBasedOnMode(() -> commandFactory.gameMode));
 
     driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
-    driverController.leftBumper().onTrue(drive.driveToPoseCommand(() -> commandFactory.getRobotPosition())).onFalse(drive.disableDriveToPose());
+    driverController.leftBumper().onTrue(commandFactory.driveToPoseBasedOnElevator());
 
     driverController.y().onTrue(commandFactory.resetHeading(Degrees.of(0)));
     driverController.x().whileTrue(drive.setX());

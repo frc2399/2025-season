@@ -211,4 +211,11 @@ public class CommandFactory {
   public Command resetHeading(Angle yaw) {
     return Commands.parallel(gyro.setYaw(yaw), Commands.runOnce(() -> drive.resetOdometryAfterGyro()));
   }
+
+  public Command driveToPoseBasedOnElevator() {
+    return Commands.either(
+      drive.driveToPoseCommand(() -> getRobotPosition(), () -> false), 
+      drive.driveToPoseCommand(() -> getRobotPosition(), () -> true), 
+      () -> (elevator.getCurrentPosition() > 0.10)); // should do second part of drive to pose if we're more than 10 cm above 0
+  }
 }

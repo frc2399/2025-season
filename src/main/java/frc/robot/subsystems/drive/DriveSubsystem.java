@@ -483,7 +483,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         // by using a supplier, the robot knows 'hey, this value might change, so i
         // should
         // check it every time i use this object' thus allowing it to change
-        public Command driveToPoseCommand(Supplier<RobotPosition> robotPosition) {
+        public Command driveToPoseCommand(Supplier<RobotPosition> robotPosition, BooleanSupplier isPrescore) {
                 return this.run(() -> {
                         // basically, bad things can happen if we try to update a normal boolean within
                         // a lambda and access it outside that lambda, but atomic booleans prevent these
@@ -498,7 +498,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
                         Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(robotPosition.get(),
                                         () -> robotPose,
-                                        isBlueAlliance);
+                                        isBlueAlliance, isPrescore);
                         SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.get().getY());
                         SmartDashboard.putNumber("Swerve/vision/goalPosex", goalPose.get().getX());
                         SmartDashboard.putNumber("Swerve/vision/goalTheta", goalPose.get().getRotation().getDegrees());
