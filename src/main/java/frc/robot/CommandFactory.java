@@ -62,7 +62,8 @@ public class CommandFactory {
     L_THREE,
     L_FOUR,
     TURTLE,
-    ZERO
+    ZERO,
+    AUTON
   }
 
   public enum GameMode {
@@ -98,6 +99,20 @@ public class CommandFactory {
     }
     SmartDashboard.putString("networktablesData/gameMode", gameMode.toString());
     return gameMode;
+  }
+
+  // sadly, the belt on the algae interferes with our camera visibility :( so this setpoint
+  // allows the elevator to be slightly up for auton. it will only be called
+  // directly by autonomous methods and SHOULD NOT BE USED in teleop
+  public Command autonDefaultPosition() {
+    return Commands.sequence(
+        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+        Commands.waitUntil(() -> coralWrist.atGoal()),
+        Commands.parallel(
+            algaeWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+            elevator.goToGoalSetpointCmd(() -> Setpoint.AUTON, () -> GameMode.CORAL)),
+        Commands.waitUntil(() -> elevator.atGoal()),
+        coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
   }
 
   public Command turtleBasedOnMode() {

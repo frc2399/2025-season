@@ -133,6 +133,8 @@ public class RobotContainer {
     // until isStalling allows this command to finish first if we intake earlier,
     // thus ending the race group earlier (despite the name, this is only for coral)
     NamedCommands.registerCommand("intake", coralIntake.intakeToStall().until(() -> coralIntake.isStalling()));
+    // explanation for this command in command factory
+    NamedCommands.registerCommand("auton default subsystem position", commandFactory.autonDefaultPosition());
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Autos/Selector", autoChooser);
