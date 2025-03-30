@@ -58,6 +58,11 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         hasCoral = coralState;
     }
 
+    //this is for use in auton
+    public boolean isStalling() {
+        return io.isStalling();
+    }
+
     @Override
     public void periodic() {
         hasCoral = coralEntry.getBoolean(hasCoral);
