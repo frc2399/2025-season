@@ -106,8 +106,6 @@ public class CommandFactory {
   // directly by autonomous methods and SHOULD NOT BE USED in teleop
   public Command autonDefaultPosition() {
     return Commands.sequence(
-        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
-        Commands.waitUntil(() -> coralWrist.atGoal()),
         Commands.parallel(
             algaeWrist.goToSetpointCommand(() -> Setpoint.ZERO),
             elevator.goToGoalSetpointCmd(() -> Setpoint.AUTON, () -> GameMode.CORAL)),

@@ -132,7 +132,8 @@ public class RobotContainer {
     // typically, we put this in a race group with our max intake time. however, the
     // until isStalling allows this command to finish first if we intake earlier,
     // thus ending the race group earlier (despite the name, this is only for coral)
-    NamedCommands.registerCommand("intake", coralIntake.intakeToStall().until(() -> coralIntake.isStalling()));
+    NamedCommands.registerCommand("intake", coralIntake.intakeToStall().withDeadline(Commands.waitSeconds(1)));
+    NamedCommands.registerCommand("set intake speed to passive", coralIntake.passiveIntakeAuton());
     // explanation for this command in command factory
     NamedCommands.registerCommand("auton default subsystem position", commandFactory.autonDefaultPosition());
 

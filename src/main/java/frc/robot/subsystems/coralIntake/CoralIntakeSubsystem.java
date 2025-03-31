@@ -42,6 +42,10 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         });
     }
 
+    public Command passiveIntakeAuton() {
+        return this.runOnce(() -> io.passiveIntakeIgnoringStall());
+    }
+
     public Command intakeToStall() {
         return this.run(() -> {
             if (io.isStalling() || hasCoral) {
@@ -56,11 +60,6 @@ public class CoralIntakeSubsystem extends SubsystemBase {
     public void setCoralEntry(Boolean coralState) {
         coralEntry.setBoolean(coralState);
         hasCoral = coralState;
-    }
-
-    //this is for use in auton
-    public boolean isStalling() {
-        return io.isStalling();
     }
 
     @Override
