@@ -14,6 +14,5 @@ public final class CodeVersionInfo {
 	public static final String BUILD_DATE = "2025-03-30 15:42";
 	public static final long BUILD_UNIX_TIME = 1743367377815L;
 	public static final int DIRTY = 1;
-
 	private CodeVersionInfo(){}
 }
