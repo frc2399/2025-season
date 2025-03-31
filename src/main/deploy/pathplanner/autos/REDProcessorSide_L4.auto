@@ -121,9 +121,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "REDProcessorSide-L4pt3.2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "REDProcessorSide-L4pt3.2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "auton default subsystem position"
+                }
+              }
+            ]
           }
         },
         {
