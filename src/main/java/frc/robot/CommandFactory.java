@@ -34,6 +34,7 @@ public class CommandFactory {
   private final NetworkTableEntry levelEntry = scoringStateTables.getEntry("scoringLevel");
   private final NetworkTableEntry gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
   private final NetworkTableEntry leftRightEntry = scoringStateTables.getEntry("Position");
+  private final NetworkTableEntry endgameEntry = scoringStateTables.getEntry("endgame");
 
   public CommandFactory(DriveSubsystem drive, Gyro gyro, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist,
       AlgaeWristSubsystem algaeWrist, AlgaeIntakeSubsystem algaeIntake, CoralIntakeSubsystem coralIntake) {
@@ -47,6 +48,7 @@ public class CommandFactory {
     setGameMode("coral");
     setScoringLevel("Level 1");
     setRobotAlignmentPosition("left");
+    setEndgame(false);
     // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
     // newEntry = scoringStateTables.getEntry("Indicator");
   }
@@ -73,6 +75,7 @@ public class CommandFactory {
   public RobotPosition robotPosition;
   public GameMode gameMode;
   public Setpoint setpoint;
+  public Boolean endgame;
 
   public Setpoint getScoringLevel() {
     Setpoint scoringLevel;
@@ -196,6 +199,16 @@ public class CommandFactory {
     return robotPosition;
   }
 
+  public Boolean getEndgameMode() {
+    if (endgameEntry.getBoolean(false)) {
+      endgame = true;
+    } else {
+      endgame = false;
+    }
+    SmartDashboard.putBoolean("networktablesData/endgameMode", endgame);
+    return endgame;
+  }
+
   public void setGameMode(String level) {
     gameModeEntry.setString(level);
   }
@@ -206,6 +219,10 @@ public class CommandFactory {
 
   public void setRobotAlignmentPosition(String alignmentValue) {
     leftRightEntry.setString(alignmentValue);
+  }
+
+  public void setEndgame(Boolean endgame) {
+    endgameEntry.setBoolean(endgame);
   }
 
   public Command resetHeading(Angle yaw) {
