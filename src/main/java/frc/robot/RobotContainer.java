@@ -54,7 +54,7 @@ public class RobotContainer {
   // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive, subsystemFactory.getRobotType());
   public CommandFactory commandFactory = new CommandFactory(drive, gyro, elevator, coralWrist, algaeWrist, algaeIntake,
-      coralIntake);
+      coralIntake, climber);
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
@@ -93,8 +93,8 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsDriver() {
-    driverController.rightTrigger().whileTrue(commandFactory.intakeBasedOnMode(() -> commandFactory.gameMode));
-    driverController.leftTrigger().whileTrue(commandFactory.outtakeBasedOnMode(() -> commandFactory.gameMode));
+    driverController.rightTrigger().whileTrue(commandFactory.intakeOrClimbOutBasedOnMode());
+    driverController.leftTrigger().whileTrue(commandFactory.outtakeOrClimbInBasedOnMode());
 
     driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
     driverController.leftBumper().onTrue(drive.driveToPoseCommand(() -> commandFactory.getRobotPosition())).onFalse(drive.disableDriveToPose());
