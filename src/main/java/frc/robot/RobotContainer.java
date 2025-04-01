@@ -54,7 +54,7 @@ public class RobotContainer {
   // Robot
   public VisionPoseEstimator visionPoseEstimator = new VisionPoseEstimator(drive, subsystemFactory.getRobotType());
   public CommandFactory commandFactory = new CommandFactory(drive, gyro, elevator, coralWrist, algaeWrist, algaeIntake,
-      coralIntake);
+      coralIntake, climber);
 
   private static final CommandXboxController driverController = new CommandXboxController(
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
@@ -93,8 +93,8 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsDriver() {
-    driverController.rightTrigger().whileTrue(commandFactory.intakeBasedOnMode(() -> commandFactory.gameMode));
-    driverController.leftTrigger().whileTrue(commandFactory.outtakeBasedOnMode(() -> commandFactory.gameMode));
+    driverController.rightTrigger().whileTrue(commandFactory.intakeOrClimbOutBasedOnMode());
+    driverController.leftTrigger().whileTrue(commandFactory.outtakeOrClimbInBasedOnMode());
 
     driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
     driverController.leftBumper().onTrue(drive.driveToPoseCommand(() -> commandFactory.getRobotPosition())).onFalse(drive.disableDriveToPose());
@@ -103,14 +103,6 @@ public class RobotContainer {
     driverController.x().whileTrue(drive.setX());
     driverController.b().onTrue(commandFactory.turtleBasedOnMode());
 
-    // this yucky code bc we are out of buttons and have to use the POV pad (we want
-    // to make sure that anything up does up and same for down)
-    driverController.povUp().whileTrue(climber.setSpeed(InchesPerSecond.of(5)));
-    driverController.povUpLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(5)));
-    driverController.povUpRight().whileTrue(climber.setSpeed(InchesPerSecond.of(5)));
-    driverController.povDown().whileTrue(climber.setSpeed(InchesPerSecond.of(-3.5)));
-    driverController.povDownLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(-3.5)));
-    driverController.povDownRight().whileTrue(climber.setSpeed(InchesPerSecond.of(-3.5)));
   }
 
   private void setUpAuton() {
