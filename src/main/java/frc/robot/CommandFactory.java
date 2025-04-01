@@ -79,7 +79,6 @@ public class CommandFactory {
   public RobotPosition robotPosition;
   public GameMode gameMode;
   public Setpoint setpoint;
-  public Boolean endgame;
 
   public Setpoint getScoringLevel() {
     Setpoint scoringLevel;
@@ -177,22 +176,18 @@ public class CommandFactory {
   }
 
   public Command climbIn() {
-    return Commands.run(
-      () -> climber.setSpeed(InchesPerSecond.of(-3.5))
-    );
+    return climber.setSpeed(InchesPerSecond.of(-3.5));
   }
 
   public Command climbOut() {
-    return Commands.run(
-      () -> climber.setSpeed(InchesPerSecond.of(5))
-    );
+    return climber.setSpeed(InchesPerSecond.of(5));
   }
 
   public Command intakeOrClimbOutBasedOnMode() {
     return Commands.either(
       climbOut(),
       intakeBasedOnMode(),
-      () -> (getEndgameMode() == true)
+      () -> (getEndgameMode())
     );
   }
 
@@ -200,7 +195,7 @@ public class CommandFactory {
     return Commands.either(
       climbIn(),
       outtakeBasedOnMode(),
-      () -> (getEndgameMode() == false)
+      () -> (getEndgameMode())
     );
   }
 
@@ -231,12 +226,8 @@ public class CommandFactory {
     return robotPosition;
   }
 
-  public Boolean getEndgameMode() {
-    if (endgameEntry.getBoolean(false)) {
-      endgame = true;
-    } else {
-      endgame = false;
-    }
+  public boolean getEndgameMode() {
+    boolean endgame = endgameEntry.getBoolean(false);
     SmartDashboard.putBoolean("networktablesData/endgameMode", endgame);
     return endgame;
   }
