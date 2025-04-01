@@ -80,7 +80,7 @@
         {
           "type": "named",
           "data": {
-            "name": "turtle"
+            "name": "auton turtle"
           }
         },
         {
@@ -112,6 +112,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0
           }
         },
         {

@@ -113,6 +113,17 @@ public class CommandFactory {
         coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
   }
 
+  public Command autonTurtleMode() {
+    return Commands.sequence(
+        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+        Commands.waitUntil(() -> coralWrist.atGoal()),
+        Commands.parallel(
+            algaeWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+            elevator.goToGoalSetpointCmd(() -> Setpoint.AUTON, () -> GameMode.CORAL)),
+        Commands.waitUntil(() -> elevator.atGoal()),
+        coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
+  }
+
   public Command turtleBasedOnMode() {
     return Commands.either(
         algaeTurtleMode(),

@@ -136,6 +136,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("set intake speed to passive", coralIntake.passiveIntakeAuton());
     // explanation for this command in command factory
     NamedCommands.registerCommand("auton default subsystem position", commandFactory.autonDefaultPosition());
+    NamedCommands.registerCommand("auton turtle", commandFactory.autonTurtleMode());
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Autos/Selector", autoChooser);
