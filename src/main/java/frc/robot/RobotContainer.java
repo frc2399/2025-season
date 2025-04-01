@@ -103,6 +103,14 @@ public class RobotContainer {
     driverController.x().whileTrue(drive.setX());
     driverController.b().onTrue(commandFactory.turtleBasedOnMode());
 
+    // this yucky code bc we are out of buttons and have to use the POV pad (we want
+    // to make sure that anything up does up and same for down)
+    driverController.povUp().whileTrue(climber.setSpeed(InchesPerSecond.of(5)));
+    driverController.povUpLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(5)));
+    driverController.povUpRight().whileTrue(climber.setSpeed(InchesPerSecond.of(5)));
+    driverController.povDown().whileTrue(climber.setSpeed(InchesPerSecond.of(-3.5)));
+    driverController.povDownLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(-3.5)));
+    driverController.povDownRight().whileTrue(climber.setSpeed(InchesPerSecond.of(-3.5)));
   }
 
   private void setUpAuton() {
