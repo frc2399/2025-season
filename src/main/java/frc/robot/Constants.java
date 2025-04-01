@@ -92,7 +92,7 @@ public final class Constants {
 
     public static final Angle ALGAE_WRIST_INTAKE_ANGLE = Degrees.of(-90);
     public static final Angle ALGAE_REEF_REMOVER_ANGLE = Degrees.of(-100);
-    public static final Angle ALGAE_WRIST_TURTLE_ANGLE = Degrees.of(-80);
+    public static final Angle ALGAE_WRIST_TURTLE_ANGLE = Degrees.of(-90); //drive team wants this the same but we want to allow it to change later if required
     public static final Angle ALGAE_WRIST_ZERO_ANGLE = Degrees.of(0);
 
     public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(30);
