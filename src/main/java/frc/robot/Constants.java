@@ -107,7 +107,7 @@ public final class Constants {
     public static final Distance L_TWO_CORAL_HEIGHT = Inches.of(10);
     public static final Distance L_THREE_CORAL_HEIGHT = Inches.of(25.5);
     public static final Distance L_FOUR_CORAL_HEIGHT = Inches.of(49.75);
-    public static final Distance AUTON_HEIGHT=  Inches.of(2);
+    public static final Distance AUTON_HEIGHT=  Inches.of(3);
 
     public static final Distance ELEVATOR_ALGAE_TURTLE_HEIGHT = Inches.of(10);
     public static final Distance L_ONE_ALGAE_HEIGHT = Inches.of(10);
