@@ -5,9 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "ProcessorSide-L4pt1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ProcessorSide-L4pt1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "auton default subsystem position"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "set intake speed to passive"
+                }
+              }
+            ]
           }
         },
         {
@@ -25,7 +44,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.75
+            "waitTime": 0.6
           }
         },
         {
@@ -61,7 +80,7 @@
         {
           "type": "named",
           "data": {
-            "name": "turtle"
+            "name": "auton turtle"
           }
         },
         {
@@ -89,16 +108,41 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.25
+                  "waitTime": 1.0
                 }
               }
             ]
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "BLUEProcessorSide-L4pt3.2"
+            "waitTime": 0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "set intake speed to passive"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BLUEProcessorSide-L4pt3.2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "auton default subsystem position"
+                }
+              }
+            ]
           }
         },
         {
@@ -116,7 +160,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.75
+            "waitTime": 0.6
           }
         },
         {
@@ -135,6 +179,24 @@
           "type": "named",
           "data": {
             "name": "Outtake coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BLUEProcessorSide-L4-pt4"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "auton turtle"
           }
         }
       ]
