@@ -97,7 +97,8 @@ public class RobotContainer {
     driverController.leftTrigger().whileTrue(commandFactory.outtakeOrClimbInBasedOnMode());
 
     driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
-    driverController.leftBumper().onTrue(drive.driveToPoseCommand(() -> commandFactory.getRobotPosition())).onFalse(drive.disableDriveToPose());
+    driverController.leftBumper().onTrue(drive.driveToPoseCommand(() -> commandFactory.getRobotPosition()))
+        .onFalse(drive.disableDriveToPose());
 
     driverController.y().onTrue(commandFactory.resetHeading(Degrees.of(0)));
     driverController.x().whileTrue(drive.setX());
@@ -125,10 +126,17 @@ public class RobotContainer {
     NamedCommands.registerCommand("call game mode coral", Commands.runOnce(() -> commandFactory.setGameMode("coral")));
     NamedCommands.registerCommand("Move elevator and coral wrist", commandFactory.moveElevatorAndCoralWrist());
     NamedCommands.registerCommand("Outtake coral",
-        coralIntake.setOuttakeSpeed(() -> commandFactory.getSetpoint()).withDeadline(Commands.waitSeconds(0.4)));
+        coralIntake.setOuttakeSpeed(() -> commandFactory.getSetpoint()).withDeadline(Commands.waitSeconds(0.25)));
     NamedCommands.registerCommand("turtle", commandFactory.turtleBasedOnMode());
     NamedCommands.registerCommand("coral intake default", coralIntake.defaultBehavior());
-    NamedCommands.registerCommand("intake", coralIntake.intakeToStall());
+    // typically, we put this in a race group with our max intake time. however, the
+    // until isStalling allows this command to finish first if we intake earlier,
+    // thus ending the race group earlier (despite the name, this is only for coral)
+    NamedCommands.registerCommand("intake", coralIntake.intakeToStall().withDeadline(Commands.waitSeconds(1)));
+    NamedCommands.registerCommand("set intake speed to passive", coralIntake.passiveIntakeAuton());
+    // explanation for this command in command factory
+    NamedCommands.registerCommand("auton default subsystem position", commandFactory.autonDefaultPosition());
+    NamedCommands.registerCommand("auton turtle", commandFactory.autonTurtleMode());
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Autos/Selector", autoChooser);
