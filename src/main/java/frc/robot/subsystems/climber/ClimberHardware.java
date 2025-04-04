@@ -55,7 +55,7 @@ public class ClimberHardware implements ClimberIO {
 
         private final SparkMax leftClimber = new SparkMax(MotorIdConstants.LEFT_CLIMBER_CAN_ID, MotorType.kBrushless);
         private final SparkMax rightClimber = new SparkMax(MotorIdConstants.RIGHT_CLIMBER_CAN_ID, MotorType.kBrushless);
-        //private final Servo climberServo = new Servo(ClimberConstants.SERVO_CHANNEL);
+        private final Servo climberServo = new Servo(ClimberConstants.SERVO_CHANNEL);
 
         private final SparkMaxConfig leftClimberConfig = new SparkMaxConfig();
         private final SparkMaxConfig rightClimberConfig = new SparkMaxConfig();
@@ -100,13 +100,13 @@ public class ClimberHardware implements ClimberIO {
         }
 
         public void setSpeed(LinearVelocity speed) {
-                climberClosedLoopController.setReference(speed.in(InchesPerSecond), ControlType.kVelocity);
+               climberClosedLoopController.setReference(speed.in(InchesPerSecond), ControlType.kVelocity);
                 if (speed.equals(InchesPerSecond.zero())) {
-                        // climberServo.setAngle(90);
+                        climberServo.setAngle(90);
                         servoGoalAngle = Degrees.of(90);
                 } else {
-                        // climberServo.setAngle(270);
-                        servoGoalAngle = Degrees.of(270);
+                        climberServo.setAngle(180);
+                        servoGoalAngle = Degrees.of(180);
                 }
         }
 
@@ -115,7 +115,7 @@ public class ClimberHardware implements ClimberIO {
                 inputs.climberVelocity = leftClimberEncoder.getVelocity();
                 inputs.climberGoalAngle = climberGoalAngle.in(Degrees);
 
-                // inputs.servoAngle = climberServo.getAngle();
+                inputs.servoAngle = climberServo.getAngle();
                 // inputs.servoVelocity = climberServo.getSpeed();
                 // inputs.servoGoalAngle = servoGoalAngle.in(Degrees);
         }
