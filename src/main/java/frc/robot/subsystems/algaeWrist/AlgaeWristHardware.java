@@ -53,7 +53,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         private static final double RELATIVE_ENCODER_POSITION_FACTOR = (2 * Math.PI) / 40.0; // radians
         private static final double RELATIVE_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 2400.0; // radians per second
 
-        private static final double WRIST_MOTOR_P = 1.0;
+        private static final double WRIST_MOTOR_P = 1.25;
         private static final double WRIST_MOTOR_I = 0;
         private static final double WRIST_MOTOR_D = 0;
         private static final double WRIST_MOTOR_FF = 0;
