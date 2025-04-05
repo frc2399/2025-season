@@ -3,7 +3,22 @@
  "version":1,
  "type":"Swerve",
  "variables":{
-  "expressions":{},
+  "expressions":{
+   "startXProcessor":{
+    "dimension":"Length",
+    "var":{
+     "exp":"7.057953834533691 m",
+     "val":7.057953834533691
+    }
+   },
+   "startYProcessor":{
+    "dimension":"Length",
+    "var":{
+     "exp":"2.0652902126312256 m",
+     "val":2.0652902126312256
+    }
+   }
+  },
   "poses":{
    "Blue_Tag_20":{
     "x":{
