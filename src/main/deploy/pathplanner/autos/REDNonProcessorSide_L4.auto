@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "ProcessorSide-L4pt1"
+                  "pathName": "NonProcessorSide-L4pt1"
                 }
               },
               {
@@ -50,13 +50,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BLUEProcessorSide-L4pt2"
+            "pathName": "REDNonProcessorSide-L4pt2"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0
+            "waitTime": 0.0
           }
         },
         {
@@ -68,7 +68,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BLUEProcessorSide-L4pt3.0"
+            "pathName": "REDNonProcessorSide-L4pt3.0"
           }
         },
         {
@@ -86,7 +86,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BLUEProcessorSide-L4pt3.1"
+            "pathName": "REDNonProcessorSide-L4pt3.1"
           }
         },
         {
@@ -133,7 +133,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "BLUEProcessorSide-L4pt4.0"
+                  "pathName": "REDNonProcessorSide-L4-pt4.0"
                 }
               },
               {
@@ -148,7 +148,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.0
+            "waitTime": 0
           }
         },
         {
@@ -160,19 +160,19 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.75
+            "waitTime": 0.85
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BLUEProcessorSide-L4pt4.1"
+            "pathName": "REDNonProcessorSide-L4-pt4.1"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.0
+            "waitTime": 0
           }
         },
         {
@@ -184,13 +184,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BLUEProcessorSide-L4-pt5"
+            "pathName": "REDNonProcessorSide-L4-pt4.2"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.8
+            "waitTime": 0
           }
         },
         {

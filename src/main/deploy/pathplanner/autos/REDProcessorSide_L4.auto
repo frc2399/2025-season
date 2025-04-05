@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "ProcessorSide-L4pt1"
+                  "pathName": "REDProcessorSide-L4pt2.0"
                 }
               },
               {
@@ -44,13 +44,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.6
+            "waitTime": 0.8
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "REDProcessorSide-L4pt2"
+            "pathName": "REDProcessorSide-L4pt2.1"
           }
         },
         {
