@@ -116,7 +116,7 @@ public class CommandFactory {
             algaeWrist.goToSetpointCommand(() -> Setpoint.ZERO),
             elevator.goToGoalSetpointCmd(() -> Setpoint.AUTON, () -> GameMode.CORAL)),
         Commands.waitUntil(() -> elevator.atGoal()),
-        coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
+        coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE)).withName("auton default subsystem position");
   }
 
   public Command autonTurtleMode() {
@@ -127,14 +127,14 @@ public class CommandFactory {
             algaeWrist.goToSetpointCommand(() -> Setpoint.ZERO),
             elevator.goToGoalSetpointCmd(() -> Setpoint.AUTON, () -> GameMode.CORAL)),
         Commands.waitUntil(() -> elevator.atGoal()),
-        coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
+        coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE)).withName("auton turtle mode");
   }
 
   public Command turtleBasedOnMode() {
     return Commands.either(
         algaeTurtleMode(),
         coralTurtleMode(),
-        () -> (getGameMode() == GameMode.ALGAE));
+        () -> (getGameMode() == GameMode.ALGAE)).withName("turtle based on mode");
   }
 
   public Command coralTurtleMode() {
@@ -145,7 +145,7 @@ public class CommandFactory {
             algaeWrist.goToSetpointCommand(() -> Setpoint.ZERO),
             elevator.goToGoalSetpointCmd(() -> Setpoint.TURTLE, () -> GameMode.CORAL)),
         Commands.waitUntil(() -> elevator.atGoal()),
-        coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
+        coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE)).withName("coral turtle mode");
   }
 
   public Command algaeTurtleMode() {
@@ -156,14 +156,14 @@ public class CommandFactory {
             elevator.goToGoalSetpointCmd(() -> Setpoint.TURTLE, () -> GameMode.ALGAE),
             algaeWrist.goToSetpointCommand(() -> Setpoint.TURTLE)),
         Commands.waitUntil(() -> elevator.atGoal()),
-        coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
+        coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE)).withName("algae turtle mode");
   }
 
   public Command elevatorBasedOnMode() {
     return Commands.either(
         moveElevatorAndAlgaeWrist(),
         moveElevatorAndCoralWrist(),
-        () -> (getGameMode() == GameMode.ALGAE));
+        () -> (getGameMode() == GameMode.ALGAE)).withName("elevator based on mode");
   }
 
   public Command moveElevatorAndCoralWrist() {
@@ -174,7 +174,7 @@ public class CommandFactory {
         Commands.waitUntil(() -> coralWrist.atGoal()),
         Commands.parallel(
             elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.CORAL),
-            coralWrist.goToSetpointCommand(() -> getSetpoint())));
+            coralWrist.goToSetpointCommand(() -> getSetpoint()))).withName("move elevator and coral wrist");
   }
 
   public Command moveElevatorAndAlgaeWrist() {
@@ -182,29 +182,29 @@ public class CommandFactory {
         coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
         Commands.waitUntil(() -> coralWrist.atGoal()),
         algaeWrist.goToSetpointCommand(() -> getSetpoint()),
-        elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.ALGAE));
+        elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.ALGAE)).withName("move elevator and algae wrist");
   }
 
   public Command intakeBasedOnMode() {
     return Commands.either(
         algaeIntake.intakeToStall(),
         coralIntake.intakeToStall(),
-        () -> (getGameMode() == GameMode.ALGAE));
+        () -> (getGameMode() == GameMode.ALGAE)).withName("intake based on mode");
   }
 
   public Command outtakeBasedOnMode() {
     return Commands.either(
         algaeIntake.outtake(),
         coralIntake.setOuttakeSpeed(() -> getSetpoint()),
-        () -> (getGameMode() == GameMode.ALGAE));
+        () -> (getGameMode() == GameMode.ALGAE)).withName("outtake based on mode");
   }
 
   public Command climbIn() {
-    return climber.setSpeed(InchesPerSecond.of(-3.5));
+    return climber.setSpeed(InchesPerSecond.of(-3.5)).withName("climb in");
   }
 
   public Command climbOut() {
-    return climber.setSpeed(InchesPerSecond.of(5));
+    return climber.setSpeed(InchesPerSecond.of(5)).withName("climb out");
   }
 
   public Command intakeOrClimbOutBasedOnMode() {
@@ -212,7 +212,7 @@ public class CommandFactory {
       climbOut(),
       intakeBasedOnMode(),
       () -> (getEndgameMode())
-    );
+    ).withName("intake or climb out based on mode");
   }
 
   public Command outtakeOrClimbInBasedOnMode() {
@@ -220,7 +220,7 @@ public class CommandFactory {
       climbIn(),
       outtakeBasedOnMode(),
       () -> (getEndgameMode())
-    );
+    ).withName("outtake or climb in based on mode");
   }
 
   public Setpoint getSetpoint() {
@@ -273,6 +273,6 @@ public class CommandFactory {
   }
 
   public Command resetHeading(Angle yaw) {
-    return Commands.parallel(gyro.setYaw(yaw), Commands.runOnce(() -> drive.resetOdometryAfterGyro()));
+    return Commands.parallel(gyro.setYaw(yaw), Commands.runOnce(() -> drive.resetOdometryAfterGyro())).withName("reset heading");
   }
 }

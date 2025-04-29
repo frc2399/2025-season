@@ -164,7 +164,7 @@ public class RobotContainer {
             drive.resetOdometry(new Pose2d(poseCopy.getTranslation(), new Rotation2d(gyro.getYaw())));
           });
 
-        }).ignoringDisable(true));
+        }).ignoringDisable(true)).withName("reset odometry red");
   }
 
   public Command resetOdometryBlue() {
@@ -181,7 +181,7 @@ public class RobotContainer {
             drive.resetOdometry(new Pose2d(poseCopy.getTranslation(), new Rotation2d(gyro.getYaw())));
           });
 
-        }).ignoringDisable(true));
+        }).ignoringDisable(true)).withName("reset odometry blue");
   }
 
   private void configureButtonBindingsOperator() {

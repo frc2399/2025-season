@@ -29,7 +29,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         return this.run(() -> {
             io.setOuttakeSpeed(setpoint.get());
             setCoralEntry(false);
-        });
+        }).withName("coral outtake");
     }
 
     public Command defaultBehavior() {
@@ -39,11 +39,11 @@ public class CoralIntakeSubsystem extends SubsystemBase {
             } else {
                 io.setZero();
             }
-        });
+        }).withName("coral intake default behavior");
     }
 
     public Command passiveIntakeAuton() {
-        return this.runOnce(() -> io.passiveIntakeIgnoringStall());
+        return this.runOnce(() -> io.passiveIntakeIgnoringStall()).withName("coral passive intake auton");
     }
 
     public Command intakeToStall() {
@@ -54,7 +54,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
             } else {
                 io.intake();
             }
-        });
+        }).withName("coral intake to stall");
     }
 
     public void setCoralEntry(Boolean coralState) {

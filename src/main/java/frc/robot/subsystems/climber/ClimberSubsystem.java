@@ -21,7 +21,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public Command setSpeed(LinearVelocity speed)
     {
-        return this.run(() -> climberIO.setSpeed(speed));
+        return this.run(() -> climberIO.setSpeed(speed)).withName("climber set speed");
     }
 
     @Override

@@ -389,7 +389,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
                         rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
                         rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-                });
+                }).withName("set x");
         }
 
         public ChassisSpeeds getRobotRelativeSpeeds() {
@@ -519,7 +519,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                         && velocities.get().getRotation().getRadians() == 0));
 
                         setRobotRelativeSpeeds(alignmentSpeeds);
-                }).until(() -> atGoal.get());
+                }).until(() -> atGoal.get()).withName("drive to pose command");
         }
 
         public Command disableDriveToPose() {
@@ -529,7 +529,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
                         rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
                         rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
-                });
+                }).withName("disable drive to pose");
         }
 
         private void logAndUpdateDriveSubsystemStates() {

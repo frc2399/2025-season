@@ -23,13 +23,13 @@ public class CoralWristSubsystem extends SubsystemBase {
     public Command goToSetpointCommand(Supplier<Setpoint> setpoint) {
         return this.runOnce(() -> {
             io.setGoalAngle(setpoint.get());
-        });
+        }).withName("coral wrist set goal angle");
     }
 
     public Command setWristSpeed(double speed) {
         return this.run(() -> {
             io.setWristSpeed(speed);
-        });
+        }).withName("coral wrist set speed manual");
     }
 
     public boolean atGoal() {

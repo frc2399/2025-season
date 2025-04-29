@@ -33,7 +33,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
             if (hasAlgae) {
                 setAlgaeEntry(false);
             }
-        });
+        }).withName("algae outtake");
     }
 
     public Command defaultBehavior() {
@@ -46,7 +46,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
             } else {
                 io.setRollerSpeed(RPM.of(0));
             }
-        });
+        }).withName("algae intake default");
     }
 
     public Command intakeToStall() {
@@ -59,7 +59,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
                         io.setRollerSpeed(Constants.SpeedConstants.ALGAE_INTAKE_SPEED);
 
                     }
-                });
+                }).withName("algae intake to stall");
     }
 
     public void setAlgaeEntry(Boolean algaeState) {

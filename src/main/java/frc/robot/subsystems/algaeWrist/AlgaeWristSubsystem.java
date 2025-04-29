@@ -20,11 +20,11 @@ public class AlgaeWristSubsystem extends SubsystemBase {
     public Command goToSetpointCommand(Supplier<Setpoint> setpoint) {
         return this.runOnce(() -> {
             io.setGoalAngle(setpoint.get());
-        });
+        }).withName("algae wrist go to setpoint");
     }
 
     public Command setWristSpeed(double speed) {
-        return this.run(() -> io.setWristSpeed(speed));
+        return this.run(() -> io.setWristSpeed(speed)).withName("algae wrist set manual speed");
     }
 
     public void resetWrist() {

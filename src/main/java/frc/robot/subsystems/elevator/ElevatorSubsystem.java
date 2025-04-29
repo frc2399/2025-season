@@ -38,7 +38,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             elevatorIO.setGoalPosition(elevatorSetpoint);
             profiledPIDEnabled = true;
             goalSetpoint = elevatorSetpoint.in(Meters);
-        });
+        }).withName("elevator go to setpoint command");
     };
 
     public Distance getElevatorSetpoint(Supplier<Setpoint> setpoint, Supplier<GameMode> gameMode) {
@@ -76,7 +76,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public Command atGoalCommand() {
-        return Commands.waitUntil(() -> atGoal());
+        return Commands.waitUntil(() -> atGoal()).withName("elevator wait until at goal command");
     }
     
     public Command incrementGoalPosition(Distance changeInGoalPosition)
@@ -84,7 +84,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         return this.run(()-> {
             profiledPIDEnabled = true;
             elevatorIO.incrementGoalPosition(changeInGoalPosition);
-        });
+        }).withName("elevator increment goal position");
     }
 
     public double getCurrentPosition() {
@@ -92,7 +92,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public Command setSpeedManualControl(double speed) {
-        return this.run(() -> elevatorIO.setSpeedManualControl(speed));
+        return this.run(() -> elevatorIO.setSpeedManualControl(speed)).withName("elevator set speed manual");
     }
 
     public boolean isElevatorHeightAboveSpeedLimitingThreshold()
