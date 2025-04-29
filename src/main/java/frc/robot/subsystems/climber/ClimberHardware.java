@@ -33,7 +33,7 @@ public class ClimberHardware implements ClimberIO {
                 private static final double I_VALUE = 0.0;
                 private static final double D_VALUE = 0.0;
 
-                private static final Distance UPPER_LIMIT = Inches.of(32.216);
+                private static final Distance UPPER_LIMIT = Inches.of(31.465);
                 // INIT TO HERE
                 private static final Distance LOWER_LIMIT = Inches.of(16);
                 private static final Distance ZERO_POSITION = Inches.of(14.665);
@@ -100,13 +100,13 @@ public class ClimberHardware implements ClimberIO {
         }
 
         public void setSpeed(LinearVelocity speed) {
-                climberClosedLoopController.setReference(speed.in(InchesPerSecond), ControlType.kVelocity);
+               climberClosedLoopController.setReference(speed.in(InchesPerSecond), ControlType.kVelocity);
                 if (speed.equals(InchesPerSecond.zero())) {
                         climberServo.setAngle(90);
                         servoGoalAngle = Degrees.of(90);
                 } else {
-                        climberServo.setAngle(270);
-                        servoGoalAngle = Degrees.of(270);
+                        climberServo.setAngle(180);
+                        servoGoalAngle = Degrees.of(180);
                 }
         }
 
@@ -116,8 +116,8 @@ public class ClimberHardware implements ClimberIO {
                 inputs.climberGoalAngle = climberGoalAngle.in(Degrees);
 
                 inputs.servoAngle = climberServo.getAngle();
-                inputs.servoVelocity = climberServo.getSpeed();
-                inputs.servoGoalAngle = servoGoalAngle.in(Degrees);
+                // inputs.servoVelocity = climberServo.getSpeed();
+                // inputs.servoGoalAngle = servoGoalAngle.in(Degrees);
         }
 
 }
