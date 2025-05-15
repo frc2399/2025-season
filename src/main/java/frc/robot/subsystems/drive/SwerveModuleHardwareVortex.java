@@ -30,6 +30,7 @@ import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.MotorConstants;
+import frc.robot.subsystems.elevator.KrakenElevatorHardware.KrakenElevatorConstants;
 
 public class SwerveModuleHardwareVortex implements SwerveModuleIO {
 
@@ -154,13 +155,10 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
 
     public double getDriveEncoderPosition() {
         double driveEncoderPosition = drivingRelativeEncoder.getPosition();
-        if(Double.isNaN(driveEncoderPosition))
-        {
-            return 0.0; 
-        }
-        else
-        {
-            return driveEncoderPosition; 
+        if (Double.isNaN(driveEncoderPosition)) {
+            return 0.0;
+        } else {
+            return driveEncoderPosition;
         }
 
     };
@@ -172,25 +170,20 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
 
     public double getDriveEncoderSpeedMPS() {
         double driveVelocity = drivingRelativeEncoder.getVelocity();
-        if(Double.isNaN(driveVelocity))
-        {
-            return 0.0; 
-        }
-        else
-        {
-            return driveVelocity; 
+        if (Double.isNaN(driveVelocity)) {
+            return 0.0;
+        } else {
+            return driveVelocity;
         }
     };
 
     public double getTurnEncoderPosition() {
-    double drivePosition = turningAbsoluteEncoder.getPosition();
+        double drivePosition = turningAbsoluteEncoder.getPosition();
 
-        if(Double.isNaN(drivePosition))
-        {
-            return 0.0; 
-        }
-        else{
-            return drivePosition; 
+        if (Double.isNaN(drivePosition)) {
+            return 0.0;
+        } else {
+            return drivePosition;
         }
     };
 
@@ -224,27 +217,27 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
     }
 
     public void updateStates(SwerveModuleIOStates states) {
-                states.desiredAngle = Units.radiansToDegrees(MathUtil.angleModulus(this.desiredAngle));
-                states.turnAngle = Units.radiansToDegrees(MathUtil.angleModulus(getTurnEncoderPosition()));
-                states.driveDesiredVelocity = this.driveDesiredVelocity;
-                states.driveVelocity = getDriveEncoderSpeedMPS();
-                states.driveEncoderPos = getDriveEncoderPosition();
-                states.driveVoltage = drivingSparkFlex.getBusVoltage() * drivingSparkFlex.getAppliedOutput();
-                states.turnVoltage = turningSparkMax.getBusVoltage() * turningSparkMax.getAppliedOutput();
-                states.driveCurrent = drivingSparkFlex.getOutputCurrent();
-                states.turnCurrent = turningSparkMax.getOutputCurrent();
+        states.desiredAngle = Units.radiansToDegrees(MathUtil.angleModulus(this.desiredAngle));
+        states.turnAngle = Units.radiansToDegrees(MathUtil.angleModulus(getTurnEncoderPosition()));
+        states.driveDesiredVelocity = this.driveDesiredVelocity;
+        states.driveVelocity = getDriveEncoderSpeedMPS();
+        states.driveEncoderPos = getDriveEncoderPosition();
+        states.driveVoltage = drivingSparkFlex.getBusVoltage() * drivingSparkFlex.getAppliedOutput();
+        states.turnVoltage = turningSparkMax.getBusVoltage() * turningSparkMax.getAppliedOutput();
+        states.driveCurrent = drivingSparkFlex.getOutputCurrent();
+        states.turnCurrent = turningSparkMax.getOutputCurrent();
 
-                SmartDashboard.putNumber("Swerve/module " + name + "/turn desired angle(deg)", states.desiredAngle);
-                SmartDashboard.putNumber("Swerve/module " + name + "/turn angle(deg)",
-                                states.turnAngle);
-                SmartDashboard.putNumber("Swerve/module " + name + "/drive desired velocity(mps)",
-                                states.driveDesiredVelocity);
-                SmartDashboard.putNumber("Swerve/module " + name + "/drive velocity(mps)", states.driveVelocity);
-                SmartDashboard.putNumber("Swerve/module " + name + "/drive encoder position(m)",
-                                states.driveEncoderPos);
-                SmartDashboard.putNumber("Swerve/module " + name + "/drive voltage(volt)", states.driveVoltage);
-                SmartDashboard.putNumber("Swerve/module " + name + "/turn voltage(volt)", states.turnVoltage);
-                SmartDashboard.putNumber("Swerve/module " + name + "/drive current(amps)", states.driveCurrent);
-                SmartDashboard.putNumber("Swerve/module " + name + "/turn current(amps)", states.turnCurrent);
-        }
+        SmartDashboard.putNumber("Swerve/module " + name + "/turn desired angle(deg)", states.desiredAngle);
+        SmartDashboard.putNumber("Swerve/module " + name + "/turn angle(deg)",
+                states.turnAngle);
+        SmartDashboard.putNumber("Swerve/module " + name + "/drive desired velocity(mps)",
+                states.driveDesiredVelocity);
+        SmartDashboard.putNumber("Swerve/module " + name + "/drive velocity(mps)", states.driveVelocity);
+        SmartDashboard.putNumber("Swerve/module " + name + "/drive encoder position(m)",
+                states.driveEncoderPos);
+        SmartDashboard.putNumber("Swerve/module " + name + "/drive voltage(volt)", states.driveVoltage);
+        SmartDashboard.putNumber("Swerve/module " + name + "/turn voltage(volt)", states.turnVoltage);
+        SmartDashboard.putNumber("Swerve/module " + name + "/drive current(amps)", states.driveCurrent);
+        SmartDashboard.putNumber("Swerve/module " + name + "/turn current(amps)", states.turnCurrent);
+    }
 }

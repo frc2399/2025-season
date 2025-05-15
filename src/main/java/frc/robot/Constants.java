@@ -92,7 +92,8 @@ public final class Constants {
 
     public static final Angle ALGAE_WRIST_INTAKE_ANGLE = Degrees.of(-90);
     public static final Angle ALGAE_REEF_REMOVER_ANGLE = Degrees.of(-100);
-    public static final Angle ALGAE_WRIST_TURTLE_ANGLE = Degrees.of(-90); //drive team wants this the same but we want to allow it to change later if required
+    public static final Angle ALGAE_WRIST_TURTLE_ANGLE = Degrees.of(-90); // drive team wants this the same but we want
+                                                                          // to allow it to change later if required
     public static final Angle ALGAE_WRIST_ZERO_ANGLE = Degrees.of(0);
 
     public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(25);
@@ -107,7 +108,7 @@ public final class Constants {
     public static final Distance L_TWO_CORAL_HEIGHT = Inches.of(10);
     public static final Distance L_THREE_CORAL_HEIGHT = Inches.of(25.5);
     public static final Distance L_FOUR_CORAL_HEIGHT = Inches.of(49.75);
-    public static final Distance AUTON_HEIGHT=  Inches.of(3);
+    public static final Distance AUTON_HEIGHT = Inches.of(3);
 
     public static final Distance ELEVATOR_ALGAE_TURTLE_HEIGHT = Inches.of(10);
     public static final Distance L_ONE_ALGAE_HEIGHT = Inches.of(10);
@@ -125,6 +126,7 @@ public final class Constants {
     public static final boolean FIELD_ORIENTED_DRIVE = true;
 
     public static final double SLOW_DRIVE_FACTOR = 0.25;
+    public static final double OUTREACH_DRIVE_FACTOR = 0.1;
     public static final double DRIVE_FACTOR = 1.0;
 
     public static final Distance ALPHA_TRACK_WIDTH = Meters.of(0.4954);

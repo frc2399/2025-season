@@ -6,8 +6,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.InchesPerSecond;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.RPM;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -21,22 +19,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
 import frc.robot.subsystems.climber.ClimberSubsystem;
-import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.drive.ReefscapeVisionUtil;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
-import frc.robot.vision.VisionPoseEstimator;
 import frc.robot.vision.LimelightHelpers.PoseEstimate;
+import frc.robot.vision.VisionPoseEstimator;
 
 public class RobotContainer {
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
@@ -60,6 +55,8 @@ public class RobotContainer {
       DriveControlConstants.DRIVER_CONTROLLER_PORT);
   private static final CommandXboxController operatorController = new CommandXboxController(
       DriveControlConstants.OPERATOR_CONTROLLER_PORT);
+
+  private boolean allowMovement = false;
 
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -86,32 +83,13 @@ public class RobotContainer {
             driverController.getRightX(),
             DriveControlConstants.DRIVE_DEADBAND)),
         true,
-        () -> elevator.isElevatorHeightAboveSpeedLimitingThreshold()));
+        () -> allowMovement));
     coralIntake.setDefaultCommand(coralIntake.defaultBehavior());
     algaeIntake.setDefaultCommand(algaeIntake.defaultBehavior());
     climber.setDefaultCommand(climber.setSpeed(InchesPerSecond.of(0)));
   }
 
   private void configureButtonBindingsDriver() {
-    driverController.rightTrigger().whileTrue(commandFactory.intakeOrClimbOutBasedOnMode());
-    driverController.leftTrigger().whileTrue(commandFactory.outtakeOrClimbInBasedOnMode());
-
-    driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
-    driverController.leftBumper().onTrue(drive.driveToPoseCommand(() -> commandFactory.getRobotPosition()))
-        .onFalse(drive.disableDriveToPose());
-
-    driverController.y().onTrue(commandFactory.resetHeading(Degrees.of(0)));
-    driverController.x().whileTrue(drive.setX());
-    driverController.b().onTrue(commandFactory.turtleBasedOnMode());
-
-    // this yucky code bc we are out of buttons and have to use the POV pad (we want
-    // to make sure that anything up does up and same for down)
-    driverController.povUp().whileTrue(climber.setSpeed(InchesPerSecond.of(5)));
-    driverController.povUpLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(5)));
-    driverController.povUpRight().whileTrue(climber.setSpeed(InchesPerSecond.of(5)));
-    driverController.povDown().whileTrue(climber.setSpeed(InchesPerSecond.of(-3.5)));
-    driverController.povDownLeft().whileTrue(climber.setSpeed(InchesPerSecond.of(-3.5)));
-    driverController.povDownRight().whileTrue(climber.setSpeed(InchesPerSecond.of(-3.5)));
   }
 
   private void setUpAuton() {
@@ -185,19 +163,8 @@ public class RobotContainer {
   }
 
   private void configureButtonBindingsOperator() {
-    // these buttons should not be changed for local testing and should function as
-    // a replacement gamepad
-    operatorController.a().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")));
-    operatorController.b().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 2")));
-    operatorController.x().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 3")));
-    operatorController.y().onTrue(Commands.runOnce(() -> commandFactory.setScoringLevel("Level 4")));
-
-    operatorController.rightBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("right")));
-    operatorController.leftBumper().onTrue(Commands.runOnce(() -> commandFactory.setRobotAlignmentPosition("left")));
-
-    operatorController.leftTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("algae")));
-    operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("coral")));
-
+    operatorController.a().onTrue(new InstantCommand(() -> allowMovement = true))
+        .onFalse(new InstantCommand(() -> allowMovement = false));
     // place local buttons below here, delete before PRing
 
   }

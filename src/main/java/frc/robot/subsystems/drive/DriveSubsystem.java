@@ -10,7 +10,6 @@ import static edu.wpi.first.units.Units.Radians;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
@@ -20,7 +19,6 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
-import edu.wpi.first.hal.SimBoolean;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -38,7 +36,6 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
@@ -46,8 +43,6 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -323,9 +318,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         Boolean fieldRelative, BooleanSupplier isElevatorHigh) {
                 return this.run(() -> {
                         Boolean useFieldRelative = true;
-                        double driveSpeedFactor = DriveControlConstants.DRIVE_FACTOR;
-                        if (isElevatorHigh.getAsBoolean()) {
-                                driveSpeedFactor = DriveControlConstants.SLOW_DRIVE_FACTOR;
+                        double driveSpeedFactor = 0;
+                        if (isElevatorHigh.getAsBoolean()) { // for outreach mode, this is button pressed
+                                driveSpeedFactor = DriveControlConstants.OUTREACH_DRIVE_FACTOR;
                                 // useFieldRelative = false;
                         }
                         double currentAngle = gyro.getYaw(false).in(Radians);
@@ -349,10 +344,15 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                         Math.pow(rotRate.getAsDouble(), 5),
                                         polarXSpeed, polarYSpeed);
 
+                        if (!isElevatorHigh.getAsBoolean()) {
+                                newRotRate = 0;
+                        }
+
                         // Convert the commanded speeds into the correct units for the drivetrain
                         double xSpeedDelivered = polarXSpeed * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS;
                         double ySpeedDelivered = polarYSpeed * SpeedConstants.DRIVETRAIN_MAX_SPEED_MPS;
-                        double rotRateDelivered = newRotRate * SpeedConstants.DRIVETRAIN_MAX_ANGULAR_SPEED_RPS;
+                        double rotRateDelivered = newRotRate * SpeedConstants.DRIVETRAIN_MAX_ANGULAR_SPEED_RPS
+                                        * driveSpeedFactor;
 
                         if (useFieldRelative) {
                                 relativeRobotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered,
@@ -367,6 +367,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         SmartDashboard.putNumber("x speed delivered", xSpeedDelivered);
                         SmartDashboard.putNumber("y speed delivered", ySpeedDelivered);
                         SmartDashboard.putNumber("drive speed factor", driveSpeedFactor);
+                        SmartDashboard.putBoolean("slow mode", isElevatorHigh.getAsBoolean());
 
                         var swerveModuleStates = DRIVE_KINEMATICS.toSwerveModuleStates(relativeRobotSpeeds);
                         SwerveDriveKinematics.desaturateWheelSpeeds(
@@ -490,7 +491,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         // risks
                         atGoal.set(false);
 
-                        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+                        if (DriverStation.getAlliance().isPresent()
+                                        && DriverStation.getAlliance().get() == Alliance.Blue) {
                                 isBlueAlliance = () -> true;
                         } else {
                                 isBlueAlliance = () -> false;
