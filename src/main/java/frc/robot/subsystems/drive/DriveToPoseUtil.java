@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
@@ -14,8 +15,8 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
@@ -67,44 +68,48 @@ public class DriveToPoseUtil {
         private static final Distance XY_MAX_ALIGN_DISTANCE = Meters.of(3);
         private static final Angle THETA_MAX_ALIGN_ANGLE = Degrees.of(90);
 
-        public static Supplier<Transform2d> getDriveToPoseVelocities(Supplier<Pose2d> robotPose,
+        public static Supplier<ChassisSpeeds> getDriveToPoseVelocities(Supplier<Pose2d> robotPose,
                         Supplier<Pose2d> goalPose) {
-                
+
                 // if there is no robot pose, don't move
                 if (robotPose.get() == null) {
-                        Transform2d nullReturn = new Transform2d(0, 0, new Rotation2d(0));
+                        ChassisSpeeds nullReturn = new ChassisSpeeds(0, 0, 0);
                         return () -> nullReturn;
                 }
 
-                // calculate current error
-                Transform2d transformToGoal = goalPose.get().minus(robotPose.get());
-                double xToGoal = transformToGoal.getX();
-                double yToGoal = transformToGoal.getY();
-                Angle thetaToGoal = Degrees.of(transformToGoal.getRotation().getDegrees());
-
                 // calculate desired robot-relative velocities
-                LinearVelocity xDesired = MetersPerSecond.of(driveToPoseXYPid.calculate(transformToGoal.getX(), 0));
-                LinearVelocity yDesired = MetersPerSecond.of(driveToPoseXYPid.calculate(transformToGoal.getY(), 0));
+                LinearVelocity xDesired = MetersPerSecond
+                                .of(driveToPoseXYPid.calculate(robotPose.get().getX(), goalPose.get().getX()));
+                LinearVelocity yDesired = MetersPerSecond
+                                .of(driveToPoseXYPid.calculate(robotPose.get().getY(), goalPose.get().getY()));
                 AngularVelocity thetaDesired = RadiansPerSecond
-                                .of(driveToPoseThetaPid.calculate(transformToGoal.getRotation().getRadians(), 0));
+                                .of(driveToPoseThetaPid.calculate(robotPose.get().getRotation().getRadians(),
+                                                goalPose.get().getRotation().getRadians()));
 
-                // filtering - if we're off by too much, it doesn't move. this keeps the robot
-                // from doing anything too drastic, especially in case of odometry failures.
-                if (Math.hypot(xToGoal, yToGoal) > XY_MAX_ALIGN_DISTANCE.in(Meters) ||
-                                thetaToGoal.in(Degrees) > THETA_MAX_ALIGN_ANGLE.in(Degrees)) {
+                double xError = robotPose.get().getX() - goalPose.get().getX();
+                double yError = robotPose.get().getY() - goalPose.get().getY();
+                Angle thetaError = Radians.of(
+                                robotPose.get().getRotation().getRadians() - goalPose.get().getRotation().getRadians());
+
+                // filtering - keeps the robot from attempting to make drastic moves (if we are
+                // trying to make this aggressive of a movement, vision or odometry has most
+                // likely failed)
+                if (Math.hypot(xError, yError) > XY_MAX_ALIGN_DISTANCE.in(Meters) ||
+                                Math.abs(thetaError.in(Radians)) > THETA_MAX_ALIGN_ANGLE
+                                                                .in(Radians)) {
                         xDesired = MetersPerSecond.of(0);
                         yDesired = MetersPerSecond.of(0);
                         thetaDesired = RadiansPerSecond.of(0);
                 }
 
                 // tolerance checking
-                if (Math.abs(xToGoal) < XY_ALIGN_TOLERANCE.in(Meters)) {
+                if (Math.abs(xError) < XY_ALIGN_TOLERANCE.in(Meters)) {
                         xDesired = MetersPerSecond.of(0);
                 }
-                if (Math.abs(yToGoal) < XY_ALIGN_TOLERANCE.in(Meters)) {
+                if (Math.abs(yError) < XY_ALIGN_TOLERANCE.in(Meters)) {
                         yDesired = MetersPerSecond.of(0);
                 }
-                if (Math.abs(thetaToGoal.in(Degrees)) < THETA_ALIGN_TOLERANCE.in(Degrees)) {
+                if (Math.abs(thetaError.in(Degrees)) < THETA_ALIGN_TOLERANCE.in(Degrees)) {
                         thetaDesired = RadiansPerSecond.of(0);
                 }
 
@@ -116,11 +121,10 @@ public class DriveToPoseUtil {
                         thetaDesired = RadiansPerSecond.of(Math.copySign(0.1, thetaDesired.in(RadiansPerSecond)));
                 }
 
-                // packaging as a Transform2d because we don't have access to gyro here so
-                // cannot do ChassisSpeeds
-                Transform2d alignmentSpeeds = new Transform2d(-xDesired.in(MetersPerSecond),
+                ChassisSpeeds alignmentSpeeds = new ChassisSpeeds(-xDesired.in(MetersPerSecond),
                                 -yDesired.in(MetersPerSecond),
-                                new Rotation2d(-thetaDesired.in(RadiansPerSecond)));
+                                -thetaDesired.in(RadiansPerSecond));
+
                 return () -> alignmentSpeeds;
         }
 }

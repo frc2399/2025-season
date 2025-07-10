@@ -473,6 +473,13 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
         }
 
+        //new method workflow:
+        // 1. calculate the trapezoid
+        // 2. periodically yoink the next trapezoid
+        // 3. move the robot
+        // 4. check for the goal
+        // 5. end the robot
+
         // this method has a LOT of suppliers - so short explanation of why they're good
         // basically, when a button binding is called in robotContainer, it makes an
         // object
@@ -503,22 +510,14 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         SmartDashboard.putNumber("Swerve/vision/goalPosex", goalPose.get().getX());
                         SmartDashboard.putNumber("Swerve/vision/goalTheta", goalPose.get().getRotation().getDegrees());
 
-                        Supplier<Transform2d> velocities = DriveToPoseUtil.getDriveToPoseVelocities(
-                                        () -> robotPose, goalPose);
-                        ChassisSpeeds alignmentSpeeds = new ChassisSpeeds(
-                                        velocities.get().getX(),
-                                        velocities.get().getY(),
-                                        velocities.get().getRotation().getRadians());
-
-                        SmartDashboard.putNumber("Swerve/vision/xVel", alignmentSpeeds.vxMetersPerSecond);
-                        SmartDashboard.putNumber("Swerve/vision/yVel", alignmentSpeeds.vyMetersPerSecond);
-                        SmartDashboard.putNumber("Swerve/vision/thetaVel", alignmentSpeeds.omegaRadiansPerSecond);
+                        Supplier<ChassisSpeeds> alignmentSpeeds = DriveToPoseUtil.getDriveToPoseVelocities(
+                                () -> robotPose, goalPose);
 
                         // tolerances were accounted for in getDriveToPoseVelocities
-                        atGoal.set((velocities.get().getX() == 0 && velocities.get().getY() == 0
-                                        && velocities.get().getRotation().getRadians() == 0));
+                        atGoal.set((alignmentSpeeds.get().vxMetersPerSecond == 0 && alignmentSpeeds.get().vyMetersPerSecond == 0
+                                        && alignmentSpeeds.get().omegaRadiansPerSecond == 0));
 
-                        setRobotRelativeSpeeds(alignmentSpeeds);
+                        setRobotRelativeSpeeds(alignmentSpeeds.get());
                 }).until(() -> atGoal.get());
         }
 
