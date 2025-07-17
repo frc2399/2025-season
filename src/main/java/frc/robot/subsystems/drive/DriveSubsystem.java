@@ -63,7 +63,7 @@ import frc.robot.vision.VisionPoseEstimator.DriveBase;
 
 public class DriveSubsystem extends SubsystemBase implements DriveBase {
         // for drivetopose
-        private AtomicBoolean atGoal = new AtomicBoolean(true);
+        private boolean atGoal = true;
         private BooleanSupplier isBlueAlliance;
 
         private DriveSubsystemStates states = new DriveSubsystemStates();
@@ -223,7 +223,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         @Override
         public void periodic() {
-                SmartDashboard.putBoolean("/drive/atGoal", atGoal.get());
+                SmartDashboard.putBoolean("/drive/atGoal", atGoal);
                 // This will get the simulated sensor readings that we set
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
@@ -495,7 +495,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         // basically, bad things can happen if we try to update a normal boolean within
                         // a lambda and access it outside that lambda, but atomic booleans prevent these
                         // risks
-                        atGoal.set(false);
+                        atGoal = false;
 
                         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
                                 isBlueAlliance = () -> true;
@@ -514,16 +514,16 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 () -> robotPose, goalPose);
 
                         // tolerances were accounted for in getDriveToPoseVelocities
-                        atGoal.set((alignmentSpeeds.get().vxMetersPerSecond == 0 && alignmentSpeeds.get().vyMetersPerSecond == 0
-                                        && alignmentSpeeds.get().omegaRadiansPerSecond == 0));
+                        atGoal = alignmentSpeeds.get().vxMetersPerSecond == 0 && alignmentSpeeds.get().vyMetersPerSecond == 0
+                                        && alignmentSpeeds.get().omegaRadiansPerSecond == 0;
 
                         setRobotRelativeSpeeds(alignmentSpeeds.get());
-                }).until(() -> atGoal.get());
+                }).until(() -> atGoal);
         }
 
         public Command disableDriveToPose() {
                 return this.runOnce(() -> {
-                        atGoal.set(true);
+                        atGoal = true;
                         frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
                         frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
                         rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
