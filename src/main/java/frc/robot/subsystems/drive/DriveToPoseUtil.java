@@ -13,9 +13,9 @@ import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.measure.Angle;
@@ -35,12 +35,14 @@ public class DriveToPoseUtil {
                         DRIVE_TO_POSE_XY_P, 0, DRIVE_TO_POSE_XY_D,
                         new Constraints(MAX_VELOCITY_DRIVE_TO_POSE.in(MetersPerSecond),
                                         MAX_ACCELERATION_DRIVE_TO_POSE.in(MetersPerSecondPerSecond)));
+        private static final PIDController driveToPoseXYAltPid = new PIDController(DRIVE_TO_POSE_XY_P, 0, DRIVE_TO_POSE_XY_D);
 
         private static final double DRIVE_TO_POSE_THETA_P = 3.5; // radians per second per radian of error
         private static final double DRIVE_TO_POSE_THETA_D = 0.0;
         private static final AngularVelocity MAX_ANGULAR_VELOCITY_DRIVE_TO_POSE = DegreesPerSecond.of(90);
         private static final AngularAcceleration MAX_ANGULAR_ACCELERATION_DRIVE_TO_POSE = DegreesPerSecondPerSecond
                         .of(20);
+        private static final PIDController driveToPoseThetaAltPid = new PIDController(DRIVE_TO_POSE_THETA_P, 0, DRIVE_TO_POSE_THETA_D);
         // Pose2d automatically wraps to -180 to 180 degrees. if this changes, these
         // values need to change, too.
         private static final Angle DRIVE_TO_POSE_MIN_INPUT = Degrees.of(-180);
@@ -56,6 +58,9 @@ public class DriveToPoseUtil {
         // block
         static {
                 driveToPoseThetaPid.enableContinuousInput(
+                                DRIVE_TO_POSE_MIN_INPUT.in(Degrees),
+                                DRIVE_TO_POSE_MAX_INPUT.in(Degrees));
+                driveToPoseThetaAltPid.enableContinuousInput(
                                 DRIVE_TO_POSE_MIN_INPUT.in(Degrees),
                                 DRIVE_TO_POSE_MAX_INPUT.in(Degrees));
         }
@@ -79,11 +84,11 @@ public class DriveToPoseUtil {
 
                 // calculate desired robot-relative velocities
                 LinearVelocity xDesired = MetersPerSecond
-                                .of(driveToPoseXYPid.calculate(robotPose.get().getX(), goalPose.get().getX()));
+                                .of(driveToPoseXYAltPid.calculate(robotPose.get().getX(), goalPose.get().getX()));
                 LinearVelocity yDesired = MetersPerSecond
-                                .of(driveToPoseXYPid.calculate(robotPose.get().getY(), goalPose.get().getY()));
+                                .of(driveToPoseXYAltPid.calculate(robotPose.get().getY(), goalPose.get().getY()));
                 AngularVelocity thetaDesired = RadiansPerSecond
-                                .of(driveToPoseThetaPid.calculate(robotPose.get().getRotation().getRadians(),
+                                .of(driveToPoseThetaAltPid.calculate(robotPose.get().getRotation().getRadians(),
                                                 goalPose.get().getRotation().getRadians()));
 
                 double xError = robotPose.get().getX() - goalPose.get().getX();

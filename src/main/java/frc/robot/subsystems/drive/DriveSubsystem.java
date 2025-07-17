@@ -52,6 +52,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CommandFactory.RobotPosition;
 import frc.robot.Constants;
@@ -490,7 +491,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         // by using a supplier, the robot knows 'hey, this value might change, so i
         // should
         // check it every time i use this object' thus allowing it to change
-        public Command driveToPoseCommand(Supplier<RobotPosition> robotPosition) {
+        public Command driveToPoseOnExecute(Supplier<RobotPosition> robotPosition) {
                 return this.run(() -> {
                         // basically, bad things can happen if we try to update a normal boolean within
                         // a lambda and access it outside that lambda, but atomic booleans prevent these
@@ -518,7 +519,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                         && alignmentSpeeds.get().omegaRadiansPerSecond == 0;
 
                         setRobotRelativeSpeeds(alignmentSpeeds.get());
-                }).until(() -> atGoal);
+               }).until(() -> atGoal);
         }
 
         public Command disableDriveToPose() {
