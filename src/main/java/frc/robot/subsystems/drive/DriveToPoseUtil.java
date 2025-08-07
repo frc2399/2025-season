@@ -126,9 +126,9 @@ public class DriveToPoseUtil {
                         thetaDesired = RadiansPerSecond.of(Math.copySign(0.1, thetaDesired.in(RadiansPerSecond)));
                 }
 
-                ChassisSpeeds alignmentSpeeds = new ChassisSpeeds(-xDesired.in(MetersPerSecond),
-                                -yDesired.in(MetersPerSecond),
-                                -thetaDesired.in(RadiansPerSecond));
+                ChassisSpeeds alignmentSpeeds = new ChassisSpeeds(xDesired.in(MetersPerSecond),
+                                yDesired.in(MetersPerSecond),
+                                thetaDesired.in(RadiansPerSecond));
 
                 return () -> alignmentSpeeds;
         }
