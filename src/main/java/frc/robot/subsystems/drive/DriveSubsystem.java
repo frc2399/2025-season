@@ -518,7 +518,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         atGoal = alignmentSpeeds.get().vxMetersPerSecond == 0 && alignmentSpeeds.get().vyMetersPerSecond == 0
                                         && alignmentSpeeds.get().omegaRadiansPerSecond == 0;
 
-                        setRobotRelativeSpeeds(alignmentSpeeds.get());
+                       ChassisSpeeds finalAlignmentSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(alignmentSpeeds.get(), robotPose.getRotation());
+
+                        setRobotRelativeSpeeds(finalAlignmentSpeeds);
                }).until(() -> atGoal);
         }
 
