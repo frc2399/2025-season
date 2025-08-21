@@ -1,5 +1,9 @@
 package frc.robot.subsystems.coralIntake;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.CommandFactory.Setpoint;
 
 public class CoralIntakePlacebo implements CoralIntakeIO {
@@ -33,4 +37,23 @@ public class CoralIntakePlacebo implements CoralIntakeIO {
     @Override
     public void updateStates(CoralIntakeIOStates states) {
     }
+
+    @Override
+    public void setVoltage(Voltage volts) {
+    }
+
+    @Override
+        public double getSetSpeed() {
+                return 0;
+        }
+
+        @Override
+        public double getPosition() {
+                return 0;
+        }
+
+        @Override
+        public AngularVelocity getAngularVelocity() {
+                return RotationsPerSecond.of(0);
+        }
 }

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.coralIntake;
 
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.CommandFactory.Setpoint;
 
 public interface CoralIntakeIO {
@@ -25,4 +27,12 @@ public interface CoralIntakeIO {
     public void passiveIntakeIgnoringStall();
 
     public void updateStates(CoralIntakeIOStates states);
+
+    public void setVoltage(Voltage volts);
+
+    public double getSetSpeed();
+
+    public double getPosition();
+
+    public AngularVelocity getAngularVelocity();
 }

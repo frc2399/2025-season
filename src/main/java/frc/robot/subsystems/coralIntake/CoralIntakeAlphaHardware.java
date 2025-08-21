@@ -2,6 +2,7 @@ package frc.robot.subsystems.coralIntake;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.RelativeEncoder;
@@ -19,6 +20,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants;
@@ -171,5 +173,26 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
                                 * coralIntakeRightSparkMax.getBusVoltage();
                 states.leftCurrent = coralIntakeLeftSparkMax.getOutputCurrent();
                 states.rightCurrent = coralIntakeRightSparkMax.getOutputCurrent();
+        }
+
+        @Override
+        public void setVoltage(Voltage volts) {
+                coralIntakeLeftSparkMax.setVoltage(volts);
+                coralIntakeRightSparkMax.setVoltage(volts);
+        }
+
+        @Override
+        public double getSetSpeed() {
+                return 0;
+        }
+
+        @Override
+        public double getPosition() {
+                return 0;
+        }
+
+        @Override
+        public AngularVelocity getAngularVelocity() {
+                return RotationsPerSecond.of(0);
         }
 }

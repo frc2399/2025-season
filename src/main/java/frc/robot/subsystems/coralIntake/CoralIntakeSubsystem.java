@@ -1,12 +1,24 @@
 package frc.robot.subsystems.coralIntake;
 
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.function.Supplier;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutAngularVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.CommandFactory;
 import frc.robot.CommandFactory.Setpoint;
 import frc.robot.subsystems.coralIntake.CoralIntakeIO.CoralIntakeIOStates;
@@ -60,6 +72,37 @@ public class CoralIntakeSubsystem extends SubsystemBase {
     public void setCoralEntry(Boolean coralState) {
         coralEntry.setBoolean(coralState);
         hasCoral = coralState;
+    }
+
+    private final MutVoltage sysIdAppliedVoltage = Volts.mutable(0);
+    private final MutAngle sysIdAngle = Radians.mutable(0);
+    private final MutAngularVelocity sysIdAngularVelocity = RadiansPerSecond.mutable(0);
+
+    public Command coralWristSysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return coralWristTestRoutine.quasistatic(direction);
+    }
+
+    public Command coralWristSysIdDynamic(SysIdRoutine.Direction direction) {
+        return coralWristTestRoutine.dynamic(direction);
+    }
+
+    private SysIdRoutine coralWristTestRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(),
+            new SysIdRoutine.Mechanism(this::setVoltage, log -> {
+                log.motor("coral-wrist-motor")
+                        .voltage(sysIdAppliedVoltage.mut_replace(
+                                // set speed is the value from -1.0 to 1.0; the phrase "set speed" comes from
+                                // the description of the .get() method on the flex spark api
+                                io.getSetSpeed() * RobotController.getBatteryVoltage(), Volts))
+                        .angularPosition(sysIdAngle.mut_replace(io.getPosition(), Rotations))
+                        .angularVelocity(
+                                sysIdAngularVelocity.mut_replace(io.getAngularVelocity().in(RotationsPerSecond), RotationsPerSecond));
+                ;
+            }, this, "coralWrist"));
+
+    // only for sysid
+    private Command setVoltage(Voltage volts) {
+        return this.run(() -> io.setVoltage(volts));
     }
 
     @Override

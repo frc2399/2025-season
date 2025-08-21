@@ -2,6 +2,7 @@ package frc.robot.subsystems.coralIntake;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.RelativeEncoder;
@@ -16,8 +17,10 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants;
 import frc.robot.Constants.MotorConstants;
@@ -139,5 +142,25 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
                 * betaCoralIntakeSparkFlex.getBusVoltage();
         states.rightAppliedVoltage = betaCoralIntakeSparkFlex.getAppliedOutput()
                 * betaCoralIntakeSparkFlex.getBusVoltage();
+    }
+
+    @Override
+    public void setVoltage(Voltage volts) {
+        betaCoralIntakeSparkFlex.setVoltage(volts);
+    }
+
+    @Override
+    public double getSetSpeed() {
+         return betaCoralIntakeSparkFlex.get();
+    }
+
+    @Override
+    public double getPosition() {
+        return betaCoralIntakeEncoder.getPosition();
+    }
+
+    @Override
+    public AngularVelocity getAngularVelocity() {
+        return RotationsPerSecond.of(betaCoralIntakeEncoder.getVelocity() / 60.0); //the subsystem is in RPM which wpi hates for some reason
     }
 }
