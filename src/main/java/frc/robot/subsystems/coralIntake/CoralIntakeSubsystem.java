@@ -78,15 +78,15 @@ public class CoralIntakeSubsystem extends SubsystemBase {
     private final MutAngle sysIdAngle = Radians.mutable(0);
     private final MutAngularVelocity sysIdAngularVelocity = RadiansPerSecond.mutable(0);
 
-    public Command coralWristSysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return coralWristTestRoutine.quasistatic(direction);
+    public Command coralIntakeSysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return coralIntakeTestRoutine.quasistatic(direction);
     }
 
-    public Command coralWristSysIdDynamic(SysIdRoutine.Direction direction) {
-        return coralWristTestRoutine.dynamic(direction);
+    public Command coralIntakeSysIdDynamic(SysIdRoutine.Direction direction) {
+        return coralIntakeTestRoutine.dynamic(direction);
     }
 
-    private SysIdRoutine coralWristTestRoutine = new SysIdRoutine(
+    private SysIdRoutine coralIntakeTestRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(),
             new SysIdRoutine.Mechanism(this::setVoltage, log -> {
                 log.motor("coral-wrist-motor")
