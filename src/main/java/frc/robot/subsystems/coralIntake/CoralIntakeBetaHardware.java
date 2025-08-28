@@ -146,6 +146,7 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     @Override
     public void setVoltage(Voltage volts) {
+        System.out.println("setting voltage to " + volts);
         betaCoralIntakeSparkFlex.setVoltage(volts);
     }
 
