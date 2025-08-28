@@ -80,7 +80,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
 
     public Command coralIntakeSysIdQuasistatic(SysIdRoutine.Direction direction) {
         // confirms this happens
-        return Commands.sequence(this.runOnce(() -> System.out.println("running quasistatic 2")), coralIntakeTestRoutine.quasistatic(direction));
+        return coralIntakeTestRoutine.quasistatic(direction);
     }
 
     public Command coralIntakeSysIdDynamic(SysIdRoutine.Direction direction) {
@@ -89,12 +89,12 @@ public class CoralIntakeSubsystem extends SubsystemBase {
 
     private SysIdRoutine coralIntakeTestRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(),
-            new SysIdRoutine.Mechanism(this::setVoltage, log -> {System.out.println("im logging woah");
+            new SysIdRoutine.Mechanism(this::setVoltage, log -> {
                 log.motor("coral-wrist-motor")
                         .voltage(sysIdAppliedVoltage.mut_replace(
                                 // set speed is the value from -1.0 to 1.0; the phrase "set speed" comes from
                                 // the description of the .get() method on the flex spark api
-                                io.getSetSpeed() * RobotController.getBatteryVoltage(), Volts))
+                                io.getAppliedVoltage(), Volts))
                         .angularPosition(sysIdAngle.mut_replace(io.getPosition(), Rotations))
                         .angularVelocity(
                                 sysIdAngularVelocity.mut_replace(io.getAngularVelocity().in(RotationsPerSecond), RotationsPerSecond));
@@ -103,10 +103,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
 
     // only for sysid
     private void setVoltage(Voltage volts) {
-        System.out.println("hello this is the voltage speaking");
         io.setVoltage(volts);
-        //return Commands.sequence(this.runOnce(() -> System.out.println("hi i am the voltage")), this.runOnce(() -> io.setVoltage(volts)));
-        //return this.runOnce(() -> io.setVoltage(volts)); //confirm this runs via print statement
     }
 
     @Override

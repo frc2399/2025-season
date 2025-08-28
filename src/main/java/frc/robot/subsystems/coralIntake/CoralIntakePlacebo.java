@@ -43,7 +43,7 @@ public class CoralIntakePlacebo implements CoralIntakeIO {
     }
 
     @Override
-        public double getSetSpeed() {
+        public double getAppliedVoltage() {
                 return 0;
         }
 

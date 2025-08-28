@@ -182,7 +182,7 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
         }
 
         @Override
-        public double getSetSpeed() {
+        public double getAppliedVoltage() {
                 return 0;
         }
 

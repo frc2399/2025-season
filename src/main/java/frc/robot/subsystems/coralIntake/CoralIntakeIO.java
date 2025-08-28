@@ -30,7 +30,7 @@ public interface CoralIntakeIO {
 
     public void setVoltage(Voltage volts);
 
-    public double getSetSpeed();
+    public double getAppliedVoltage();
 
     public double getPosition();
 

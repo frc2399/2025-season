@@ -203,8 +203,7 @@ public class RobotContainer {
     operatorController.rightBumper().onTrue(coralIntake.coralIntakeSysIdQuasistatic(SysIdRoutine.Direction.kForward));
     operatorController.leftBumper().onTrue(coralIntake.coralIntakeSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
 
-    operatorController.leftTrigger().onTrue(coralIntake.coralIntakeSysIdDynamic(SysIdRoutine.Direction.kForward));
-    operatorController.rightTrigger().onTrue(coralIntake.coralIntakeSysIdDynamic(SysIdRoutine.Direction.kReverse));
-
+    operatorController.rightTrigger().onTrue(coralIntake.coralIntakeSysIdDynamic(SysIdRoutine.Direction.kForward));
+    operatorController.leftTrigger().onTrue(coralIntake.coralIntakeSysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 }
