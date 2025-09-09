@@ -1,5 +1,6 @@
 package frc.robot.subsystems.coralIntake;
 
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
@@ -97,7 +98,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
                                 io.getAppliedVoltage(), Volts))
                         .angularPosition(sysIdAngle.mut_replace(io.getPosition(), Rotations))
                         .angularVelocity(
-                                sysIdAngularVelocity.mut_replace(io.getAngularVelocity().in(RotationsPerSecond), RotationsPerSecond));
+                                sysIdAngularVelocity.mut_replace(io.getAngularVelocity().in(RPM), RPM));
                 ;
             }, this, "coralWrist"));
 

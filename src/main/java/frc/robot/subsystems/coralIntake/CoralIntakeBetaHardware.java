@@ -16,6 +16,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -37,12 +38,15 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     private static final double BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR = 1.0 / 5.0; // Rotations
     private static final double BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR = 1.0 / 5.0; // RPM
 
-    private static final double BETA_CORAL_INTAKE_P = 0;
+    // private static final double BETA_CORAL_INTAKE_P = 0;
+    private static final double BETA_CORAL_INTAKE_P = 0.0;
     private static final double BETA_CORAL_INTAKE_I = 0;
     private static final double BETA_CORAL_INTAKE_D = 0;
     private static final double BETA_CORAL_INTAKE_FF = 5.0 / MotorConstants.VORTEX_FREE_SPEED.in(RPM);
     private static final double BETA_CORAL_INTAKE_PID_MIN_OUTPUT = -1.0;
     private static final double BETA_CORAL_INTAKE_PID_MAX_OUTPUT = 1.0;
+
+    private static final SimpleMotorFeedforward BETA_CORAL_INTAKE_FF_SYSID = new SimpleMotorFeedforward(0, 0.2362, 0.0088472);
 
     private static final boolean BETA_CORAL_INTAKE_POSITION_WRAPPING_ENABLED = true;
 
@@ -65,7 +69,8 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
         betaCoralIntakeConfig.encoder.positionConversionFactor(BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR)
                 .velocityConversionFactor(BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR);
         betaCoralIntakeConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pidf(BETA_CORAL_INTAKE_P, BETA_CORAL_INTAKE_I, BETA_CORAL_INTAKE_D, BETA_CORAL_INTAKE_FF)
+                .pidf(BETA_CORAL_INTAKE_P, BETA_CORAL_INTAKE_I, BETA_CORAL_INTAKE_D, BETA_CORAL_INTAKE_FF_SYSID.calculate(velocityGoal))
+                //.pidf(BETA_CORAL_INTAKE_P, BETA_CORAL_INTAKE_I, BETA_CORAL_INTAKE_D, BETA_CORAL_INTAKE_FF)
                 .outputRange(BETA_CORAL_INTAKE_PID_MIN_OUTPUT, BETA_CORAL_INTAKE_PID_MAX_OUTPUT)
                 .positionWrappingEnabled(BETA_CORAL_INTAKE_POSITION_WRAPPING_ENABLED);
 
@@ -161,6 +166,6 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     @Override
     public AngularVelocity getAngularVelocity() {
-        return RotationsPerSecond.of(betaCoralIntakeEncoder.getVelocity() / 60.0); //the subsystem is in RPM which wpi hates for some reason
+        return RPM.of(betaCoralIntakeEncoder.getVelocity()); //the subsystem is in RPM which wpi hates for some reason
     }
 }

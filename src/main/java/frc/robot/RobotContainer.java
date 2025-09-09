@@ -88,7 +88,7 @@ public class RobotContainer {
             DriveControlConstants.DRIVE_DEADBAND)),
         true,
         () -> elevator.isElevatorHeightAboveSpeedLimitingThreshold()));
-    //coralIntake.setDefaultCommand(coralIntake.defaultBehavior());
+    coralIntake.setDefaultCommand(coralIntake.defaultBehavior());
     algaeIntake.setDefaultCommand(algaeIntake.defaultBehavior());
     climber.setDefaultCommand(climber.setSpeed(InchesPerSecond.of(0)));
   }
