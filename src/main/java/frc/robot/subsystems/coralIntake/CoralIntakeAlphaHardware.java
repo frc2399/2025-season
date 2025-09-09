@@ -195,4 +195,14 @@ public class CoralIntakeAlphaHardware implements CoralIntakeIO {
         public AngularVelocity getAngularVelocity() {
                 return RotationsPerSecond.of(0);
         }
+
+        @Override
+        public void neg1K() {
+               
+        }
+
+        @Override
+        public void setPos1K() {
+                
+        }
 }

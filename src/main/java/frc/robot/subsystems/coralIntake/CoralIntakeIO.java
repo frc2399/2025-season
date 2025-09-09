@@ -35,4 +35,8 @@ public interface CoralIntakeIO {
     public double getPosition();
 
     public AngularVelocity getAngularVelocity();
+
+    public void neg1K();
+
+    public void setPos1K();
 }

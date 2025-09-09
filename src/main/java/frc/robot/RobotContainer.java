@@ -200,10 +200,13 @@ public class RobotContainer {
     // operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("coral")));
 
     // place local buttons below here, delete before PRing
-    operatorController.rightBumper().onTrue(coralIntake.coralIntakeSysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    operatorController.leftBumper().onTrue(coralIntake.coralIntakeSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // operatorController.rightBumper().onTrue(coralIntake.coralIntakeSysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // operatorController.leftBumper().onTrue(coralIntake.coralIntakeSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
 
-    operatorController.rightTrigger().onTrue(coralIntake.coralIntakeSysIdDynamic(SysIdRoutine.Direction.kForward));
-    operatorController.leftTrigger().onTrue(coralIntake.coralIntakeSysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // operatorController.rightTrigger().onTrue(coralIntake.coralIntakeSysIdDynamic(SysIdRoutine.Direction.kForward));
+    // operatorController.leftTrigger().onTrue(coralIntake.coralIntakeSysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    operatorController.rightBumper().onTrue(coralIntake.pos1K());
+    operatorController.leftBumper().onTrue(coralIntake.neg1K());
   }
 }

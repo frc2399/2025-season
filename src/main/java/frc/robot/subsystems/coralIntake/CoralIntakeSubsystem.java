@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.Supplier;
@@ -45,6 +44,18 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         });
     }
 
+    public Command pos1K() {
+        return this.runOnce(() -> {
+            io.setPos1K();
+        });
+    }
+
+    public Command neg1K() {
+        return this.runOnce(() -> {
+            io.neg1K();
+        });
+    }
+
     public Command defaultBehavior() {
         return this.run(() -> {
             if (hasCoral) {
@@ -77,7 +88,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
 
     private final MutVoltage sysIdAppliedVoltage = Volts.mutable(0);
     private final MutAngle sysIdAngle = Radians.mutable(0);
-    private final MutAngularVelocity sysIdAngularVelocity = RadiansPerSecond.mutable(0);
+    private final MutAngularVelocity sysIdAngularVelocity = RPM.mutable(0);
 
     public Command coralIntakeSysIdQuasistatic(SysIdRoutine.Direction direction) {
         // confirms this happens
