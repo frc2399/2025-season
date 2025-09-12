@@ -43,7 +43,7 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     private static final double BETA_CORAL_INTAKE_I = 0;
     private static final double BETA_CORAL_INTAKE_D = 0;
     private static final double BETA_CORAL_INTAKE_FF = 5.0 / MotorConstants.VORTEX_FREE_SPEED.in(RPM);
-    private static final double ONE_OVER_KV_FF = 1.0 / (0.2362 * 60);
+    private static final double ONE_OVER_KV_FF = 1.0 / (0.2362 * 60 * 85);
     private static final double BETA_CORAL_INTAKE_PID_MIN_OUTPUT = -1.0;
     private static final double BETA_CORAL_INTAKE_PID_MAX_OUTPUT = 1.0;
 
@@ -166,7 +166,7 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     @Override
     public AngularVelocity getAngularVelocity() {
-        return RPM.of(betaCoralIntakeEncoder.getVelocity()); //the subsystem is in RPM which wpi hates for some reason
+        return RPM.of(betaCoralIntakeEncoder.getVelocity());
     }
 
     @Override

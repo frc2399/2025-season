@@ -206,7 +206,7 @@ public class RobotContainer {
     // operatorController.rightTrigger().onTrue(coralIntake.coralIntakeSysIdDynamic(SysIdRoutine.Direction.kForward));
     // operatorController.leftTrigger().onTrue(coralIntake.coralIntakeSysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    operatorController.rightBumper().onTrue(coralIntake.pos1K());
-    operatorController.leftBumper().onTrue(coralIntake.neg1K());
+    // operatorController.rightBumper().onTrue(coralIntake.pos1K());
+    // operatorController.leftBumper().onTrue(coralIntake.neg1K());
   }
 }

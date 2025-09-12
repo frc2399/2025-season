@@ -4,14 +4,18 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.Supplier;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -91,7 +95,6 @@ public class CoralIntakeSubsystem extends SubsystemBase {
     private final MutAngularVelocity sysIdAngularVelocity = RPM.mutable(0);
 
     public Command coralIntakeSysIdQuasistatic(SysIdRoutine.Direction direction) {
-        // confirms this happens
         return coralIntakeTestRoutine.quasistatic(direction);
     }
 
@@ -99,8 +102,12 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         return coralIntakeTestRoutine.dynamic(direction);
     }
 
+    private final Velocity<VoltageUnit> rampRate = Volts.of(0.5).per(Second);
+    private final Voltage stepVoltage = Volts.of(3.5);
+    private final Time timeout = Second.of(3.5);
+
     private SysIdRoutine coralIntakeTestRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(),
+            new SysIdRoutine.Config(rampRate, stepVoltage, timeout),
             new SysIdRoutine.Mechanism(this::setVoltage, log -> {
                 log.motor("coral-wrist-motor")
                         .voltage(sysIdAppliedVoltage.mut_replace(
