@@ -156,6 +156,7 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     @Override
     public double getAppliedVoltage() {
+        // applied output is the fraction of max total output (-1 to 1), bus voltage is what's given to controller by motor, appliedVoltage is how much voltage is actually used
          return betaCoralIntakeSparkFlex.getAppliedOutput() * betaCoralIntakeSparkFlex.getBusVoltage(); //yes this is applied voltage
     }
 
