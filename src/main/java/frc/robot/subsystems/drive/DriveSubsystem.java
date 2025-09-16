@@ -59,6 +59,7 @@ import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SpeedConstants;
 import frc.robot.Robot;
 import frc.robot.subsystems.gyro.Gyro;
+import frc.robot.vision.LimelightHelpers.RawFiducial;
 import frc.robot.vision.VisionPoseEstimator.DriveBase;
 
 public class DriveSubsystem extends SubsystemBase implements DriveBase {
@@ -530,6 +531,11 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
                         rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
                 });
+        }
+
+        //field calibration stuff
+        public void calibrateForNearestTag(Supplier<RawFiducial[]> fiducials) {
+                ReefscapeVisionUtil.calibrateForNearestTag(fiducials, () -> robotPose);
         }
 
         private void logAndUpdateDriveSubsystemStates() {

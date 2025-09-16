@@ -2,15 +2,24 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.Inches;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import javax.xml.crypto.dsig.Transform;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import frc.robot.CommandFactory.RobotPosition;
+import frc.robot.vision.LimelightHelpers.RawFiducial;
 
 public class ReefscapeVisionUtil {
         private static final Pose2d TAG_6 = new Pose2d(13.474, 3.306, Rotation2d.fromDegrees(-60));
@@ -96,8 +105,34 @@ public class ReefscapeVisionUtil {
                 return goalPoseSupplier;
         }
 
-        // for field calibration
-        public static void makeCalibration() {
-                
+        // field calibration
+        public static void calibrateForNearestTag(Supplier<RawFiducial[]> fiducials, Supplier<Pose2d> robotPose) {
+                // we should be lining up such that the tag we are trying to calibrate is the
+                // closest (if not only!) tag visible, so we want to find the tag with the
+                // smallest distance to robot value
+                RawFiducial best = fiducials.get()[0];
+                double range = Double.POSITIVE_INFINITY;
+                for (RawFiducial rf : fiducials.get()) {
+                        if (rf.distToRobot < range) {
+                                range = rf.distToRobot;
+                                best = rf;
+                        }
+                }
+                AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+                Optional<Pose3d> tagPose = fieldLayout.getTagPose(best.id);
+                // calculates transform from the identified tag to the robot and writes the data
+                // to the log file on the thumb drive
+                if (tagPose.isPresent()) {
+                        Transform2d tagToRobot = new Transform2d(tagPose.get().toPose2d(), robotPose.get());
+                        String toLog = "Tag: " + best.id + "\nX offset: " + tagToRobot.getX() + "\nY offset: "
+                                        + tagToRobot.getY() + "\n\n";
+                        try {
+                                FileWriter fileWriter = new FileWriter("/media/sda1/field-calibration-data.txt", true);
+                                fileWriter.write(toLog);
+                                fileWriter.close();
+                        } catch (IOException e) {
+                                e.printStackTrace();
+                        }
+                }
         }
 }
