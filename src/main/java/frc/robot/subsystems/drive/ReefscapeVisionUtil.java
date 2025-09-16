@@ -95,4 +95,9 @@ public class ReefscapeVisionUtil {
                 Supplier<Pose2d> goalPoseSupplier = () -> goalPose;
                 return goalPoseSupplier;
         }
+
+        // for field calibration
+        public static void makeCalibration() {
+                
+        }
 }

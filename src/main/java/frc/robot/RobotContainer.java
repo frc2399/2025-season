@@ -159,7 +159,7 @@ public class RobotContainer {
         {
 
           SmartDashboard.putBoolean("reseting odometry red", true);
-          var poseEstimate = visionPoseEstimator.getPoseEstimate();
+          var poseEstimate = visionPoseEstimator.getOptionalPoseEstimate();
           poseEstimate.ifPresent((PoseEstimate pose) -> {
             var poseCopy = pose.pose;
             drive.resetOdometry(new Pose2d(poseCopy.getTranslation(), new Rotation2d(gyro.getYaw())));
@@ -176,7 +176,7 @@ public class RobotContainer {
         {
 
           SmartDashboard.putBoolean("reseting odometry blue", true);
-          var poseEstimate = visionPoseEstimator.getPoseEstimate();
+          var poseEstimate = visionPoseEstimator.getOptionalPoseEstimate();
           poseEstimate.ifPresent((PoseEstimate pose) -> {
             var poseCopy = pose.pose;
             drive.resetOdometry(new Pose2d(poseCopy.getTranslation(), new Rotation2d(gyro.getYaw())));

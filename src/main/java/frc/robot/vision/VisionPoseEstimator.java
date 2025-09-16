@@ -26,6 +26,8 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SpeedConstants;
 import frc.robot.SubsystemFactory.RobotType;
+import frc.robot.vision.LimelightHelpers.PoseEstimate;
+import frc.robot.vision.LimelightHelpers.RawFiducial;
 
 public final class VisionPoseEstimator {
 
@@ -68,6 +70,7 @@ public final class VisionPoseEstimator {
     private final StructPublisher<Pose2d> mt2Publisher;
     private final DriveBase driveBase;
     private final String limelightName, limelightHostname;
+    private Optional<PoseEstimate> optionalPoseEstimate = Optional.of(new PoseEstimate());
 
     /**
      * Create a VisionPoseEstimator
@@ -118,7 +121,7 @@ public final class VisionPoseEstimator {
      * @return An Optional containing MegaTag2 pose estimate from the Limelight, or
      *         Optional.empty if it is unavailable or untrustworthy
      */
-    public Optional<LimelightHelpers.PoseEstimate> getPoseEstimate() {
+    public Optional<LimelightHelpers.PoseEstimate> getOptionalPoseEstimate() {
         if (Math.abs(driveBase.getYawPerSecond().getRotations()) > MAX_ROTATIONS_PER_SECOND.in(RotationsPerSecond)) {
             return Optional.empty();
         } else if (driveBase.getLinearSpeed() > MAX_DRIVETRAIN_SPEED_FOR_VISION_UPDATE.in(MetersPerSecond)) {
@@ -138,7 +141,8 @@ public final class VisionPoseEstimator {
         // system here _has_ to match the WPILib coordinate system, where Yaw is CCW +
         // and 0 faces the red alliance wall
         LimelightHelpers.SetRobotOrientation(limelightName, driveBase.getYaw().getDegrees(), 0, 0, 0, 0, 0);
-        getPoseEstimate().ifPresent((pe) -> {
+        optionalPoseEstimate = getOptionalPoseEstimate();
+        optionalPoseEstimate.ifPresent((pe) -> {
             mt2Publisher.set(pe.pose);
             // LimelightHelpers doesn't expose a helper method for these, layout is:
             // [MT1x, MT1y, MT1z, MT1roll, MT1pitch, MT1Yaw, MT2x, MT2y, MT2z, MT2roll,
@@ -147,5 +151,14 @@ public final class VisionPoseEstimator {
             driveBase.addVisionMeasurement(pe.pose, pe.timestampSeconds,
                     VecBuilder.fill(stddevs[6], stddevs[7], Double.POSITIVE_INFINITY));
         });
+    }
+
+    public RawFiducial[] getRawFiducials() {
+        if (optionalPoseEstimate != null) {
+            PoseEstimate pe = getOptionalPoseEstimate().get();
+            return pe.rawFiducials;
+        } else {
+            return new RawFiducial[0];
+        }
     }
 }
