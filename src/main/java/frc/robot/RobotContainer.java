@@ -144,6 +144,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("reset odometry for facing red wall", resetOdometryRed());
     SmartDashboard.putData("reset odometry for facing blue wall", resetOdometryBlue());
+    SmartDashboard.putData("get calibration for nearest tag", calibrateForNearestTag());
 
   }
 
@@ -187,7 +188,7 @@ public class RobotContainer {
 
   public Command calibrateForNearestTag() {
     // raw fiducials are basically raw data for each tag; sending as a supplier so that it refreshes every periodic
-    return Commands.runOnce(() -> drive.calibrateForNearestTag(() -> visionPoseEstimator.getRawFiducials()));
+    return Commands.runOnce(() -> drive.calibrateForNearestTag(() -> visionPoseEstimator.getRawFiducials())).ignoringDisable(true);
   }
 
   private void configureButtonBindingsOperator() {
