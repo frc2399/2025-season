@@ -154,8 +154,8 @@ public final class VisionPoseEstimator {
     }
 
     public RawFiducial[] getRawFiducials() {
-        if (optionalPoseEstimate != null) {
-            PoseEstimate pe = getOptionalPoseEstimate().get();
+        if (optionalPoseEstimate.isPresent()) {
+            PoseEstimate pe = optionalPoseEstimate.get();
             return pe.rawFiducials;
         } else {
             return new RawFiducial[0];

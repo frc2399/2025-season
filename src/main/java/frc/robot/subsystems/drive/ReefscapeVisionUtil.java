@@ -22,6 +22,7 @@ import frc.robot.CommandFactory.RobotPosition;
 import frc.robot.vision.LimelightHelpers.RawFiducial;
 
 public class ReefscapeVisionUtil {
+        
         private static final Pose2d TAG_6 = new Pose2d(13.474, 3.306, Rotation2d.fromDegrees(-60));
         private static final Pose2d TAG_7 = new Pose2d(13.89, 4.026, Rotation2d.kZero);
         private static final Pose2d TAG_8 = new Pose2d(13.474, 4.745, Rotation2d.fromDegrees(60));
@@ -35,6 +36,8 @@ public class ReefscapeVisionUtil {
         private static final Pose2d TAG_20 = new Pose2d(4.905, 4.745, Rotation2d.fromDegrees(60));
         private static final Pose2d TAG_21 = new Pose2d(5.321, 4.026, Rotation2d.kZero);
         private static final Pose2d TAG_22 = new Pose2d(4.905, 3.306, Rotation2d.fromDegrees(-60));
+
+        private static Pose2d[] tagPoses = {null, null, null, null, null, TAG_6, TAG_7, TAG_8, TAG_9, TAG_10, TAG_11};
 
         private static final Transform2d REEF_TO_ROBOT = new Transform2d(Inches.of(29.5), Inches.zero(),
                         Rotation2d.k180deg);
@@ -110,29 +113,30 @@ public class ReefscapeVisionUtil {
                 // we should be lining up such that the tag we are trying to calibrate is the
                 // closest (if not only!) tag visible, so we want to find the tag with the
                 // smallest distance to robot value
-                RawFiducial best = fiducials.get()[0];
-                double range = Double.POSITIVE_INFINITY;
-                for (RawFiducial rf : fiducials.get()) {
-                        if (rf.distToRobot < range) {
-                                range = rf.distToRobot;
-                                best = rf;
+                if (fiducials.get().length == 0) {
+                                System.out.println("cannot see any tags!");
+                } else {
+                        RawFiducial best = fiducials.get()[0];
+                        double range = Double.POSITIVE_INFINITY;
+                        for (RawFiducial rf : fiducials.get()) {
+                                if (rf.distToRobot < range) {
+                                        range = rf.distToRobot;
+                                        best = rf;
+                                }
                         }
-                }
-                AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
-                Optional<Pose3d> tagPose = fieldLayout.getTagPose(best.id);
-                // calculates transform from the identified tag to the robot and writes the data
-                // to the log file on the thumb drive
-                if (tagPose.isPresent()) {
-                        Transform2d tagToRobot = new Transform2d(tagPose.get().toPose2d(), robotPose.get());
+                        Pose2d tagPose = tagPoses[best.id - 1];
+                        // calculates transform from the identified tag to the robot and writes the data
+                        // to the log file on the thumb drive
+                        Transform2d tagToRobot = new Transform2d(tagPose, robotPose.get());
                         String toLog = "Tag: " + best.id + "\nX offset: " + tagToRobot.getX() + "\nY offset: "
-                                        + tagToRobot.getY() + "\n\n";
-                        try {
+                                + tagToRobot.getY() + "\n\n";                        try {
                                 FileWriter fileWriter = new FileWriter("/media/sda1/field-calibration-data.txt", true);
                                 fileWriter.write(toLog);
                                 fileWriter.close();
                         } catch (IOException e) {
                                 e.printStackTrace();
                         }
+                        
                 }
         }
 }
