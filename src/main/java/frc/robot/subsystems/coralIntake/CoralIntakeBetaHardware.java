@@ -38,16 +38,17 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     private static final double BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR = 1.0 / 5.0; // Rotations
     private static final double BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR = 1.0 / 5.0; // RPM
 
-   // private static final double BETA_CORAL_INTAKE_P = 0;
-    private static final double BETA_CORAL_INTAKE_P = 0.0;
+    // private static final double BETA_CORAL_INTAKE_P = 0;
+    private static final double BETA_CORAL_INTAKE_P = 0.00;
     private static final double BETA_CORAL_INTAKE_I = 0;
     private static final double BETA_CORAL_INTAKE_D = 0;
     private static final double BETA_CORAL_INTAKE_FF = 5.0 / MotorConstants.VORTEX_FREE_SPEED.in(RPM);
-    private static final double ONE_OVER_KV_FF = 0.2362/60;
+    private static final double SYSID_FF = 0.098056 / (60);
     private static final double BETA_CORAL_INTAKE_PID_MIN_OUTPUT = -1.0;
     private static final double BETA_CORAL_INTAKE_PID_MAX_OUTPUT = 1.0;
 
-    private static final SimpleMotorFeedforward BETA_CORAL_INTAKE_FF_SYSID = new SimpleMotorFeedforward(0.0, 0.0094479, 0.00035389);
+    private static final SimpleMotorFeedforward BETA_CORAL_INTAKE_FF_SYSID = new SimpleMotorFeedforward(0.0, 0.0094479,
+            0.00035389);
 
     private static final boolean BETA_CORAL_INTAKE_POSITION_WRAPPING_ENABLED = true;
 
@@ -70,8 +71,8 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
         betaCoralIntakeConfig.encoder.positionConversionFactor(BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR)
                 .velocityConversionFactor(BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR);
         betaCoralIntakeConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                // .pidf(BETA_CORAL_INTAKE_P, BETA_CORAL_INTAKE_I, BETA_CORAL_INTAKE_D, ONE_OVER_KV_FF)
-                .pidf(BETA_CORAL_INTAKE_P, BETA_CORAL_INTAKE_I, BETA_CORAL_INTAKE_D, BETA_CORAL_INTAKE_FF)
+                .pidf(BETA_CORAL_INTAKE_P, BETA_CORAL_INTAKE_I, BETA_CORAL_INTAKE_D, SYSID_FF)
+               // .pidf(BETA_CORAL_INTAKE_P, BETA_CORAL_INTAKE_I, BETA_CORAL_INTAKE_D, BETA_CORAL_INTAKE_FF)
                 .outputRange(BETA_CORAL_INTAKE_PID_MIN_OUTPUT, BETA_CORAL_INTAKE_PID_MAX_OUTPUT)
                 .positionWrappingEnabled(BETA_CORAL_INTAKE_POSITION_WRAPPING_ENABLED);
 
@@ -133,8 +134,8 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     @Override
     public void passiveIntakeIgnoringStall() {
-            betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_PASSIVE_SPEED.in(RPM),
-                    ControlType.kVelocity);
+        betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_PASSIVE_SPEED.in(RPM),
+                ControlType.kVelocity);
     }
 
     @Override
@@ -156,8 +157,12 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     @Override
     public double getAppliedVoltage() {
-        // applied output is the fraction of max total output (-1 to 1), bus voltage is what's given to controller by motor, appliedVoltage is how much voltage is actually used
-         return betaCoralIntakeSparkFlex.getAppliedOutput() * betaCoralIntakeSparkFlex.getBusVoltage(); //yes this is applied voltage
+        // applied output is the fraction of max total output (-1 to 1), bus voltage is
+        // what's given to controller by motor, appliedVoltage is how much voltage is
+        // actually used
+        return betaCoralIntakeSparkFlex.getAppliedOutput() * betaCoralIntakeSparkFlex.getBusVoltage(); // yes this is
+                                                                                                       // applied
+                                                                                                       // voltage
     }
 
     @Override
