@@ -128,6 +128,8 @@ public final class VisionPoseEstimator {
             return Optional.empty();
         }
         var est = Optional.ofNullable(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName));
+        // should also filter for z coordinate, outside field bound
+
         // Reject poses where we can see no tags or are at the "uh oh something went
         // wrong" 0,0 coordinate
         return est.filter((pe) -> pe.tagCount > 0 && (pe.pose.getX() != 0 && pe.pose.getY() != 0));

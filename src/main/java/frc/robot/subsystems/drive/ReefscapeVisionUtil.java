@@ -5,7 +5,9 @@ import static edu.wpi.first.units.Units.Inches;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -37,7 +39,23 @@ public class ReefscapeVisionUtil {
         private static final Pose2d TAG_21 = new Pose2d(5.321, 4.026, Rotation2d.kZero);
         private static final Pose2d TAG_22 = new Pose2d(4.905, 3.306, Rotation2d.fromDegrees(-60));
 
-        private static Pose2d[] tagPoses = {null, null, null, null, null, TAG_6, TAG_7, TAG_8, TAG_9, TAG_10, TAG_11};
+        // this is a map - allows us to access a certain tag pose based on its id
+        private static Map<Integer, Pose2d> tagPosesMap = new HashMap<>();
+        // this is a static block - allows adding to the map in a static fashion; maps have to be static per java
+        static {
+                tagPosesMap.put(6, TAG_6);
+                tagPosesMap.put(7, TAG_7);
+                tagPosesMap.put(8, TAG_8);
+                tagPosesMap.put(9, TAG_9);
+                tagPosesMap.put(10, TAG_10);
+                tagPosesMap.put(11, TAG_11);
+                tagPosesMap.put(17, TAG_17);
+                tagPosesMap.put(18, TAG_18);
+                tagPosesMap.put(19, TAG_19);
+                tagPosesMap.put(20, TAG_20);
+                tagPosesMap.put(21, TAG_21);
+                tagPosesMap.put(22, TAG_22);
+        }
 
         private static final Transform2d REEF_TO_ROBOT = new Transform2d(Inches.of(29.5), Inches.zero(),
                         Rotation2d.k180deg);
@@ -124,12 +142,18 @@ public class ReefscapeVisionUtil {
                                         best = rf;
                                 }
                         }
-                        Pose2d tagPose = tagPoses[best.id - 1];
+                        Pose2d tagPose = tagPosesMap.get(best.id);
                         // calculates transform from the identified tag to the robot and writes the data
                         // to the log file on the thumb drive
-                        Transform2d tagToRobot = new Transform2d(tagPose, robotPose.get());
+                       // Transform2d tagToRobot = new Transform2d(tagPose, robotPose.get());
+                        Transform2d robotTransform = new Transform2d(Pose2d.kZero, robotPose.get());
+                        Pose2d tagToRobot = tagPose.transformBy(robotTransform.times(-1));
                         String toLog = "Tag: " + best.id + "\nX offset: " + tagToRobot.getX() + "\nY offset: "
-                                + tagToRobot.getY() + "\n\n";                        try {
+                                + tagToRobot.getY() + "\n\n";
+                        System.out.println(toLog);      
+                        System.out.println(tagPose);
+                        System.out.println(robotPose.get());                  
+                        try {
                                 FileWriter fileWriter = new FileWriter("/media/sda1/field-calibration-data.txt", true);
                                 fileWriter.write(toLog);
                                 fileWriter.close();

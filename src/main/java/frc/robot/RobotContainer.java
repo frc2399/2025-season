@@ -186,6 +186,10 @@ public class RobotContainer {
         }).ignoringDisable(true));
   }
 
+  public Command incrementGyroPos60() {
+    return (gyro.setYaw(Degrees.of(gyro.getYaw().in(Degrees) + 60)).ignoringDisable(true));
+  }
+
   public Command calibrateForNearestTag() {
     // raw fiducials are basically raw data for each tag; sending as a supplier so that it refreshes every periodic
     return Commands.runOnce(() -> drive.calibrateForNearestTag(() -> visionPoseEstimator.getRawFiducials())).ignoringDisable(true);
