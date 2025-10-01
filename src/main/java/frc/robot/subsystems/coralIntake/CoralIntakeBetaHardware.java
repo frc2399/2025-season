@@ -43,7 +43,7 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     private static final double BETA_CORAL_INTAKE_I = 0;
     private static final double BETA_CORAL_INTAKE_D = 0;
     private static final double BETA_CORAL_INTAKE_FF = 1.0/565;
-    private static final double SYSID_FF = 0.098056 / (60);
+    private static final double SYSID_FF = 0.0081696 / (12); // ill explain why the 12 if this works
     private static final double BETA_CORAL_INTAKE_PID_MIN_OUTPUT = -1.0;
     private static final double BETA_CORAL_INTAKE_PID_MAX_OUTPUT = 1.0;
 
