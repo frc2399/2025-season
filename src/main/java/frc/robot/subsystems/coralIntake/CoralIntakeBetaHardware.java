@@ -43,7 +43,7 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     private static final double BETA_CORAL_INTAKE_I = 0;
     private static final double BETA_CORAL_INTAKE_D = 0;
     private static final double BETA_CORAL_INTAKE_FF = 1.0/565;
-    private static final double SYSID_FF = 0.0081696 / (12); // ill explain why the 12 if this works
+    private static final double SYSID_FF = 0.57 / (60 * 12); // ill explain why the 12 if this works
     private static final double BETA_CORAL_INTAKE_PID_MIN_OUTPUT = -1.0;
     private static final double BETA_CORAL_INTAKE_PID_MAX_OUTPUT = 1.0;
 
@@ -72,7 +72,8 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
                 .velocityConversionFactor(BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR);
         betaCoralIntakeConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                .pidf(BETA_CORAL_INTAKE_P, BETA_CORAL_INTAKE_I, BETA_CORAL_INTAKE_D, SYSID_FF)
-               .pidf(BETA_CORAL_INTAKE_P, BETA_CORAL_INTAKE_I, BETA_CORAL_INTAKE_D, BETA_CORAL_INTAKE_FF)
+               //.pidf(BETA_CORAL_INTAKE_P, BETA_CORAL_INTAKE_I, BETA_CORAL_INTAKE_D, BETA_CORAL_INTAKE_FF)
+               
                 .outputRange(BETA_CORAL_INTAKE_PID_MIN_OUTPUT, BETA_CORAL_INTAKE_PID_MAX_OUTPUT)
                 .positionWrappingEnabled(BETA_CORAL_INTAKE_POSITION_WRAPPING_ENABLED);
 
