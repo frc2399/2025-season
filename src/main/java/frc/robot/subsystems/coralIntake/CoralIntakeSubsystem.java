@@ -48,18 +48,6 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         });
     }
 
-    public Command pos1K() {
-        return this.runOnce(() -> {
-            io.setPos1K();
-        });
-    }
-
-    public Command neg1K() {
-        return this.runOnce(() -> {
-            io.neg1K();
-        });
-    }
-
     public Command defaultBehavior() {
         return this.run(() -> {
             if (hasCoral) {
@@ -102,9 +90,9 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         return coralIntakeTestRoutine.dynamic(direction);
     }
 
-    private final Velocity<VoltageUnit> rampRate = Volts.of(0.5).per(Second);
+    private final Velocity<VoltageUnit> rampRate = Volts.of(0.25).per(Second);
     private final Voltage stepVoltage = Volts.of(3.5);
-    private final Time timeout = Second.of(3.5);
+    private final Time timeout = Second.of(40);
 
     private SysIdRoutine coralIntakeTestRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(rampRate, stepVoltage, timeout),
@@ -116,12 +104,13 @@ public class CoralIntakeSubsystem extends SubsystemBase {
                                 io.getAppliedVoltage(), Volts))
                         .angularPosition(sysIdAngle.mut_replace(io.getPosition(), Rotations))
                         .angularVelocity(
-                                sysIdAngularVelocity.mut_replace(io.getAngularVelocity().in(RPM), RPM));
+                                sysIdAngularVelocity.mut_replace(io.getAngularVelocity()));
                 ;
             }, this, "coralWrist"));
 
     // only for sysid
     private void setVoltage(Voltage volts) {
+        SmartDashboard.putNumber("coralIntake/SysIdRequestedVoltage", volts.in(Volts));
         io.setVoltage(volts);
     }
 

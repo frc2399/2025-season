@@ -3,11 +3,13 @@ package frc.robot.subsystems.coralIntake;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
@@ -39,11 +41,13 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     private static final double BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR = 1.0 / 5.0; // RPM
 
     // private static final double BETA_CORAL_INTAKE_P = 0;
-    private static final double BETA_CORAL_INTAKE_P = 0.00;
+    private static final double BETA_CORAL_INTAKE_P = 0.0;
     private static final double BETA_CORAL_INTAKE_I = 0;
     private static final double BETA_CORAL_INTAKE_D = 0;
     private static final double BETA_CORAL_INTAKE_FF = 1.0/565;
-    private static final double SYSID_FF = 0.57 / (60 * 12); // ill explain why the 12 if this works
+   // private static final double SYSID_FF = 0.57 / (60 * 12); // ill explain why the 12 if this works - MANUAL VALUE SAVING FOR LATER
+    private static final double SYSID_FF = 0.53901 / 60 /12;
+    private static final double SYSID_KS = 0.057959; 
     private static final double BETA_CORAL_INTAKE_PID_MIN_OUTPUT = -1.0;
     private static final double BETA_CORAL_INTAKE_PID_MAX_OUTPUT = 1.0;
 
@@ -67,7 +71,8 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
         CORAL_BETA_DEBOUNCER = new Debouncer(debouncerTime.in(Seconds));
         coralIntakeStallThreshold = stallThreshold;
         betaCoralIntakeConfig.inverted(BETA_CORAL_INTAKE_MOTOR_INVERTED).idleMode(BETA_CORAL_INTAKE_IDLE_MODE)
-                .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
+                .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps))
+               .voltageCompensation(12);
         betaCoralIntakeConfig.encoder.positionConversionFactor(BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR)
                 .velocityConversionFactor(BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR);
         betaCoralIntakeConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -94,7 +99,9 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     @Override
     public void intake() {
-        betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_INTAKE_SPEED.in(RPM), ControlType.kVelocity);
+        double kS = SYSID_KS * Math.signum(SpeedConstants.BETA_CORAL_INTAKE_SPEED.in(RPM));
+        // kS = 0;
+        betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_INTAKE_SPEED.in(RPM), ControlType.kVelocity, ClosedLoopSlot.kSlot0, kS, ArbFFUnits.kVoltage);
         velocityGoal = SpeedConstants.BETA_CORAL_INTAKE_SPEED.in(RPM);
     }
 
@@ -174,15 +181,5 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     @Override
     public AngularVelocity getAngularVelocity() {
         return RPM.of(betaCoralIntakeEncoder.getVelocity());
-    }
-
-    @Override
-    public void neg1K() {
-        betaCoralIntakeClosedLoop.setReference(-1000, ControlType.kVelocity);
-    }
-
-    @Override
-    public void setPos1K() {
-        betaCoralIntakeClosedLoop.setReference(1000, ControlType.kVelocity);
     }
 }
