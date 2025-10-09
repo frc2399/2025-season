@@ -29,7 +29,8 @@ public class DriveToPoseUtil {
         // profiled pid controllers for driving to a pose and related constants
         private static final double DRIVE_TO_POSE_XY_P = 4.75;
         private static final double DRIVE_TO_POSE_XY_D = 0.0;
-        private static final PIDController driveToPoseXYAltPid = new PIDController(DRIVE_TO_POSE_XY_P, 0, DRIVE_TO_POSE_XY_D);
+        private static final PIDController driveToPoseXPid = new PIDController(DRIVE_TO_POSE_XY_P, 0, DRIVE_TO_POSE_XY_D);
+        private static final PIDController driveToPoseYPid = new PIDController(DRIVE_TO_POSE_XY_D, 0, DRIVE_TO_POSE_XY_D);
 
         private static final double DRIVE_TO_POSE_THETA_P = 3.5; // radians per second per radian of error
         private static final double DRIVE_TO_POSE_THETA_D = 0.0;
@@ -70,9 +71,9 @@ public class DriveToPoseUtil {
 
                 // calculate desired robot-relative velocities
                 LinearVelocity xDesired = MetersPerSecond
-                                .of(driveToPoseXYAltPid.calculate(robotPose.get().getX(), goalPose.get().getX()));
+                                .of(driveToPoseXPid.calculate(robotPose.get().getX(), goalPose.get().getX()));
                 LinearVelocity yDesired = MetersPerSecond
-                                .of(driveToPoseXYAltPid.calculate(robotPose.get().getY(), goalPose.get().getY()));
+                                .of(driveToPoseYPid.calculate(robotPose.get().getY(), goalPose.get().getY()));
                 AngularVelocity thetaDesired = RadiansPerSecond
                                 .of(driveToPoseThetaAltPid.calculate(robotPose.get().getRotation().getRadians(),
                                                 goalPose.get().getRotation().getRadians()));
