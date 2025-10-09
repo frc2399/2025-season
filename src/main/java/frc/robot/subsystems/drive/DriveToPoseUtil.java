@@ -29,37 +29,21 @@ public class DriveToPoseUtil {
         // profiled pid controllers for driving to a pose and related constants
         private static final double DRIVE_TO_POSE_XY_P = 4.75;
         private static final double DRIVE_TO_POSE_XY_D = 0.0;
-        private static final LinearVelocity MAX_VELOCITY_DRIVE_TO_POSE = MetersPerSecond.of(4);
-        private static final LinearAcceleration MAX_ACCELERATION_DRIVE_TO_POSE = MetersPerSecondPerSecond.of(1.5);
-        // private static final ProfiledPIDController driveToPoseXYPid = new ProfiledPIDController(
-        //                 DRIVE_TO_POSE_XY_P, 0, DRIVE_TO_POSE_XY_D,
-        //                 new Constraints(MAX_VELOCITY_DRIVE_TO_POSE.in(MetersPerSecond),
-        //                                 MAX_ACCELERATION_DRIVE_TO_POSE.in(MetersPerSecondPerSecond)));
         private static final PIDController driveToPoseXYAltPid = new PIDController(DRIVE_TO_POSE_XY_P, 0, DRIVE_TO_POSE_XY_D);
 
         private static final double DRIVE_TO_POSE_THETA_P = 3.5; // radians per second per radian of error
         private static final double DRIVE_TO_POSE_THETA_D = 0.0;
-        private static final AngularVelocity MAX_ANGULAR_VELOCITY_DRIVE_TO_POSE = DegreesPerSecond.of(90);
-        private static final AngularAcceleration MAX_ANGULAR_ACCELERATION_DRIVE_TO_POSE = DegreesPerSecondPerSecond
-                        .of(20);
         private static final PIDController driveToPoseThetaAltPid = new PIDController(DRIVE_TO_POSE_THETA_P, 0, DRIVE_TO_POSE_THETA_D);
         // Pose2d automatically wraps to -180 to 180 degrees. if this changes, these
         // values need to change, too.
         private static final Angle DRIVE_TO_POSE_MIN_INPUT = Degrees.of(-180);
         private static final Angle DRIVE_TO_POSE_MAX_INPUT = Degrees.of(180);
-        // private static ProfiledPIDController driveToPoseThetaPid = new ProfiledPIDController(
-        //                 DRIVE_TO_POSE_THETA_P, 0, DRIVE_TO_POSE_THETA_D,
-        //                 new Constraints(MAX_ANGULAR_VELOCITY_DRIVE_TO_POSE.in(RadiansPerSecond),
-        //                                 MAX_ANGULAR_ACCELERATION_DRIVE_TO_POSE.in(RadiansPerSecondPerSecond)));
 
         // this is called a static block. it is here because this util has no state
         // dependencies. this pid controller should always have continuous input
         // wrapping, and the way to make that happen in a static fashion is a static
         // block
         static {
-                // driveToPoseThetaPid.enableContinuousInput(
-                //                 DRIVE_TO_POSE_MIN_INPUT.in(Degrees),
-                //                 DRIVE_TO_POSE_MAX_INPUT.in(Degrees));
                 driveToPoseThetaAltPid.enableContinuousInput(
                                 DRIVE_TO_POSE_MIN_INPUT.in(Degrees),
                                 DRIVE_TO_POSE_MAX_INPUT.in(Degrees));
