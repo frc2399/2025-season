@@ -9,12 +9,19 @@ import static edu.wpi.first.units.Units.InchesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 
+import java.io.IOException;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.struct.parser.ParseException;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -66,6 +73,7 @@ public class RobotContainer {
     configureDefaultCommands();
     configureButtonBindingsDriver();
     configureButtonBindingsOperator();
+    configureButtonBindingsElastic();
     setUpAuton();
   }
 
@@ -199,6 +207,52 @@ public class RobotContainer {
     operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("coral")));
 
     // place local buttons below here, delete before PRing
+
+  }
+
+  // public static PathPlannerPath loadPath(String pathName) {
+  //   try {
+  //     return PathPlannerPath.fromPathFile(pathName);
+  //   } catch (IOException e) {
+  //     DriverStation.reportError("Failed to load path: " + pathName, e.getStackTrace());
+  //     return null; // or throw a runtime exception
+  //   } catch (ParseException e) {
+  //     DriverStation.reportError("Failed to load path: " + pathName, e.getStackTrace());
+  //     return null; // or throw a runtime exception
+  //   } catch (FileVersionException e) {
+  //     DriverStation.reportError("Failed to load path: " + pathName, e.getStackTrace());
+  //     return null; // or throw a runtime exception 
+  //   }
+  // }
+
+  // maybe try it as a command instead of SmartDashboard
+  private void configureButtonBindingsElastic() {
+    SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
+        new Pose2d(2, 2, Rotation2d.fromDegrees(0)),
+        new PathConstraints(
+            4.0, 4.0,
+            Units.degreesToRadians(360), Units.degreesToRadians(540)),
+        0));
+
+    SmartDashboard.putData("Pathfind to Scoring Pos", AutoBuilder.pathfindToPose(
+        new Pose2d(5.8, 3.9, Rotation2d.fromDegrees(180)),
+        new PathConstraints(
+            4.0, 4.0,
+            Units.degreesToRadians(360), Units.degreesToRadians(540)),
+        0));
+
+    // Create the constraints to use while pathfinding. The constraints defined in
+    // the path will only be used for the path.
+    PathConstraints constraints = new PathConstraints(
+        3.0, 4.0,
+        Units.degreesToRadians(540), Units.degreesToRadians(720));
+
+    // // Since AutoBuilder is configured, we can use it to build pathfinding commands
+    // Command pathfindingCommand = AutoBuilder.pathfindThenFollowPath(
+    //     loadPath("score"),
+    //     constraints);
+
+    // SmartDashboard.putData("Pathfind to path", pathfindingCommand);
 
   }
 }

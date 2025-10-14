@@ -193,6 +193,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 posePublisher.setDefault(new Pose2d());
                 try {
                         config = RobotConfig.fromGUISettings();
+                        System.out.println("hi");
 
                         AutoBuilder.configure(
                                         this::getPose,
@@ -407,6 +408,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 rearLeft.setDesiredState(swerveModuleStates[2]);
                 rearRight.setDesiredState(swerveModuleStates[3]);
                 swerveModuleDesiredStatePublisher.set(swerveModuleStates);
+                System.out.println(speeds.vxMetersPerSecond);
         }
 
         private void configurePathPlannerLogging() {
