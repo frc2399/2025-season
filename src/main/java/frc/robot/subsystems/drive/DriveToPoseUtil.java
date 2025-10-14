@@ -24,13 +24,14 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveToPoseUtil {
         // profiled pid controllers for driving to a pose and related constants
         private static final double DRIVE_TO_POSE_XY_P = 4.75;
         private static final double DRIVE_TO_POSE_XY_D = 0.0;
         private static final PIDController driveToPoseXPid = new PIDController(DRIVE_TO_POSE_XY_P, 0, DRIVE_TO_POSE_XY_D);
-        private static final PIDController driveToPoseYPid = new PIDController(DRIVE_TO_POSE_XY_D, 0, DRIVE_TO_POSE_XY_D);
+        private static final PIDController driveToPoseYPid = new PIDController(DRIVE_TO_POSE_XY_P, 0, DRIVE_TO_POSE_XY_D);
 
         private static final double DRIVE_TO_POSE_THETA_P = 3.5; // radians per second per radian of error
         private static final double DRIVE_TO_POSE_THETA_D = 0.0;
@@ -79,7 +80,9 @@ public class DriveToPoseUtil {
                                                 goalPose.get().getRotation().getRadians()));
 
                 double xError = robotPose.get().getX() - goalPose.get().getX();
+                SmartDashboard.putNumber("vision/debugging/xerror", xError);
                 double yError = robotPose.get().getY() - goalPose.get().getY();
+                SmartDashboard.putNumber("vision/debugging/yerror", yError);
                 Angle thetaError = Radians.of(
                                 robotPose.get().getRotation().getRadians() - goalPose.get().getRotation().getRadians());
 
@@ -112,6 +115,9 @@ public class DriveToPoseUtil {
                                 && Math.abs(thetaDesired.in(RadiansPerSecond)) < 0.1) {
                         thetaDesired = RadiansPerSecond.of(Math.copySign(0.1, thetaDesired.in(RadiansPerSecond)));
                 }
+
+                SmartDashboard.putNumber("vision/debugging/xdesvel", xDesired.in(MetersPerSecond));
+                SmartDashboard.putNumber("vision/debugging/yvelocity", yDesired.in(MetersPerSecond));
 
                 ChassisSpeeds alignmentSpeeds = new ChassisSpeeds(xDesired.in(MetersPerSecond),
                                 yDesired.in(MetersPerSecond),
