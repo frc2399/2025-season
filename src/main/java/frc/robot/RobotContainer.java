@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.CommandFactory.Setpoint;
@@ -227,19 +228,21 @@ public class RobotContainer {
 
   // maybe try it as a command instead of SmartDashboard
   private void configureButtonBindingsElastic() {
-    SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
-        new Pose2d(2, 2, Rotation2d.fromDegrees(0)),
-        new PathConstraints(
-            4.0, 4.0,
-            Units.degreesToRadians(360), Units.degreesToRadians(540)),
-        0));
+    // SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
+    //     new Pose2d(2, 2, Rotation2d.fromDegrees(0)),
+    //     new PathConstraints(
+    //         4.0, 4.0,
+    //         Units.degreesToRadians(360), Units.degreesToRadians(540)),
+    //     0));
 
-    SmartDashboard.putData("Pathfind to Scoring Pos", AutoBuilder.pathfindToPose(
-        new Pose2d(5.8, 3.9, Rotation2d.fromDegrees(180)),
-        new PathConstraints(
-            4.0, 4.0,
-            Units.degreesToRadians(360), Units.degreesToRadians(540)),
-        0));
+    // SmartDashboard.putData("Pathfind to Scoring Pos", AutoBuilder.pathfindToPose(
+    //     new Pose2d(5.8, 3.9, Rotation2d.fromDegrees(180)),
+    //     new PathConstraints(
+    //         4.0, 4.0,
+    //         Units.degreesToRadians(360), Units.degreesToRadians(540)),
+    //     0));
+
+    SmartDashboard.putString("Pathfinding Test", "working!");
 
     // Create the constraints to use while pathfinding. The constraints defined in
     // the path will only be used for the path.
