@@ -53,6 +53,7 @@ import frc.robot.Constants.DriveControlConstants;
 import frc.robot.Constants.SpeedConstants;
 import frc.robot.Robot;
 import frc.robot.subsystems.gyro.Gyro;
+import frc.robot.vision.VisionPoseEstimator;
 import frc.robot.vision.VisionPoseEstimator.DriveBase;
 
 public class DriveSubsystem extends SubsystemBase implements DriveBase {
@@ -464,7 +465,13 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 if (timestampSeconds <= 0) {
                         return;
                 }
-                poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
+                var poseEstimate = poseEstimator.getEstimatedPosition();
+                if(Double.isNaN(poseEstimate.getX()) || (poseEstimate.getX() == 0))
+                {
+                        poseEstimator.resetPose(pose);   
+                } else {
+                        poseEstimator.addVisionMeasurement(pose, timestampSeconds, visionMeasurementStdDevs);
+                }
         }
 
         //new method workflow:
