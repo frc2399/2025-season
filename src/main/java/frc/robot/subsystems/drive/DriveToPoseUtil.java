@@ -80,9 +80,9 @@ public class DriveToPoseUtil {
                                                 goalPose.get().getRotation().getRadians()));
 
                 double xError = robotPose.get().getX() - goalPose.get().getX();
-                SmartDashboard.putNumber("vision/debugging/xerror", xError);
+                SmartDashboard.putNumber("vision/xError_drivetopose", xError);
                 double yError = robotPose.get().getY() - goalPose.get().getY();
-                SmartDashboard.putNumber("vision/debugging/yerror", yError);
+                SmartDashboard.putNumber("vision/yError_drivetopose", yError);
                 Angle thetaError = Radians.of(
                                 robotPose.get().getRotation().getRadians() - goalPose.get().getRotation().getRadians());
 
@@ -116,8 +116,8 @@ public class DriveToPoseUtil {
                         thetaDesired = RadiansPerSecond.of(Math.copySign(0.1, thetaDesired.in(RadiansPerSecond)));
                 }
 
-                SmartDashboard.putNumber("vision/debugging/xdesvel", xDesired.in(MetersPerSecond));
-                SmartDashboard.putNumber("vision/debugging/yvelocity", yDesired.in(MetersPerSecond));
+                SmartDashboard.putNumber("vision/xDesiredVelocity_drivetopose", xDesired.in(MetersPerSecond));
+                SmartDashboard.putNumber("vision/yDesiredVelocity_drivetopose", yDesired.in(MetersPerSecond));
 
                 ChassisSpeeds alignmentSpeeds = new ChassisSpeeds(xDesired.in(MetersPerSecond),
                                 yDesired.in(MetersPerSecond),
