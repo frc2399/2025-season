@@ -76,7 +76,7 @@ public final class Constants {
     public static final AngularVelocity BETA_ALGAE_PASSIVE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.0005);
 
     public static final AngularVelocity COMP_ALGAE_INTAKE_SPEED = MotorConstants.NEO_FREE_SPEED.times(0.2);
-    public static final AngularVelocity COMP_ALGAE_OUTTAKE_SPEED = MotorConstants.NEO_FREE_SPEED.times(-0.07);
+    public static final AngularVelocity COMP_ALGAE_OUTTAKE_SPEED = MotorConstants.NEO_FREE_SPEED.times(-0.035);
     public static final AngularVelocity COMP_ALGAE_PASSIVE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.003);
 
     public static final AngularVelocity BETA_CORAL_INTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.18);
@@ -92,10 +92,10 @@ public final class Constants {
 
     public static final Angle ALGAE_WRIST_INTAKE_ANGLE = Degrees.of(-90);
     public static final Angle ALGAE_REEF_REMOVER_ANGLE = Degrees.of(-100);
-    public static final Angle ALGAE_WRIST_TURTLE_ANGLE = Degrees.of(-80);
+    public static final Angle ALGAE_WRIST_TURTLE_ANGLE = Degrees.of(-90); //drive team wants this the same but we want to allow it to change later if required
     public static final Angle ALGAE_WRIST_ZERO_ANGLE = Degrees.of(0);
 
-    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(30);
+    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(25);
     public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
     public static final Angle CORAL_ZERO_ANGLE = Degrees.of(0);
     public static final Angle CORAL_L1_OUTTAKE_ANGLE = Degrees.of(-15);
@@ -107,6 +107,7 @@ public final class Constants {
     public static final Distance L_TWO_CORAL_HEIGHT = Inches.of(10);
     public static final Distance L_THREE_CORAL_HEIGHT = Inches.of(25.5);
     public static final Distance L_FOUR_CORAL_HEIGHT = Inches.of(49.75);
+    public static final Distance AUTON_HEIGHT=  Inches.of(3);
 
     public static final Distance ELEVATOR_ALGAE_TURTLE_HEIGHT = Inches.of(10);
     public static final Distance L_ONE_ALGAE_HEIGHT = Inches.of(10);

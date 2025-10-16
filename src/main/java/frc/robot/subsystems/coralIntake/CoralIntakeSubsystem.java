@@ -42,6 +42,10 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         });
     }
 
+    public Command passiveIntakeAuton() {
+        return this.runOnce(() -> io.passiveIntakeIgnoringStall());
+    }
+
     public Command intakeToStall() {
         return this.run(() -> {
             if (io.isStalling() || hasCoral) {

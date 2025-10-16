@@ -5,9 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "NonProcessorSide-L4pt1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BLUECenterL4.0"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "auton default subsystem position"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "set intake speed to passive"
+                }
+              }
+            ]
           }
         },
         {
@@ -25,19 +44,19 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.6
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NonProcessorSide-L4pt2"
+            "pathName": "BLUECenterL4.1"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0
+            "waitTime": 0.0
           }
         },
         {
@@ -49,7 +68,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NonProcessorSide-L4pt3.0"
+            "pathName": "BLUECenterL4.2"
           }
         },
         {
