@@ -486,9 +486,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         // check it every time i use this object' thus allowing it to change
         public Command driveToPoseOnExecute(Supplier<RobotPosition> robotPosition) {
                 return this.run(() -> {
-                        // basically, bad things can happen if we try to update a normal boolean within
-                        // a lambda and access it outside that lambda, but atomic booleans prevent these
-                        // risks
                         atGoal = false;
 
                         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
