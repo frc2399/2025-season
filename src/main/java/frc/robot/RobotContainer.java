@@ -84,18 +84,18 @@ public class RobotContainer {
   }
 
   public void configureDefaultCommands() {
-    drive.setDefaultCommand(drive.driveCommand(
-        () -> -(MathUtil.applyDeadband(
-            driverController.getLeftY(),
-            DriveControlConstants.DRIVE_DEADBAND)),
-        () -> -(MathUtil.applyDeadband(
-            driverController.getLeftX(),
-            DriveControlConstants.DRIVE_DEADBAND)),
-        () -> -(MathUtil.applyDeadband(
-            driverController.getRightX(),
-            DriveControlConstants.DRIVE_DEADBAND)),
-        true,
-        () -> elevator.isElevatorHeightAboveSpeedLimitingThreshold()));
+    // drive.setDefaultCommand(drive.driveCommand(
+    //      () -> -(MathUtil.applyDeadband(
+    //          driverController.getLeftY(),
+    //          DriveControlConstants.DRIVE_DEADBAND)),
+    //      () -> -(MathUtil.applyDeadband(
+    //          driverController.getLeftX(),
+    //          DriveControlConstants.DRIVE_DEADBAND)),
+    //      () -> -(MathUtil.applyDeadband(
+    //          driverController.getRightX(),
+    //          DriveControlConstants.DRIVE_DEADBAND)),
+    //      true,
+    //      () -> elevator.isElevatorHeightAboveSpeedLimitingThreshold()));
     coralIntake.setDefaultCommand(coralIntake.defaultBehavior());
     algaeIntake.setDefaultCommand(algaeIntake.defaultBehavior());
     climber.setDefaultCommand(climber.setSpeed(InchesPerSecond.of(0)));
@@ -228,27 +228,27 @@ public class RobotContainer {
 
   // maybe try it as a command instead of SmartDashboard
   private void configureButtonBindingsElastic() {
-    // SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
-    //     new Pose2d(2, 2, Rotation2d.fromDegrees(0)),
-    //     new PathConstraints(
-    //         4.0, 4.0,
-    //         Units.degreesToRadians(360), Units.degreesToRadians(540)),
-    //     0));
+    SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
+        new Pose2d(2, 2, Rotation2d.fromDegrees(0)),
+        new PathConstraints(
+            0.5, 4.0,
+            Units.degreesToRadians(360), Units.degreesToRadians(540)),
+        0));
 
-    // SmartDashboard.putData("Pathfind to Scoring Pos", AutoBuilder.pathfindToPose(
-    //     new Pose2d(5.8, 3.9, Rotation2d.fromDegrees(180)),
-    //     new PathConstraints(
-    //         4.0, 4.0,
-    //         Units.degreesToRadians(360), Units.degreesToRadians(540)),
-    //     0));
+    SmartDashboard.putData("Pathfind to Original Pos", AutoBuilder.pathfindToPose(
+        new Pose2d(0, 0, Rotation2d.fromDegrees(180)),
+        new PathConstraints(
+            0.5, 4.0,
+            Units.degreesToRadians(360), Units.degreesToRadians(540)),
+        0));
 
-    SmartDashboard.putString("Pathfinding Test", "working!");
+    SmartDashboard.putData("test print command", Commands.print("working"));
 
     // Create the constraints to use while pathfinding. The constraints defined in
     // the path will only be used for the path.
-    PathConstraints constraints = new PathConstraints(
-        3.0, 4.0,
-        Units.degreesToRadians(540), Units.degreesToRadians(720));
+    // PathConstraints constraints = new PathConstraints(
+    //     3.0, 4.0,
+    //     Units.degreesToRadians(540), Units.degreesToRadians(720));
 
     // // Since AutoBuilder is configured, we can use it to build pathfinding commands
     // Command pathfindingCommand = AutoBuilder.pathfindThenFollowPath(
