@@ -532,6 +532,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 });
         }
 
+        public Command driveBackCommand() {
+                return this.run(() -> setRobotRelativeSpeeds(new ChassisSpeeds(0,0,0)));
+        }
+
         private void logAndUpdateDriveSubsystemStates() {
                 states.pose = getPose();
                 states.poseTheta = states.pose.getRotation().getDegrees();

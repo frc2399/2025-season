@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.InchesPerSecond;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
 import frc.robot.subsystems.climber.ClimberSubsystem;
@@ -195,7 +196,7 @@ public class CommandFactory {
   public Command outtakeBasedOnMode() {
     return Commands.either(
         algaeIntake.outtake(),
-        coralIntake.setOuttakeSpeed(() -> getSetpoint()),
+        automatedCoralOuttake(),
         () -> (getGameMode() == GameMode.ALGAE));
   }
 
@@ -220,6 +221,17 @@ public class CommandFactory {
       climbIn(),
       outtakeBasedOnMode(),
       () -> (getEndgameMode())
+    );
+  }
+
+  public Command automatedCoralOuttake() {
+    return Commands.sequence(
+      //drive.driveToPoseCommand(),
+      elevatorBasedOnMode(),
+      //drive.driveToFinalCommand(),
+      coralIntake.setOuttakeSpeed(() -> getSetpoint()).withDeadline(new WaitCommand(0.25)),
+      drive.driveBackCommand(),
+      turtleBasedOnMode()
     );
   }
 
