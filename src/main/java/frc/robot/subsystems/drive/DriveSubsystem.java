@@ -175,6 +175,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 REAR_RIGHT_OFFSET);
 
                 SmartDashboard.putData(field2d);
+                SmartDashboard.putData("Drivetrain", this);
 
                 poseEstimator = new SwerveDrivePoseEstimator(
                                 DRIVE_KINEMATICS,

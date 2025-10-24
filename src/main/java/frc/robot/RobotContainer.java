@@ -84,18 +84,18 @@ public class RobotContainer {
   }
 
   public void configureDefaultCommands() {
-    // drive.setDefaultCommand(drive.driveCommand(
-    //      () -> -(MathUtil.applyDeadband(
-    //          driverController.getLeftY(),
-    //          DriveControlConstants.DRIVE_DEADBAND)),
-    //      () -> -(MathUtil.applyDeadband(
-    //          driverController.getLeftX(),
-    //          DriveControlConstants.DRIVE_DEADBAND)),
-    //      () -> -(MathUtil.applyDeadband(
-    //          driverController.getRightX(),
-    //          DriveControlConstants.DRIVE_DEADBAND)),
-    //      true,
-    //      () -> elevator.isElevatorHeightAboveSpeedLimitingThreshold()));
+    drive.setDefaultCommand(drive.driveCommand(
+         () -> -(MathUtil.applyDeadband(
+             driverController.getLeftY(),
+             DriveControlConstants.DRIVE_DEADBAND)),
+         () -> -(MathUtil.applyDeadband(
+             driverController.getLeftX(),
+             DriveControlConstants.DRIVE_DEADBAND)),
+         () -> -(MathUtil.applyDeadband(
+             driverController.getRightX(),
+             DriveControlConstants.DRIVE_DEADBAND)),
+         true,
+         () -> elevator.isElevatorHeightAboveSpeedLimitingThreshold()));
     coralIntake.setDefaultCommand(coralIntake.defaultBehavior());
     algaeIntake.setDefaultCommand(algaeIntake.defaultBehavior());
     climber.setDefaultCommand(climber.setSpeed(InchesPerSecond.of(0)));
@@ -112,6 +112,13 @@ public class RobotContainer {
     driverController.y().onTrue(commandFactory.resetHeading(Degrees.of(0)));
     driverController.x().whileTrue(drive.setX());
     driverController.b().onTrue(commandFactory.turtleBasedOnMode());
+
+    driverController.a().onTrue(AutoBuilder.pathfindToPose(
+      new Pose2d(2, 2, Rotation2d.fromDegrees(0)),
+      new PathConstraints(
+          0.5, 4.0,
+          Units.degreesToRadians(360), Units.degreesToRadians(540)),
+      0).withName("Pathfind to Pickup Pos"));
 
     // this yucky code bc we are out of buttons and have to use the POV pad (we want
     // to make sure that anything up does up and same for down)
@@ -147,7 +154,25 @@ public class RobotContainer {
     NamedCommands.registerCommand("auton default subsystem position", commandFactory.autonDefaultPosition());
     NamedCommands.registerCommand("auton turtle", commandFactory.autonTurtleMode());
 
-    autoChooser = AutoBuilder.buildAutoChooser();
+    // autoChooser = AutoBuilder.buildAutoChooser();
+    autoChooser = new SendableChooser<>();
+    Command obstacle = AutoBuilder.pathfindToPose(
+      new Pose2d(5,5, Rotation2d.fromDegrees(0)),
+      new PathConstraints(
+          0.5, 4.0,
+          Units.degreesToRadians(360), Units.degreesToRadians(540)),
+      0).withName("Pathfind around Obstacles");
+      autoChooser.addOption("Pathfind around Obstacles", obstacle);
+      SmartDashboard.putData("Pathfind to obstacle", obstacle);
+
+      autoChooser.addOption("Pathfind to Pickup Pos 2", AutoBuilder.pathfindToPose(
+      new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+      new PathConstraints(
+          0.5, 4.0,
+          Units.degreesToRadians(360), Units.degreesToRadians(540)),
+      0).withName("Pathfind to Pickup Pos"));
+
+
     SmartDashboard.putData("Autos/Selector", autoChooser);
 
     SmartDashboard.putData("reset odometry for facing red wall", resetOdometryRed());
@@ -233,7 +258,7 @@ public class RobotContainer {
         new PathConstraints(
             0.5, 4.0,
             Units.degreesToRadians(360), Units.degreesToRadians(540)),
-        0));
+        0).withName("Pathfind to Pickup Pos"));
 
     SmartDashboard.putData("Pathfind to Original Pos", AutoBuilder.pathfindToPose(
         new Pose2d(0, 0, Rotation2d.fromDegrees(180)),
