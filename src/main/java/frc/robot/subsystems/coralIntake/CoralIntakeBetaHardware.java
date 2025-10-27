@@ -34,7 +34,7 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     private static final double BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR = 1.0 / 5.0; // Rotations
     private static final double BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR = 1.0 / 5.0; // RPM
 
-    private static final double BETA_CORAL_INTAKE_P = 0.001;
+    private static final double BETA_CORAL_INTAKE_P = 0;
     private static final double BETA_CORAL_INTAKE_I = 0;
     private static final double BETA_CORAL_INTAKE_D = 0;
     private static final double BETA_CORAL_INTAKE_FF = 5.0 / MotorConstants.VORTEX_FREE_SPEED.in(RPM);
@@ -52,11 +52,11 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     private double velocityGoal = 0;
 
     private static Debouncer CORAL_BETA_DEBOUNCER;
-    private static Current coralIntakeStallThreshold; 
+    private static Current coralIntakeStallThreshold;
 
     public CoralIntakeBetaHardware(Time debouncerTime, Current stallThreshold) {
         CORAL_BETA_DEBOUNCER = new Debouncer(debouncerTime.in(Seconds));
-        coralIntakeStallThreshold = stallThreshold; 
+        coralIntakeStallThreshold = stallThreshold;
         betaCoralIntakeConfig.inverted(BETA_CORAL_INTAKE_MOTOR_INVERTED).idleMode(BETA_CORAL_INTAKE_IDLE_MODE)
                 .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
         betaCoralIntakeConfig.encoder.positionConversionFactor(BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR)
@@ -65,12 +65,11 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
                 .pidf(BETA_CORAL_INTAKE_P, BETA_CORAL_INTAKE_I, BETA_CORAL_INTAKE_D, BETA_CORAL_INTAKE_FF)
                 .outputRange(BETA_CORAL_INTAKE_PID_MIN_OUTPUT, BETA_CORAL_INTAKE_PID_MAX_OUTPUT)
                 .positionWrappingEnabled(BETA_CORAL_INTAKE_POSITION_WRAPPING_ENABLED);
-        
+
         betaCoralIntakeConfig.signals
                 .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
                 .busVoltagePeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
                 .outputCurrentPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS);
-
 
         betaCoralIntakeSparkFlex = new SparkFlex(MotorIdConstants.CORAL_BETA_INTAKE_CAN_ID,
                 MotorType.kBrushless);
@@ -92,15 +91,16 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     public void setOuttakeSpeed(Setpoint setpoint) {
         double desiredVelocity = 0;
         if (setpoint == Setpoint.L_ONE) {
-            desiredVelocity =  SpeedConstants.BETA_CORAL_L1_OUTTAKE_SPEED.in(RPM);    
+            desiredVelocity = SpeedConstants.BETA_CORAL_L1_OUTTAKE_SPEED.in(RPM);
+        } else if (setpoint == Setpoint.L_FOUR) {
+            desiredVelocity = SpeedConstants.BETA_CORAL_L4_OUTTAKE_SPEED.in(RPM);
         } else {
-             desiredVelocity = SpeedConstants.BETA_CORAL_OUTTAKE_SPEED.in(RPM);   
+            desiredVelocity = SpeedConstants.BETA_CORAL_OUTTAKE_SPEED.in(RPM);
         }
 
         betaCoralIntakeClosedLoop.setReference(desiredVelocity, ControlType.kVelocity);
         velocityGoal = desiredVelocity;
-    } 
-
+    }
 
     @Override
     public void setZero() {
@@ -118,8 +118,15 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     @Override
     public void passiveIntake() {
         if (!isStalling()) {
-            betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
+            betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_PASSIVE_SPEED.in(RPM),
+                    ControlType.kVelocity);
         }
+    }
+
+    @Override
+    public void passiveIntakeIgnoringStall() {
+            betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_PASSIVE_SPEED.in(RPM),
+                    ControlType.kVelocity);
     }
 
     @Override

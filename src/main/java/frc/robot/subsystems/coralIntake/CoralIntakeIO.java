@@ -22,5 +22,7 @@ public interface CoralIntakeIO {
 
     public void passiveIntake();
 
+    public void passiveIntakeIgnoringStall();
+
     public void updateStates(CoralIntakeIOStates states);
 }

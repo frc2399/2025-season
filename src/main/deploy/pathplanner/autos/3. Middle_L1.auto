@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "M-GH"
+            "pathName": "Middle_L1"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0
+            "waitTime": 0.0
           }
         },
         {

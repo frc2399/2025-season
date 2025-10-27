@@ -58,6 +58,7 @@ public final class Constants {
 
   public static class SpeedConstants {
     public static final double MAIN_LOOP_FREQUENCY_HZ = 50;
+    public static final int MAIN_LOOP_FREQUENCY_MS = (int) (1000 / MAIN_LOOP_FREQUENCY_HZ);
     public static final double LOGGING_FREQUENCY_HZ = 10;
     public static final int LOGGING_FREQUENCY_MS = (int) (1000 / LOGGING_FREQUENCY_HZ);
     public static final AngularVelocity ALGAE_INTAKE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(1);
@@ -75,25 +76,26 @@ public final class Constants {
     public static final AngularVelocity BETA_ALGAE_PASSIVE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.0005);
 
     public static final AngularVelocity COMP_ALGAE_INTAKE_SPEED = MotorConstants.NEO_FREE_SPEED.times(0.2);
-    public static final AngularVelocity COMP_ALGAE_OUTTAKE_SPEED = MotorConstants.NEO_FREE_SPEED.times(-0.10);
-    public static final AngularVelocity COMP_ALGAE_PASSIVE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.0005);
+    public static final AngularVelocity COMP_ALGAE_OUTTAKE_SPEED = MotorConstants.NEO_FREE_SPEED.times(-0.035);
+    public static final AngularVelocity COMP_ALGAE_PASSIVE_SPEED = MotorConstants.NEO550_FREE_SPEED.times(0.003);
 
-    public static final AngularVelocity BETA_CORAL_INTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.25);
+    public static final AngularVelocity BETA_CORAL_INTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.18);
     public static final AngularVelocity BETA_CORAL_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.15);
+    public static final AngularVelocity BETA_CORAL_L4_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.025);
     public static final AngularVelocity BETA_CORAL_L1_OUTTAKE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(-0.0075); // slower
                                                                                                                        // speed
                                                                                                                        // :-0.005
-    public static final AngularVelocity BETA_CORAL_PASSIVE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.005);
+    public static final AngularVelocity BETA_CORAL_PASSIVE_SPEED = MotorConstants.VORTEX_FREE_SPEED.times(0.008);
   }
 
   public static class SetpointConstants {
 
     public static final Angle ALGAE_WRIST_INTAKE_ANGLE = Degrees.of(-90);
     public static final Angle ALGAE_REEF_REMOVER_ANGLE = Degrees.of(-100);
-    public static final Angle ALGAE_WRIST_TURTLE_ANGLE = Degrees.of(-80);
+    public static final Angle ALGAE_WRIST_TURTLE_ANGLE = Degrees.of(-90); //drive team wants this the same but we want to allow it to change later if required
     public static final Angle ALGAE_WRIST_ZERO_ANGLE = Degrees.of(0);
 
-    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(24);
+    public static final Angle CORAL_TURTLE_ANGLE = Degrees.of(25);
     public static final Angle CORAL_OUTTAKE_ANGLE = Degrees.of(-30);
     public static final Angle CORAL_ZERO_ANGLE = Degrees.of(0);
     public static final Angle CORAL_L1_OUTTAKE_ANGLE = Degrees.of(-15);
@@ -104,12 +106,13 @@ public final class Constants {
     public static final Distance L_ONE_CORAL_HEIGHT = Inches.of(0);
     public static final Distance L_TWO_CORAL_HEIGHT = Inches.of(10);
     public static final Distance L_THREE_CORAL_HEIGHT = Inches.of(25.5);
-    public static final Distance L_FOUR_CORAL_HEIGHT = Inches.of(49);
+    public static final Distance L_FOUR_CORAL_HEIGHT = Inches.of(49.75);
+    public static final Distance AUTON_HEIGHT=  Inches.of(3);
 
     public static final Distance ELEVATOR_ALGAE_TURTLE_HEIGHT = Inches.of(10);
     public static final Distance L_ONE_ALGAE_HEIGHT = Inches.of(10);
-    public static final Distance L_TWO_ALGAE_HEIGHT = Inches.of(29);
-    public static final Distance L_THREE_ALGAE_HEIGHT = Inches.of(46.75);
+    public static final Distance L_TWO_ALGAE_HEIGHT = Inches.of(29.5);
+    public static final Distance L_THREE_ALGAE_HEIGHT = Inches.of(46.25);
 
     public static final Distance ELEVATOR_COLLISION_RANGE_BOTTOM = Inches.of(1); // 0.5 m
     public static final Distance ELEVATOR_COLLISION_RANGE_TOP = Inches.of(6); // 50 in
@@ -127,7 +130,9 @@ public final class Constants {
     public static final Distance ALPHA_TRACK_WIDTH = Meters.of(0.4954);
     public static final Distance MOZART_TRACK_WIDTH = Inches.of(26 - (2 * 1.75));
     // replace if needed
-    public static final Distance BETA_XTRACK_WIDTH = Inches.of(23.807);
-    public static final Distance BETA_YTRACK_WIDTH = Inches.of(27.190);
+
+    // we got the 2 below numbers from blake at 6:57 bon 03/13
+    public static final Distance BETA_XTRACK_WIDTH = Inches.of(24.5);
+    public static final Distance BETA_YTRACK_WIDTH = Inches.of(26.5);
   }
 }

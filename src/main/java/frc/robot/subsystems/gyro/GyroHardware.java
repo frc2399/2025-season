@@ -33,7 +33,7 @@ public class GyroHardware implements GyroIO {
     public Angle getYaw() {
         // Don't refresh the status signal by default, we already get it at
         // MAIN_LOOP_FREQUENCY_HZ, and refreshing blocks, causing loop overruns
-        return this.getYaw(false);
+        return this.getYaw(true);
     }
 
     public Angle getYaw(boolean refresh) {

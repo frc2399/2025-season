@@ -5,24 +5,30 @@ import java.util.function.Supplier;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.measure.Angle;
+import static edu.wpi.first.units.Units.InchesPerSecond;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.gyro.Gyro;
 
 public class CommandFactory {
 
   private final DriveSubsystem drive;
+  private final Gyro gyro;
   private final ElevatorSubsystem elevator;
   private final CoralWristSubsystem coralWrist;
   private final AlgaeWristSubsystem algaeWrist;
   private final AlgaeIntakeSubsystem algaeIntake;
   private final CoralIntakeSubsystem coralIntake;
+  private final ClimberSubsystem climber;
 
   // private final NetworkTableEntry ntEntry; //one for each entry we want to read
   // (state changes)
@@ -31,17 +37,22 @@ public class CommandFactory {
   private final NetworkTableEntry levelEntry = scoringStateTables.getEntry("scoringLevel");
   private final NetworkTableEntry gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
   private final NetworkTableEntry leftRightEntry = scoringStateTables.getEntry("Position");
+  private final NetworkTableEntry endgameEntry = scoringStateTables.getEntry("endgame");
 
-  public CommandFactory(DriveSubsystem drive, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist,
-      AlgaeWristSubsystem algaeWrist, AlgaeIntakeSubsystem algaeIntake, CoralIntakeSubsystem coralIntake) {
+  public CommandFactory(DriveSubsystem drive, Gyro gyro, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist,
+      AlgaeWristSubsystem algaeWrist, AlgaeIntakeSubsystem algaeIntake, CoralIntakeSubsystem coralIntake, ClimberSubsystem climber) {
     this.drive = drive;
     this.elevator = elevator;
     this.coralWrist = coralWrist;
     this.algaeWrist = algaeWrist;
     this.algaeIntake = algaeIntake;
     this.coralIntake = coralIntake;
+    this.gyro = gyro;
+    this.climber = climber;
     setGameMode("coral");
     setScoringLevel("Level 1");
+    setRobotAlignmentPosition("left");
+    setEndgame(false);
     // ntEntry = scoringStateTables.getEntry("GameMode"); //one for each key
     // newEntry = scoringStateTables.getEntry("Indicator");
   }
@@ -57,7 +68,8 @@ public class CommandFactory {
     L_THREE,
     L_FOUR,
     TURTLE,
-    ZERO
+    ZERO,
+    AUTON
   }
 
   public enum GameMode {
@@ -94,6 +106,29 @@ public class CommandFactory {
     }
     SmartDashboard.putString("networktablesData/gameMode", gameMode.toString());
     return gameMode;
+  }
+
+  // sadly, the belt on the algae interferes with our camera visibility :( so this setpoint
+  // allows the elevator to be slightly up for auton. it will only be called
+  // directly by autonomous methods and SHOULD NOT BE USED in teleop
+  public Command autonDefaultPosition() {
+    return Commands.sequence(
+        Commands.parallel(
+            algaeWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+            elevator.goToGoalSetpointCmd(() -> Setpoint.AUTON, () -> GameMode.CORAL)),
+        Commands.waitUntil(() -> elevator.atGoal()),
+        coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
+  }
+
+  public Command autonTurtleMode() {
+    return Commands.sequence(
+        coralWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+        Commands.waitUntil(() -> coralWrist.atGoal()),
+        Commands.parallel(
+            algaeWrist.goToSetpointCommand(() -> Setpoint.ZERO),
+            elevator.goToGoalSetpointCmd(() -> Setpoint.AUTON, () -> GameMode.CORAL)),
+        Commands.waitUntil(() -> elevator.atGoal()),
+        coralWrist.goToSetpointCommand(() -> Setpoint.TURTLE));
   }
 
   public Command turtleBasedOnMode() {
@@ -151,18 +186,42 @@ public class CommandFactory {
         elevator.goToGoalSetpointCmd(() -> getSetpoint(), () -> GameMode.ALGAE));
   }
 
-  public Command intakeBasedOnMode(Supplier<GameMode> gameMode) {
+  public Command intakeBasedOnMode() {
     return Commands.either(
         algaeIntake.intakeToStall(),
         coralIntake.intakeToStall(),
         () -> (getGameMode() == GameMode.ALGAE));
   }
 
-  public Command outtakeBasedOnMode(Supplier<GameMode> gameMode) {
+  public Command outtakeBasedOnMode() {
     return Commands.either(
         algaeIntake.outtake(),
         coralIntake.setOuttakeSpeed(() -> getSetpoint()),
         () -> (getGameMode() == GameMode.ALGAE));
+  }
+
+  public Command climbIn() {
+    return climber.setSpeed(InchesPerSecond.of(-3.5));
+  }
+
+  public Command climbOut() {
+    return climber.setSpeed(InchesPerSecond.of(5));
+  }
+
+  public Command intakeOrClimbOutBasedOnMode() {
+    return Commands.either(
+      climbOut(),
+      intakeBasedOnMode(),
+      () -> (getEndgameMode())
+    );
+  }
+
+  public Command outtakeOrClimbInBasedOnMode() {
+    return Commands.either(
+      climbIn(),
+      outtakeBasedOnMode(),
+      () -> (getEndgameMode())
+    );
   }
 
   public Setpoint getSetpoint() {
@@ -192,6 +251,12 @@ public class CommandFactory {
     return robotPosition;
   }
 
+  public boolean getEndgameMode() {
+    boolean endgame = endgameEntry.getBoolean(false);
+    SmartDashboard.putBoolean("networktablesData/endgameMode", endgame);
+    return endgame;
+  }
+
   public void setGameMode(String level) {
     gameModeEntry.setString(level);
   }
@@ -202,5 +267,13 @@ public class CommandFactory {
 
   public void setRobotAlignmentPosition(String alignmentValue) {
     leftRightEntry.setString(alignmentValue);
+  }
+
+  public void setEndgame(Boolean endgame) {
+    endgameEntry.setBoolean(endgame);
+  }
+
+  public Command resetHeading(Angle yaw) {
+    return Commands.parallel(gyro.setYaw(yaw), Commands.runOnce(() -> drive.resetOdometryAfterGyro()));
   }
 }
