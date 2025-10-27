@@ -97,7 +97,7 @@ public class RobotContainer {
     driverController.leftTrigger().whileTrue(commandFactory.outtakeOrClimbInBasedOnMode());
 
     driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
-    driverController.leftBumper().onTrue(drive.driveToPoseCommand(() -> commandFactory.getRobotPosition()))
+    driverController.leftBumper().onTrue(drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()))
         .onFalse(drive.disableDriveToPose());
 
     driverController.y().onTrue(commandFactory.resetHeading(Degrees.of(0)));
