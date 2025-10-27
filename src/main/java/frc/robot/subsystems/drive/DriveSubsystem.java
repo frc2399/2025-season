@@ -52,7 +52,9 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CommandFactory.AutomatedScoringPoseLocation;
 import frc.robot.CommandFactory.RobotPosition;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveControlConstants;
@@ -483,7 +485,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         // by using a supplier, the robot knows 'hey, this value might change, so i
         // should
         // check it every time i use this object' thus allowing it to change
-        public Command driveToPoseCommand(Supplier<RobotPosition> robotPosition) {
+        public Command driveToPoseCommand(Supplier<RobotPosition> robotPosition, AutomatedScoringPoseLocation scoringPoseLocation) {
                 return this.run(() -> {
                         // basically, bad things can happen if we try to update a normal boolean within
                         // a lambda and access it outside that lambda, but atomic booleans prevent these
@@ -497,7 +499,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         }
 
                         Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(robotPosition.get(),
-                                        () -> robotPose,
+                                        scoringPoseLocation, () -> robotPose,
                                         isBlueAlliance);
                         SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.get().getY());
                         SmartDashboard.putNumber("Swerve/vision/goalPosex", goalPose.get().getX());
@@ -522,6 +524,14 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 }).until(() -> atGoal.get());
         }
 
+        // public Command driveToPoseCommand(Supplier<RobotPosition> robotPosition, Supplier<AutomatedScoringPoseLocation> scoringLocation)  {
+        //         return this.run(() -> {
+
+        //         })
+        // }
+
+        
+
         public Command disableDriveToPose() {
                 return this.runOnce(() -> {
                         atGoal.set(true);
@@ -532,9 +542,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 });
         }
 
-        public Command driveBackCommand() {
-                return this.run(() -> setRobotRelativeSpeeds(new ChassisSpeeds(0,0,0)));
-        }
+        // public Command driveBackCommand() {
+        //         return this.run(() -> setRobotRelativeSpeeds(new ChassisSpeeds(0,0,0)));
+        // }
 
         private void logAndUpdateDriveSubsystemStates() {
                 states.pose = getPose();

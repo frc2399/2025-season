@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.CommandFactory.AutomatedScoringPoseLocation;
 import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
@@ -97,7 +98,7 @@ public class RobotContainer {
     driverController.leftTrigger().whileTrue(commandFactory.outtakeOrClimbInBasedOnMode());
 
     driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
-    driverController.leftBumper().onTrue(drive.driveToPoseCommand(() -> commandFactory.getRobotPosition()))
+    driverController.leftBumper().onTrue(drive.driveToPoseCommand(() -> commandFactory.getRobotPosition(), AutomatedScoringPoseLocation.FAR_FROM_REEF))
         .onFalse(drive.disableDriveToPose());
 
     driverController.y().onTrue(commandFactory.resetHeading(Degrees.of(0)));

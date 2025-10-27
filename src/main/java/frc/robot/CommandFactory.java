@@ -78,6 +78,11 @@ public class CommandFactory {
     ALGAE
   }
 
+  public enum AutomatedScoringPoseLocation {
+    CLOSE_TO_REEF,
+    FAR_FROM_REEF
+  }
+
   public RobotPosition robotPosition;
   public GameMode gameMode;
   public Setpoint setpoint;
@@ -226,11 +231,11 @@ public class CommandFactory {
 
   public Command automatedCoralOuttake() {
     return Commands.sequence(
-      //drive.driveToPoseCommand(),
+      //drive.driveToPoseCommand(), // initial
       elevatorBasedOnMode(),
-      //drive.driveToFinalCommand(),
+      //drive.driveToPoseCommand(), // final align
       coralIntake.setOuttakeSpeed(() -> getSetpoint()).withDeadline(new WaitCommand(0.25)),
-      drive.driveBackCommand(),
+      // drive.driveBackCommand(), // back to initial
       turtleBasedOnMode()
     );
   }

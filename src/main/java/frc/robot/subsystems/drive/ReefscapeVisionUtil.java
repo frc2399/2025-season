@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import frc.robot.CommandFactory.AutomatedScoringPoseLocation;
 import frc.robot.CommandFactory.RobotPosition;
 
 public class ReefscapeVisionUtil {
@@ -72,7 +73,7 @@ public class ReefscapeVisionUtil {
         private static final List<Pose2d> RIGHT_POSES_BLUE = Arrays.asList(
                         BLUE_REEF_B, BLUE_REEF_D, BLUE_REEF_F, BLUE_REEF_H, BLUE_REEF_J, BLUE_REEF_L);
 
-        public static Supplier<Pose2d> getGoalPose(RobotPosition robotPosition, Supplier<Pose2d> robotPose,
+        public static Supplier<Pose2d> getGoalPose(RobotPosition robotPosition, AutomatedScoringPoseLocation scoringPoseLocation, Supplier<Pose2d> robotPose,
                         BooleanSupplier isBlueAlliance) {
                 Pose2d goalPose;
                 if (robotPose.get() == null) {
