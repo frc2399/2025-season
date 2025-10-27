@@ -110,8 +110,8 @@ public class Robot extends TimedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
-    robotContainer.algaeWrist.resetWrist();
-    robotContainer.coralWrist.resetWrist();
+    // robotContainer.algaeWrist.resetWrist();
+    // robotContainer.coralWrist.resetWrist();
   }
 
   /** This function is called periodically during operator control. */

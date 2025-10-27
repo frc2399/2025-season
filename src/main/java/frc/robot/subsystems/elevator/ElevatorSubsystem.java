@@ -54,6 +54,8 @@ public class ElevatorSubsystem extends SubsystemBase {
                 elevatorSetpoint = SetpointConstants.L_THREE_CORAL_HEIGHT;
             } else if (setpoint.get() == Setpoint.L_FOUR) {
                 elevatorSetpoint = SetpointConstants.L_FOUR_CORAL_HEIGHT;
+            } else if (setpoint.get() == Setpoint.AUTON) {
+                elevatorSetpoint = SetpointConstants.AUTON_HEIGHT;
             }
         } else if (gameMode.get() == GameMode.ALGAE) {
             if (setpoint.get() == Setpoint.TURTLE) {
