@@ -3,8 +3,122 @@
  "version":1,
  "type":"Swerve",
  "variables":{
-  "expressions":{},
-  "poses":{}
+  "expressions":{
+   "startXProcessor":{
+    "dimension":"Length",
+    "var":{
+     "exp":"7.057953834533691 m",
+     "val":7.057953834533691
+    }
+   },
+   "startYProcessor":{
+    "dimension":"Length",
+    "var":{
+     "exp":"2.0652902126312256 m",
+     "val":2.0652902126312256
+    }
+   }
+  },
+  "poses":{
+   "Blue_Tag_20":{
+    "x":{
+     "exp":"193.1 in",
+     "val":4.904739999999999
+    },
+    "y":{
+     "exp":"186.83 in",
+     "val":4.745482
+    },
+    "heading":{
+     "exp":"0 rad",
+     "val":0.0
+    }
+   },
+   "Blue_Tag_21":{
+    "x":{
+     "exp":"209.49 in",
+     "val":5.321046
+    },
+    "y":{
+     "exp":"158.5 in",
+     "val":4.0259
+    },
+    "heading":{
+     "exp":"0 rad",
+     "val":0.0
+    }
+   },
+   "Blue_Tag_22":{
+    "x":{
+     "exp":"193.1 in",
+     "val":4.904739999999999
+    },
+    "y":{
+     "exp":"130.17 in",
+     "val":3.3063179999999996
+    },
+    "heading":{
+     "exp":"0 rad",
+     "val":0.0
+    }
+   },
+   "Tag_12":{
+    "x":{
+     "exp":"33.51 in",
+     "val":0.851154
+    },
+    "y":{
+     "exp":"25.8 in",
+     "val":0.65532
+    },
+    "heading":{
+     "exp":"0 rad",
+     "val":0.0
+    }
+   },
+   "Tag_13":{
+    "x":{
+     "exp":"33.51 in",
+     "val":0.851154
+    },
+    "y":{
+     "exp":"291.2 in",
+     "val":7.39648
+    },
+    "heading":{
+     "exp":"0 rad",
+     "val":0.0
+    }
+   },
+   "Tag_17":{
+    "x":{
+     "exp":"160.39 in",
+     "val":4.073905999999999
+    },
+    "y":{
+     "exp":"130.17 in",
+     "val":3.3063179999999996
+    },
+    "heading":{
+     "exp":"0 rad",
+     "val":0.0
+    }
+   },
+   "Tag_19":{
+    "x":{
+     "exp":"160.39 in",
+     "val":4.073905999999999
+    },
+    "y":{
+     "exp":"186.83 in",
+     "val":4.745482
+    },
+    "heading":{
+     "exp":"0 rad",
+     "val":0.0
+    }
+   }
+  }
  },
  "config":{
   "frontLeft":{

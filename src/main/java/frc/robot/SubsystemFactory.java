@@ -18,6 +18,9 @@ import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeBetaHardware;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeCompHardware;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakePlacebo;
+import frc.robot.subsystems.climber.ClimberSubsystem;
+import frc.robot.subsystems.climber.ClimberHardware;
+import frc.robot.subsystems.climber.ClimberPlacebo;
 import frc.robot.subsystems.coralIntake.CoralIntakeAlphaHardware;
 import frc.robot.subsystems.coralIntake.CoralIntakeBetaHardware;
 import frc.robot.subsystems.coralIntake.CoralIntakePlacebo;
@@ -207,6 +210,15 @@ public class SubsystemFactory {
         }
         else {
             return new AlgaeWristSubsystem(new AlgaeWristPlacebo());
+        }
+    }
+
+    public ClimberSubsystem buildClimber()
+    {
+        if (robotType == RobotType.COMP){
+            return new ClimberSubsystem(new ClimberHardware());
+        } else {
+            return new ClimberSubsystem(new ClimberPlacebo()); 
         }
     }
 

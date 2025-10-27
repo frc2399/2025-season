@@ -68,7 +68,7 @@ public class CoralWristHardware implements CoralWristIO {
   private static final double WRIST_MOTOR_MIN_OUTPUT = -1.0;
   private static final double WRIST_MOTOR_MAX_OUTPUT = 1.0;
 
-  private static final Angle FORWARD_SOFT_LIMIT = Degrees.of(25);
+  private static final Angle FORWARD_SOFT_LIMIT = Degrees.of(30);
   private static final Angle REVERSE_SOFT_LIMIT = Degrees.of(-90);
 
   private Angle goalAngle = Radians.of(0);
