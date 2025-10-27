@@ -6,45 +6,34 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.InchesPerSecond;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.RPM;
-
-import java.io.IOException;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.struct.parser.ParseException;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
 import frc.robot.subsystems.climber.ClimberSubsystem;
-import frc.robot.Constants.SetpointConstants;
 import frc.robot.subsystems.coralIntake.CoralIntakeSubsystem;
 import frc.robot.subsystems.coralWrist.CoralWristSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.drive.ReefscapeVisionUtil;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gyro.Gyro;
-import frc.robot.vision.VisionPoseEstimator;
 import frc.robot.vision.LimelightHelpers.PoseEstimate;
+import frc.robot.vision.VisionPoseEstimator;
 
 public class RobotContainer {
   private SubsystemFactory subsystemFactory = new SubsystemFactory();
@@ -157,20 +146,34 @@ public class RobotContainer {
     // autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser = new SendableChooser<>();
     Command obstacle = AutoBuilder.pathfindToPose(
-      new Pose2d(5,5, Rotation2d.fromDegrees(0)),
+      new Pose2d(17,6.5, Rotation2d.fromDegrees(-25)),
       new PathConstraints(
           0.5, 4.0,
           Units.degreesToRadians(360), Units.degreesToRadians(540)),
       0).withName("Pathfind around Obstacles");
-      autoChooser.addOption("Pathfind around Obstacles", obstacle);
-      SmartDashboard.putData("Pathfind to obstacle", obstacle);
 
-      autoChooser.addOption("Pathfind to Pickup Pos 2", AutoBuilder.pathfindToPose(
-      new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+      Command partOne = AutoBuilder.pathfindToPose(
+      new Pose2d(2,2, Rotation2d.fromDegrees(0)),
       new PathConstraints(
           0.5, 4.0,
           Units.degreesToRadians(360), Units.degreesToRadians(540)),
-      0).withName("Pathfind to Pickup Pos"));
+      0).withName("Pathfind around Obstacles");
+
+      Command partTwo = AutoBuilder.pathfindToPose(
+      new Pose2d(0,0, Rotation2d.fromDegrees(0)),
+      new PathConstraints(
+          0.5, 4.0,
+          Units.degreesToRadians(360), Units.degreesToRadians(540)),
+      0).withName("Pathfind around Obstacles");
+      
+      autoChooser.addOption("Pathfind around Obstacles", obstacle);
+      SmartDashboard.putData("Pathfind around obstacles", obstacle);
+
+      autoChooser.addOption("Pathfind to Pickup Pos", partOne);
+
+      autoChooser.addOption("Pathfind back from Pickup Pos", partTwo);
+
+      autoChooser.addOption("sequential path", Commands.sequence(partOne, partTwo));
 
 
     SmartDashboard.putData("Autos/Selector", autoChooser);
