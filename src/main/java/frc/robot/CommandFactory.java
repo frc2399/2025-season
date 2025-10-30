@@ -229,13 +229,15 @@ public class CommandFactory {
     );
   }
 
+  // a complete scoring cycle for an algae after rough driver align.
+  // does not contain any check that we are truly in position before outtaking
   public Command automatedCoralOuttake() {
     return Commands.sequence(
-      //drive.driveToPoseCommand(), // initial
+      drive.driveToPoseFarFromReef(() -> getRobotPosition()), // initial
       elevatorBasedOnMode(),
-      //drive.driveToPoseCommand(), // final align
+      drive.driveToPoseNearReef(() -> getRobotPosition()), // final align
       coralIntake.setOuttakeSpeed(() -> getSetpoint()).withDeadline(new WaitCommand(0.25)),
-      // drive.driveBackCommand(), // back to initial
+      drive.driveToPoseFarFromReef(() -> getRobotPosition()), // back to initial
       turtleBasedOnMode()
     );
   }
