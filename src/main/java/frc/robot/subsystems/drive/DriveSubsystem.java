@@ -13,6 +13,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -214,6 +215,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                         e.getStackTrace());
                 }
                 configurePathPlannerLogging();
+                // Preload PathaPlanner Path finding
+                PathfindingCommand.warmupCommand().schedule();
         }
 
         @Override
