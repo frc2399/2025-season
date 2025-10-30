@@ -493,7 +493,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         // by using a supplier, the robot knows 'hey, this value might change, so i
         // should
         // check it every time i use this object' thus allowing it to change
-        public Command driveToPoseCommand(Supplier<RobotPosition> robotPosition, AutomatedScoringPoseLocation scoringPoseLocation) {
+        private Command driveToPoseCommand(Supplier<RobotPosition> robotPosition, AutomatedScoringPoseLocation scoringPoseLocation) {
                 return this.run(() -> {
                         atGoal = false;
 
@@ -503,9 +503,14 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 isBlueAlliance = () -> false;
                         }
 
-                        Supplier<Pose2d> goalPose = ReefscapeVisionUtil.getGoalPose(robotPosition.get(),
-                                        scoringPoseLocation, () -> robotPose,
-                                        isBlueAlliance);
+                        Supplier<Pose2d> goalPose;
+                        if (scoringPoseLocation == AutomatedScoringPoseLocation.CLOSE_TO_REEF) {
+                                goalPose = ReefscapeVisionUtil.getGoalPoseNear(robotPosition.get(), 
+                                        () -> robotPose, isBlueAlliance);
+                        } else {
+                                goalPose = ReefscapeVisionUtil.getGoalPoseFar(robotPosition.get(),
+                                        () -> robotPose, isBlueAlliance);
+                        }
                         SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.get().getY());
                         SmartDashboard.putNumber("Swerve/vision/goalPosex", goalPose.get().getX());
                         SmartDashboard.putNumber("Swerve/vision/goalTheta", goalPose.get().getRotation().getDegrees());
@@ -523,13 +528,13 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 }).until(() -> atGoal);
         }
 
-        // public Command driveToPoseCommand(Supplier<RobotPosition> robotPosition, Supplier<AutomatedScoringPoseLocation> scoringLocation)  {
-        //         return this.run(() -> {
+        public Command driveToPoseNearReef(Supplier<RobotPosition> robotPosition) {
+                return driveToPoseCommand(robotPosition, AutomatedScoringPoseLocation.CLOSE_TO_REEF);
+        }
 
-        //         })
-        // }
-
-        
+        public Command driveToPoseFarFromReef(Supplier<RobotPosition> robotPosition) {
+                return driveToPoseCommand(robotPosition, AutomatedScoringPoseLocation.FAR_FROM_REEF);
+        }        
 
         public Command disableDriveToPose() {
                 return this.runOnce(() -> {
