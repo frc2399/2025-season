@@ -3,7 +3,6 @@ package frc.robot.subsystems.algaeIntake;
 import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -71,7 +70,9 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     public void periodic() {
         hasAlgae = algaeEntry.getBoolean(hasAlgae);
         io.updateStates(states);
-        SmartDashboard.putNumber("algaeIntake/intakeVelocity", states.intakeVelocity);
+        SmartDashboard.putNumber("algaeIntake/intakeVelocity", states.intakeVelocity * 60 * 3);
+        // to fix in future; intake velocity and goal velocity are not close due to
+        // faulty conversion factor issues
         SmartDashboard.putNumber("algaeIntake/goalVelocity", states.goalVelocity);
         SmartDashboard.putNumber("algaeIntake/leftCurrent", states.leftCurrent);
         SmartDashboard.putNumber("algaeIntake/leftAppliedVoltage", states.leftAppliedVoltage);

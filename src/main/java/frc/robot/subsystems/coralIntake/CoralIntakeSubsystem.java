@@ -69,9 +69,9 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("coralIntake/velocity", states.velocity);
         SmartDashboard.putNumber("coralIntake/goalVelocity", states.goalVelocity);
         SmartDashboard.putNumber("coralIntake/leftCurrent", states.leftCurrent);
-        SmartDashboard.putNumber("coralIntake/rightCurrent", states.rightCurrent);
+        SmartDashboard.putNumber("coralIntake/rightCurrent", 0);
         SmartDashboard.putNumber("coralIntake/leftAppliedVoltage", states.leftAppliedVoltage);
-        SmartDashboard.putNumber("coralIntake/rightAppliedVoltage", states.rightAppliedVoltage);
+        SmartDashboard.putNumber("coralIntake/rightAppliedVoltage", 0);
         SmartDashboard.putBoolean("coralIntake/isStalling", io.isStalling());
         SmartDashboard.putBoolean("coralIntake/hasCoral", hasCoral);
     }
