@@ -235,8 +235,9 @@ public class CommandFactory {
     return Commands.sequence(
       drive.driveToPoseFarFromReef(() -> getRobotPosition()), // initial
       elevatorBasedOnMode(),
+      Commands.waitUntil(() -> elevator.atGoal()),
       drive.driveToPoseNearReef(() -> getRobotPosition()), // final align
-      coralIntake.setOuttakeSpeed(() -> getSetpoint()).withDeadline(new WaitCommand(0.25)),
+      coralIntake.setOuttakeSpeed(() -> getSetpoint()).withDeadline(new WaitCommand(1)),
       drive.driveToPoseFarFromReef(() -> getRobotPosition()), // back to initial
       turtleBasedOnMode()
     );
