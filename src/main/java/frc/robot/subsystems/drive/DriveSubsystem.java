@@ -66,8 +66,10 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         private DriveSubsystemStates states = new DriveSubsystemStates();
 
         // correction PID
-        private double DRIVE_P = 1.1;
-        private double DRIVE_D = 0.05;
+        // private double DRIVE_P = 1.1;
+        // private double DRIVE_D = 0.05;
+        private double DRIVE_P = 2;
+        private double DRIVE_D = 0.01;
 
         private PIDController drivePIDController = new PIDController(DRIVE_P, 0, DRIVE_D);
 
