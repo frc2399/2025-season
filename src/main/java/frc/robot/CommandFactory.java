@@ -41,7 +41,8 @@ public class CommandFactory {
   private final NetworkTableEntry endgameEntry = scoringStateTables.getEntry("endgame");
 
   public CommandFactory(DriveSubsystem drive, Gyro gyro, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist,
-      AlgaeWristSubsystem algaeWrist, AlgaeIntakeSubsystem algaeIntake, CoralIntakeSubsystem coralIntake, ClimberSubsystem climber) {
+      AlgaeWristSubsystem algaeWrist, AlgaeIntakeSubsystem algaeIntake, CoralIntakeSubsystem coralIntake,
+      ClimberSubsystem climber) {
     this.drive = drive;
     this.elevator = elevator;
     this.coralWrist = coralWrist;
@@ -113,7 +114,8 @@ public class CommandFactory {
     return gameMode;
   }
 
-  // sadly, the belt on the algae interferes with our camera visibility :( so this setpoint
+  // sadly, the belt on the algae interferes with our camera visibility :( so this
+  // setpoint
   // allows the elevator to be slightly up for auton. it will only be called
   // directly by autonomous methods and SHOULD NOT BE USED in teleop
   public Command autonDefaultPosition() {
@@ -215,32 +217,36 @@ public class CommandFactory {
 
   public Command intakeOrClimbOutBasedOnMode() {
     return Commands.either(
-      climbOut(),
-      intakeBasedOnMode(),
-      () -> (getEndgameMode())
-    );
+        climbOut(),
+        intakeBasedOnMode(),
+        () -> (getEndgameMode()));
   }
 
   public Command outtakeOrClimbInBasedOnMode() {
     return Commands.either(
-      climbIn(),
-      outtakeBasedOnMode(),
-      () -> (getEndgameMode())
-    );
+        climbIn(),
+        outtakeBasedOnMode(),
+        () -> (getEndgameMode()));
   }
 
   // a complete scoring cycle for an algae after rough driver align.
   // does not contain any check that we are truly in position before outtaking
   public Command automatedCoralOuttake() {
     return Commands.sequence(
-      drive.driveToPoseFarFromReef(() -> getRobotPosition()), // initial
-      elevatorBasedOnMode(),
-      Commands.waitUntil(() -> elevator.atGoal()),
-      drive.driveToPoseNearReef(() -> getRobotPosition()), // final align
-      coralIntake.setOuttakeSpeed(() -> getSetpoint()).withDeadline(new WaitCommand(1)),
-      drive.driveToPoseFarFromReef(() -> getRobotPosition()), // back to initial
-      turtleBasedOnMode()
-    );
+        Commands.parallel(
+            drive.driveToPoseFarFromReef(() -> getRobotPosition()), // initial
+            Commands.sequence(
+                Commands.waitSeconds(0.02), // wait one cycle to make sure we're not measuring if we're close to an old
+                                            // goal pose - may or may not be necessary; determine with testing, it's here
+                                            // right now so i don't forget this solution later if it's needed
+                drive.waitUntilNearToPose(),
+                elevatorBasedOnMode())),
+        elevatorBasedOnMode(),
+        Commands.waitUntil(() -> elevator.atGoal()),
+        drive.driveToPoseNearReef(() -> getRobotPosition()), // final align
+        coralIntake.setOuttakeSpeed(() -> getSetpoint()).withDeadline(new WaitCommand(1)),
+        drive.driveToPoseFarFromReef(() -> getRobotPosition()), // back to initial
+        turtleBasedOnMode());
   }
 
   public Setpoint getSetpoint() {
