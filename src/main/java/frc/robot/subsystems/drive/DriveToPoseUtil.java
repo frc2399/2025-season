@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -22,12 +23,15 @@ public class DriveToPoseUtil {
         // profiled pid controllers for driving to a pose and related constants
         private static final double DRIVE_TO_POSE_XY_P = 10;
         private static final double DRIVE_TO_POSE_XY_D = 0.0;
-        private static final PIDController driveToPoseXPid = new PIDController(DRIVE_TO_POSE_XY_P, 0, DRIVE_TO_POSE_XY_D);
-        private static final PIDController driveToPoseYPid = new PIDController(DRIVE_TO_POSE_XY_P, 0, DRIVE_TO_POSE_XY_D);
+        private static final PIDController driveToPoseXPid = new PIDController(DRIVE_TO_POSE_XY_P, 0,
+                        DRIVE_TO_POSE_XY_D);
+        private static final PIDController driveToPoseYPid = new PIDController(DRIVE_TO_POSE_XY_P, 0,
+                        DRIVE_TO_POSE_XY_D);
 
         private static final double DRIVE_TO_POSE_THETA_P = 3.5; // radians per second per radian of error
         private static final double DRIVE_TO_POSE_THETA_D = 0.0;
-        private static final PIDController driveToPoseThetaAltPid = new PIDController(DRIVE_TO_POSE_THETA_P, 0, DRIVE_TO_POSE_THETA_D);
+        private static final PIDController driveToPoseThetaAltPid = new PIDController(DRIVE_TO_POSE_THETA_P, 0,
+                        DRIVE_TO_POSE_THETA_D);
         // Pose2d automatically wraps to -180 to 180 degrees. if this changes, these
         // values need to change, too.
         private static final Angle DRIVE_TO_POSE_MIN_INPUT = Degrees.of(-180);
@@ -51,6 +55,9 @@ public class DriveToPoseUtil {
         private static final Distance XY_MAX_ALIGN_DISTANCE = Meters.of(3);
         private static final Angle THETA_MAX_ALIGN_ANGLE = Degrees.of(90);
 
+        private static final Distance NEXT_ACTION_TRIGGER_DIST = Feet.of(1); // the distance at which the next command
+                                                                             // in any automated control scheme will run
+
         public static Supplier<ChassisSpeeds> getDriveToPoseVelocities(Supplier<Pose2d> robotPose,
                         Supplier<Pose2d> goalPose) {
 
@@ -59,8 +66,6 @@ public class DriveToPoseUtil {
                         ChassisSpeeds nullReturn = new ChassisSpeeds(0, 0, 0);
                         return () -> nullReturn;
                 }
-
-                
 
                 // calculate desired robot-relative velocities
                 LinearVelocity xDesired = MetersPerSecond
@@ -83,7 +88,7 @@ public class DriveToPoseUtil {
                 // likely failed)
                 if (Math.hypot(xError, yError) > XY_MAX_ALIGN_DISTANCE.in(Meters) ||
                                 Math.abs(thetaError.in(Radians)) > THETA_MAX_ALIGN_ANGLE
-                                                                .in(Radians)) {
+                                                .in(Radians)) {
                         xDesired = MetersPerSecond.of(0);
                         yDesired = MetersPerSecond.of(0);
                         thetaDesired = RadiansPerSecond.of(0);
@@ -116,5 +121,10 @@ public class DriveToPoseUtil {
                                 thetaDesired.in(RadiansPerSecond));
 
                 return () -> alignmentSpeeds;
+        }
+
+        public static Boolean poseWithinToleranceForNextAction(Supplier<Pose2d> robotPose, Supplier<Pose2d> goalPose) {
+                Distance distToGoal = Meters.of(robotPose.get().getTranslation().getDistance(goalPose.get().getTranslation()));
+                return distToGoal.in(Meters) <= NEXT_ACTION_TRIGGER_DIST.in(Meters);
         }
 }

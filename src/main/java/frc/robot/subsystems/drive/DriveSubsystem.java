@@ -82,6 +82,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         // Odometry
         private SwerveDrivePoseEstimator poseEstimator;
         private Pose2d robotPose;
+        private Supplier<Pose2d> goalPose;
 
         // swerve modules
         private SwerveModule frontLeft;
@@ -503,7 +504,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                                 isBlueAlliance = () -> false;
                         }
 
-                        Supplier<Pose2d> goalPose;
                         if (scoringPoseLocation == AutomatedScoringPoseLocation.CLOSE_TO_REEF) {
                                 goalPose = ReefscapeVisionUtil.getGoalPoseNear(robotPosition.get(), 
                                         () -> robotPose, isBlueAlliance);
@@ -546,9 +546,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 });
         }
 
-        // public Command driveBackCommand() {
-        //         return this.run(() -> setRobotRelativeSpeeds(new ChassisSpeeds(0,0,0)));
-        // }
+        public Command waitUntilNearToPose() {
+                return Commands.waitUntil(() -> DriveToPoseUtil.poseWithinToleranceForNextAction(() -> robotPose, goalPose));
+        }
 
         private void logAndUpdateDriveSubsystemStates() {
                 states.pose = getPose();
