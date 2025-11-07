@@ -186,4 +186,6 @@ compile_commands.json
 # Eclipse generated file for annotation processors
 .factorypath
 
+# Removing Tracking from Code Version Info
+src/main/java/frc/robot/CodeVersionInfo.java
 CodeVersionInfo.java

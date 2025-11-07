@@ -95,7 +95,7 @@ public class RobotContainer {
     driverController.leftTrigger().whileTrue(commandFactory.outtakeOrClimbInBasedOnMode());
 
     driverController.rightBumper().onTrue(commandFactory.elevatorBasedOnMode());
-    driverController.leftBumper().onTrue(drive.driveToPoseCommand(() -> commandFactory.getRobotPosition()))
+    driverController.leftBumper().onTrue(drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()))
         .onFalse(drive.disableDriveToPose());
 
     driverController.y().onTrue(commandFactory.resetHeading(Degrees.of(0)));
@@ -143,38 +143,25 @@ public class RobotContainer {
     NamedCommands.registerCommand("auton default subsystem position", commandFactory.autonDefaultPosition());
     NamedCommands.registerCommand("auton turtle", commandFactory.autonTurtleMode());
 
-    // autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser = new SendableChooser<>();
-    Command obstacle = AutoBuilder.pathfindToPose(
-      new Pose2d(17,6.5, Rotation2d.fromDegrees(-25)),
+    Command middleL1 = AutoBuilder.pathfindToPose(
+      new Pose2d(5.869148,4.03, Rotation2d.fromDegrees(90)),
       new PathConstraints(
-          0.5, 4.0,
+          1, 5.0,
           Units.degreesToRadians(360), Units.degreesToRadians(540)),
-      0).withName("Pathfind around Obstacles");
+      0).withName("middleL1");
 
-      Command partOne = AutoBuilder.pathfindToPose(
-      new Pose2d(2,2, Rotation2d.fromDegrees(0)),
+    Command processorSideL1 = AutoBuilder.pathfindToPose(
+      new Pose2d(5.174574, 2.834512, Rotation2d.fromDegrees(120)),
       new PathConstraints(
-          0.5, 4.0,
-          Units.degreesToRadians(360), Units.degreesToRadians(540)),
-      0).withName("Pathfind around Obstacles");
+        1, 5, 
+        Units.degreesToRadians(360), Units.degreesToRadians(540)),
+      0).withName("processorSideL1");
 
-      Command partTwo = AutoBuilder.pathfindToPose(
-      new Pose2d(0,0, Rotation2d.fromDegrees(0)),
-      new PathConstraints(
-          0.5, 4.0,
-          Units.degreesToRadians(360), Units.degreesToRadians(540)),
-      0).withName("Pathfind around Obstacles");
-      
-      autoChooser.addOption("Pathfind around Obstacles", obstacle);
-      SmartDashboard.putData("Pathfind around obstacles", obstacle);
-
-      autoChooser.addOption("Pathfind to Pickup Pos", partOne);
-
-      autoChooser.addOption("Pathfind back from Pickup Pos", partTwo);
-
-      autoChooser.addOption("sequential path", Commands.sequence(partOne, partTwo));
-
+    autoChooser.addOption("middleL1", Commands.sequence(middleL1, commandFactory.moveElevatorAndCoralWrist(), 
+      commandFactory.outtakeBasedOnMode()));
+    autoChooser.addOption("processorSideL1", Commands.sequence(processorSideL1, commandFactory.moveElevatorAndAlgaeWrist(), 
+      commandFactory.outtakeBasedOnMode()));
 
     SmartDashboard.putData("Autos/Selector", autoChooser);
 
