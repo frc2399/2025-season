@@ -51,22 +51,11 @@ public class DriveToPoseUtil {
         private static final Distance XY_ALIGN_TOLERANCE = Inches.of(0.25);
         private static final Angle THETA_ALIGN_TOLERANCE = Degrees.of(1);
 
-        // filtering constants
-        private static final Distance XY_MAX_ALIGN_DISTANCE = Meters.of(3);
-        private static final Angle THETA_MAX_ALIGN_ANGLE = Degrees.of(90);
-
         private static final Distance NEXT_ACTION_TRIGGER_DIST = Feet.of(1); // the distance at which the next command
                                                                              // in any automated control scheme will run
 
         public static Supplier<ChassisSpeeds> getDriveToPoseVelocities(Supplier<Pose2d> robotPose,
                         Supplier<Pose2d> goalPose) {
-
-                // if there is no robot pose, don't move
-                if (robotPose.get() == null) {
-                        ChassisSpeeds nullReturn = new ChassisSpeeds(0, 0, 0);
-                        return () -> nullReturn;
-                }
-
                 // calculate desired robot-relative velocities
                 LinearVelocity xDesired = MetersPerSecond
                                 .of(driveToPoseXPid.calculate(robotPose.get().getX(), goalPose.get().getX()));
@@ -82,17 +71,6 @@ public class DriveToPoseUtil {
                 SmartDashboard.putNumber("vision/yError_drivetopose", yError);
                 Angle thetaError = Radians.of(
                                 robotPose.get().getRotation().getRadians() - goalPose.get().getRotation().getRadians());
-
-                // filtering - keeps the robot from attempting to make drastic moves (if we are
-                // trying to make this aggressive of a movement, vision or odometry has most
-                // likely failed)
-                if (Math.hypot(xError, yError) > XY_MAX_ALIGN_DISTANCE.in(Meters) ||
-                                Math.abs(thetaError.in(Radians)) > THETA_MAX_ALIGN_ANGLE
-                                                .in(Radians)) {
-                        xDesired = MetersPerSecond.of(0);
-                        yDesired = MetersPerSecond.of(0);
-                        thetaDesired = RadiansPerSecond.of(0);
-                }
 
                 // tolerance checking
                 if (Math.abs(xError) < XY_ALIGN_TOLERANCE.in(Meters)) {

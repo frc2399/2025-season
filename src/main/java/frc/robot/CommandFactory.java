@@ -236,9 +236,6 @@ public class CommandFactory {
         Commands.parallel(
             drive.driveToPoseFarFromReef(() -> getRobotPosition()), // initial
             Commands.sequence(
-                Commands.waitSeconds(0.02), // wait one cycle to make sure we're not measuring if we're close to an old
-                                            // goal pose - may or may not be necessary; determine with testing, it's here
-                                            // right now so i don't forget this solution later if it's needed
                 drive.waitUntilNearToPose(),
                 elevatorBasedOnMode())),
         elevatorBasedOnMode(),
@@ -246,7 +243,10 @@ public class CommandFactory {
         drive.driveToPoseNearReef(() -> getRobotPosition()), // final align
         coralIntake.setOuttakeSpeed(() -> getSetpoint()).withDeadline(new WaitCommand(1)),
         drive.driveToPoseFarFromReef(() -> getRobotPosition()), // back to initial
-        turtleBasedOnMode());
+        turtleBasedOnMode()).onlyIf(
+          // we will always drive to a far pose first, so when checking if we should start command, we should check if we should go to far pose
+          drive.shouldUseDriveToPoseVelocities(() -> getRobotPosition(), AutomatedScoringPoseLocation.FAR_FROM_REEF)
+        );
   }
 
   public Setpoint getSetpoint() {

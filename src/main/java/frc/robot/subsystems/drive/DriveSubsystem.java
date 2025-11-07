@@ -36,6 +36,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -79,10 +80,14 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         private final double MIN_STRAFE_SPEED = 0.075;
 
-        // Odometry
+        // Odometry and drive to pose stuff
         private SwerveDrivePoseEstimator poseEstimator;
         private Pose2d robotPose;
         private Supplier<Pose2d> goalPose;
+        
+        // filtering constants for drive to pose
+        private static final Distance XY_MAX_ALIGN_DISTANCE = Meters.of(3);
+        private static final Angle THETA_MAX_ALIGN_ANGLE = Degrees.of(90);
 
         // swerve modules
         private SwerveModule frontLeft;
@@ -498,23 +503,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 return this.run(() -> {
                         atGoal = false;
 
-                        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-                                isBlueAlliance = () -> true;
-                        } else {
-                                isBlueAlliance = () -> false;
-                        }
-
-                        if (scoringPoseLocation == AutomatedScoringPoseLocation.CLOSE_TO_REEF) {
-                                goalPose = ReefscapeVisionUtil.getGoalPoseNear(robotPosition.get(), 
-                                        () -> robotPose, isBlueAlliance);
-                        } else {
-                                goalPose = ReefscapeVisionUtil.getGoalPoseFar(robotPosition.get(),
-                                        () -> robotPose, isBlueAlliance);
-                        }
-                        SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.get().getY());
-                        SmartDashboard.putNumber("Swerve/vision/goalPosex", goalPose.get().getX());
-                        SmartDashboard.putNumber("Swerve/vision/goalTheta", goalPose.get().getRotation().getDegrees());
-
                         Supplier<ChassisSpeeds> alignmentSpeeds = DriveToPoseUtil.getDriveToPoseVelocities(
                                 () -> robotPose, goalPose);
 
@@ -528,12 +516,58 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 }).until(() -> atGoal);
         }
 
+        public BooleanSupplier shouldUseDriveToPoseVelocities(Supplier<RobotPosition> robotPosition, AutomatedScoringPoseLocation scoringPoseLocation) {
+                updateGoalPose(robotPosition, scoringPoseLocation);
+                
+                // if there is no robot pose, don't move
+                if (robotPose == null) {
+                        return () -> false;
+                }
+                
+                double xError = robotPose.getX() - goalPose.get().getX();
+                double yError = robotPose.getY() - goalPose.get().getY();
+                Angle thetaError = Radians.of(
+                                robotPose.getRotation().getRadians() - goalPose.get().getRotation().getRadians());
+
+                // filtering - keeps the robot from attempting to make drastic moves (if we are
+                // trying to make this aggressive of a movement, vision or odometry has most
+                // likely failed)
+                if (Math.hypot(xError, yError) > XY_MAX_ALIGN_DISTANCE.in(Meters) ||
+                                Math.abs(thetaError.in(Radians)) > THETA_MAX_ALIGN_ANGLE
+                                                .in(Radians)) {
+                        return () -> false;
+                }
+
+                return () -> true;
+        }
+
+        private void updateGoalPose(Supplier<RobotPosition> robotPosition, AutomatedScoringPoseLocation scoringPoseLocation) {
+                if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+                        isBlueAlliance = () -> true;
+                } else {
+                        isBlueAlliance = () -> false;
+                }
+
+                if (scoringPoseLocation == AutomatedScoringPoseLocation.CLOSE_TO_REEF) {
+                        goalPose = ReefscapeVisionUtil.getGoalPoseNear(robotPosition.get(), 
+                                () -> robotPose, isBlueAlliance);
+                } else {
+                        goalPose = ReefscapeVisionUtil.getGoalPoseFar(robotPosition.get(),
+                                () -> robotPose, isBlueAlliance);
+                }
+                SmartDashboard.putNumber("Swerve/vision/goalPoseY", goalPose.get().getY());
+                SmartDashboard.putNumber("Swerve/vision/goalPosex", goalPose.get().getX());
+                SmartDashboard.putNumber("Swerve/vision/goalTheta", goalPose.get().getRotation().getDegrees());
+        }
+
         public Command driveToPoseNearReef(Supplier<RobotPosition> robotPosition) {
-                return driveToPoseCommand(robotPosition, AutomatedScoringPoseLocation.CLOSE_TO_REEF);
+                return driveToPoseCommand(robotPosition, AutomatedScoringPoseLocation.CLOSE_TO_REEF)
+                        .onlyIf(shouldUseDriveToPoseVelocities(robotPosition, AutomatedScoringPoseLocation.CLOSE_TO_REEF));    
         }
 
         public Command driveToPoseFarFromReef(Supplier<RobotPosition> robotPosition) {
-                return driveToPoseCommand(robotPosition, AutomatedScoringPoseLocation.FAR_FROM_REEF);
+                return driveToPoseCommand(robotPosition, AutomatedScoringPoseLocation.FAR_FROM_REEF)
+                .onlyIf(shouldUseDriveToPoseVelocities(robotPosition, AutomatedScoringPoseLocation.FAR_FROM_REEF));
         }        
 
         public Command disableDriveToPose() {
