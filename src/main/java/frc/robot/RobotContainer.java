@@ -158,9 +158,12 @@ public class RobotContainer {
         Units.degreesToRadians(360), Units.degreesToRadians(540)),
       0).withName("processorSideL1");
 
-    autoChooser.addOption("middleL1", Commands.sequence(middleL1, commandFactory.moveElevatorAndCoralWrist(), 
-      commandFactory.outtakeBasedOnMode()));
-    autoChooser.addOption("processorSideL1", Commands.sequence(processorSideL1, commandFactory.moveElevatorAndAlgaeWrist(), 
+    autoChooser.addOption("middleL1", Commands.sequence(middleL1, Commands.runOnce(() -> 
+      commandFactory.setGameMode("coral")), Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")), 
+      commandFactory.moveElevatorAndCoralWrist(), commandFactory.outtakeBasedOnMode()));
+
+    autoChooser.addOption("processorSideL1", Commands.sequence(processorSideL1, commandFactory.moveElevatorAndAlgaeWrist(),
+      Commands.runOnce(() -> commandFactory.setGameMode("coral")), Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")),  
       commandFactory.outtakeBasedOnMode()));
 
     SmartDashboard.putData("Autos/Selector", autoChooser);
@@ -243,21 +246,6 @@ public class RobotContainer {
 
   // maybe try it as a command instead of SmartDashboard
   private void configureButtonBindingsElastic() {
-    SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
-        new Pose2d(2, 2, Rotation2d.fromDegrees(0)),
-        new PathConstraints(
-            0.5, 4.0,
-            Units.degreesToRadians(360), Units.degreesToRadians(540)),
-        0).withName("Pathfind to Pickup Pos"));
-
-    SmartDashboard.putData("Pathfind to Original Pos", AutoBuilder.pathfindToPose(
-        new Pose2d(0, 0, Rotation2d.fromDegrees(180)),
-        new PathConstraints(
-            0.5, 4.0,
-            Units.degreesToRadians(360), Units.degreesToRadians(540)),
-        0));
-
-    SmartDashboard.putData("test print command", Commands.print("working"));
 
     // Create the constraints to use while pathfinding. The constraints defined in
     // the path will only be used for the path.
