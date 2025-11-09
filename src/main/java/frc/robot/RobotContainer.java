@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.InchesPerSecond;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -144,27 +145,36 @@ public class RobotContainer {
     NamedCommands.registerCommand("auton turtle", commandFactory.autonTurtleMode());
 
     autoChooser = new SendableChooser<>();
+
+    PathConstraints constraints = new PathConstraints(1, 5, 
+      Units.degreesToRadians(360), Units.degreesToRadians((540)));
+
     Command middleL1 = AutoBuilder.pathfindToPose(
-      new Pose2d(5.869148,4.03, Rotation2d.fromDegrees(90)),
-      new PathConstraints(
-          1, 5.0,
-          Units.degreesToRadians(360), Units.degreesToRadians(540)),
+      new Pose2d(5.869148,4.03, Rotation2d.fromDegrees(90)), constraints,
       0).withName("middleL1");
 
+      // have to subtract the rotation it will go to from the rotation it's at, ex) 180 - 120 = 60˚
+      //TODO: find how to set a start position for the auton
     Command processorSideL1 = AutoBuilder.pathfindToPose(
-      new Pose2d(5.174574, 2.834512, Rotation2d.fromDegrees(120)),
-      new PathConstraints(
-        1, 5, 
-        Units.degreesToRadians(360), Units.degreesToRadians(540)),
+      new Pose2d(5.174574, 2.834512, Rotation2d.fromDegrees(60)), constraints,
       0).withName("processorSideL1");
+
+    Command nonProcessorSideL1 = AutoBuilder.pathfindToPose(
+      new Pose2d(5.174574, 5.225488, Rotation2d.fromDegrees(-60)), constraints,
+      0).withName("nonprocessorSideL1");
 
     autoChooser.addOption("middleL1", Commands.sequence(middleL1, Commands.runOnce(() -> 
       commandFactory.setGameMode("coral")), Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")), 
       commandFactory.moveElevatorAndCoralWrist(), commandFactory.outtakeBasedOnMode()));
 
-    autoChooser.addOption("processorSideL1", Commands.sequence(processorSideL1, commandFactory.moveElevatorAndAlgaeWrist(),
-      Commands.runOnce(() -> commandFactory.setGameMode("coral")), Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")),  
-      commandFactory.outtakeBasedOnMode()));
+    autoChooser.addOption("processorSideL1", Commands.sequence(processorSideL1, Commands.runOnce(() -> 
+      commandFactory.setGameMode("coral")), Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")), 
+      commandFactory.moveElevatorAndCoralWrist(), commandFactory.outtakeBasedOnMode()));
+
+    autoChooser.addOption("nonProcessorSideL1", Commands.sequence(nonProcessorSideL1, 
+      Commands.runOnce(() -> commandFactory.setGameMode("coral")), 
+      Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")),  
+      commandFactory.moveElevatorAndAlgaeWrist(), commandFactory.outtakeBasedOnMode()));
 
     SmartDashboard.putData("Autos/Selector", autoChooser);
 
