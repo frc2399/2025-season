@@ -482,13 +482,6 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 }
         }
 
-        //new method workflow:
-        // 1. calculate the trapezoid
-        // 2. periodically yoink the next trapezoid
-        // 3. move the robot
-        // 4. check for the goal
-        // 5. end the robot
-
         // this method has a LOT of suppliers - so short explanation of why they're good
         // basically, when a button binding is called in robotContainer, it makes an
         // object
