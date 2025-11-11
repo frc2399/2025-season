@@ -136,13 +136,6 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         }
 
         @Override
-        public void setWristSpeed(double speed) {
-                algaeWristSparkMax.set(speed
-                                + algaeWristFeedFoward.calculate(algaeWristRelativeEncoder.getPosition()
-                                                + WRIST_ANGULAR_OFFSET.in(Radians), speed));
-        }
-
-        @Override
         public void updateStates(AlgaeWristIOStates states) {
                 states.wristVelocity = algaeWristAbsoluteEncoder.getVelocity();
                 states.wristAppliedVoltage = algaeWristSparkMax.getAppliedOutput() * algaeWristSparkMax.getBusVoltage();
@@ -150,9 +143,5 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                 states.wristRelativeEncoderAngle = algaeWristRelativeEncoder.getPosition();
                 states.wristAbsoluteEncoderAngle = algaeWristAbsoluteEncoder.getPosition();
                 states.goalAngle = goalAngle.in(Radians);
-        }
-
-        @Override
-        public void periodic() {
         }
 }
