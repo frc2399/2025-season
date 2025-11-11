@@ -227,7 +227,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         @Override
         public void periodic() {
                 SmartDashboard.putBoolean("/drive/atGoal", atGoal);
-                SmartDashboard.putBoolean("Swerve/vision/shouldUseDTP", shouldUseDriveToPoseVelocities(() -> RobotPosition.LEFT, AutomatedScoringPoseLocation.FAR_FROM_REEF));
+                // SmartDashboard.putBoolean("Swerve/vision/shouldUseDTP", shouldUseDriveToPoseVelocities(() -> RobotPosition.LEFT, AutomatedScoringPoseLocation.FAR_FROM_REEF));
                 // This will get the simulated sensor readings that we set
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
@@ -555,7 +555,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         public Command driveToPoseNearReef(Supplier<RobotPosition> robotPosition) {
                 return driveToPoseCommand(robotPosition, AutomatedScoringPoseLocation.CLOSE_TO_REEF)
-                        .onlyIf(() -> shouldUseDriveToPoseVelocities(()-> RobotPosition.LEFT, AutomatedScoringPoseLocation.CLOSE_TO_REEF));    
+                        .onlyIf(() -> shouldUseDriveToPoseVelocities(robotPosition, AutomatedScoringPoseLocation.CLOSE_TO_REEF));    
         }
 
         public Command driveToPoseFarFromReef(Supplier<RobotPosition> robotPosition) {

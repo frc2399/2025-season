@@ -238,7 +238,6 @@ public class CommandFactory {
             Commands.sequence(
                 drive.waitUntilNearToPose(),
                 elevatorBasedOnMode())),
-        elevatorBasedOnMode(),
         Commands.waitUntil(() -> elevator.atGoal()),
         drive.driveToPoseNearReef(() -> getRobotPosition()), // final align
         coralIntake.setOuttakeSpeed(() -> getSetpoint()).withDeadline(new WaitCommand(1)),
