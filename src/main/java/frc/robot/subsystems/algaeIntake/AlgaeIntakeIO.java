@@ -19,4 +19,8 @@ public interface AlgaeIntakeIO {
     public void updateStates(AlgaeIntakeIOStates states);
 
     public boolean isStalling();
+    
+    public double getVelocity();
 }
+
+
