@@ -542,9 +542,11 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 }
 
                 if (scoringPoseLocation == AutomatedScoringPoseLocation.CLOSE_TO_REEF) {
+                        System.out.println("near");
                         goalPose = ReefscapeVisionUtil.getGoalPoseNear(robotPosition.get(), 
                                 () -> robotPose, isBlueAlliance);
                 } else {
+                        System.out.println("far");
                         goalPose = ReefscapeVisionUtil.getGoalPoseFar(robotPosition.get(),
                                 () -> robotPose, isBlueAlliance);
                 }
