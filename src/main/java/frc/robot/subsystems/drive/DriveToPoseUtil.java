@@ -56,7 +56,8 @@ public class DriveToPoseUtil {
 
         public static Supplier<ChassisSpeeds> getDriveToPoseVelocities(Supplier<Pose2d> robotPose,
                         Supplier<Pose2d> goalPose) {
-                // calculate desired robot-relative velocities
+
+                                // calculate desired robot-relative velocities
                 LinearVelocity xDesired = MetersPerSecond
                                 .of(driveToPoseXPid.calculate(robotPose.get().getX(), goalPose.get().getX()));
                 LinearVelocity yDesired = MetersPerSecond

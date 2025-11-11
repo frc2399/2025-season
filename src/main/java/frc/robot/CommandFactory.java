@@ -245,8 +245,18 @@ public class CommandFactory {
         drive.driveToPoseFarFromReef(() -> getRobotPosition()), // back to initial
         turtleBasedOnMode()).onlyIf(
           // we will always drive to a far pose first, so when checking if we should start command, we should check if we should go to far pose
-          drive.shouldUseDriveToPoseVelocities(() -> getRobotPosition(), AutomatedScoringPoseLocation.FAR_FROM_REEF)
+          () -> drive.shouldUseDriveToPoseVelocities(() -> getRobotPosition(), AutomatedScoringPoseLocation.FAR_FROM_REEF)
         );
+  }
+
+  public Command WaitUntilDTPTest() {
+    return Commands.parallel(
+      drive.driveToPoseFarFromReef(() -> getRobotPosition()),
+      Commands.sequence(
+        drive.waitUntilNearToPose(),
+        Commands.print("WITHIN 1 FT!!!")
+      )
+    ).andThen(Commands.print("AT POS :)"));
   }
 
   public Setpoint getSetpoint() {

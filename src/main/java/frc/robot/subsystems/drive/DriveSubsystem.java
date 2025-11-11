@@ -227,6 +227,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         @Override
         public void periodic() {
                 SmartDashboard.putBoolean("/drive/atGoal", atGoal);
+                SmartDashboard.putBoolean("Swerve/vision/shouldUseDTP", shouldUseDriveToPoseVelocities(() -> RobotPosition.LEFT, AutomatedScoringPoseLocation.FAR_FROM_REEF));
                 // This will get the simulated sensor readings that we set
                 // in the previous article while in simulation, but will use
                 // real values on the robot itself.
@@ -493,7 +494,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         // should
         // check it every time i use this object' thus allowing it to change
         private Command driveToPoseCommand(Supplier<RobotPosition> robotPosition, AutomatedScoringPoseLocation scoringPoseLocation) {
-                return this.run(() -> {
+                return this.run( () -> {
                         atGoal = false;
 
                         Supplier<ChassisSpeeds> alignmentSpeeds = DriveToPoseUtil.getDriveToPoseVelocities(
@@ -509,12 +510,12 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 }).until(() -> atGoal);
         }
 
-        public BooleanSupplier shouldUseDriveToPoseVelocities(Supplier<RobotPosition> robotPosition, AutomatedScoringPoseLocation scoringPoseLocation) {
+        public boolean shouldUseDriveToPoseVelocities(Supplier<RobotPosition> robotPosition, AutomatedScoringPoseLocation scoringPoseLocation) {
                 updateGoalPose(robotPosition, scoringPoseLocation);
                 
                 // if there is no robot pose, don't move
                 if (robotPose == null) {
-                        return () -> false;
+                        return false;
                 }
                 
                 double xError = robotPose.getX() - goalPose.get().getX();
@@ -528,10 +529,9 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                 if (Math.hypot(xError, yError) > XY_MAX_ALIGN_DISTANCE.in(Meters) ||
                                 Math.abs(thetaError.in(Radians)) > THETA_MAX_ALIGN_ANGLE
                                                 .in(Radians)) {
-                        return () -> false;
+                        return false;
                 }
-
-                return () -> true;
+                return true;
         }
 
         private void updateGoalPose(Supplier<RobotPosition> robotPosition, AutomatedScoringPoseLocation scoringPoseLocation) {
@@ -555,13 +555,13 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
 
         public Command driveToPoseNearReef(Supplier<RobotPosition> robotPosition) {
                 return driveToPoseCommand(robotPosition, AutomatedScoringPoseLocation.CLOSE_TO_REEF)
-                        .onlyIf(shouldUseDriveToPoseVelocities(robotPosition, AutomatedScoringPoseLocation.CLOSE_TO_REEF));    
+                        .onlyIf(() -> shouldUseDriveToPoseVelocities(()-> RobotPosition.LEFT, AutomatedScoringPoseLocation.CLOSE_TO_REEF));    
         }
 
         public Command driveToPoseFarFromReef(Supplier<RobotPosition> robotPosition) {
-                return driveToPoseCommand(robotPosition, AutomatedScoringPoseLocation.FAR_FROM_REEF)
-                .onlyIf(shouldUseDriveToPoseVelocities(robotPosition, AutomatedScoringPoseLocation.FAR_FROM_REEF));
-        }        
+                return driveToPoseCommand(robotPosition, AutomatedScoringPoseLocation.CLOSE_TO_REEF)
+                        .onlyIf(() -> shouldUseDriveToPoseVelocities(robotPosition, AutomatedScoringPoseLocation.CLOSE_TO_REEF));        
+        }
 
         public Command disableDriveToPose() {
                 return this.runOnce(() -> {
