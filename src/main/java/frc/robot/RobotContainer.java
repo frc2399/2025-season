@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.InchesPerSecond;
+import static edu.wpi.first.units.Units.Rotation;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -150,31 +151,64 @@ public class RobotContainer {
       Units.degreesToRadians(360), Units.degreesToRadians((540)));
 
     Command middleL1 = AutoBuilder.pathfindToPose(
-      new Pose2d(5.869148,4.03, Rotation2d.fromDegrees(90)), constraints,
+      new Pose2d(5.869148,4.03, Rotation2d.fromDegrees(0)), constraints,
       0).withName("middleL1");
 
-      // have to subtract the rotation it will go to from the rotation it's at, ex) 180 - 120 = 60˚
-      //TODO: find how to set a start position for the auton
     Command processorSideL1 = AutoBuilder.pathfindToPose(
-      new Pose2d(5.174574, 2.834512, Rotation2d.fromDegrees(60)), constraints,
+      new Pose2d(5.174574, 2.834512, Rotation2d.fromDegrees(120)), constraints,
       0).withName("processorSideL1");
-
+    
+    Command processorHumanStation = AutoBuilder.pathfindToPose(
+      new Pose2d(1.35554, 0.83016, Rotation2d.fromDegrees(234)), constraints,
+      0).withName("processorHumanStation");
+  
     Command nonProcessorSideL1 = AutoBuilder.pathfindToPose(
       new Pose2d(5.174574, 5.225488, Rotation2d.fromDegrees(-60)), constraints,
       0).withName("nonprocessorSideL1");
-
-    autoChooser.addOption("middleL1", Commands.sequence(middleL1, Commands.runOnce(() -> 
-      commandFactory.setGameMode("coral")), Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")), 
+    
+    Command nonProcessorHumanStation = AutoBuilder.pathfindToPose(
+      new Pose2d(1.35039909, 7.57016579, Rotation2d.fromDegrees(126)), constraints,
+      0).withName("nonProcessorHumanStation");
+    
+    //from the starting position, to the reef to score L1, to the human station, all on the processor side, 
+    //linking multiple paths
+    Command processorL1HumanStation = Commands.sequence(processorSideL1, 
+      Commands.runOnce(() -> commandFactory.setGameMode("coral")), 
+      Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")),
+      drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()),
+      commandFactory.moveElevatorAndCoralWrist(), commandFactory.outtakeBasedOnMode(), processorHumanStation, 
+      drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()), commandFactory.autonTurtleMode(), 
+      commandFactory.intakeBasedOnMode());
+    
+    Command nonProcessorL1HumanStation = Commands.sequence(nonProcessorSideL1, 
+      Commands.runOnce(() -> commandFactory.setGameMode("coral")), 
+      Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")),
+      drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()), 
+      commandFactory.moveElevatorAndCoralWrist(), commandFactory.outtakeBasedOnMode(), nonProcessorHumanStation, 
+      commandFactory.autonTurtleMode(), drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()), 
+      commandFactory.intakeBasedOnMode());
+    
+    autoChooser.addOption("middleL1", Commands.sequence(middleL1, 
+      Commands.runOnce(() -> commandFactory.setGameMode("coral")), 
+      Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")),
+      drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()),  
       commandFactory.moveElevatorAndCoralWrist(), commandFactory.outtakeBasedOnMode()));
 
-    autoChooser.addOption("processorSideL1", Commands.sequence(processorSideL1, Commands.runOnce(() -> 
-      commandFactory.setGameMode("coral")), Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")), 
+    autoChooser.addOption("processorSideL1", Commands.sequence(processorSideL1, 
+      Commands.runOnce(() -> commandFactory.setGameMode("coral")), 
+      Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")), 
+      drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()),  
       commandFactory.moveElevatorAndCoralWrist(), commandFactory.outtakeBasedOnMode()));
 
     autoChooser.addOption("nonProcessorSideL1", Commands.sequence(nonProcessorSideL1, 
       Commands.runOnce(() -> commandFactory.setGameMode("coral")), 
-      Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")),  
+      Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")), 
+      drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()), 
       commandFactory.moveElevatorAndAlgaeWrist(), commandFactory.outtakeBasedOnMode()));
+
+    autoChooser.addOption("processorL1-humanStation", processorL1HumanStation);
+
+    autoChooser.addOption("nonProcessorL1-humanStation", nonProcessorL1HumanStation);
 
     SmartDashboard.putData("Autos/Selector", autoChooser);
 
@@ -236,39 +270,6 @@ public class RobotContainer {
     operatorController.rightTrigger().onTrue(Commands.runOnce(() -> commandFactory.setGameMode("coral")));
 
     // place local buttons below here, delete before PRing
-
-  }
-
-  // public static PathPlannerPath loadPath(String pathName) {
-  //   try {
-  //     return PathPlannerPath.fromPathFile(pathName);
-  //   } catch (IOException e) {
-  //     DriverStation.reportError("Failed to load path: " + pathName, e.getStackTrace());
-  //     return null; // or throw a runtime exception
-  //   } catch (ParseException e) {
-  //     DriverStation.reportError("Failed to load path: " + pathName, e.getStackTrace());
-  //     return null; // or throw a runtime exception
-  //   } catch (FileVersionException e) {
-  //     DriverStation.reportError("Failed to load path: " + pathName, e.getStackTrace());
-  //     return null; // or throw a runtime exception 
-  //   }
-  // }
-
-  // maybe try it as a command instead of SmartDashboard
-  private void configureButtonBindingsElastic() {
-
-    // Create the constraints to use while pathfinding. The constraints defined in
-    // the path will only be used for the path.
-    // PathConstraints constraints = new PathConstraints(
-    //     3.0, 4.0,
-    //     Units.degreesToRadians(540), Units.degreesToRadians(720));
-
-    // // Since AutoBuilder is configured, we can use it to build pathfinding commands
-    // Command pathfindingCommand = AutoBuilder.pathfindThenFollowPath(
-    //     loadPath("score"),
-    //     constraints);
-
-    // SmartDashboard.putData("Pathfind to path", pathfindingCommand);
 
   }
 }
