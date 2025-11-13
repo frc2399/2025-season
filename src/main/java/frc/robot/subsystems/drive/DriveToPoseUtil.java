@@ -71,7 +71,7 @@ public class DriveToPoseUtil {
                 double yError = robotPose.get().getY() - goalPose.get().getY();
                 SmartDashboard.putNumber("vision/yError_drivetopose", yError);
                 Angle thetaError = Radians.of(
-                                robotPose.get().getRotation().getRadians() - goalPose.get().getRotation().getRadians());
+                                robotPose.get().getRotation().minus(goalPose.get().getRotation()).getRadians());
 
                 // tolerance checking
                 if (Math.abs(xError) < XY_ALIGN_TOLERANCE.in(Meters)) {
