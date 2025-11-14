@@ -27,7 +27,7 @@ public class ReefscapeVisionUtil {
         private static final Pose2d TAG_21 = new Pose2d(5.321, 4.026, Rotation2d.kZero);
         private static final Pose2d TAG_22 = new Pose2d(4.905, 3.306, Rotation2d.fromDegrees(-60));
 
-        private static final Transform2d REEF_TO_ROBOT = new Transform2d(Inches.of(24), Inches.zero(),
+        private static final Transform2d REEF_TO_ROBOT = new Transform2d(Inches.of(22), Inches.zero(),
                         Rotation2d.k180deg);
         private static final Transform2d SCORING_POSE_OFFSET_LEFT = new Transform2d(Inches.zero(), Inches.of(6.5),
                         Rotation2d.kZero);
