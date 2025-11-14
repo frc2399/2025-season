@@ -561,8 +561,8 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
         }
 
         public Command driveToPoseFarFromReef(Supplier<RobotPosition> robotPosition) {
-                return driveToPoseCommand(robotPosition, AutomatedScoringPoseLocation.CLOSE_TO_REEF)
-                        .onlyIf(() -> shouldUseDriveToPoseVelocities(robotPosition, AutomatedScoringPoseLocation.CLOSE_TO_REEF));        
+                return driveToPoseCommand(robotPosition, AutomatedScoringPoseLocation.FAR_FROM_REEF)
+                        .onlyIf(() -> shouldUseDriveToPoseVelocities(robotPosition, AutomatedScoringPoseLocation.FAR_FROM_REEF));        
         }
 
         public Command disableDriveToPose() {
