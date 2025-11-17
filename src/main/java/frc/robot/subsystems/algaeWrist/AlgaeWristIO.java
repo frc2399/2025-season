@@ -17,9 +17,6 @@ public interface AlgaeWristIO {
 
     public void setGoalAngle(Setpoint setpoint);
 
-    public void setWristSpeed(double speed);
-
     public void updateStates(AlgaeWristIOStates states);
 
-    public void periodic();
 }
