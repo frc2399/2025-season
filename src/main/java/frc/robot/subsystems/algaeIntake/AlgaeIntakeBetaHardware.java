@@ -120,8 +120,8 @@ public class AlgaeIntakeBetaHardware implements AlgaeIntakeIO {
         @Override
         public void updateStates(AlgaeIntakeIOStates states) {
                 states.intakeVelocity = getVelocity();
-                states.leftAppliedVoltage = algaeIntakeSparkMax.getAppliedOutput()
+                states.AppliedVoltage = algaeIntakeSparkMax.getAppliedOutput()
                                 * algaeIntakeSparkMax.getBusVoltage();
-                states.leftCurrent = algaeIntakeSparkMax.getOutputCurrent();
+                states.Current = algaeIntakeSparkMax.getOutputCurrent();
         }
 }
