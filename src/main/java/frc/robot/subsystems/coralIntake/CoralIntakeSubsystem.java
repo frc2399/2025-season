@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CommandFactory;
 import frc.robot.CommandFactory.Setpoint;
+import frc.robot.Constants;
 import frc.robot.subsystems.coralIntake.CoralIntakeIO.CoralIntakeIOStates;
 
 public class CoralIntakeSubsystem extends SubsystemBase {

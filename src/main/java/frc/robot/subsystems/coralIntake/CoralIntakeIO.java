@@ -25,6 +25,4 @@ public interface CoralIntakeIO {
     public void passiveIntakeIgnoringStall();
 
     public void updateStates(CoralIntakeIOStates states);
-
-    public double getVelocity();
 }

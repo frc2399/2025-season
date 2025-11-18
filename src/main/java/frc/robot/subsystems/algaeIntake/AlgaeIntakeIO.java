@@ -20,7 +20,6 @@ public interface AlgaeIntakeIO {
 
     public boolean isStalling();
     
-    public double getVelocity();
 }
 
 
