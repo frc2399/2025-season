@@ -171,21 +171,21 @@ public class RobotContainer {
     
     //from the starting position, to the reef to score L1, to the human station, all on the processor side, 
     //linking multiple paths
-    // Command processorL1HumanStation = Commands.sequence(processorSideL1, 
-    //   Commands.runOnce(() -> commandFactory.setGameMode("coral")), 
-    //   Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")),
-    //   drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()),
-    //   commandFactory.moveElevatorAndCoralWrist(), commandFactory.outtakeBasedOnMode(), processorHumanStation, 
-    //   drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()), commandFactory.autonTurtleMode(), 
-    //   commandFactory.intakeBasedOnMode());
+    Command processorL1HumanStation = Commands.sequence(processorSideL1, 
+      Commands.runOnce(() -> commandFactory.setGameMode("coral")), 
+      Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")),
+      drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()),
+      commandFactory.moveElevatorAndCoralWrist(), commandFactory.outtakeBasedOnMode(), processorHumanStation, 
+      drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()), commandFactory.autonTurtleMode(), 
+      commandFactory.intakeBasedOnMode());
     
-    // Command nonProcessorL1HumanStation = Commands.sequence(nonProcessorSideL1, 
-    //   Commands.runOnce(() -> commandFactory.setGameMode("coral")), 
-    //   Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")),
-    //   drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()), 
-    //   commandFactory.moveElevatorAndCoralWrist(), commandFactory.outtakeBasedOnMode(), nonProcessorHumanStation, 
-    //   commandFactory.autonTurtleMode(), drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()), 
-    //   commandFactory.intakeBasedOnMode());
+    Command nonProcessorL1HumanStation = Commands.sequence(nonProcessorSideL1, 
+      Commands.runOnce(() -> commandFactory.setGameMode("coral")), 
+      Commands.runOnce(() -> commandFactory.setScoringLevel("Level 1")),
+      drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()), 
+      commandFactory.moveElevatorAndCoralWrist(), commandFactory.outtakeBasedOnMode(), nonProcessorHumanStation, 
+      commandFactory.autonTurtleMode(), drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()), 
+      commandFactory.intakeBasedOnMode());
     
     autoChooser.addOption("middleL1", Commands.sequence(middleL1, 
       Commands.runOnce(() -> commandFactory.setGameMode("coral")).withName("setGameMode"), 
@@ -205,9 +205,9 @@ public class RobotContainer {
       drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()), 
       commandFactory.moveElevatorAndAlgaeWrist(), commandFactory.outtakeBasedOnMode()));
 
-    // autoChooser.addOption("processorL1-humanStation", processorL1HumanStation);
+    autoChooser.addOption("processorL1-humanStation", processorL1HumanStation);
 
-    // autoChooser.addOption("nonProcessorL1-humanStation", nonProcessorL1HumanStation);
+    autoChooser.addOption("nonProcessorL1-humanStation", nonProcessorL1HumanStation);
 
     SmartDashboard.putData("Autos/Selector", autoChooser);
 
