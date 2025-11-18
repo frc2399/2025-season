@@ -51,11 +51,14 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     private double velocityGoal = 0;
 
-    private static Debouncer CORAL_BETA_DEBOUNCER;
+    private static Debouncer CORAL_BETA_CURRENT_DEBOUNCER;
+    private static Debouncer CORAL_BETA_VELOCITY_DEBOUNCER;
+
     private static Current coralIntakeStallThreshold;
 
     public CoralIntakeBetaHardware(Time debouncerTime, Current stallThreshold) {
-        CORAL_BETA_DEBOUNCER = new Debouncer(debouncerTime.in(Seconds));
+        CORAL_BETA_CURRENT_DEBOUNCER = new Debouncer(debouncerTime.in(Seconds));
+        CORAL_BETA_VELOCITY_DEBOUNCER = new Debouncer(debouncerTime.in(Seconds));
         coralIntakeStallThreshold = stallThreshold;
         betaCoralIntakeConfig.inverted(BETA_CORAL_INTAKE_MOTOR_INVERTED).idleMode(BETA_CORAL_INTAKE_IDLE_MODE)
                 .smartCurrentLimit((int) MotorConstants.VORTEX_CURRENT_LIMIT.in(Amps));
@@ -108,10 +111,15 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
         velocityGoal = 0;
     }
 
+    public double getVelocity() {
+        return betaCoralIntakeEncoder.getVelocity();
+}
+
     @Override
     public boolean isStalling() {
-        boolean isStalling = CORAL_BETA_DEBOUNCER
-                .calculate(betaCoralIntakeSparkFlex.getOutputCurrent() > coralIntakeStallThreshold.in(Amps));
+        boolean isStalling = CORAL_BETA_CURRENT_DEBOUNCER
+                .calculate(betaCoralIntakeSparkFlex.getOutputCurrent() > coralIntakeStallThreshold.in(Amps))
+                && CORAL_BETA_VELOCITY_DEBOUNCER.calculate(getVelocity() < Constants.SpeedConstants.COMP_CORAL_VELOCITY_THRESHOLD.in(RPM));
         return isStalling;
     }
 

@@ -20,6 +20,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Time;
+import frc.robot.Constants;
 import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.MotorIdConstants;
 import frc.robot.Constants.SpeedConstants;
@@ -52,7 +53,10 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
         private static final Time ALGAE_INTAKE_STALL_TIME = Seconds.of(0.15);
         private static final AngularVelocity ALGAE_INTAKE_STALL_VELOCITY = SpeedConstants.BETA_ALGAE_INTAKE_SPEED;
 
-        private static final Debouncer algaeIntakeDebouncer = new Debouncer(ALGAE_INTAKE_STALL_TIME.in(Seconds));
+        private static final Debouncer algaeIntakeCurrentDebouncer = new Debouncer(ALGAE_INTAKE_STALL_TIME.in(Seconds));
+        private static final Debouncer algaeIntakeVelocityDebouncer = new Debouncer(ALGAE_INTAKE_STALL_TIME.in(Seconds));
+
+        private static Current algaeIntakeStallThreshold;
 
     public AlgaeIntakeCompHardware() {
         compAlgaeIntakeConfig.inverted(COMP_ALGAE_INTAKE_MOTOR_INVERTED)
@@ -102,7 +106,10 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     @Override
         public boolean isStalling() {
-                return algaeIntakeDebouncer.calculate((algaeIntakeSparkMax.getOutputCurrent() > ALGAE_INTAKE_STALL_THRESHOLD.in(Amps)) && (compAlgaeIntakeRelativeEncoder.getVelocity() < 0.1*ALGAE_INTAKE_STALL_VELOCITY.in(RPM)));
+            boolean isStalling = algaeIntakeCurrentDebouncer
+                .calculate(algaeIntakeSparkMax.getOutputCurrent() > algaeIntakeStallThreshold.in(Amps))
+                && algaeIntakeVelocityDebouncer.calculate(getVelocity() < Constants.SpeedConstants.ALGAE_VELOCITY_THRESHOLD.in(RPM));
+                return isStalling;
         }
 
     @Override
