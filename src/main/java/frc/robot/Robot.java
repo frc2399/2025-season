@@ -96,10 +96,6 @@ public class Robot extends TimedRobot {
     }
     robotContainer.algaeWrist.resetWrist();
     robotContainer.coralWrist.resetWrist();
-
-    if () {
-      gyro.setYaw(Degrees.of(0));
-    }
   }
 
   /** This function is called periodically during autonomous. */

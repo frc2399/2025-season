@@ -223,6 +223,21 @@ public class CommandFactory {
     );
   }
 
+  public Command setGameModeAndScoringLevelCommand(String gameMode, String scoringLevel) {
+    return Commands.runOnce(() -> {
+      setGameMode(gameMode);
+      setScoringLevel(scoringLevel);
+    }).withName("setGameModeAndScoringLevelCommand");
+  }
+
+  public Command scorePiece() {
+    return Commands.sequence(moveElevatorAndCoralWrist(), outtakeBasedOnMode());
+  }
+
+  public Command humanStationIntake() {
+    return Commands.sequence(autonTurtleMode(), intakeBasedOnMode());
+  }
+
   public Setpoint getSetpoint() {
     Setpoint setpoint;
     if (levelEntry.getString("None").equals("Level 1")) {
