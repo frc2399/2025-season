@@ -16,6 +16,7 @@ import static edu.wpi.first.units.Units.InchesPerSecond;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.Pose;
 import frc.robot.subsystems.algaeIntake.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.algaeWrist.AlgaeWristSubsystem;
 import frc.robot.subsystems.climber.ClimberSubsystem;
@@ -300,12 +301,7 @@ public class CommandFactory {
     return Commands.parallel(gyro.setYaw(yaw), Commands.runOnce(() -> drive.resetOdometryAfterGyro()));
   }
 
-  public Command buildPath(String name, Pose2d pose) {
-    return AutoBuilder.pathfindToPose(pose, constraints, 0).withName(name);
-  }
-
-  public Command buildPath(String name, double x, double y, double theta) {
-    Pose2d pose = new Pose2d(x, y, Rotation2d.fromDegrees(theta));
-    return buildPath(name, pose);
+  public Command buildPath(Pose pose) {
+    return AutoBuilder.pathfindToPose(pose.pose(), constraints, 0).withName(pose.name());
   }
 }
