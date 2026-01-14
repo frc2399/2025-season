@@ -185,7 +185,10 @@ compile_commands.json
 
 # Eclipse generated file for annotation processors
 .factorypath
+<<<<<<< HEAD
 
 # Removing Tracking from Code Version Info
 src/main/java/frc/robot/CodeVersionInfo.java
 CodeVersionInfo.java
+=======
+>>>>>>> 3cf125a (port to 2026 vs code)

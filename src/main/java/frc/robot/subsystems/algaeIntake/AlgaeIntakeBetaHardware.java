@@ -5,13 +5,12 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.FeedbackSensor;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -19,7 +18,8 @@ import edu.wpi.first.units.measure.Current;
 import static edu.wpi.first.units.Units.RPM;
 import edu.wpi.first.units.measure.Time;
 
-import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.Constants;
@@ -33,9 +33,10 @@ public class AlgaeIntakeBetaHardware implements AlgaeIntakeIO {
         private final RelativeEncoder algaeIntakeEncoder;
 
         private static final SparkMaxConfig algaeIntakeSparkMaxConfig = new SparkMaxConfig();
+        private static final ClosedLoopConfig algaeIntakeClosedLoopConfig = new ClosedLoopConfig(); 
 
         private static final boolean LEFT_MOTOR_INVERTED = false;
-        private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
+        private static final IdleMode IDLE_MODE = IdleMode.kBrake;
         // gearbox ratio 9:1
         private static final double ENCODER_POSITION_FACTOR = (2 * Math.PI) / 9; // radians
         private static final double ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 9 / 60.0; // radians per second
@@ -60,11 +61,13 @@ public class AlgaeIntakeBetaHardware implements AlgaeIntakeIO {
                 algaeIntakeSparkMaxConfig.encoder.positionConversionFactor(ENCODER_POSITION_FACTOR)
                                 .velocityConversionFactor(ENCODER_VELOCITY_FACTOR);
                 algaeIntakeSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                .pidf(ALGAE_MOTOR_P, ALGAE_MOTOR_I, ALGAE_MOTOR_D, ALGAE_MOTOR_FF)
-                                .pidf(ALGAE_MOTOR_P, ALGAE_MOTOR_I, ALGAE_MOTOR_D, ALGAE_MOTOR_FF,
-                                                ClosedLoopSlot.kSlot1)
+                                .pid(ALGAE_MOTOR_P, ALGAE_MOTOR_I, ALGAE_MOTOR_D)
                                 .outputRange(ALGAE_MOTOR_MIN_OUTPUT, ALGAE_MOTOR_MAX_OUTPUT)
                                 .positionWrappingEnabled(POSITION_WRAPPING_ENABLED);
+
+                algaeIntakeClosedLoopConfig.feedForward.sva(0, ALGAE_MOTOR_FF, 0);
+
+                algaeIntakeSparkMaxConfig.apply(algaeIntakeClosedLoopConfig);
 
                 algaeIntakeSparkMaxConfig.signals
                                 .appliedOutputPeriodMs(Constants.SpeedConstants.LOGGING_FREQUENCY_MS)
@@ -83,7 +86,7 @@ public class AlgaeIntakeBetaHardware implements AlgaeIntakeIO {
         }
 
         public void setRollerSpeed(AngularVelocity speed) {
-                algaeIntakeClosedLoopController.setReference(speed.in(RPM), ControlType.kVelocity);
+                algaeIntakeClosedLoopController.setSetpoint(speed.in(RPM), ControlType.kVelocity);
         }
 
         public double getVelocity() {
@@ -112,7 +115,7 @@ public class AlgaeIntakeBetaHardware implements AlgaeIntakeIO {
         @Override
         public void passiveIntake() {
                 if (!isStalling()) {
-                        algaeIntakeClosedLoopController.setReference(SpeedConstants.BETA_ALGAE_PASSIVE_SPEED.in(RPM),
+                        algaeIntakeClosedLoopController.setSetpoint(SpeedConstants.BETA_ALGAE_PASSIVE_SPEED.in(RPM),
                                         ControlType.kVelocity);
                 }
         }

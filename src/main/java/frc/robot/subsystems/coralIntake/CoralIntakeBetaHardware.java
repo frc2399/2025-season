@@ -6,13 +6,14 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.filter.Debouncer;
@@ -46,6 +47,7 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     private final RelativeEncoder betaCoralIntakeEncoder;
     private final SparkClosedLoopController betaCoralIntakeClosedLoop;
     private final SparkFlexConfig betaCoralIntakeConfig = new SparkFlexConfig();
+    private final ClosedLoopConfig betaCoralClosedLoopConfig = new ClosedLoopConfig();
 
     private final SparkFlex betaCoralIntakeSparkFlex;
 
@@ -62,7 +64,7 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
         betaCoralIntakeConfig.encoder.positionConversionFactor(BETA_CORAL_INTAKE_POSITION_CONVERSION_FACTOR)
                 .velocityConversionFactor(BETA_CORAL_INTAKE_VELOCITY_CONVERSION_FACTOR);
         betaCoralIntakeConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pidf(BETA_CORAL_INTAKE_P, BETA_CORAL_INTAKE_I, BETA_CORAL_INTAKE_D, BETA_CORAL_INTAKE_FF)
+                .pid(BETA_CORAL_INTAKE_P, BETA_CORAL_INTAKE_I, BETA_CORAL_INTAKE_D)
                 .outputRange(BETA_CORAL_INTAKE_PID_MIN_OUTPUT, BETA_CORAL_INTAKE_PID_MAX_OUTPUT)
                 .positionWrappingEnabled(BETA_CORAL_INTAKE_POSITION_WRAPPING_ENABLED);
 
@@ -74,6 +76,9 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
         betaCoralIntakeSparkFlex = new SparkFlex(MotorIdConstants.CORAL_BETA_INTAKE_CAN_ID,
                 MotorType.kBrushless);
 
+        betaCoralClosedLoopConfig.feedForward.sva(0, BETA_CORAL_INTAKE_FF, 0);
+        betaCoralIntakeConfig.apply(betaCoralClosedLoopConfig);
+
         betaCoralIntakeSparkFlex.configure(betaCoralIntakeConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
 
@@ -83,7 +88,7 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
 
     @Override
     public void intake() {
-        betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_INTAKE_SPEED.in(RPM), ControlType.kVelocity);
+        betaCoralIntakeClosedLoop.setSetpoint(SpeedConstants.BETA_CORAL_INTAKE_SPEED.in(RPM), ControlType.kVelocity);
         velocityGoal = SpeedConstants.BETA_CORAL_INTAKE_SPEED.in(RPM);
     }
 
@@ -98,13 +103,13 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
             desiredVelocity = SpeedConstants.BETA_CORAL_OUTTAKE_SPEED.in(RPM);
         }
 
-        betaCoralIntakeClosedLoop.setReference(desiredVelocity, ControlType.kVelocity);
+        betaCoralIntakeClosedLoop.setSetpoint(desiredVelocity, ControlType.kVelocity);
         velocityGoal = desiredVelocity;
     }
 
     @Override
     public void setZero() {
-        betaCoralIntakeClosedLoop.setReference(0, ControlType.kVelocity);
+        betaCoralIntakeClosedLoop.setSetpoint(0, ControlType.kVelocity);
         velocityGoal = 0;
     }
 
@@ -118,14 +123,14 @@ public class CoralIntakeBetaHardware implements CoralIntakeIO {
     @Override
     public void passiveIntake() {
         if (!isStalling()) {
-            betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_PASSIVE_SPEED.in(RPM),
+            betaCoralIntakeClosedLoop.setSetpoint(SpeedConstants.BETA_CORAL_PASSIVE_SPEED.in(RPM),
                     ControlType.kVelocity);
         }
     }
 
     @Override
     public void passiveIntakeIgnoringStall() {
-            betaCoralIntakeClosedLoop.setReference(SpeedConstants.BETA_CORAL_PASSIVE_SPEED.in(RPM),
+            betaCoralIntakeClosedLoop.setSetpoint(SpeedConstants.BETA_CORAL_PASSIVE_SPEED.in(RPM),
                     ControlType.kVelocity);
     }
 

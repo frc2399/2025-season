@@ -8,12 +8,13 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
@@ -42,6 +43,7 @@ public class CoralWristHardware implements CoralWristIO {
   private final AbsoluteEncoder coralIntakeWristAbsoluteEncoder;
   private final RelativeEncoder coralIntakeWristRelativeEncoder;
   private static final SparkFlexConfig wristSparkFlexConfig = new SparkFlexConfig();
+  private static final ClosedLoopConfig wristClosedLoopConfig = new ClosedLoopConfig();
   private static final boolean WRIST_MOTOR_INVERTED = false;
 
   private static final boolean ABSOLUTE_ENCODER_INVERTED = false;
@@ -92,12 +94,16 @@ public class CoralWristHardware implements CoralWristIO {
         .velocityConversionFactor(RELATIVE_ENCODER_WRIST_VELOCITY_FACTOR);
 
     wristSparkFlexConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pidf(WRIST_MOTOR_P, WRIST_MOTOR_I, WRIST_MOTOR_D, WRIST_MOTOR_FF)
+        .pid(WRIST_MOTOR_P, WRIST_MOTOR_I, WRIST_MOTOR_D)
         .outputRange(WRIST_MOTOR_MIN_OUTPUT, WRIST_MOTOR_MAX_OUTPUT)
         .positionWrappingEnabled(POSITION_WRAPPING_ENABLED)
         .positionWrappingInputRange(POSITION_WRAPPING_MIN_INPUT.in(Radians),
             POSITION_WRAPPING_MAX_INPUT.in(Radians));
 
+    wristClosedLoopConfig.feedForward.sva(0, WRIST_MOTOR_FF, 0);
+
+    wristSparkFlexConfig.apply(wristClosedLoopConfig);
+          
     wristSparkFlexConfig.softLimit
         .forwardSoftLimit(FORWARD_SOFT_LIMIT.in(Radians))
         .forwardSoftLimitEnabled(SOFT_LIMIT_ENABLED)
@@ -140,7 +146,7 @@ public class CoralWristHardware implements CoralWristIO {
       desiredAngle = Radians.of(0);
     }
     SmartDashboard.putString("centralizedCommands/CWsetpoint", setpoint.toString());
-    coralIntakeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
+    coralIntakeWristClosedLoopController.setSetpoint(desiredAngle.in(Radians), ControlType.kPosition,
         ClosedLoopSlot.kSlot0,
         coralWristFeedFoward.calculate(desiredAngle.in(Radians),
             coralIntakeWristRelativeEncoder.getVelocity()));

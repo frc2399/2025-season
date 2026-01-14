@@ -10,23 +10,22 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.MathUtil;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.MotorConstants;
@@ -48,6 +47,8 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
     private double driveDesiredVelocity;
     private static final SparkFlexConfig sparkFlexConfigDriving = new SparkFlexConfig();
     private static final SparkMaxConfig sparkMaxConfigTurning = new SparkMaxConfig();
+    private static final ClosedLoopConfig drivingClosedLoopConfig = new ClosedLoopConfig();
+    private static final ClosedLoopConfig turningClosedLoopConfig = new ClosedLoopConfig();
 
     // drivings are NEO Vortex, turnings are NEO 550s
     private static final int DRIVING_MOTOR_PINION_TEETH = 12;
@@ -73,8 +74,8 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
                     WHEEL_CIRCUMFERENCE.in(Meters)) / (DRIVING_MOTOR_REDUCTION));
 
     private static final Distance DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_DIAMETER.times(Math.PI))
-            .divide(DRIVING_MOTOR_REDUCTION); // meters
-    private static final Distance DRIVING_ENCODER_VELOCITY_FACTOR = DRIVING_ENCODER_POSITION_FACTOR.divide(60); // meters
+            .div(DRIVING_MOTOR_REDUCTION); // meters
+    private static final Distance DRIVING_ENCODER_VELOCITY_FACTOR = DRIVING_ENCODER_POSITION_FACTOR.div(60); // meters
                                                                                                                 // per
                                                                                                                 // second
 
@@ -117,8 +118,11 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
         sparkFlexConfigDriving.encoder.positionConversionFactor(DRIVING_ENCODER_POSITION_FACTOR.in(Meters))
                 .velocityConversionFactor(DRIVING_ENCODER_VELOCITY_FACTOR.in(Meters));
         sparkFlexConfigDriving.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pidf(DRIVING_P, DRIVING_I, DRIVING_D, DRIVING_FF)
+                .pid(DRIVING_P, DRIVING_I, DRIVING_D)
                 .outputRange(DRIVING_MIN_OUTPUT, DRIVING_MAX_OUTPUT);
+
+        drivingClosedLoopConfig.feedForward.sva(0, DRIVING_FF, 0);
+                sparkFlexConfigDriving.apply(drivingClosedLoopConfig);
 
         sparkMaxConfigTurning.inverted(TURNING_MOTOR_INVERTED).idleMode(TURNING_MOTOR_IDLE_MODE)
                 .smartCurrentLimit(
@@ -128,13 +132,16 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
                 .velocityConversionFactor(TURNING_ENCODER_VELOCITY_FACTOR);
         sparkMaxConfigTurning.absoluteEncoder.inverted(TURNING_ENCODER_INVERTED);
         sparkMaxConfigTurning.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pidf(TURNING_P, TURNING_I, TURNING_D, TURNING_FF)
+                .pid(TURNING_P, TURNING_I, TURNING_D)
                 .outputRange(TURNING_MIN_OUTPUT, TURNING_MAX_OUTPUT)
                 .positionWrappingEnabled(TURNING_ENCODER_POSITION_WRAPPING)
                 .positionWrappingInputRange(
                         TURNING_ENCODER_POSITION_PID_MIN_INPUT,
                         TURNING_ENCODER_POSITION_PID_MAX_INPUT);
         sparkMaxConfigTurning.signals.absoluteEncoderPositionPeriodMs(Constants.SpeedConstants.MAIN_LOOP_FREQUENCY_MS);
+
+        turningClosedLoopConfig.feedForward.sva(0, TURNING_FF, 0);
+                sparkMaxConfigTurning.apply(turningClosedLoopConfig);
 
         drivingSparkFlex.configure(sparkFlexConfigDriving, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
@@ -166,7 +173,7 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
     };
 
     public void setDesiredDriveSpeedMPS(double speed) {
-        drivingPidController.setReference(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+        drivingPidController.setSetpoint(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
         this.driveDesiredVelocity = speed;
     };
 
@@ -195,7 +202,7 @@ public class SwerveModuleHardwareVortex implements SwerveModuleIO {
     };
 
     public void setDesiredTurnAngle(double angle) {
-        turningPidController.setReference(angle, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        turningPidController.setSetpoint(angle, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         this.desiredAngle = angle;
     };
 

@@ -1,6 +1,5 @@
 package frc.robot.subsystems.climber;
 
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.LinearVelocity;
 
 public interface ClimberIO {

@@ -10,14 +10,16 @@ import static edu.wpi.first.units.Units.Volts;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -54,6 +56,7 @@ public class AlphaElevatorHardware implements ElevatorIO {
 
         private SparkFlex elevatorRightMotorFollower, elevatorLeftMotorLeader;
         private SparkFlexConfig globalMotorConfig, rightMotorConfigFollower, leftMotorConfigLeader;
+        private static final ClosedLoopConfig elevatorClosedLoopConfig = new ClosedLoopConfig();
         private SparkClosedLoopController leftClosedLoopController;
         private RelativeEncoder leftEncoder;
         private TrapezoidProfile elevatorMotionProfile;
@@ -94,10 +97,12 @@ public class AlphaElevatorHardware implements ElevatorIO {
                                 .i(AlphaElevatorConstants.I_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
                                 .d(AlphaElevatorConstants.D_VALUE_VELOCITY, ClosedLoopSlot.kSlot1)
                                 // https://docs.revrobotics.com/revlib/spark/closed-loop/closed-loop-control-getting-started#f-parameter
-                                .velocityFF(AlphaElevatorConstants.FEEDFORWARD_VALUE.in(Volts), ClosedLoopSlot.kSlot1)
                                 .outputRange(AlphaElevatorConstants.OUTPUT_RANGE_MIN_VALUE,
                                                 AlphaElevatorConstants.OUTPUT_RANGE_MAX_VALUE, ClosedLoopSlot.kSlot1);
 
+                elevatorClosedLoopConfig.feedForward.sva(0, AlphaElevatorConstants.FEEDFORWARD_VALUE.in(Volts), 0, ClosedLoopSlot.kSlot1);
+                globalMotorConfig.apply(elevatorClosedLoopConfig);        
+                
                 globalMotorConfig.softLimit
                                 .forwardSoftLimit((maxElevatorHeight).in(Meters) - 0.02) // a little less
                                                                                          // than max height
@@ -157,7 +162,7 @@ public class AlphaElevatorHardware implements ElevatorIO {
         public void calculateNextIntermediateSetpoint() {
                 intermediateSetpointState = elevatorMotionProfile.calculate(AlphaElevatorConstants.kDt,
                                 intermediateSetpointState, goalState);
-                leftClosedLoopController.setReference(intermediateSetpointState.position, ControlType.kPosition,
+                leftClosedLoopController.setSetpoint(intermediateSetpointState.position, ControlType.kPosition,
                                 ClosedLoopSlot.kSlot0);
         }
 

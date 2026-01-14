@@ -3,12 +3,12 @@ package frc.robot.subsystems.drive;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.FeedbackSensor;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
@@ -17,6 +17,8 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -43,6 +45,8 @@ public class SwerveModuleHardwareNEO implements SwerveModuleIO {
 
         private static final SparkMaxConfig sparkMaxConfigDriving = new SparkMaxConfig();
         private static final SparkMaxConfig sparkMaxConfigTurning = new SparkMaxConfig();
+        private static final ClosedLoopConfig drivingClosedLoopConfig = new ClosedLoopConfig();
+        private static final ClosedLoopConfig turningClosedLoopConfig = new ClosedLoopConfig();
 
         // drivings are NEOs, turnings are NEO 550s
         // THIS IS 13 ON COMP BOT
@@ -69,8 +73,8 @@ public class SwerveModuleHardwareNEO implements SwerveModuleIO {
                                         WHEEL_CIRCUMFERENCE.in(Meters)) / (DRIVING_MOTOR_REDUCTION));
 
         private static final Distance DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_DIAMETER.times(Math.PI))
-                        .divide(DRIVING_MOTOR_REDUCTION).divide((260.0 / 254)); // meters
-        private static final Distance DRIVING_ENCODER_VELOCITY_FACTOR = DRIVING_ENCODER_POSITION_FACTOR.divide(60); // meters
+                        .div(DRIVING_MOTOR_REDUCTION).div((260.0 / 254)); // meters
+        private static final Distance DRIVING_ENCODER_VELOCITY_FACTOR = DRIVING_ENCODER_POSITION_FACTOR.div(60); // meters
                                                                                                                     // per
                                                                                                                     // second
 
@@ -114,8 +118,11 @@ public class SwerveModuleHardwareNEO implements SwerveModuleIO {
                 sparkMaxConfigDriving.encoder.positionConversionFactor(DRIVING_ENCODER_POSITION_FACTOR.in(Meters))
                                 .velocityConversionFactor(DRIVING_ENCODER_VELOCITY_FACTOR.in(Meters));
                 sparkMaxConfigDriving.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                .pidf(DRIVING_P, DRIVING_I, DRIVING_D, DRIVING_FF)
+                                .pid(DRIVING_P, DRIVING_I, DRIVING_D)
                                 .outputRange(DRIVING_MIN_OUTPUT, DRIVING_MAX_OUTPUT);
+                
+                drivingClosedLoopConfig.feedForward.sva(0, DRIVING_FF, 0);
+                sparkMaxConfigDriving.apply(drivingClosedLoopConfig);
 
                 sparkMaxConfigTurning.inverted(TURNING_MOTOR_INVERTED).idleMode(TURNING_MOTOR_IDLE_MODE)
                                 .smartCurrentLimit(
@@ -125,7 +132,7 @@ public class SwerveModuleHardwareNEO implements SwerveModuleIO {
                                 .velocityConversionFactor(TURNING_ENCODER_VELOCITY_FACTOR);
                 sparkMaxConfigTurning.absoluteEncoder.inverted(TURNING_ENCODER_INVERTED);
                 sparkMaxConfigTurning.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                                .pidf(TURNING_P, TURNING_I, TURNING_D, TURNING_FF)
+                                .pid(TURNING_P, TURNING_I, TURNING_D)
                                 .outputRange(TURNING_MIN_OUTPUT, TURNING_MAX_OUTPUT)
                                 .positionWrappingEnabled(TURNING_ENCODER_POSITION_WRAPPING)
                                 .positionWrappingInputRange(
@@ -149,12 +156,12 @@ public class SwerveModuleHardwareNEO implements SwerveModuleIO {
         };
 
         public void setDesiredDriveSpeedMPS(double speed) {
-                drivingPidController.setReference(speed, ControlType.kVelocity);
+                drivingPidController.setSetpoint(speed, ControlType.kVelocity);
                 this.driveDesiredVelocity = speed;
         };
 
         public void setDesiredTurnAngle(double angle) {
-                turningPidController.setReference(angle, ControlType.kPosition);
+                turningPidController.setSetpoint(angle, ControlType.kPosition);
                 this.desiredAngle = angle;
         };
 

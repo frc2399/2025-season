@@ -2,17 +2,17 @@ package frc.robot.subsystems.algaeIntake;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.PersistMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -30,6 +30,7 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
     private final RelativeEncoder compAlgaeIntakeRelativeEncoder;
 
     private static final SparkMaxConfig compAlgaeIntakeConfig = new SparkMaxConfig();
+    private static final ClosedLoopConfig compAlgaeIntakeClosedLoopConfig = new ClosedLoopConfig();
 
     private static final boolean COMP_ALGAE_INTAKE_MOTOR_INVERTED = false;
     private static final SparkBaseConfig.IdleMode IDLE_MODE = SparkBaseConfig.IdleMode.kBrake;
@@ -61,9 +62,13 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
         compAlgaeIntakeConfig.encoder.positionConversionFactor(COMP_ALGAE_INTAKE_POSITION_CONVERSION_FACTOR)
                 .velocityConversionFactor(COMP_ALGAE_INTAKE_VELOCITY_CONVERSION_FACTOR);
         compAlgaeIntakeConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pidf(COMP_ALGAE_INTAKE_P, COMP_ALGAE_INTAKE_I, COMP_ALGAE_INTAKE_D, COMP_ALGAE_INTAKE_FeedForward)
+                .pid(COMP_ALGAE_INTAKE_P, COMP_ALGAE_INTAKE_I, COMP_ALGAE_INTAKE_D)
                 .outputRange(COMP_ALGAE_INTAKE_MIN_INPUT, COMP_ALGAE_INTAKE_MAX_OUTPUT)
                 .positionWrappingEnabled(COMP_ALGAE_INTAKE_POSITION_WRAPPING_ENABLED);
+
+        compAlgaeIntakeClosedLoopConfig.feedForward.sva(0, COMP_ALGAE_INTAKE_FeedForward,0);
+
+        compAlgaeIntakeConfig.apply(compAlgaeIntakeClosedLoopConfig);
 
         algaeIntakeSparkMax = new SparkMax(MotorIdConstants.ALGAE_BETA_INTAKE_CAN_ID, MotorType.kBrushless);
         algaeIntakeSparkMax.configure(compAlgaeIntakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -73,7 +78,7 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
 
     @Override
     public void setRollerSpeed(AngularVelocity speed) {
-        compAlgaeIntakeClosedLoop.setReference(speed.in(RPM), ControlType.kVelocity);
+        compAlgaeIntakeClosedLoop.setSetpoint(speed.in(RPM), ControlType.kVelocity);
         goalVelocity = speed.in(RPM);
     }
 
@@ -108,8 +113,8 @@ public class AlgaeIntakeCompHardware implements AlgaeIntakeIO {
     @Override
         public void passiveIntake() {
             // if (!isStalling()) {
-            //     //compAlgaeIntakeClosedLoop.setReference(SpeedConstants.COMP_ALGAE_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
+            //     //compAlgaeIntakeClosedLoop.setSetpoint(SpeedConstants.COMP_ALGAE_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
             // }
-            compAlgaeIntakeClosedLoop.setReference(SpeedConstants.COMP_ALGAE_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
+            compAlgaeIntakeClosedLoop.setSetpoint(SpeedConstants.COMP_ALGAE_PASSIVE_SPEED.in(RPM), ControlType.kVelocity);
         }
 }

@@ -9,14 +9,16 @@ import static edu.wpi.first.units.Units.Radians;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
@@ -59,6 +61,7 @@ public class ClimberHardware implements ClimberIO {
 
         private final SparkMaxConfig leftClimberConfig = new SparkMaxConfig();
         private final SparkMaxConfig rightClimberConfig = new SparkMaxConfig();
+        private final ClosedLoopConfig climberClosedLoopConfig = new ClosedLoopConfig();
 
         private final RelativeEncoder leftClimberEncoder = leftClimber.getEncoder();
         private final SparkClosedLoopController climberClosedLoopController = leftClimber.getClosedLoopController();
@@ -80,8 +83,7 @@ public class ClimberHardware implements ClimberIO {
                                 .velocityConversionFactor(ClimberConstants.CLIMBER_VELOCITY_CONVERSION_FACTOR);
 
                 leftClimberConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                .pidf(ClimberConstants.P_VALUE, ClimberConstants.I_VALUE, ClimberConstants.D_VALUE,
-                                                ClimberConstants.CLIMBER_VELOCITY_FF);
+                                .pid(ClimberConstants.P_VALUE, ClimberConstants.I_VALUE, ClimberConstants.D_VALUE);
 
                 leftClimberConfig.softLimit
                                 .forwardSoftLimit(ClimberConstants.UPPER_LIMIT.in(Inches))
@@ -89,6 +91,8 @@ public class ClimberHardware implements ClimberIO {
                                 .reverseSoftLimit(ClimberConstants.LOWER_LIMIT.in(Inches))
                                 .reverseSoftLimitEnabled(true);
 
+                climberClosedLoopConfig.feedForward.sva(0, ClimberConstants.CLIMBER_VELOCITY_FF, 0);
+                                
                 rightClimberConfig.follow(leftClimber.getDeviceId(), true);
 
                 leftClimber.configure(leftClimberConfig, ResetMode.kResetSafeParameters,
@@ -100,7 +104,7 @@ public class ClimberHardware implements ClimberIO {
         }
 
         public void setSpeed(LinearVelocity speed) {
-               climberClosedLoopController.setReference(speed.in(InchesPerSecond), ControlType.kVelocity);
+               climberClosedLoopController.setSetpoint(speed.in(InchesPerSecond), ControlType.kVelocity);
                 if (speed.equals(InchesPerSecond.zero())) {
                         climberServo.setAngle(90);
                         servoGoalAngle = Degrees.of(90);

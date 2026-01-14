@@ -213,7 +213,7 @@ public class DriveSubsystem extends SubsystemBase implements DriveBase {
                         DriverStation.reportError("Failed to load Pathplanner config and configure Autobuilder",
                                         e.getStackTrace());
                 }
-                configurePathPlannerLogging();
+               configurePathPlannerLogging();
         }
 
         @Override

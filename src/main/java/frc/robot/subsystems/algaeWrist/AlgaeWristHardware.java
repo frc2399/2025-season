@@ -8,18 +8,19 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.CommandFactory.Setpoint;
 import frc.robot.Constants.MotorConstants;
@@ -42,6 +43,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
         private final AbsoluteEncoder algaeWristAbsoluteEncoder;
         private final RelativeEncoder algaeWristRelativeEncoder;
         private static final SparkFlexConfig wristSparkMaxConfig = new SparkFlexConfig();
+        private static final ClosedLoopConfig wristClosedLoopConfig = new ClosedLoopConfig();
         private static final boolean MOTOR_INVERTED = true;
 
         private static final boolean ABSOLUTE_ENCODER_INVERTED = true;
@@ -79,11 +81,14 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                 wristSparkMaxConfig.encoder.positionConversionFactor(RELATIVE_ENCODER_POSITION_FACTOR)
                                 .velocityConversionFactor(RELATIVE_ENCODER_VELOCITY_FACTOR);
                 wristSparkMaxConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                .pidf(WRIST_MOTOR_P, WRIST_MOTOR_I, WRIST_MOTOR_D, WRIST_MOTOR_FF)
+                                .pid(WRIST_MOTOR_P, WRIST_MOTOR_I, WRIST_MOTOR_D)
                                 .outputRange(WRIST_MOTOR_MIN_OUTPUT, WRIST_MOTOR_MAX_OUTPUT)
                                 .positionWrappingEnabled(POSITION_WRAPPING_ENABLED)
                                 .positionWrappingInputRange(POSITION_WRAPPING_MIN_INPUT.in(Radians),
                                                 POSITION_WRAPPING_MAX_INPUT.in(Radians));
+
+                wristClosedLoopConfig.feedForward.sva(0, WRIST_MOTOR_FF, 0);
+                wristSparkMaxConfig.apply(wristClosedLoopConfig);
 
                 wristSparkMaxConfig.softLimit
                                 .forwardSoftLimit(FORWARD_SOFT_LIMIT.in(Radians))
@@ -125,7 +130,7 @@ public class AlgaeWristHardware implements AlgaeWristIO {
                 } else if (setpoint == Setpoint.ZERO){
                         desiredAngle = SetpointConstants.ALGAE_WRIST_ZERO_ANGLE;
                 }
-                algaeWristClosedLoopController.setReference(desiredAngle.in(Radians), ControlType.kPosition,
+                algaeWristClosedLoopController.setSetpoint(desiredAngle.in(Radians), ControlType.kPosition,
                                 ClosedLoopSlot.kSlot0,
                                 algaeWristFeedFoward.calculate(
                                                 desiredAngle.in(Radians) + WRIST_ANGULAR_OFFSET.in(Radians),
