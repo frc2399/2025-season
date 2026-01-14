@@ -2,6 +2,12 @@ package frc.robot;
 
 import java.util.function.Supplier;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -38,6 +44,9 @@ public class CommandFactory {
   private final NetworkTableEntry gameModeEntry = scoringStateTables.getEntry("gamePieceMode");
   private final NetworkTableEntry leftRightEntry = scoringStateTables.getEntry("Position");
   private final NetworkTableEntry endgameEntry = scoringStateTables.getEntry("endgame");
+
+  private final PathConstraints constraints = new PathConstraints(1, 5, 
+      Units.degreesToRadians(360), Units.degreesToRadians((540)));
 
   public CommandFactory(DriveSubsystem drive, Gyro gyro, ElevatorSubsystem elevator, CoralWristSubsystem coralWrist,
       AlgaeWristSubsystem algaeWrist, AlgaeIntakeSubsystem algaeIntake, CoralIntakeSubsystem coralIntake, ClimberSubsystem climber) {
@@ -289,5 +298,14 @@ public class CommandFactory {
 
   public Command resetHeading(Angle yaw) {
     return Commands.parallel(gyro.setYaw(yaw), Commands.runOnce(() -> drive.resetOdometryAfterGyro()));
+  }
+
+  public Command buildPath(String name, Pose2d pose) {
+    return AutoBuilder.pathfindToPose(pose, constraints, 0).withName(name);
+  }
+
+  public Command buildPath(String name, double x, double y, double theta) {
+    Pose2d pose = new Pose2d(x, y, Rotation2d.fromDegrees(theta));
+    return buildPath(name, pose);
   }
 }

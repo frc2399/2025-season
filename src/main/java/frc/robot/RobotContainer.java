@@ -146,60 +146,25 @@ public class RobotContainer {
 
     autoChooser = new SendableChooser<>();
 
-    PathConstraints constraints = new PathConstraints(1, 5, 
-      Units.degreesToRadians(360), Units.degreesToRadians((540)));
+    Command middleL1 = commandFactory.buildPath(Constants.PoseConstants.MIDDlE_L1);
 
-    Command middleL1 = AutoBuilder.pathfindToPose(
-      new Pose2d(5.869148,4.03, Rotation2d.fromDegrees(90)), constraints,
-      0).withName("middleL1");
-
-    Command processorSideL1 = AutoBuilder.pathfindToPose(
-      new Pose2d(5.174574, 2.834512, Rotation2d.fromDegrees(120)), constraints,
-      0).withName("processorSideL1");
-
-    Command obstacleProcessorSideL1 = AutoBuilder.pathfindToPose(
-      new Pose2d(3.6506, 2.8578, Rotation2d.fromDegrees(60)), constraints,
-      0).withName("obstacleProcessorSideL1");
-
-    Command obstacleNonprocessorSideL1 = AutoBuilder.pathfindToPose(
-      new Pose2d(3.587527, 5.20469, Rotation2d.fromDegrees(-60)), constraints,
-      0).withName("obstacleNonprocessorSideL1");
-    
-    Command processorHumanStation = AutoBuilder.pathfindToPose(
-      new Pose2d(1.35554, 0.83016, Rotation2d.fromDegrees(234)), constraints,
-      0).withName("processorHumanStation");
-  
-    Command nonProcessorSideL1 = AutoBuilder.pathfindToPose(
-      new Pose2d(5.174574, 5.225488, Rotation2d.fromDegrees(-60)), constraints,
-      0).withName("nonprocessorSideL1");
-    
-    Command nonProcessorHumanStation = AutoBuilder.pathfindToPose(
-      new Pose2d(1.35039909, 7.57016579, Rotation2d.fromDegrees(126)), constraints,
-      0).withName("nonProcessorHumanStation");
+    Command processorSideL1 = commandFactory.buildPath(Constants.PoseConstants.PROCESSOR_SIDE_L1);
 
     Command processorL1HumanStation = Commands.sequence(
-      AutoBuilder.pathfindToPose(
-      new Pose2d(3.6506, 2.8578, Rotation2d.fromDegrees(60)), constraints,
-      0).withName("obstacleProcessorSideL1"), 
+      commandFactory.buildPath(Constants.PoseConstants.PROCESSOR_SIDE_L1), 
       commandFactory.setGameModeAndScoringLevelCommand("coral", "Level 1"),
       drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()),
       commandFactory.scorePiece().withTimeout(1), 
-      AutoBuilder.pathfindToPose(
-      new Pose2d(1.35554, 0.83016, Rotation2d.fromDegrees(234)), constraints,
-      0).withName("processorHumanStation"), 
+      commandFactory.buildPath(Constants.PoseConstants.PROCESSOR_HUMAN_STATION),
       drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()), 
       commandFactory.humanStationIntake());
     
     Command nonProcessorL1HumanStation = Commands.sequence(
-      AutoBuilder.pathfindToPose(
-      new Pose2d(5.174574, 5.225488, Rotation2d.fromDegrees(-60)), constraints,
-      0).withName("nonprocessorSideL1"), 
+      commandFactory.buildPath(Constants.PoseConstants.NONPROCESSOR_SIDE_L1), 
       commandFactory.setGameModeAndScoringLevelCommand("coral", "Level 1"),
       drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()), 
       commandFactory.scorePiece(), 
-      AutoBuilder.pathfindToPose(
-      new Pose2d(1.35039909, 7.57016579, Rotation2d.fromDegrees(126)), constraints,
-      0).withName("nonProcessorHumanStation"),  
+      commandFactory.buildPath(Constants.PoseConstants.NONPROCESSOR_HUMAN_STATION), 
       drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()), 
       commandFactory.humanStationIntake());
     
@@ -211,23 +176,6 @@ public class RobotContainer {
     autoChooser.addOption("processorSideL1", Commands.sequence(processorSideL1, 
       commandFactory.setGameModeAndScoringLevelCommand("coral", "Level 1"), 
       drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()),  
-      commandFactory.scorePiece()));
-
-    autoChooser.addOption("nonProcessorSideL1", Commands.sequence(nonProcessorSideL1, 
-      commandFactory.setGameModeAndScoringLevelCommand("coral", "Level 1"), 
-      drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()), 
-      commandFactory.scorePiece()));
-
-    autoChooser.addOption("obstacleProcessorSideL1", Commands.sequence(
-      obstacleProcessorSideL1, 
-      commandFactory.setGameModeAndScoringLevelCommand("coral", "Level 1"),
-      drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()),
-      commandFactory.scorePiece()));
-
-      autoChooser.addOption("obstacleNonprocessorSideL1", Commands.sequence(
-      obstacleNonprocessorSideL1, 
-      commandFactory.setGameModeAndScoringLevelCommand("coral", "Level 1"),
-      drive.driveToPoseOnExecute(() -> commandFactory.getRobotPosition()),
       commandFactory.scorePiece()));
 
     autoChooser.addOption("processorL1-humanStation", processorL1HumanStation);

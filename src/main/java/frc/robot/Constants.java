@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -135,4 +137,16 @@ public final class Constants {
     public static final Distance BETA_XTRACK_WIDTH = Inches.of(24.5);
     public static final Distance BETA_YTRACK_WIDTH = Inches.of(26.5);
   }
+
+public static record Pose(String name, Pose2d pose) {}
+
+public static class PoseConstants {
+  public static final Pose MIDDlE_L1 = new Pose("middleL1", new Pose2d(5.869148,4.03, Rotation2d.fromDegrees(90)));
+  public static final Pose PROCESSOR_SIDE_L1 = new Pose("processorL1",new Pose2d(5.174574, 2.834512, Rotation2d.fromDegrees(120)));
+  public static final Pose OBSTACLE_PROCESSOR_SIDE_L1 = new Pose("obstableProcessorL1",new Pose2d(3.6506, 2.8578, Rotation2d.fromDegrees(60)));
+  public static final Pose OBSTACLE_NONPROCESSOR_SIDE_L1 = new Pose("obstableNonprocessorL1", new Pose2d(3.587527, 5.20469, Rotation2d.fromDegrees(-60)));
+  public static final Pose PROCESSOR_HUMAN_STATION = new Pose("processorHumanStation", new Pose2d(1.35554, 0.83016, Rotation2d.fromDegrees(234)));
+  public static final Pose NONPROCESSOR_SIDE_L1 = new Pose("nonprocessorSideL1", new Pose2d(5.174574, 5.225488, Rotation2d.fromDegrees(-60)));
+  public static final Pose NONPROCESSOR_HUMAN_STATION = new Pose("nonprocessorHumanStation", new Pose2d(1.35039909, 7.57016579, Rotation2d.fromDegrees(126)));
+}
 }
